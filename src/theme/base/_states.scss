@@ -1,0 +1,137 @@
+@mixin state-mixin($color, $bg, $border) {
+  // box-shadow: none;
+  // .text-emphasis-variant(@text);
+  --color-badge: #{$color};
+  --color-input: #{$color};
+  --bg-badge: #{$bg};
+  --bg-input: #{$bg};
+  /*& when (@input-shadow-inner) {
+		& when (luminance(@bg) < 80) {
+			.grad-vertical(lighten(@bg, 5%), @bg);
+		}
+		& when (luminance(@bg) >= 80) {
+			.grad-vertical(@bg, darken(@bg, 4%));
+		}
+		&.flat {
+			background: @bg;
+		}
+    }*/
+  --border-color-badge: #{$border};
+  --border-color-input: #{$border};
+  /*&.rbullet::after {
+		border-color: @border;		
+	}*/
+  /*&.muted {
+		background-color: fadeout(@bg, 50%);
+		& when (@input-shadow-inner) {
+			.grad-vertical(lighten(fadeout(@bg, 50%), 5%), fadeout(@bg, 50%));
+			&.flat {
+				background: fadeout(@bg, 50%);
+			}
+		}
+    }*/
+  &.input-label,
+  &.input-progress-bar {
+    color: #{$color};
+    background: #{$bg};
+    border-color: #{$border};
+  }
+}
+
+@mixin state-mixin-grad($color, $bg, $border) {
+  @include state-mixin(
+    $color,
+    linear-gradient(to bottom, lighten($bg, 2%) 15%, darken($bg, 2%) 85%),
+    $border
+  );
+}
+
+/*.state-field {
+    color: @text-color-field;
+	.input-bg-field();
+	border-color: @border-color-field;
+	&.flat when (@input-shadow-inner) {
+		box-shadow: none;
+	}
+	&.muted {
+		background-color: fadeout(@bg-color-field, 50%);
+		& when (@input-shadow-inner) {
+			.grad-vertical(lighten(fadeout(@bg-color-field, 50%), 5%), fadeout(@bg-color-field, 50%));
+			&.flat {
+				background: fadeout(@bg-color-field, 50%);
+			}
+		}
+	}
+}*/
+/*.state-neutral {
+	.state-mixin(@state-color-neutral, @bg-color-neutral, @border-color-neutral);
+}*/
+.state-label {
+  @include state-mixin($color-label, $bg-label, $border-color-label);
+  text-shadow: $text-shadow-label;
+}
+.state-button {
+  @include state-mixin($color-button, $bg-button, $border-color-button);
+  text-shadow: $text-shadow-button;
+}
+.state-active {
+  @include state-mixin($color-active, $bg-active, $border-color-active);
+}
+/*.state-selected {
+	color: @state-color-selected;
+	border-color: @border-color-selected;
+	background: @bg-color-selected;
+}
+.state-current {
+	border-color: @border-color-current;
+}*/
+.state-disabled {
+  @include state-mixin(
+    $color-input-disabled,
+    $bg-input-disabled,
+    $border-color-input-disabled
+  );
+  text-shadow: $text-shadow-disabled;
+}
+.state-success {
+  @include state-mixin-grad(#595, rgba(255, 255, 255, 0.8), #6b6);
+}
+.state-final {
+  @include state-mixin-grad(#f6fff6, #7d8, #6b6);
+}
+.state-info {
+  @include state-mixin-grad(#469, #cfeaff, darken(#cfeaff, 16%));
+}
+.state-draft {
+  @include state-mixin-grad(#b84, rgba(255, 255, 255, 0.8), #c96);
+}
+.state-pending {
+  @include state-mixin-grad(#57a, rgba(255, 255, 255, 0.8), #8ad);
+}
+.state-deferred {
+  @include state-mixin-grad(#969, rgba(255, 255, 255, 0.8), #c8b);
+}
+.state-special {
+  @include state-mixin-grad(#fff6ff, #a7a, darken(#a7a, 12%));
+}
+.state-error {
+  @include state-mixin-grad(#a55, #fff, #a55);
+}
+.state-alert {
+  @include state-mixin-grad(#666, #fc6, #c92);
+}
+.state-warning {
+  @include state-mixin-grad(#b65, rgba(255, 240, 160, 0.6), #b75);
+}
+.state-danger {
+  @include state-mixin-grad(#f6f6ff, rgba(221, 32, 19, 0.5), #a55);
+}
+.state-closed {
+  @include state-mixin-grad(#fff, rgba(140, 140, 140, 0.5), #999);
+}
+.state-dead {
+  @include state-mixin-grad(#666, rgba(190, 190, 190, 0.5), #aaa);
+}
+.state-invert {
+  @include state-mixin-grad(#fff, #888, #777);
+}

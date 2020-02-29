@@ -1,0 +1,209 @@
+$menu-anim: 0.1s ease-out;
+
+.menu-outer {
+  @include no-select;
+  box-sizing: border-box;
+  cursor: default;
+  margin: 0;
+  padding: 1px;
+  position: relative;
+  scroll-behavior: smooth;
+  transition: border-color $menu-anim;
+  & > & {
+    padding: 0;
+    &.nested {
+      padding-left: 1rem;
+    }
+  }
+  /*.input-field-group > & {
+		// move to a separate class?
+		border-radius: (@border-radius-input + 2);
+	}*/
+}
+
+.menu-header {
+  background: $bg-menu-header;
+  border: 1px solid $border-color-menu-header;
+  font-size: 85%;
+  list-style-type: none;
+  margin: 0;
+  overflow: hidden;
+  padding: calc(#{$pad-v-menu-option} / 2) $pad-h-menu-option;
+  color: $color-label;
+  // SearchSelect
+  .input-search input {
+    width: 100%;
+  }
+}
+
+.menu-option {
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  color: $color-menu-option;
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  outline: none;
+  overflow: hidden;
+  padding: calc(#{$pad-v-menu-option} / 2) $pad-h-menu-option;
+  // table-layout: fixed;
+  transition: background-color $menu-anim, border-color $menu-anim,
+    color $menu-anim, opacity $menu-anim;
+  width: 100%;
+  &:first-child,
+  .menu-header + & {
+    margin-top: calc(#{$pad-v-menu-option} / 2);
+  }
+  &:last-child {
+    margin-bottom: calc(#{$pad-v-menu-option} / 2);
+  }
+  &.blank {
+    color: $color-input-disabled;
+  }
+  &.selected {
+    /* .state-selected; */
+  }
+  &.current {
+    /* .state-current; */
+    border-radius: $border-radius-menu-current;
+    color: $color-input-active;
+  }
+  /*&.selected.current {
+		.state-current;
+		.state-selactive;
+	}*/
+  &:not(.static):not(.disabled):focus {
+    background: $bg-input-focus;
+    color: $color-input-focus;
+    border-color: $border-color-input-focus;
+  }
+  &:not(.static):not(.disabled):active,
+  &.selected:active {
+    //.state-active;
+    background: $bg-input-active;
+    border-color: $border-color-input-active;
+    box-shadow: none;
+    color: $color-input-active; /* @state-color-active; */
+  }
+  &.placeholder {
+    color: $color-input-placeholder;
+    font-style: italic;
+  }
+
+  .uii.active-icon {
+    position: relative;
+    margin-top: -1px;
+    top: 1px;
+    vertical-align: inherit;
+  }
+
+  &.drag-indicator {
+    /* .state-pending; */
+    border-style: dashed;
+  }
+  &.drag-remove,
+  &.drag-remove:focus,
+  &.drag-remove:active,
+  &.drag-remove.selected:active {
+    opacity: 0.5;
+    border-style: dashed;
+    border-color: $border-color-input-active;
+    background: $bg-input-disabled;
+  }
+
+  min-height: calc(#{$line-height-menu-option} * 1em);
+  line-height: $line-height-menu-option;
+  /*.menu-sm & {
+		font-size: $font-size-input-small;
+	}
+	.menu-md & {
+		font-size: @font-size-input;
+		min-height: @line-height-input-computed;
+	}
+	.menu-lg & {
+		font-size: @font-size-input-large;
+		min-height: floor(@line-height-menu * @font-size-input-large);
+	}*/
+}
+
+.option-cell {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  &.option-check {
+    flex: 0 0 auto;
+    /* .uii; */
+    color: $color-label;
+    font-size: 80%;
+    line-height: inherit;
+    text-align: center;
+    text-overflow: clip;
+    width: 20px;
+    .menu-option.current > &::before {
+      content: '▶';
+    }
+    .menu-option.selected > &::before {
+      content: '✔';
+    }
+  }
+  &.with-icon {
+    .input-icon,
+    .uii {
+      margin-right: 0.3rem;
+    }
+  }
+  &.option-icon {
+    flex: 0 0 auto;
+    text-overflow: clip;
+    width: 20px;
+  }
+  &.option-tools {
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+  &.option-remove {
+    flex: 0 0 auto;
+    overflow: visible; // don't crop border on hovered active-icon
+    width: 1.5rem;
+    .uii {
+      display: none;
+    }
+    .menu-option.current & .uii {
+      display: initial;
+    }
+  }
+  .menu-option.single & {
+    white-space: nowrap;
+  }
+}
+
+.input-field-header {
+  // only used by multienum currently
+  background: $bg-label;
+  color: $color-label;
+  font-size: 85%;
+  line-height: 1.5;
+  margin: 0;
+  overflow: hidden;
+  padding: calc(#{$pad-v-menu-option} / 2) $pad-h-menu-option;
+}
+
+/* fade-out test (animate when menu option is picked)
+.card-menu:hover {
+	> .card-header, > .card-footer {
+		opacity: 0.1;
+		transition: opacity @menu-anim;
+	}
+	border-color: fadeout(@border-color-field, 90%);
+	> .menu-options {
+		background: fadeout(#fff, 90%);
+		> .card-row {
+			opacity: 0.1;
+			&.active, &:hover, &:active {
+				opacity: 1.0;
+			}
+		}
+	}
+}
+*/

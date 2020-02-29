@@ -1,0 +1,17 @@
+@import 'page';
+
+::selection {
+  background-color: #9bc;
+  color: #334;
+}
+
+@import 'base/uibasic';
+
+.theme-base {
+  // $font-base-path: 'base/';
+  @import 'base';
+}
+
+.theme-material {
+  @import 'material';
+}

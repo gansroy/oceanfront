@@ -1,0 +1,513 @@
+@mixin field-text-disabled {
+  color: $color-input-disabled;
+  -webkit-text-fill-color: $color-input-disabled; // override needed for disabled state
+  text-shadow: $text-shadow-disabled;
+}
+
+@mixin field-text-base {
+  font-family: $font-family-input;
+  font-weight: $font-weight-input;
+  letter-spacing: $letter-spacing-input;
+  line-height: $line-height-input;
+}
+
+.field-compact {
+  --pad-h-input: #{$pad-h-compact-input};
+  --pad-v-input: #{$pad-v-compact-input};
+}
+.field-sm {
+  --font-size-input: #{$font-size-input-sm};
+}
+.field-lg {
+  --font-size-input: #{$font-size-input-lg};
+}
+
+// .field-placeholder {
+//   color: $color-field-placeholder;
+// }
+
+.field {
+  // > .field-label {
+  //   box-sizing: content-box;
+  //   &:not(.single):not(.limit-height) {
+  //     display: flex; // to preserve padding
+  //   }
+  //   min-height: calc(
+  //     1em * #{$line-height-input} - 1px
+  //   ); // 1px for rounding error
+  //   &.limit-height {
+  //     max-height: calc(3em * #{$line-height-input} - 1px);
+  //   }
+  //   padding: $pad-v-input $pad-h-input;
+  //   vertical-align: top;
+  // }
+  .input-icon {
+    color: $color-input-icon;
+  }
+  // &:hover,
+  // &.focus,
+  // &.active,
+  // &.disabled,
+  // &.opened {
+  //   .input-icon {
+  //     color: inherit;
+  //   }
+  // }
+  // &.disabled {
+  //   .input-icon {
+  //     opacity: 0.6;
+  //   }
+  // }
+  .wait-icon,
+  .wait-icon.dynamic {
+    height: 18px;
+    line-height: 18px;
+    vertical-align: top;
+  }
+
+  font-size: $font-size-input;
+  position: relative;
+  text-align: left;
+  @include no-select;
+
+  // background: $bg-input;
+  // border: $border-width-input solid $border-color-input;
+  // border-radius: $border-radius-input;
+  // box-shadow: $box-shadow-input;
+  // box-sizing: border-box;
+  // color: $color-input;
+  // font-size: $font-size-input;
+  // max-width: 100%; // don't extend past containing cell
+  // vertical-align: $vertical-align-input;
+
+  // @include field-text-base;
+
+  &:hover:not(.static) {
+    // border: $border-width-input solid $border-color-input-hover;
+    color: $color-input-hover;
+  }
+  &.focus {
+    //background: $bg-input-focus;
+    // border: $border-width-input solid $border-color-input-focus;
+    // box-shadow: $box-shadow-input-focus;
+    .field-label {
+      color: $color-field-focus;
+    }
+  }
+  /*&.active {
+    background: $bg-input-active;
+    // border: $border-width-input solid $border-color-input-active;
+    // box-shadow: $box-shadow-input-active;
+    color: $color-input-active;
+    outline: none;
+  }*/
+  &.readonly {
+    background: $bg-input-disabled;
+    border-color: $border-color-input-disabled;
+  }
+  &.disabled {
+    background: $bg-input-disabled;
+    border-color: $border-color-input-disabled;
+    opacity: $opacity-input-disabled;
+    @include input-text-disabled;
+  }
+}
+
+.field-label {
+  color: $color-field-label;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-wrap: break-word;
+  // @include field-text-base;
+  // &.single {
+  //   align-items: center;
+  //   display: block;
+  //   max-width: 100%;
+  //   overflow: hidden;
+  //   white-space: nowrap;
+  // }
+  // &.limit-height {
+  //   overflow: hidden;
+  //   display: -webkit-box;
+  //   display: box;
+  //   -webkit-line-clamp: 3;
+  //   line-clamp: 3;
+  //   -webkit-box-orient: vertical;
+  //   box-orient: vertical;
+  // }
+  /*&.zero-left {
+		padding-left: 0;
+	}
+	&.zero-right {
+		padding-right: 0;
+  }*/
+}
+
+.field-input {
+  font-size: inherit;
+  font-weight: normal;
+  // letter-spacing
+  // caret-color
+  &::placeholder {
+    color: $color-input-placeholder;
+  }
+}
+
+.field:hover,
+.field.focus,
+.field.active {
+  .field-placeholder {
+    color: inherit;
+  }
+}
+
+.field-outlined,
+.field-filled {
+  display: inline-flex;
+
+  .field-inner {
+    box-sizing: border-box;
+    min-height: calc(3em + 2 * #{$pad-v-field});
+  }
+
+  .field-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+
+  .field-input {
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    /*&:active {
+      // highlight?
+    }*/
+    &::placeholder {
+      color: $color-field-label;
+    }
+  }
+}
+
+.field-basic {
+  display: inline-block;
+  padding: 0 0.5em 0.25em;
+
+  .field-label {
+    display: block;
+    font-size: 80%;
+    padding: 0 0.5em 0.25em;
+  }
+  &:hover:not(.static) .field-label {
+    color: $color-input-hover;
+  }
+
+  .field-inner {
+    display: flex;
+    background: $bg-input;
+    border: $border-width-input solid $border-color-input;
+    border-radius: $border-radius-input;
+    box-shadow: $box-shadow-input;
+    box-sizing: border-box;
+    color: $color-input;
+    font-size: $font-size-input;
+    position: relative;
+    max-width: 100%; // don't extend past containing cell
+    vertical-align: $vertical-align-input;
+
+    @include field-text-base;
+  }
+  &.focus .field-inner {
+    background: $bg-input-focus;
+    border-color: $border-color-input-focus;
+    box-shadow: $box-shadow-input-focus;
+  }
+  &:hover:not(.static) .field-inner {
+    border-color: $border-color-input-hover;
+    color: $color-input-hover;
+  }
+  /*&.active {
+      background: $bg-input-active;
+      // border: $border-width-input solid $border-color-input-active;
+      // box-shadow: $box-shadow-input-active;
+      color: $color-input-active;
+      outline: none;
+    }*/
+  &.readonly,
+  &.disabled {
+    .field-inner {
+      background: $bg-input-disabled;
+      border-color: $border-color-input-disabled;
+    }
+  }
+  &.disabled .field-inner {
+    opacity: $opacity-input-disabled;
+    @include input-text-disabled;
+  }
+
+  .field-input {
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: inherit;
+    height: 100%;
+    outline: none;
+    padding: $pad-v-input $pad-h-input;
+    width: 100%;
+    /*&:active {
+      // highlight?
+    }*/
+  }
+}
+
+.field-outlined {
+  --cur-border: 1px solid #{$border-color-field};
+  .field-overlay {
+    display: flex;
+    &::before {
+      border-radius: $border-radius-field 0 0 $border-radius-field;
+      border: var(--cur-border);
+      border-right: none;
+      box-sizing: border-box;
+      content: '';
+      flex: 0 0 calc(1em - 4px);
+      transition: border-color 120ms;
+    }
+    .field-label-wrap {
+      border-bottom: var(--cur-border);
+      border-top: var(--cur-border);
+      box-sizing: border-box;
+      padding: 0 4px;
+      transition: border-color 120ms;
+      label {
+        position: relative;
+        top: 0;
+      }
+    }
+    &::after {
+      border-radius: 0 $border-radius-field $border-radius-field 0;
+      border: var(--cur-border);
+      border-left: none;
+      content: '';
+      flex: auto;
+      transition: border-color 120ms;
+    }
+  }
+  &:hover {
+    --cur-border: 1px solid #{$border-color-field-hover};
+  }
+  &.focus {
+    --cur-border: 2px solid #{$border-color-field-focus};
+    .field-label-wrap label {
+      top: -1px;
+    }
+  }
+
+  .field-label {
+    display: block;
+    font-size: 75%;
+    transform: translateY(1.25em) scale(1.3333);
+    transform-origin: left top;
+    transition: transform 150ms;
+    // will-change: transform; // FIXME currently blurry in chrome
+  }
+  &.focus,
+  &.active {
+    .field-label-wrap {
+      border-top-color: transparent;
+    }
+    .field-label {
+      transform: translateY(-0.75em);
+    }
+  }
+
+  .field-inner {
+    > * {
+      opacity: 0;
+      transition: opacity 120ms;
+      will-change: opacity;
+    }
+  }
+  &.active {
+    .field-inner > * {
+      opacity: 1;
+    }
+  }
+
+  .field-input {
+    padding: calc(#{$font-size-input} - 2px) $font-size-input
+      calc(#{$font-size-input} - 4px);
+  }
+}
+
+.field-filled {
+  background: $background-field-filled;
+  border-radius: $border-radius-field $border-radius-field 0 0;
+
+  &:hover {
+    background: $background-field-filled-hover;
+  }
+  &.focus {
+    background: $background-field-filled-focus;
+  }
+
+  .field-overlay {
+    &::after {
+      // ripple
+      background: $color-field-focus;
+      content: '';
+      height: 2px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: opacity 60ms, transform 150ms;
+      will-change: opacity, transform;
+    }
+  }
+  &.focus .field-overlay::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .field-label {
+    position: absolute;
+    left: 1em;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 180ms;
+    transform-origin: left top;
+    // will-change: transform; // FIXME currently blurry in chrome
+  }
+
+  &.focus,
+  &.active {
+    .field-label {
+      transform: translateY(calc(-1em - 4px)) scale(0.75);
+    }
+  }
+
+  .field-inner {
+    border-bottom: 1px solid $border-color-field;
+    > * {
+      opacity: 0;
+      transition: opacity 120ms;
+      will-change: opacity;
+    }
+  }
+  &:hover .field-inner {
+    border-bottom-color: $border-color-field-hover;
+  }
+  &.active {
+    .field-inner > * {
+      opacity: 1;
+    }
+  }
+
+  .field-input {
+    padding: calc(#{$font-size-input} + #{$pad-v-field}) $font-size-input
+      calc(#{$pad-v-field} + 1px);
+  }
+}
+
+// .input-bullet {
+//   &::after {
+//     // content: ""; // must be set by mixin
+//     display: inline-block;
+//     text-align: center;
+//     text-shadow: none;
+//     transform: scale($scale-bullet);
+//     transform-origin: 50% 0.5em;
+//     width: $width-bullet;
+//   }
+
+//   &.input-label {
+//     margin-right: -2px;
+//     &::after {
+//       position: relative;
+//       top: -1px;
+//     }
+//   }
+
+//   &.input-field {
+//     padding-right: calc(#{$width-bullet} - 2px);
+//     position: relative;
+//     &::after {
+//       bottom: 0;
+//       border-radius: 0 calc(#{$border-radius-input} - 1px)
+//         calc(#{$border-radius-input} - 1px) 0;
+//       font-size: $font-size-bullet;
+//       line-height: #{$font-size-input};
+//       position: absolute;
+//       right: 2px;
+//       top: $pad-v-input;
+//     }
+//     &.readonly::after {
+//       @include input-text-disabled;
+//     }
+//   }
+
+//   &.input-button {
+//     padding-right: calc(#{$width-bullet} + #{$pad-h-input} - 2px);
+//     position: relative;
+//     &::after {
+//       position: absolute;
+//       top: $pad-v-input;
+//       right: 2px;
+//     }
+//   }
+// }
+
+/*
+.input-text {
+  // line-height: normal; // fix placeholder position
+  -webkit-appearance: none; // remove extra shadow on iOS
+  &[readonly] {
+    //border-color: @border-color-field;
+    background: $bg-input-disabled;
+  }
+}
+
+// needed for proper height in safari - sets a special minimum height of around 115% line height?
+input.input-text {
+  height: calc(
+    1em * #{$line-height-input} + 2 * #{$pad-v-input} + 2 * #{$border-width-input}
+  );
+}
+
+textarea.input-text {
+  height: auto;
+  padding-right: $pad-h-input;
+}
+*/
+
+// .field.opened {
+//   background-color: $bg-button-active;
+//   border-color: $border-color-button-active;
+//   color: $color-button-active;
+//   text-shadow: none;
+//   &.opened-above {
+//     @include flat-top;
+//   }
+//   &:not(.opened-above) {
+//     @include flat-bottom;
+//   }
+//   .field-placeholder {
+//     color: inherit;
+//   }
+// }

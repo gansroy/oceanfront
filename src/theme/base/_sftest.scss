@@ -1,0 +1,281 @@
+%icon-base {
+  font-family: SF Pro Text;
+  font-style: normal;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.uii {
+  @extend %icon-base;
+}
+
+.uii-checkbox::before {
+  content: '􀂒';
+}
+.uii-checked::before,
+.uii-checkbox.checked::before {
+  content: '􀃲';
+}
+.uii-radio::before {
+  content: '􀀀';
+}
+.uii-radio.checked::before {
+  content: '􀁢';
+}
+
+// extra styles don't really belong here
+.uii-star::before {
+  content: '􀋂';
+  /*& when (@input-shadow-text) {
+    text-shadow: 0 1px 1px fadeout(darken(@text-color-tool, 50%), 70%);
+  }*/
+}
+.uii-star.checked::before {
+  content: '􀋃';
+  /*& when (@input-shadow-text) {
+    text-shadow: 0 1px 0 fadeout(darken(@text-color-tool, 50%), 70%);
+  }*/
+}
+
+.uii-plus::before {
+  content: '􀅼';
+}
+.uii-info::before {
+  content: '􀅵';
+}
+.uii-add::before {
+  content: '􀁍';
+}
+.uii-help::before {
+  content: '􀁝';
+}
+/*.uii-info, .uii-plus, .uii-help, .uii-add {
+	&.active-icon:hover:not(.disabled) { color: @text-color-active; }
+}*/
+.uii-cancel,
+.uii-remove {
+  /*&.active-icon:hover:not(.disabled) {
+    color: @text-color-error;
+  }*/
+}
+.uii-accept {
+  /*&.active-icon:hover:not(.disabled) {
+    color: @text-color-success;
+  }*/
+}
+.uii-top::before {
+  content: '􀄿';
+}
+.uii-paperclip::before {
+  content: '􀉢';
+}
+.uii-bdown::before {
+  content: '􀄥';
+}
+.uii-bleft::before {
+  content: '􀄦';
+}
+.uii-bright::before {
+  content: '􀄧';
+}
+.uii-bup::before {
+  content: '􀄤';
+}
+.uii-ddown::before {
+  content: '􀆈';
+}
+.uii-dup::before {
+  content: '􀆇';
+}
+.uii-gear::before {
+  content: '􀍟';
+}
+.uii-accept::before {
+  content: '􀆅';
+}
+.uii-cancel::before {
+  content: '􀆄';
+}
+.uii-baccept::before {
+  content: '􀁣';
+}
+.uii-bcancel::before {
+  content: '􀁡';
+}
+.uii-previous::before {
+  content: '􀆉';
+}
+.uii-next::before {
+  content: '􀆊';
+}
+.uii-fprevious::before {
+  content: '􀆋';
+}
+.uii-fnext::before {
+  content: '􀆌';
+}
+.uii-first::before {
+  content: '􀅁';
+}
+.uii-last::before {
+  content: '􀅂';
+}
+.uii-danger::before {
+  content: '􀁟';
+}
+.uii-remove::before {
+  content: '􀁏';
+}
+.uii-ok::before {
+  content: 'k';
+}
+.uii-arrow-left::before {
+  content: '􀄪';
+}
+.uii-arrow-right::before {
+  content: '􀄫';
+}
+.uii-arrow-up::before {
+  content: '􀄨';
+}
+.uii-arrow-down::before {
+  content: '􀄩';
+}
+.uii-email::before {
+  content: '􀍗';
+}
+.uii-phone::before {
+  content: '􀒥';
+}
+.uii-mobile::before {
+  content: '􀒥';
+}
+.uii-extern::before {
+  content: '􀒠'; // '􀄔';
+}
+.uii-hourglass::before {
+  content: '􀖇';
+}
+.uii-date::before {
+  content: '􀉉';
+}
+.uii-time::before {
+  content: '􀐫';
+}
+.uii-login::before {
+  content: '<';
+}
+.uii-logout::before {
+  content: '>';
+}
+.uii-refresh::before {
+  content: '􀊯';
+}
+.uii-hamburger::before {
+  content: '􀆀';
+}
+.uii-search::before {
+  content: '􀊫';
+}
+.uii-user::before {
+  content: '􀉫';
+}
+.uii-lock::before {
+  content: '􀎠';
+}
+.uii-clear::before {
+  content: '􀆙';
+}
+.uii-1crm::before {
+  content: '1';
+}
+.uii-dots::before {
+  content: '􀍢';
+}
+.uii-odots::before {
+  content: '􀍠';
+}
+.uii-split::before {
+  content: '􀁓';
+}
+.uii-print::before {
+  content: '􀎛';
+}
+.uii-required::before {
+  content: '􀊿';
+}
+
+.uii-led {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  position: relative;
+  text-shadow: 0 0 0.1em rgba(0, 0, 0, 0.9),
+    0 0.1em 0.1em rgba(150, 150, 150, 0.4);
+  &::before {
+    content: '􀀁';
+    font-size: 80%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.4),
+      rgba(255, 255, 255, 0.6) 14%,
+      rgba(255, 255, 255, 0) 35%
+    );
+    transform: translateX(-5%) translateY(-5%) skewX(-10deg);
+    filter: blur(2px);
+  }
+}
+
+.led-grey {
+  color: #aaa;
+}
+.led-green {
+  color: #2c4;
+}
+.led-red {
+  color: #c43;
+}
+.led-yellow {
+  color: #dc4;
+}
+.led-violet {
+  color: #c5c;
+}
+.led-blue {
+  color: #36d;
+}
+.led-orange {
+  color: #d80;
+}
+
+/*
+.rbullet {
+  &::after {
+    @extend %icon-base;
+    content: '􀄥';
+  }
+  &.rbullet-add::after {
+    content: '􀁍';
+  }
+  &.rbullet-right::after {
+    content: '􀄧';
+  }
+  &.rbullet-ddown::after {
+    content: '􀆈';
+  }
+}
+*/

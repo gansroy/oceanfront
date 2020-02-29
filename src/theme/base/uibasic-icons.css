@@ -1,0 +1,190 @@
+@charset "utf-8";
+.input-icon,
+.uibasic-icon {
+  font-family: 'uibasic';
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  line-height: 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  white-space: nowrap;
+}
+.icon-required::before {
+  content: '⬪';
+}
+.icon-accept::before {
+  content: '✔';
+}
+.icon-cancel::before {
+  content: '✘';
+}
+.icon-plus::before {
+  content: '➕';
+}
+.icon-print::before {
+  content: '🖨';
+}
+.icon-search::before {
+  content: '🔍';
+}
+.icon-email::before {
+  content: '📧';
+}
+.icon-mobile::before {
+  content: '📱';
+}
+.icon-phone::before {
+  content: '📞';
+}
+.icon-attach::before {
+  content: '📎';
+}
+.icon-external::before {
+  content: '🔗';
+}
+.icon-user::before {
+  content: '👤';
+}
+.icon-lock::before {
+  content: '🔒';
+}
+.icon-sign-in::before {
+  content: '⎘';
+}
+.icon-sign-out::before {
+  content: '⎗';
+}
+.icon-date::before {
+  content: '📆';
+}
+.icon-time::before {
+  content: '🕐';
+}
+.icon-hourglass::before {
+  content: '⏳';
+}
+.icon-gear::before {
+  content: '⚙';
+}
+.icon-alt-menu::before {
+  content: '⋮';
+}
+.icon-menu::before {
+  content: '☰';
+}
+.icon-ellipsis::before {
+  content: '…';
+}
+.icon-refresh::before {
+  content: '🗘';
+}
+.icon-expand-down::before {
+  content: '⬎';
+}
+.icon-expand-up::before {
+  content: '⬏';
+}
+.icon-expand::before {
+  content: '⬍';
+}
+.icon-expand-close::before {
+  content: '';
+}
+.icon-checkbox::before {
+  content: '☐';
+}
+.icon-checkbox.checked::before {
+  content: '☑';
+}
+.icon-radio::before {
+  content: '◎';
+}
+.icon-radio.checked::before {
+  content: '◉';
+}
+.icon-star::before {
+  content: '☆';
+}
+.icon-star.checked::before {
+  content: '★';
+}
+.icon-circle-check::before {
+  content: '✅';
+}
+.icon-circle-cross::before {
+  content: '⨂';
+}
+.icon-circle-ellipsis::before {
+  content: '⋯';
+}
+.icon-circle-help::before {
+  content: '?';
+}
+.icon-circle-error::before {
+  content: '⚠';
+}
+.icon-circle-info::before {
+  content: 'ℹ';
+}
+.icon-circle-plus::before {
+  content: '⨁';
+}
+.icon-circle-minus::before {
+  content: '⛔';
+}
+.icon-circle-divide::before {
+  content: '⨸';
+}
+.icon-circle-split::before {
+  content: '';
+}
+.icon-circle-join::before {
+  content: '';
+}
+.icon-circle-refresh::before {
+  content: '🔃';
+}
+.icon-circle-attach::before {
+  content: '🖇';
+}
+.icon-arrow-left::before {
+  content: '←';
+}
+.icon-arrow-right::before {
+  content: '→';
+}
+.icon-arrow-up::before {
+  content: '↑';
+}
+.icon-arrow-down::before {
+  content: '↓';
+}
+.icon-previous::before {
+  content: '◀';
+}
+.icon-next::before {
+  content: '▶';
+}
+.icon-triangle-down::before {
+  content: '▾';
+}
+.icon-triangle-up::before {
+  content: '▴';
+}
+.icon-nav-top::before {
+  content: '⌅';
+}
+.icon-nav-first::before {
+  content: '⏮';
+}
+.icon-nav-previous::before {
+  content: '⏪';
+}
+.icon-nav-next::before {
+  content: '⏩';
+}
+.icon-nav-last::before {
+  content: '⏭';
+}

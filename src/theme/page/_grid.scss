@@ -1,0 +1,160 @@
+.container {
+  box-sizing: border-box;
+  margin: 0 auto $container-bottom-gutter auto;
+  padding: 0 $grid-gutter-size;
+  @include screen-sm-min {
+    width: ($screen-sm - 20);
+  }
+  @include screen-md-min {
+    width: ($screen-md - 25);
+  }
+  @include screen-lg-min {
+    width: ($screen-lg - 30);
+  }
+}
+
+.row {
+  box-sizing: border-box;
+  // max width depending on media
+  // add collapse class (no gutter), and sm-collapse etc
+  display: flex;
+  width: 100%; // needed for firefox
+  flex-flow: row wrap;
+  flex: auto;
+  align-items: stretch;
+  // overflow: hidden;
+}
+
+.page-row {
+  margin-bottom: $grid-gutter-size;
+  &.collapse {
+    margin-bottom: 0;
+  }
+}
+
+.column {
+  box-sizing: border-box;
+  flex: 1 1 0px;
+  flex-flow: column nowrap;
+  max-width: 100%;
+  &.row {
+    // we are arranged vertically, so restore default behaviour
+    flex: 0 1 auto;
+  }
+  &.shrink {
+    flex: 0 1 auto;
+    max-width: none;
+  }
+  &.expand {
+    // used to restore default behaviour
+    flex: 1 0 auto;
+  }
+}
+
+.page-column {
+  padding-left: $grid-gutter-size;
+  padding-right: $grid-gutter-size;
+  > .row {
+    &:not(.column) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    margin-left: -($grid-gutter-size);
+    margin-right: -($grid-gutter-size);
+  }
+  &.collapse {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.col-space-sm {
+  // .row
+  //margin-left: -4px;
+  //margin-right: -4px;
+  > .column:not(.complex) {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  &.collapse > .column {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.row-space-sm {
+  .row:not(.hidden) ~ & {
+    padding-top: 4px;
+  }
+  &:not(:last-child) {
+    padding-bottom: 4px;
+  }
+}
+.row-space-xs {
+  .row:not(.hidden) ~ & {
+    padding-top: 2px;
+  }
+  &:not(:last-child) {
+    padding-bottom: 2px;
+  }
+}
+
+@mixin mk-cols($prefix, $count, $index: 1) {
+  @if ($index <= $count) {
+    $prev: $index - 1;
+    .#{$prefix}#{$index} {
+      flex: 0 0 percentage($index / $count);
+      max-width: percentage($index / $count);
+    }
+    // offset columns (aka push in bootstrap - use [size]-order-[n] to replace pull)
+    .#{$prefix}offset-#{$prev} {
+      margin-left: percentage($prev / $count);
+    }
+    @include mk-cols($prefix, $count, $index + 1);
+  }
+}
+
+@mixin mk-flex-order($prefix, $max, $index: 0) {
+  @if ($index <= $max) {
+    // reorder items within flex container (not just columns) at a certain viewport size
+    .#{$prefix}order-#{$index} {
+      order: $index;
+    }
+    @include mk-flex-order($prefix, $max, $index + 1);
+  }
+}
+
+@include mk-cols(col-, $grid-column-count);
+@include mk-flex-order(#{''}, $flex-order-max);
+@include screen-xs {
+  // unstack columns in a row (arrange them vertically)
+  .col-unstack > .column {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+@include screen-sm-min {
+  @include mk-cols(sm-, $grid-column-count);
+  @include mk-flex-order(sm-, $flex-order-max);
+}
+@include screen-sm-max {
+  .sm-unstack > .column {
+    flex: 0 0 100%;
+  }
+}
+@include screen-md-min {
+  @include mk-cols(md-, $grid-column-count);
+  @include mk-flex-order(md-, $flex-order-max);
+}
+@include screen-sm-max {
+  .md-unstack > .column {
+    flex: 0 0 100%;
+  }
+}
+@include screen-lg-min {
+  @include mk-cols(lg-, $grid-column-count);
+  @include mk-flex-order(lg-, $flex-order-max);
+}
+.lg-unstack > .column {
+  flex: 0 0 100%;
+}

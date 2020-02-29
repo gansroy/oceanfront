@@ -1,0 +1,204 @@
+$base-color-active: #68d !default;
+$base-color-active-text: #fff;
+$base-color-active-border: darken($base-color-active, 10%);
+$base-color-button: #ededed !default;
+$base-color-disabled: rgba(160, 160, 160, 0.8) !default;
+$base-color-focus: #368;
+$base-color-hover: #58b !default;
+$base-color-input-active-text: #3c68d4;
+$base-color-input-bg: #fff !default;
+$base-color-input-border: #939393 !default;
+$base-color-input-icon: #666 !default;
+$base-color-input-muted-bg: #e3e3e3 !default;
+$base-color-input-placeholder: #999 !default;
+$base-color-input-text: #3b3b3b !default;
+$base-color-label-bg: #e6e6e6;
+$base-color-label-border: #aaa;
+$base-color-label-text: #555;
+$base-color-menu-header: #dedede;
+$base-color-muted: #888 !default;
+$base-color-quiet: #f6f6f6 !default;
+$base-color-soft: #dadada !default;
+
+$bg-active: var(
+  --bg-active,
+  linear-gradient(
+    to bottom,
+    darken($base-color-active, 5%) 30%,
+    lighten($base-color-active, 5%)
+  )
+);
+$bg-badge: var(--bg-badge, $base-color-input-bg);
+$bg-bullet-down: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTUgMTEiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxLjQxNDIxOyI+PGcgaWQ9InBvbHlnb24xNzMiIHRyYW5zZm9ybT0ibWF0cml4KDEuOTQzNDQsMCwwLDEuNzI4MjMsLTYwMC43OTgsLTM2Ljg0MTUpIj48cGF0aCBkPSJNMzA5LjUsMjJMMzE2LjUsMjJMMzEzLDI3TDMwOS41LDIyWiIgc3R5bGU9ImZpbGw6cmdiKDY4LDY4LDY4KTtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+);
+// $bg-button: var(--bg-button, $base-color-button);
+$bg-button: var(
+  --bg-button,
+  linear-gradient(
+    to bottom,
+    mix(white, $base-color-button, 30%) 30%,
+    mix(black, $base-color-button, 4%)
+  )
+);
+// $bg-button-active: var(--bg-button-active, $base-color-input-muted-bg);
+$bg-button-active: var(
+  --bg-button-active,
+  linear-gradient(
+    to bottom,
+    lighten($base-color-input-muted-bg, 5%) 30%,
+    lighten($base-color-input-muted-bg, 10%)
+  )
+);
+// $bg-button-disabled: var(--bg-button-disabled, $base-color-input-muted-bg);
+$bg-button-disabled: var(
+  --bg-button-disabled,
+  linear-gradient(
+    to bottom,
+    #{darken($base-color-input-muted-bg, 5%)} 30%,
+    #{$base-color-input-muted-bg}
+  )
+);
+// $bg-button-focus: var(--bg-button-focus, $base-color-input-muted-bg);
+$bg-button-focus: var(
+  --bg-button-focus,
+  linear-gradient(
+    to bottom,
+    darken($base-color-input-muted-bg, 5%) 30%,
+    lighten($base-color-input-muted-bg, 5%)
+  )
+);
+$bg-input: var(--bg-input, #{$base-color-input-bg});
+$bg-input-active: var(--bg-input-active, #{$base-color-input-bg});
+$bg-input-disabled: var(--bg-input-disabled, #{$base-color-quiet});
+$bg-input-focus: var(--bg-input-focus, #{$base-color-input-bg});
+$bg-label: var(--bg-label, #{$base-color-label-bg});
+/*$bg-label: var(
+  --bg-label,
+  linear-gradient(
+    to bottom,
+    lighten($base-color-label-bg, 2%) 20%,
+    darken($base-color-label-bg, 3%)
+  )
+);*/
+$bg-menu-header: var(--bg-menu-header, #{$base-color-menu-header});
+$border-color-active: var(--border-color-active, #{$base-color-active-border});
+$border-color-button: var(--border-color-button, #{$base-color-input-border});
+$border-color-button-active: var(
+  --border-color-button-active,
+  #{$base-color-active-border}
+);
+$border-color-input: var(--border-color-input, $base-color-input-border);
+$border-color-input-active: var(
+  --border-color-input-active,
+  #{$base-color-active-border}
+);
+$border-color-input-disabled: var(
+  --border-color-input-disabled,
+  #{lighten($base-color-disabled, 10%)}
+);
+$border-color-input-focus: var(
+  --border-color-input-focus,
+  #{$base-color-focus}
+);
+
+$border-color-input-hover: var(
+  --border-color-input-hover,
+  #{$base-color-hover}
+);
+$border-color-label: var(--border-color-label, #{$base-color-label-border});
+$border-color-menu-header: var(
+  --border-menu-header,
+  #{$base-color-menu-header}
+);
+$border-color-progress: var(--border-color-progress, #{$base-color-soft});
+$border-radius-badge: 4px;
+$border-radius-button: var(--border-radius-button, 5px);
+$border-radius-input: var(--border-radius-input, 5px);
+$border-radius-menu-current: var(--border-radius-menu-current, 2px);
+$border-radius-progress: var(--border-radius-progress, 3px);
+$border-width-badge: 1px !default;
+$border-width-button: 1px !default;
+$border-width-input: 1px !default;
+$border-width-tab: 1px !default;
+$box-shadow-input: var(
+  --box-shadow-input,
+  inset 1px 2px 8px rgba(0, 0, 0, 0.07)
+);
+$box-shadow-input-focus: var(
+  --box-shadow-input-focus,
+  0 1px 3px rgba(0, 0, 0, 0.2)
+);
+$color-active: var(--color-active, #{$base-color-active-text});
+$color-badge: var(--color-badge, #{$base-color-muted});
+$color-button: var(--color-button, #{$base-color-input-text});
+$color-button-active: var(--color-button-active, #{$base-color-active});
+$color-button-focus: var(--color-button-focus, #{$base-color-focus});
+$color-button-icon: var(--color-button-icon, #{$base-color-input-icon});
+$color-input: var(--color-input, #{$base-color-input-text});
+$color-input-active: var(
+  --color-input-active,
+  #{$base-color-input-active-text}
+);
+$color-input-disabled: var(--color-input-disabled, #{$base-color-muted});
+$color-input-focus: var(--color-input-focus, #{$base-color-focus});
+$color-input-hover: var(--color-input-hover, #{$base-color-hover});
+$color-input-icon: var(--color-input-icon, #{$base-color-input-icon});
+$color-input-placeholder: var(
+  --color-input-placeholder,
+  $base-color-input-placeholder
+);
+$color-label: var(--color-label, #{$base-color-label-text});
+$color-menu-option: var(--color-menu-option, #{$base-color-input-text});
+$font-family-input: var(--font-family-input, inherit);
+$font-size-badge: var(--font-size-badge, 0.75rem);
+$font-size-input: var(--font-size-input, 1rem);
+$font-size-input-sm: var(--font-size-input-sm, 0.8125rem); // 13/16
+$font-size-input-lg: var(--font-size-input-lg, 1.25rem); // 20/16
+$font-size-bullet: var(--font-size-bullet, 1em);
+$font-size-tab: var(--font-size-tab, #{$font-size-input});
+$font-weight-badge: var(--font-weight-badge, bold);
+$font-weight-input: var(--font-weight-input, normal);
+$letter-spacing-input: var(--letter-spacing-input, 0);
+$line-height-badge: var(--line-height-badge, 1.2);
+$line-height-input: var(--line-height-input, 1.125); // 18/16
+$line-height-form-label: var(--line-height-form-label, 1.7);
+$line-height-menu-option: var(--line-height-menu-option, 1.35);
+$opacity-input-disabled: var(--opacity-input-disabled, 0.85);
+$pad-h-badge: var(--pad-h-badge, 0.3em);
+$pad-v-badge: var(--pad-v-badge, 0.15em);
+$pad-h-compact-input: var(--pad-h-compact-input, 2px);
+$pad-h-input: var(--pad-h-input, 0.4em);
+$pad-v-compact-input: var(--pad-v-compact-input, 2px);
+$pad-v-input: var(--pad-v-input, 0.25em);
+$pad-h-menu-option: var(--pad-h-menu-option, 0.4em);
+$pad-v-menu-option: var(--pad-v-menu-option, 0.3em);
+$pad-inline-button: var(--pad-inline-button, 0.2rem);
+$scale-bullet: var(--scale-bullet, 0.75);
+$scale-icon-x: var(--scale-icon-x, 1);
+$scale-icon-y: var(--scale-icon-y, 1);
+$text-shadow-badge: var(--text-shadow-badge, 0 1px 0 rgba(180, 180, 180, 0.1));
+$text-shadow-button: var(
+  --text-shadow-button,
+  0 1px 1px rgba(255, 255, 255, 0.8)
+);
+$text-shadow-disabled: var(
+  --text-shadow-disabled,
+  0 1px 0 rgba(255, 255, 255, 0.3)
+);
+$text-shadow-label: var(--text-shadow-label, 0 1px 0 rgba(150, 150, 150, 0.1));
+$text-shadow-progress: var(--text-shadow-progress, 0 0 2px #fff);
+$vertical-align-badge: baseline;
+$vertical-align-button: middle;
+$vertical-align-input: text-bottom; // NOTE: was middle in previous version
+$width-bullet: var(--width-bullet, 1.1em);
+
+$background-field-filled: rgba(#ddd, 0.6);
+$background-field-filled-hover: rgba(#ddd, 0.7);
+$background-field-filled-focus: rgba(#ddd, 0.8);
+$border-color-field: rgba(#000, 0.42);
+$border-color-field-hover: rgba(#000, 0.7);
+$border-color-field-focus: #368;
+$border-radius-field: var(--border-radius-field, 4px);
+$color-field-label: rgba(#000, 0.6);
+$color-field-focus: #368;
+$pad-v-field: 0.25em;
+// $color-field-border: rgba(#000, 0.38)
