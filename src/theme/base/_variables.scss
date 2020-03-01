@@ -165,10 +165,10 @@ $line-height-menu-option: var(--line-height-menu-option, 1.35);
 $opacity-input-disabled: var(--opacity-input-disabled, 0.85);
 $pad-h-badge: var(--pad-h-badge, 0.3em);
 $pad-v-badge: var(--pad-v-badge, 0.15em);
-$pad-h-compact-input: var(--pad-h-compact-input, 2px);
+$pad-h-compact-input: var(--pad-h-compact-input, 0.4em);
 $pad-h-input: var(--pad-h-input, 0.4em);
-$pad-v-compact-input: var(--pad-v-compact-input, 2px);
-$pad-v-input: var(--pad-v-input, 0.25em);
+$pad-v-compact-input: var(--pad-v-compact-input, 0.25em);
+$pad-v-input: var(--pad-v-input, 0.5em);
 $pad-h-menu-option: var(--pad-h-menu-option, 0.4em);
 $pad-v-menu-option: var(--pad-v-menu-option, 0.3em);
 $pad-inline-button: var(--pad-inline-button, 0.2rem);
@@ -196,9 +196,14 @@ $background-field-filled-hover: rgba(#ddd, 0.7);
 $background-field-filled-focus: rgba(#ddd, 0.8);
 $border-color-field: rgba(#000, 0.42);
 $border-color-field-hover: rgba(#000, 0.7);
-$border-color-field-focus: #368;
+$border-color-field-focus: #479; // #368;
 $border-radius-field: var(--border-radius-field, 4px);
 $color-field-label: rgba(#000, 0.6);
 $color-field-focus: #368;
-$pad-v-field: 0.25em;
+$pad-h-field: 1rem;
+$pad-v-field: 0.25rem;
 // $color-field-border: rgba(#000, 0.38)
+$box-shadow-field-basic-focus: var(
+  --box-shadow-field-basic-focus,
+  0 0 0 0.2rem rgba($border-color-field-focus, 0.25)
+);

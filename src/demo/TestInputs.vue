@@ -1,15 +1,19 @@
 <template>
-  <!--prettier-ignore-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,700">
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,700"
+  />
   <section class="container">
+    <label for="baseFontSize">Base font size ({{ baseFontSize }}px)</label>
     <input
+      id="baseFontSize"
       type="range"
       min="10"
       max="30"
+      step="2"
       :value="baseFontSize"
       @change="updateFont"
     />
-    Base Font Size ({{ baseFontSize }}px)
   </section>
   <section class="container">
     <div class="demo-block">

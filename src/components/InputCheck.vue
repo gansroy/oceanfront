@@ -1,5 +1,8 @@
 <template>
-  <input ref="input" v-bind="attrs" v-on="handlers" />
+  <input ref="input" type="checkbox" v-bind="attrs" v-on="handlers" />
+  <div class="field-input-label">
+    <label :for="attrs.id">{{ state.label }}</label>
+  </div>
 </template>
 
 <script lang="ts">
@@ -15,48 +18,18 @@ import { FieldConfig, FieldState, fieldState } from '../lib/field'
 import { StoreRef, storeRef } from '../lib/store'
 import { hasOwn } from '../lib/util'
 
-const copyAttrs = new Set([
-  'autocomplete',
-  'placeholder',
-  'size',
-  'tabIndex',
-  'value'
-])
+const copyAttrs = new Set(['tabIndex', 'value'])
 
 const mapStateAttrs = {
   id: 'inputId',
   class: 'inputClass',
-  maxlength: 'maxLength',
-  readonly: 'readOnly',
-  required: 'required',
   style: 'inputStyle',
   tabindex: 'tabIndex',
-  type: 'inputType',
   variant: 'inputVariant'
 }
 
-// types that can be inherited from state.type
-// setting state.inputType allows any value
-const allowInputTypes = new Set([
-  'date',
-  'datetime-local',
-  'email',
-  'month',
-  'number',
-  'password',
-  'tel',
-  'time',
-  'week',
-  'url'
-])
-
-const inputTypeFrom = (type?: string) => {
-  if (type && allowInputTypes.has(type)) return type
-  return 'text'
-}
-
 const variantClasses: Record<string, string> = {
-  default: 'input-text',
+  default: 'input-check',
   plain: ''
 }
 
@@ -68,8 +41,6 @@ const makeAttrs = (state: FieldState) => {
   }
   if (state.disabled) {
     result['disabled'] = true
-  } else if (state.readOnly || state.store.locked) {
-    result['readOnly'] = true
   }
   result['id'] = state.inputId
   result['class'] = [
@@ -77,7 +48,6 @@ const makeAttrs = (state: FieldState) => {
     state.inputClass
   ]
   result['style'] = state.inputStyle
-  result['type'] = state.inputType || inputTypeFrom(state.type)
   return result
 }
 
@@ -96,7 +66,7 @@ const loadContextAttrs = (attrs: Record<string, any>, state: FieldState) => {
 }
 
 export default defineComponent({
-  name: 'input-text',
+  name: 'input-check',
   inheritAttrs: false,
   async setup(
     props: {
@@ -119,9 +89,6 @@ export default defineComponent({
       },
       change: (evt: Event) => {
         state.value = input.value.value
-      },
-      input: (evt: InputEvent) => {
-        state.inputValue = input.value.value
       },
       focus: (evt: FocusEvent) => {
         state.inputFocused = true

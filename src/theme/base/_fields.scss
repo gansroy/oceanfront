@@ -153,6 +153,44 @@
   }
 }
 
+.field-check {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: inherit;
+  margin: 0;
+  outline: none;
+  + .field-input-label {
+    display: flex;
+    label {
+      flex: auto;
+    }
+  }
+  + .field-input-label::after {
+    display: inline-flex;
+    content: 'checkbox';
+    font-family: uibasic; // FIXME (customizable)
+    margin-left: $pad-h-input; // FIXME (rtl)
+  }
+  &:checked + .field-input-label::after {
+    content: 'checkbox.checked';
+  }
+  &[type='radio'] + .field-input-label::after {
+    content: 'radio';
+  }
+  &[type='radio']:checked + .field-input-label::after {
+    content: 'radio.checked';
+  }
+}
+
+.field-input-label {
+  flex: auto;
+}
+
 .field:hover,
 .field.focus,
 .field.active {
@@ -161,46 +199,9 @@
   }
 }
 
-.field-outlined,
-.field-filled {
-  display: inline-flex;
-
-  .field-inner {
-    box-sizing: border-box;
-    min-height: calc(3em + 2 * #{$pad-v-field});
-  }
-
-  .field-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-  }
-
-  .field-input {
-    -webkit-appearance: none;
-    appearance: none;
-    background: none;
-    border: none;
-    border-radius: 0;
-    box-sizing: border-box;
-    height: 100%;
-    width: 100%;
-    outline: none;
-    /*&:active {
-      // highlight?
-    }*/
-    &::placeholder {
-      color: $color-field-label;
-    }
-  }
-}
-
 .field-basic {
   display: inline-block;
-  padding: 0 0.5em 0.25em;
+  margin: 0 0.5em calc(0.25em + 1px);
 
   .field-label {
     display: block;
@@ -229,7 +230,7 @@
   &.focus .field-inner {
     background: $bg-input-focus;
     border-color: $border-color-input-focus;
-    box-shadow: $box-shadow-input-focus;
+    box-shadow: $box-shadow-field-basic-focus;
   }
   &:hover:not(.static) .field-inner {
     border-color: $border-color-input-hover;
@@ -269,6 +270,54 @@
     /*&:active {
       // highlight?
     }*/
+  }
+
+  .field-input-label {
+    padding: $pad-v-input $pad-h-input;
+  }
+}
+
+.field-outlined,
+.field-filled {
+  display: inline-flex;
+
+  .field-inner {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    min-height: calc(3em + 2 * #{$pad-v-field});
+  }
+
+  .field-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  .field-input {
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    /*&:active {
+      // highlight?
+    }*/
+    &::placeholder {
+      color: $color-field-label;
+    }
+  }
+
+  .field-input-label {
+    padding: $pad-v-field $pad-h-field;
+    pointer-events: none;
   }
 }
 
@@ -317,7 +366,7 @@
 
   .field-label {
     display: block;
-    font-size: 75%;
+    font-size: 0.75em;
     transform: translateY(1.25em) scale(1.3333);
     transform-origin: left top;
     transition: transform 150ms;
@@ -350,6 +399,9 @@
     padding: calc(#{$font-size-input} - 2px) $font-size-input
       calc(#{$font-size-input} - 4px);
   }
+  textarea.field-input {
+    padding-bottom: 0;
+  }
 }
 
 .field-filled {
@@ -366,13 +418,13 @@
   .field-overlay {
     &::after {
       // ripple
-      background: $color-field-focus;
+      background: $border-color-field-focus;
       content: '';
       height: 2px;
       position: absolute;
       bottom: 0;
       left: 0;
-      right: 0;
+      width: 100%;
       opacity: 0;
       transform: scaleX(0);
       transform-origin: center;
@@ -387,18 +439,19 @@
 
   .field-label {
     position: absolute;
-    left: 1em;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: transform 180ms;
+    left: $pad-h-field;
+    top: $pad-v-field;
+    font-size: 0.75em;
+    transform: translateY(1em) scale(1.3333);
     transform-origin: left top;
+    transition: transform 150ms;
     // will-change: transform; // FIXME currently blurry in chrome
   }
 
   &.focus,
   &.active {
     .field-label {
-      transform: translateY(calc(-1em - 4px)) scale(0.75);
+      transform: none;
     }
   }
 
@@ -422,6 +475,9 @@
   .field-input {
     padding: calc(#{$font-size-input} + #{$pad-v-field}) $font-size-input
       calc(#{$pad-v-field} + 1px);
+  }
+  textarea.field-input {
+    padding-bottom: 0;
   }
 }
 

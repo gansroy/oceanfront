@@ -421,6 +421,7 @@
 .input-text {
   // line-height: normal; // fix placeholder position
   -webkit-appearance: none; // remove extra shadow on iOS
+  appearance: none;
   &[readonly] {
     //border-color: @border-color-field;
     background: $bg-input-disabled;
@@ -429,9 +430,7 @@
 
 // needed for proper height in safari - sets a special minimum height of around 115% line height?
 input.input-text {
-  height: calc(
-    1em * #{$line-height-input} + 2 * #{$pad-v-input} + 2 * #{$border-width-input}
-  );
+  height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
 }
 
 textarea.input-text {

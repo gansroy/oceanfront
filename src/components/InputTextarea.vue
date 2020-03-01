@@ -1,5 +1,5 @@
 <template>
-  <input ref="input" v-bind="attrs" v-on="handlers" />
+  <textarea ref="input" v-bind="attrs" v-on="handlers"></textarea>
 </template>
 
 <script lang="ts">
@@ -18,7 +18,8 @@ import { hasOwn } from '../lib/util'
 const copyAttrs = new Set([
   'autocomplete',
   'placeholder',
-  'size',
+  'cols',
+  'rows',
   'tabIndex',
   'value'
 ])
@@ -31,28 +32,7 @@ const mapStateAttrs = {
   required: 'required',
   style: 'inputStyle',
   tabindex: 'tabIndex',
-  type: 'inputType',
   variant: 'inputVariant'
-}
-
-// types that can be inherited from state.type
-// setting state.inputType allows any value
-const allowInputTypes = new Set([
-  'date',
-  'datetime-local',
-  'email',
-  'month',
-  'number',
-  'password',
-  'tel',
-  'time',
-  'week',
-  'url'
-])
-
-const inputTypeFrom = (type?: string) => {
-  if (type && allowInputTypes.has(type)) return type
-  return 'text'
 }
 
 const variantClasses: Record<string, string> = {
@@ -77,7 +57,6 @@ const makeAttrs = (state: FieldState) => {
     state.inputClass
   ]
   result['style'] = state.inputStyle
-  result['type'] = state.inputType || inputTypeFrom(state.type)
   return result
 }
 
@@ -96,7 +75,7 @@ const loadContextAttrs = (attrs: Record<string, any>, state: FieldState) => {
 }
 
 export default defineComponent({
-  name: 'input-text',
+  name: 'input-textarea',
   inheritAttrs: false,
   async setup(
     props: {
