@@ -26,7 +26,7 @@
 //   color: $color-field-placeholder;
 // }
 
-.field {
+.field-outer {
   // > .field-label {
   //   box-sizing: content-box;
   //   &:not(.single):not(.limit-height) {
@@ -148,12 +148,9 @@
   font-weight: normal;
   // letter-spacing
   // caret-color
-  &::placeholder {
-    color: $color-input-placeholder;
-  }
 }
 
-.field-check {
+.field-toggle {
   position: absolute;
   top: 0;
   left: 0;
@@ -191,13 +188,15 @@
   flex: auto;
 }
 
-.field:hover,
-.field.focus,
-.field.active {
-  .field-placeholder {
-    color: inherit;
-  }
-}
+// .field-outer {
+//   &:hover,
+//   &.focus,
+//   &.active {
+//     .field-placeholder {
+//       color: inherit;
+//     }
+//   }
+// }
 
 .field-basic {
   display: inline-block;
@@ -263,13 +262,15 @@
     border-radius: 0;
     box-sizing: border-box;
     color: inherit;
-    height: 100%;
+    // height: 100%;
     outline: none;
-    padding: $pad-v-input $pad-h-input;
     width: 100%;
-    /*&:active {
-      // highlight?
-    }*/
+    &::placeholder {
+      color: $color-input-placeholder;
+    }
+  }
+  .field-text {
+    padding: $pad-v-input $pad-h-input;
   }
 
   .field-input-label {
@@ -304,7 +305,7 @@
     border: none;
     border-radius: 0;
     box-sizing: border-box;
-    height: 100%;
+    // height: 100%;
     width: 100%;
     outline: none;
     /*&:active {
@@ -313,6 +314,8 @@
     &::placeholder {
       color: $color-field-label;
     }
+  }
+  .field-text {
   }
 
   .field-input-label {
@@ -395,12 +398,13 @@
     }
   }
 
-  .field-input {
+  .field-text {
     padding: calc(#{$font-size-input} - 2px) $font-size-input
       calc(#{$font-size-input} - 4px);
   }
-  textarea.field-input {
+  .field-textarea {
     padding-bottom: 0;
+    resize: vertical;
   }
 }
 
@@ -472,12 +476,13 @@
     }
   }
 
-  .field-input {
+  .field-text {
     padding: calc(#{$font-size-input} + #{$pad-v-field}) $font-size-input
       calc(#{$pad-v-field} + 1px);
   }
-  textarea.field-input {
+  .field-textarea {
     padding-bottom: 0;
+    resize: vertical;
   }
 }
 

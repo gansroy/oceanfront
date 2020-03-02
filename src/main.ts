@@ -3,4 +3,4 @@ import App from './App.vue'
 import './main.scss'
 import './theme/demo.scss'
 
-createApp().mount(App, '#app')
+createApp(App).mount('#app')

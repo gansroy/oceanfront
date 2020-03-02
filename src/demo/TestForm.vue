@@ -4,32 +4,32 @@
       <div class="column md-3">
         <div class="form-outer">
           <div class="form-cell">
-            <field :state="testField" class="field-basic" />
+            <input-text :config="testField" variant="basic" />
           </div>
           <br />
           <div class="form-cell">
-            <field :state="testField2" class="field-outlined" />
+            <input-text :config="testField" variant="outlined" />
           </div>
           <br />
           <div class="form-cell">
-            <field :state="testField3" class="field-filled" />
+            <input-text :config="testField" variant="filled" />
           </div>
           <br />
           <button class="input-button" @click="change">Update</button>
         </div>
       </div>
-      <div class="column md-3">
+      <!-- div class="column md-3">
         <div class="form-outer">
           <div class="form-cell">
-            <field :state="testField" type="textarea" class="field-basic" />
+            <field :config="testField" type="textarea" class="field-basic" />
           </div>
           <br />
           <div class="form-cell">
-            <field :state="testField2" type="textarea" class="field-outlined" />
+            <field :config="testField" type="textarea" class="field-outlined" />
           </div>
           <br />
           <div class="form-cell">
-            <field :state="testField3" type="textarea" class="field-filled" />
+            <field :config="testField" type="textarea" class="field-filled" />
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@
         <div class="form-outer">
           <div class="form-cell">
             <field
-              :state="testCheckField"
+              :config="testCheckField"
               type="checkbox"
               class="field-basic"
             />
@@ -45,7 +45,7 @@
           <br />
           <div class="form-cell">
             <field
-              :state="testCheckField2"
+              :config="testCheckField"
               type="checkbox"
               class="field-outlined"
             />
@@ -53,13 +53,13 @@
           <br />
           <div class="form-cell">
             <field
-              :state="testCheckField3"
+              :config="testCheckField"
               type="checkbox"
               class="field-filled"
             />
           </div>
         </div>
-      </div>
+      </div -->
     </div>
   </div>
 </template>
@@ -73,7 +73,7 @@ import {
   reactive,
   computed
 } from 'vue'
-import Field from '../components/Field.vue'
+import InputText from '../components/InputText.vue'
 import { fieldState } from '../lib/field'
 
 function sleep(ms: number) {
@@ -81,30 +81,6 @@ function sleep(ms: number) {
 }
 
 const testField = fieldState({
-  description: 'Field description',
-  help: 'field help',
-  hidden: false,
-  label: 'Field Label',
-  placeholder: 'placeholder',
-  readOnly: false,
-  required: true,
-  type: 'float',
-  value: '62.14'
-})
-
-const testField2 = fieldState({
-  description: 'Field description',
-  help: 'field help',
-  hidden: false,
-  label: 'Field Label',
-  placeholder: 'placeholder',
-  readOnly: false,
-  required: true,
-  type: 'float',
-  value: '62.14'
-})
-
-const testField3 = fieldState({
   description: 'Field description',
   help: 'field help',
   hidden: false,
@@ -129,34 +105,8 @@ const testCheckField = fieldState({
   labelPosition: 'input'
 })
 
-const testCheckField2 = fieldState({
-  description: 'Field description',
-  help: 'field help',
-  hidden: false,
-  label: 'Field Label',
-  placeholder: 'placeholder',
-  readOnly: false,
-  required: true,
-  type: 'float',
-  value: 1,
-  labelPosition: 'input'
-})
-
-const testCheckField3 = fieldState({
-  description: 'Field description',
-  help: 'field help',
-  hidden: false,
-  label: 'Field Label',
-  placeholder: 'placeholder',
-  readOnly: false,
-  required: true,
-  type: 'float',
-  value: 0,
-  labelPosition: 'input'
-})
-
 export default defineComponent({
-  components: { Field },
+  components: { InputText },
   async setup() {
     const change = () => {
       testField.value = new Date().getTime().toString()
@@ -164,11 +114,7 @@ export default defineComponent({
     return {
       change,
       testField,
-      testField2,
-      testField3,
-      testCheckField,
-      testCheckField2,
-      testCheckField3
+      testCheckField
     }
   }
 })

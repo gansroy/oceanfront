@@ -1,6 +1,14 @@
-import { isRef, ref, Ref, reactive, isReadonly, markNonReactive } from 'vue'
+import {
+  isRef,
+  ref,
+  Ref,
+  reactive,
+  isReadonly,
+  markNonReactive,
+  readonly
+} from 'vue'
 import { storeRef, StoreRef } from './store'
-import { isObject } from './util'
+import { isObject, hasOwn } from './util'
 const __DEV__ = true // FIXME
 let fieldSeq = 0
 
@@ -89,147 +97,156 @@ export interface FieldConfig {
 }
 
 export interface FieldState<T = string, S = T> extends FieldConfig {
-  // get whether the current value is considered blank
+  // inherits inputFocused and inputOpened unless set explicitly
+  // allows field focus to be shared by multiple elements
+  readonly active?: boolean
+  // get whether the current stored value is considered blank
   readonly blank?: boolean
   // inherited properties
   readonly config: FieldConfig
   // get the display value as determined by the formatter
   readonly displayValue?: string
-  // inherits inputFocused and inputOpened unless set explicitly
-  // allows field focus to be shared by multiple elements
-  focused?: boolean
+  // inherited properties
+  readonly input?: FieldInput
+  // unformatted field value, updates produce a commit to the store
+  rawValue?: S
   // get whether the current input value is considered blank
-  readonly inputBlank?: boolean
-  // errors applying to the uncommitted value
-  inputErrors?: ValidationError[] | boolean
-  // pure reactive, localized to this ref
-  // allow field to report to listener when it is focused
-  inputFocused?: boolean
-  // whether a popup is currently attached to the element
-  inputOpened?: boolean
-  // represents value which hasn't yet been committed (input event, not change event)
-  // allows parent to react to updates as they happen
-  inputValue?: T
+  // readonly inputBlank?: boolean
+  // // errors applying to the uncommitted value
+  // inputErrors?: ValidationError[] | boolean
+  // // pure reactive, localized to this ref
+  // // allow field to report to listener when it is focused
+  // inputFocused?: boolean
+  // // whether a popup is currently attached to the element
+  // inputOpened?: boolean
+  // // represents value which hasn't yet been committed (input event, not change event)
+  // // allows parent to react to updates as they happen
+  // inputValue?: T
   // instance containing the stored value, pending update, and related methods
   store: StoreRef<S>
-  // field value, updates produce a commit to the store
+  // formatted field value, updates produce a commit to the store
   value?: T
   // --
   // inputHovered?: boolean
   // relFields: { relname: FieldState }
 }
 
+export interface FieldInput<T = string> {
+  // input is currently focused or opened
+  // allows field focus to be shared by multiple elements
+  readonly active?: boolean
+  // input value is considered blank (fails 'required')
+  readonly blank?: boolean
+  // the input element
+  readonly elt?: HTMLElement
+  // errors applying to the current input value
+  readonly errors?: ValidationError[] | boolean
+  // input is currently focused
+  readonly focused?: boolean
+  // identifier of the input element
+  readonly id?: string
+  // whether a popup is currently attached to the element
+  readonly opened?: boolean
+  // current input value (updated by input event)
+  value?: T
+}
+
 class FieldStateInternal<T = string, S = T> {
   public config: FieldConfig
+  public input?: FieldInput<T>
   public formatter: FieldFormatter<T>
-  public inputErrors: Ref<ValidationError[] | boolean> = ref(false)
-  public inputFocused: Ref<boolean> = ref(false)
-  public inputOpened: Ref<boolean> = ref(false)
+  public props: Record<string, any>
   public store: StoreRef<S>
-  private _focused: Ref<boolean> = ref()
-  private _inputValue: Ref<T>
-  private _value: Ref<T>
 
-  constructor(config?: FieldConfig, store?: StoreRef<S>) {
-    config = this.config = reactiveConfig(config)
+  constructor(
+    config?: FieldConfig,
+    input?: FieldInput<T>,
+    props?: Record<string, any>,
+    store?: StoreRef<S>
+  ) {
+    config = this.config = config || {}
     this.formatter =
       config.formatter || (getDefaultFormatter(config.type) as any)
-    this.store = store || storeRef(config.value)
-    // FIXME watch store value
+    this.input = input
+    this.props = reactive(props || {})
+    this.store = store || storeRef(config.value) // FIXME apply field type?
     if (!config.inputId) config.inputId = 'input-' + fieldSeq++
-    // FIXME apply formatter
-    this._inputValue = ref()
-    // FIXME apply formatter
-    this._value = ref(this.store.value) as Ref<T>
+  }
+
+  get active(): boolean {
+    return (this.input && this.input.active) || false
   }
 
   get blank(): boolean {
+    // FIXME formatter should identify blank values
     let v = this.value
     return v === null || v === undefined || (v as any) === ''
   }
 
   get displayValue(): string {
-    // FIXME run current value (from StoreRef) through formatter
+    // FIXME run current field value through formatter
+    // could also be a vue component?
     return ''
   }
 
-  get focused(): boolean {
-    const ov = this._focused.value
-    if (ov !== undefined) return ov
-    return this.inputFocused.value
-  }
+  // FIXME add getter for combined errors: store + input
+  // get errors()
 
-  set focused(val: boolean) {
-    this._focused.value = val
+  get focused(): boolean {
+    return (this.input && this.input.focused) || false
   }
 
   get inputBlank(): boolean {
-    let v = this.inputValue
-    return v === null || v === undefined || (v as any) === ''
+    if (this.input) {
+      const inputBlank = this.input.blank
+      if (inputBlank || inputBlank === false) return !!inputBlank
+      let val = this.input.value
+      // FIXME formatter should identify blank values
+      return val === null || val === undefined || (val as any) === ''
+    }
+    return true
   }
 
-  get inputValue(): T | null {
-    return this._inputValue.value as any
+  get rawValue(): S | null {
+    // return unformatted value
+    return this.store.value as S
   }
 
-  set inputValue(val: T | null) {
-    ;(this._inputValue.value as any) = val
-    // FIXME populate inputErrors from formatter
+  set rawValue(val: S | null) {
+    ;(this.store.value as any) = val
   }
 
   get value(): T | null {
-    return this._value.value as any
+    // return formatted value
+    return (this.store.value as any) as T // FIXME
   }
 
   set value(val: T | null) {
-    ;(this._value.value as any) = val
     ;(this.store.value as any) = val // FIXME unformat the value
-    // FIXME update value if the store value changes to something else
   }
-
-  // add storedValue
-
-  // add getter for combined errors: store + inputErrors
 }
 
 export function fieldState<T, S>(
+  // FIXME accept an object instead
   config?: FieldConfig,
-  store?: StoreRef<T>
+  input?: FieldInput<T>,
+  store?: StoreRef<S>
 ): FieldState<T, S> {
   // config may (should) be reactive before being passed in
-  const state = new FieldStateInternal(config, store)
+  const state = new FieldStateInternal(config, input, store)
   return markNonReactive(new Proxy(state, fieldStateProxy)) // make shallowReactive in new version?
 }
 
-export function reactiveConfig(
-  config?: FieldConfig,
-  props?: { [key: string]: any }
-): FieldConfig {
-  if (config && !props && !isReadonly(config)) return config
-  if (isReadonly(config)) {
-    const protoConfig = config
-    config = {}
-    config.prototype = protoConfig
-  } else if (!config) {
-    config = {}
-  }
-  if (isObject(props)) {
-    Object.assign(config, props)
-  }
-  return reactive(config)
-}
-
 const fieldStateInternalProps = new Set([
+  'active',
   'blank',
   'config',
   'displayValue',
   'focused',
   'formatter',
+  'input',
   'inputBlank',
-  'inputErrors',
-  'inputFocused',
-  'inputOpened',
-  'inputValue',
+  'rawValue',
   'store',
   'value'
 ])
@@ -245,8 +262,14 @@ const fieldStateProxy: ProxyHandler<any> = {
       result = target[key]
       from = 'state'
     } else {
-      result = target.config[key]
-      from = 'config'
+      const props = target.props
+      if (hasOwn(props, key)) {
+        result = props[key]
+        from = 'props'
+      } else {
+        result = target.config[key]
+        from = 'config'
+      }
     }
     if (isRef(result)) {
       result = result.value
@@ -255,10 +278,17 @@ const fieldStateProxy: ProxyHandler<any> = {
     return result
   },
   has(target: FieldStateInternal, key: string): boolean {
-    return isFieldStateProp(key) || Reflect.has(target.config, key)
+    return (
+      isFieldStateProp(key) ||
+      hasOwn(target.props, key) ||
+      Reflect.has(target.config, key)
+    )
   },
   ownKeys(target: FieldStateInternal): (string | number | symbol)[] {
     const keys: Set<string | number | symbol> = new Set(fieldStateInternalProps)
+    for (const k of Reflect.ownKeys(target.props)) {
+      keys.add(k)
+    }
     for (const k of Reflect.ownKeys(target.config)) {
       keys.add(k)
     }
@@ -272,28 +302,22 @@ const fieldStateProxy: ProxyHandler<any> = {
   ): boolean {
     let from: string
     if (isFieldStateProp(key)) {
-      if (key === 'inputErrors' || key === 'inputFocused') {
-        // ref properties
-        target[key].value = value
-      } else if (
-        key !== 'blank' &&
-        key !== 'displayValue' &&
-        key !== 'inputBlank'
-      ) {
-        // ignore read only props
+      if (key === 'rawValue' || key === 'value') {
+        // writable props only
         ;(target[key] as any) = value
       }
       from = 'state'
     } else {
-      let prev = target.config[key]
-      if (isRef(prev)) {
-        prev.value = value
+      let prev
+      if (hasOwn(target.props, key)) {
+        prev = target.props[key]
       } else {
-        target.config[key] = value
+        prev = target.config[key]
       }
-      from = 'config'
+      target.props[key] = value
+      from = 'props'
     }
-    console.log('set', from, key, value)
+    // console.log('set', from, key, value)
     return true
   },
   deleteProperty(target: FieldStateInternal, key: string): boolean {
@@ -302,7 +326,7 @@ const fieldStateProxy: ProxyHandler<any> = {
         console.error('Cannot delete internal property on FieldState')
       }
     } else {
-      delete target.config[key]
+      delete target.props[key]
     }
     return true
   }

@@ -40,7 +40,12 @@ const variantClasses: Record<string, string> = {
   plain: ''
 }
 
-const makeAttrs = (state: FieldState) => {
+const calcHeight = (input: Ref<HTMLTextAreaElement>) => {
+  let ht = input.value && input.value.scrollHeight
+  console.log('height', ht)
+}
+
+const makeAttrs = (state: FieldState, input: Ref<HTMLTextAreaElement>) => {
   const result: Record<string, any> = Object.assign({}, state.inputAttrs)
   for (const k of copyAttrs) {
     const v = state[k] as any
@@ -56,7 +61,8 @@ const makeAttrs = (state: FieldState) => {
     variantClasses[(state.inputVariant || 'default') as string],
     state.inputClass
   ]
-  result['style'] = state.inputStyle
+  // FIXME make autogrow a property
+  result['style'] = [calcHeight(input), state.inputStyle]
   return result
 }
 
@@ -91,7 +97,7 @@ export default defineComponent({
       props.state ||
       fieldState(props.config, props.store || storeRef(ctx.attrs.value))
     loadContextAttrs(ctx.attrs, state)
-    const input: Ref<HTMLInputElement> = ref()
+    const input: Ref<HTMLTextAreaElement> = ref()
     const handlers = {
       blur: (evt: FocusEvent) => {
         state.inputFocused = false
@@ -107,7 +113,7 @@ export default defineComponent({
       }
     }
     return {
-      attrs: computed(() => makeAttrs(state)),
+      attrs: computed(() => makeAttrs(state, input)),
       handlers,
       input,
       state

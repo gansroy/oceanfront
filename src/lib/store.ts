@@ -112,15 +112,15 @@ class BasicStoreRef<T> implements StoreRef<T> {
   // readonly afterUpdate: EventListenerSet<StoreUpdate<T>>
   private _locked: Ref<StoreLock>
   private _pendingUpdate: Ref<StoreUpdate<T>>
-  private _storedValue: Ref<T>
-  private _value: Ref<T>
+  private _storedValue: Ref
+  private _value: Ref
 
   constructor(value: T, store?: any) {
     console.log('ctor here')
     this._locked = ref()
     this._pendingUpdate = ref()
-    this._storedValue = ref(value)
-    this._value = ref(value) // get a ref from the store, same ref as everybody else
+    this._storedValue = ref<T>(value)
+    this._value = ref<T>(value) // get a ref from the store, same ref as everybody else
     // this.beforeUpdate = new BasicEventListenerSet()
     // this.afterUpdate = new BasicEventListenerSet()
   }
@@ -128,7 +128,6 @@ class BasicStoreRef<T> implements StoreRef<T> {
   cancelUpdate() {}
 
   get locked(): StoreLock | undefined {
-    console.log(this)
     return this._locked.value
   }
 
@@ -194,7 +193,7 @@ class BasicStoreUpdate<T> implements StoreUpdate<T> {
   readonly errors?: ValidationError[]
   // onComplete: EventListenerSet<this>
   private _complete: Ref<boolean>
-  private _newValue: Ref<T | undefined>
+  private _newValue: Ref
   private _promise: PromiseLike<T>
   private _rejected: Ref<boolean>
 
