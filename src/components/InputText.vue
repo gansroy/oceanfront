@@ -112,23 +112,30 @@ export default defineComponent({
   inheritAttrs: false,
   async setup(
     props: {
+      class?: string // or object or list
       config?: FieldConfig
+      disabled?: boolean
       id?: string
+      placeholder?: string
+      readonly?: boolean
       store?: StoreRef
-      value?: any
+      value?: string
       variant?: string
       [key: string]: any
     },
     ctx: SetupContext
   ) {
     const config = props.config || {}
-    const elt = ref<HTMLInputElement>()
-    const other = ref<HTMLElement>()
-    const focused = ref(false)
-    const id =
-      props.id || config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
     const initValue = props.value === undefined ? config.value : props.value
     const store = props.store || storeRef(initValue)
+    const elt = ref<HTMLInputElement>()
+    const disabled = computed(() => config.disabled || props.disabled)
+    const focused = ref(false)
+    const readonly = computed(
+      () => (config.readonly || props.readonly) && !disabled.value
+    )
+    const id =
+      props.id || config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
     const value: Ref<any> = computed({
       get: () => {
         // FIXME format stored value
@@ -158,32 +165,33 @@ export default defineComponent({
     }
     const blank = computed(() => {
       const val = inputValue.value
-      console.log(val)
       return val === undefined || val === null || val === ''
     })
     const fieldAttrs = computed(() => ({
       blank: blank.value,
+      class: props.class,
       config,
+      disabled: disabled.value,
       focused: focused.value,
       inputId: id,
+      label: config.label,
+      readonly: readonly.value,
       store,
       variant: props.variant
     }))
     return {
       attrs: computed(() => ({
         id,
-        class: 'field-input field-text'
+        class: 'field-input field-text',
+        disabled: disabled.value,
+        placeholder: props.placeholder || config.placeholder,
+        readOnly: readonly.value
       })),
       blank,
       elt,
       fieldAttrs,
-      focused,
       handlers,
-      id,
-      inputValue,
-      other,
-      store,
-      value
+      inputValue
     }
   }
 })

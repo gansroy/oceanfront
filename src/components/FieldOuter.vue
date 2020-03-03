@@ -1,7 +1,7 @@
 <template>
-  <div class="field-outer" :class="classAttrs">
-    <div class="field-overlay">
-      <div class="field-label-wrap" v-if="showLabel">
+  <div :id="id" class="field-outer" :class="classAttrs">
+    <div class="field-above">
+      <div class="field-label-wrap" v-if="withLabel">
         <slot name="label">
           <label :for="inputId" class="field-label">{{ label }}</label>
         </slot>
@@ -9,6 +9,9 @@
     </div>
     <div class="field-inner">
       <slot />
+    </div>
+    <div class="field-below">
+      <slot name="below" />
     </div>
   </div>
 </template>
@@ -28,6 +31,7 @@ export default defineComponent({
       config?: FieldConfig
       disabled?: boolean
       focused?: boolean
+      id?: string
       inputId?: string
       label?: any
       opened?: boolean
@@ -37,6 +41,13 @@ export default defineComponent({
     },
     ctx: SetupContext
   ) {
+    const config = props.config || {}
+    const label = computed(() => props.label)
+    const withLabel = computed(
+      () =>
+        (!config.labelPosition || config.labelPosition === 'field') &&
+        label.value
+    )
     const classAttrs = computed(() => {
       const blank = props.blank && !(props.focused || props.opened)
       const cls = {
@@ -44,22 +55,18 @@ export default defineComponent({
         blank: blank,
         focus: props.focused,
         readonly: props.readonly,
-        disabled: props.disabled
+        disabled: props.disabled,
+        'with-label': withLabel.value
       }
       const variant = props.variant || 'basic'
       return [cls, 'field-' + variant, props.class]
     })
-    const config = props.config || {}
-    const label = computed(() => props.label || config.label)
-    const showLabel = computed(
-      () => !config.labelPosition || config.labelPosition === 'field'
-    )
     return {
       classAttrs,
-      config,
+      id: computed(() => props.id),
       inputId: computed(() => props.inputId),
       label,
-      showLabel
+      withLabel
     }
   }
 })

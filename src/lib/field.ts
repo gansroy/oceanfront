@@ -86,7 +86,7 @@ export interface FieldConfig {
   name?: string
   // readonly options?: OptionsSpec
   placeholder?: string
-  readOnly?: boolean
+  readonly?: boolean
   required?: boolean
   size?: number
   value?: any

@@ -84,7 +84,7 @@
 
   &:hover:not(.static) {
     // border: $border-width-input solid $border-color-input-hover;
-    color: $color-input-hover;
+    // color: $color-input-hover;
   }
   &.focus {
     //background: $bg-input-focus;
@@ -102,14 +102,14 @@
     outline: none;
   }*/
   &.readonly {
-    background: $bg-input-disabled;
-    border-color: $border-color-input-disabled;
+    // background: $bg-input-disabled;
+    // border-color: $border-color-input-disabled;
   }
   &.disabled {
-    background: $bg-input-disabled;
-    border-color: $border-color-input-disabled;
-    opacity: $opacity-input-disabled;
-    @include input-text-disabled;
+    // background: $bg-input-disabled;
+    // border-color: $border-color-input-disabled;
+    // opacity: $opacity-input-disabled;
+    // @include input-text-disabled;
   }
 }
 
@@ -200,15 +200,25 @@
 
 .field-basic {
   display: inline-block;
-  margin: 0 0.5em calc(0.25em + 1px);
+  margin: 0 0.5em;
+
+  .field-above,
+  .field-below {
+    min-height: 0.25em;
+  }
 
   .field-label {
     display: block;
     font-size: 80%;
     padding: 0 0.5em 0.25em;
   }
-  &:hover:not(.static) .field-label {
+  &:hover .field-label {
     color: $color-input-hover;
+  }
+  .static .field-label {
+    color: initial;
+  }
+  .disabled .field-label {
   }
 
   .field-inner {
@@ -231,9 +241,12 @@
     border-color: $border-color-input-focus;
     box-shadow: $box-shadow-field-basic-focus;
   }
-  &:hover:not(.static) .field-inner {
+  &:hover .field-inner {
     border-color: $border-color-input-hover;
-    color: $color-input-hover;
+    // color: $color-input-hover;
+  }
+  .static .field-inner {
+    border-color: $border-color-input;
   }
   /*&.active {
       background: $bg-input-active;
@@ -289,7 +302,7 @@
     min-height: calc(3em + 2 * #{$pad-v-field});
   }
 
-  .field-overlay {
+  .field-above {
     position: absolute;
     top: 0;
     left: 0;
@@ -326,7 +339,7 @@
 
 .field-outlined {
   --cur-border: 1px solid #{$border-color-field};
-  .field-overlay {
+  .field-above {
     display: flex;
     &::before {
       border-radius: $border-radius-field 0 0 $border-radius-field;
@@ -419,7 +432,7 @@
     background: $background-field-filled-focus;
   }
 
-  .field-overlay {
+  .field-above {
     &::after {
       // ripple
       background: $border-color-field-focus;
@@ -436,7 +449,7 @@
       will-change: opacity, transform;
     }
   }
-  &.focus .field-overlay::after {
+  &.focus .field-above::after {
     opacity: 1;
     transform: scaleX(1);
   }
