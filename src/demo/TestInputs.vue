@@ -349,36 +349,34 @@
       </div>
       <div class="row demo-row">
         <div class="demo-inline">
-          <textarea class="input-text input-sm" style="width: 10em">
-Small text area</textarea
-          >
-        </div>
-        <div class="demo-inline">
-          <textarea class="input-text" style="width: 10em">
-Normal text area</textarea
-          >
-        </div>
-        <div class="demo-inline">
-          <textarea class="input-text input-lg" style="width: 10em">
-Large text area</textarea
-          >
-        </div>
-        <div class="demo-inline">
-          <textarea class="input-text" readonly="1" style="width: 10em">
-Read-only text area</textarea
-          >
-        </div>
-        <div class="demo-inline">
-          <textarea class="input-text" disabled="1" style="width: 10em">
-Disabled text area</textarea
-          >
-        </div>
-        <div class="demo-inline">
-          <input
-            type="text"
-            class="input-text flat"
-            value="Flat text"
+          <input-textarea
+            class="input-sm"
             style="width: 10em"
+            value="Small text area"
+          />
+        </div>
+        <div class="demo-inline">
+          <input-textarea style="width: 10em" value="Normal text area" />
+        </div>
+        <div class="demo-inline">
+          <input-textarea
+            class="input-lg"
+            style="width: 10em"
+            value="Large text area"
+          />
+        </div>
+        <div class="demo-inline">
+          <input-textarea
+            readonly="1"
+            style="width: 10em"
+            value="Read-only text area"
+          />
+        </div>
+        <div class="demo-inline">
+          <input-textarea
+            disabled="1"
+            style="width: 10em"
+            value="Disabled text area"
           />
         </div>
       </div>
@@ -1020,9 +1018,10 @@ import {
   computed
 } from 'vue'
 import InputText from '../components/InputText.vue'
+import InputTextarea from '../components/InputTextarea.vue'
 
 export default defineComponent({
-  components: { InputText },
+  components: { InputText, InputTextarea },
   setup(props, ctx) {
     const baseFontSize = ref('16')
     const updateFont = function(evt: Event) {

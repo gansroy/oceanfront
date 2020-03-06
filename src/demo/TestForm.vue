@@ -33,15 +33,15 @@
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <input-textarea :config="testField" rows="2" variant="basic" />
+            <input-textarea :config="testField" rows="3" variant="basic" />
           </div>
           <br />
           <div class="form-cell">
-            <input-textarea :config="testField" rows="2" variant="outlined" />
+            <input-textarea :config="testField" rows="3" variant="outlined" />
           </div>
           <br />
           <div class="form-cell">
-            <input-textarea :config="testField" rows="2" variant="filled" />
+            <input-textarea :config="testField" rows="3" variant="filled" />
           </div>
         </div>
       </div>

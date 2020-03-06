@@ -130,7 +130,10 @@ export default defineComponent({
     ctx: SetupContext
   ) {
     const config = props.config || {}
-    const inputValue = ref(props.modelValue)
+    // const inputValue = ref(props.modelValue)
+    const inputValue = ref(
+      props.value === undefined ? props.modelValue : props.value
+    )
     const store = props.store || storeRef(inputValue.value) // FIXME
     watch(
       () => props.modelValue,
