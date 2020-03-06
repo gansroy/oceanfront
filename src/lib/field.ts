@@ -82,7 +82,7 @@ export interface FieldConfig {
   inputStyle?: string // maybe allow object, array
   inputType?: string // override the input field type
   label?: string // allow VNode?
-  maxLength?: number
+  maxlength?: number
   name?: string
   // readonly options?: OptionsSpec
   placeholder?: string

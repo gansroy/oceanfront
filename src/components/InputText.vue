@@ -1,7 +1,6 @@
 <template>
-  <div ref="other"></div>
   <field-outer v-bind="fieldAttrs">
-    <input ref="elt" v-bind="attrs" v-on="handlers" :value="inputValue" />
+    <input ref="elt" v-bind="attrs" v-on="handlers" />
   </field-outer>
 </template>
 
@@ -12,7 +11,8 @@ import {
   SetupContext,
   reactive,
   computed,
-  Ref
+  Ref,
+  watch
 } from 'vue'
 import { FieldConfig, FieldState, fieldState } from '../lib/field'
 import FieldOuter from './FieldOuter.vue'
@@ -116,9 +116,13 @@ export default defineComponent({
       config?: FieldConfig
       disabled?: boolean
       id?: string
+      label?: string
+      maxlength?: number
+      modelValue?: string
       placeholder?: string
       readonly?: boolean
       store?: StoreRef
+      tabindex?: number
       value?: string
       variant?: string
       [key: string]: any
@@ -126,8 +130,15 @@ export default defineComponent({
     ctx: SetupContext
   ) {
     const config = props.config || {}
-    const initValue = props.value === undefined ? config.value : props.value
-    const store = props.store || storeRef(initValue)
+    const inputValue = ref(props.modelValue)
+    const store = props.store || storeRef(inputValue.value) // FIXME
+    watch(
+      () => props.modelValue,
+      val => {
+        inputValue.value = val
+        store.value = val // unformat
+      }
+    )
     const elt = ref<HTMLInputElement>()
     const disabled = computed(() => config.disabled || props.disabled)
     const focused = ref(false)
@@ -147,34 +158,42 @@ export default defineComponent({
         store.value = val
       }
     })
-    const inputValue = ref(initValue)
     const handlers = {
       blur: (evt: FocusEvent) => {
         focused.value = false
+        ctx.emit('blur')
       },
       change: (evt: Event) => {
         inputValue.value = elt.value.value
         store.value = elt.value.value
-      },
-      input: (evt: InputEvent) => {
-        inputValue.value = elt.value.value
+        ctx.emit('change', inputValue.value)
       },
       focus: (evt: FocusEvent) => {
         focused.value = true
+        ctx.emit('focus')
+      },
+      input: (evt: InputEvent) => {
+        inputValue.value = elt.value.value
+        ctx.emit('input', inputValue.value)
+        ctx.emit('update:modelValue', inputValue.value)
+      },
+      keydown: (evt: KeyboardEvent) => {
+        ctx.emit('keydown', evt)
       }
     }
     const blank = computed(() => {
+      // FIXME ask formatter
       const val = inputValue.value
       return val === undefined || val === null || val === ''
     })
     const fieldAttrs = computed(() => ({
       blank: blank.value,
-      class: props.class,
+      class: ['field-text', props.class],
       config,
       disabled: disabled.value,
       focused: focused.value,
       inputId: id,
-      label: config.label,
+      label: props.label === undefined ? config.label : props.label,
       readonly: readonly.value,
       store,
       variant: props.variant
@@ -182,16 +201,17 @@ export default defineComponent({
     return {
       attrs: computed(() => ({
         id,
-        class: 'field-input field-text',
+        class: 'field-input',
         disabled: disabled.value,
+        maxlength: props.maxlength || config.maxlength,
         placeholder: props.placeholder || config.placeholder,
-        readOnly: readonly.value
+        readonly: readonly.value,
+        tabIndex: props.tabindex,
+        value: inputValue.value
       })),
-      blank,
       elt,
       fieldAttrs,
-      handlers,
-      inputValue
+      handlers
     }
   }
 })
