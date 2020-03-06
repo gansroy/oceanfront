@@ -1,18 +1,18 @@
 <template>
-  <div v-if="error" class="errorMessage">
+  <!-- div v-if="error" class="errorMessage">
     {{ error }}
   </div>
   <Suspense v-else>
-    <template #default>
-      <test-form />
-      <div class="theme-base">
-        <test-inputs />
-      </div>
-    </template>
+    <template #default -->
+  <test-form />
+  <div class="theme-base">
+    <test-inputs />
+  </div>
+  <!-- /template>
     <template #fallback>
       <div>Loading...</div>
     </template>
-  </Suspense>
+  </Suspense -->
 </template>
 
 <script lang="ts">

@@ -1,65 +1,69 @@
 <template>
   <div class="container theme-base">
     <div class="row">
-      <div class="column md-3">
+      <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <input-text :config="testField" variant="basic" />
+            <input-text
+              :config="testField"
+              variant="basic"
+              v-model="textValue"
+            />
           </div>
           <br />
           <div class="form-cell">
-            <input-text :config="testField" variant="outlined" />
+            <input-text
+              :config="testField"
+              variant="outlined"
+              v-model="textValue"
+            />
           </div>
           <br />
           <div class="form-cell">
-            <input-text :config="testField" variant="filled" />
+            <input-text
+              :config="testField"
+              variant="filled"
+              v-model="textValue"
+            />
           </div>
           <br />
           <button class="input-button" @click="change">Update</button>
         </div>
       </div>
-      <!-- div class="column md-3">
+      <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <field :config="testField" type="textarea" class="field-basic" />
+            <input-textarea :config="testField" rows="2" variant="basic" />
           </div>
           <br />
           <div class="form-cell">
-            <field :config="testField" type="textarea" class="field-outlined" />
+            <input-textarea :config="testField" rows="2" variant="outlined" />
           </div>
           <br />
           <div class="form-cell">
-            <field :config="testField" type="textarea" class="field-filled" />
+            <input-textarea :config="testField" rows="2" variant="filled" />
           </div>
         </div>
       </div>
-      <div class="column md-3">
+      <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <field
-              :config="testCheckField"
-              type="checkbox"
-              class="field-basic"
-            />
+            <input-toggle :config="testCheckField" variant="basic" />
           </div>
           <br />
           <div class="form-cell">
-            <field
-              :config="testCheckField"
-              type="checkbox"
-              class="field-outlined"
-            />
+            <input-toggle :config="testCheckField" variant="outlined" />
           </div>
           <br />
           <div class="form-cell">
-            <field
+            <input-toggle
               :config="testCheckField"
               type="checkbox"
-              class="field-filled"
+              variant="filled"
             />
           </div>
         </div>
-      </div -->
+      </div>
     </div>
   </div>
 </template>
@@ -73,7 +77,9 @@ import {
   reactive,
   computed
 } from 'vue'
+import InputTextarea from '../components/InputTextarea.vue'
 import InputText from '../components/InputText.vue'
+import InputToggle from '../components/InputToggle.vue'
 import { fieldState } from '../lib/field'
 
 function sleep(ms: number) {
@@ -88,8 +94,7 @@ const testField = fieldState({
   placeholder: 'placeholder',
   readOnly: false,
   required: true,
-  type: 'float',
-  value: '62.14'
+  type: 'float'
 })
 
 const testCheckField = fieldState({
@@ -101,20 +106,21 @@ const testCheckField = fieldState({
   readOnly: false,
   required: true,
   type: 'float',
-  value: null,
   labelPosition: 'input'
 })
 
 export default defineComponent({
-  components: { InputText },
-  async setup() {
+  components: { InputText, InputTextarea, InputToggle },
+  /*async */ setup() {
+    const textValue = ref('62.14')
     const change = () => {
-      testField.value = new Date().getTime().toString()
+      textValue.value = new Date().getTime().toString()
     }
     return {
       change,
       testField,
-      testCheckField
+      testCheckField,
+      textValue
     }
   }
 })

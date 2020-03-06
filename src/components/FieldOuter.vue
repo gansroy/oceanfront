@@ -24,7 +24,7 @@ import { StoreRef } from '../lib/store'
 export default defineComponent({
   name: 'field-outer',
   inheritAttrs: false,
-  async setup(
+  setup(
     props: {
       blank?: boolean
       class?: any

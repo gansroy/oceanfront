@@ -150,7 +150,7 @@
   // caret-color
 }
 
-.field-toggle {
+.field-toggle .field-input {
   position: absolute;
   top: 0;
   left: 0;
@@ -421,8 +421,11 @@
   }
   &.field-textarea .field-input {
     margin-top: $font-size-input;
-    padding: 2px $font-size-input 0;
+    padding: 2px $font-size-input $pad-v-input;
     resize: vertical;
+  }
+  &.field-toggle .field-inner {
+    align-items: center;
   }
 }
 
@@ -500,9 +503,12 @@
     padding: $font-size-input $font-size-input 0;
   }
   &.field-textarea .field-input {
-    margin-top: calc(#{$font-size-input} + #{$pad-v-field});
-    padding: $pad-v-field $font-size-input 0;
+    margin-top: calc(1.25em + #{$pad-v-field});
+    padding: $pad-v-field $font-size-input $pad-v-input;
     resize: vertical;
+  }
+  &.field-toggle .field-inner {
+    align-items: center;
   }
 }
 

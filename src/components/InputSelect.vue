@@ -20,7 +20,7 @@ import {
 import { FieldState } from '../lib/field'
 
 export default defineComponent({
-  async setup(props: { field: FieldState; type?: string }, ctx: SetupContext) {
+  setup(props: { field: FieldState; type?: string }, ctx: SetupContext) {
     const field = props.field
     let attrs: any = { type: props.type || 'text' }
     for (const param of ['readOnly', 'placeholder']) {

@@ -92,7 +92,7 @@ export default defineComponent({
   name: 'input-textarea',
   components: { FieldOuter },
   inheritAttrs: false,
-  async setup(
+  setup(
     props: {
       class?: string // or object or list
       config?: FieldConfig
@@ -100,6 +100,7 @@ export default defineComponent({
       id?: string
       placeholder?: string
       readonly?: boolean
+      rows?: number
       store?: StoreRef
       value?: string
       variant?: string
@@ -168,7 +169,8 @@ export default defineComponent({
         class: 'field-input',
         disabled: disabled.value,
         placeholder: props.placeholder || config.placeholder,
-        readonly: readonly.value
+        readonly: readonly.value,
+        rows: props.rows
       })),
       elt,
       fieldAttrs,
