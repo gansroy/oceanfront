@@ -1,6 +1,12 @@
 <template>
   <div class="container theme-base">
     <div class="row">
+      <div>
+        <of-dialog overlay-class="theme-base" v-model="dialogActive" />
+        <button @click="showDialog">show dialog</button>
+      </div>
+    </div>
+    <div class="row">
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
@@ -75,8 +81,10 @@ import {
   defineComponent,
   SetupContext,
   reactive,
-  computed
+  computed,
+  nextTick
 } from 'vue'
+import OfDialog from '../components/Dialog.vue'
 import InputTextarea from '../components/InputTextarea.vue'
 import InputText from '../components/InputText.vue'
 import InputToggle from '../components/InputToggle.vue'
@@ -110,17 +118,22 @@ const testCheckField = fieldState({
 })
 
 export default defineComponent({
-  components: { InputText, InputTextarea, InputToggle },
+  components: { OfDialog, InputText, InputTextarea, InputToggle },
   /*async */ setup() {
     const textValue = ref('62.14')
     const change = () => {
       textValue.value = new Date().getTime().toString()
     }
+    const dialogActive = ref(false)
+    const showDialog = () =>
+      nextTick(() => (dialogActive.value = !dialogActive.value))
     return {
       change,
       testField,
       testCheckField,
-      textValue
+      textValue,
+      dialogActive,
+      showDialog
     }
   }
 })

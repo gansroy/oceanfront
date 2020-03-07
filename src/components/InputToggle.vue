@@ -94,7 +94,7 @@ export default defineComponent({
     const config = props.config || {}
     const inputValue = ref(props.modelValue)
     const store = props.store || storeRef(inputValue.value) // FIXME
-    const elt: Ref<HTMLInputElement> = ref()
+    const elt: Ref<HTMLInputElement | undefined> = ref()
     const disabled = computed(() => config.disabled || props.disabled)
     const focused = ref(false)
     const id =
@@ -108,8 +108,8 @@ export default defineComponent({
         ctx.emit('blur')
       },
       change: (evt: Event) => {
-        store.value = elt.value.checked
-        ctx.emit('change', elt.value.checked)
+        store.value = elt.value?.checked
+        ctx.emit('change', elt.value?.checked)
       },
       focus: (evt: FocusEvent) => {
         focused.value = true

@@ -142,7 +142,7 @@ export default defineComponent({
         store.value = val // unformat
       }
     )
-    const elt = ref<HTMLInputElement>()
+    const elt = ref<HTMLInputElement | undefined>()
     const disabled = computed(() => config.disabled || props.disabled)
     const focused = ref(false)
     const readonly = computed(
@@ -167,8 +167,8 @@ export default defineComponent({
         ctx.emit('blur')
       },
       change: (evt: Event) => {
-        inputValue.value = elt.value.value
-        store.value = elt.value.value
+        inputValue.value = elt.value?.value
+        store.value = elt.value?.value
         ctx.emit('change', inputValue.value)
       },
       focus: (evt: FocusEvent) => {
@@ -176,7 +176,7 @@ export default defineComponent({
         ctx.emit('focus')
       },
       input: (evt: InputEvent) => {
-        inputValue.value = elt.value.value
+        inputValue.value = elt.value?.value
         ctx.emit('input', inputValue.value)
         ctx.emit('update:modelValue', inputValue.value)
       },

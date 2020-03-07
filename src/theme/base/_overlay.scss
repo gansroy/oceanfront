@@ -1,0 +1,53 @@
+.overlay-outer {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  pointer-events: none;
+  right: 0;
+  z-index: 200;
+}
+.overlay-outer.capture {
+  pointer-events: initial;
+}
+.shade {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.overlay-outer.pad {
+  padding: 24px;
+}
+
+.shade.v-enter-active {
+  transition: opacity 400ms ease;
+}
+.shade.v-leave-active {
+  transition: opacity 200ms cubic-bezier(1, 0.5, 0.8, 1);
+}
+.shade.v-enter-from,
+.shade.v-leave-to {
+  opacity: 0;
+}
+
+.dialog {
+  border-radius: 5px;
+  background: #fff;
+  min-height: 200px;
+  min-width: 200px;
+  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.2);
+}
+
+.slide-down-enter-active {
+  transition: all 400ms ease;
+}
+.slide-down-leave-active {
+  transition: all 200ms cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-down-enter-from {
+  transform: translateY(-10px);
+}
+.slide-down-leave-to {
+  transform: translateY(20px);
+}

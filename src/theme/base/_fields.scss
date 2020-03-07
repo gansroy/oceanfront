@@ -171,7 +171,7 @@
     display: inline-flex;
     content: 'checkbox';
     font-family: uibasic; // FIXME (customizable)
-    margin-left: $pad-h-input; // FIXME (rtl)
+    margin-left: calc(#{$pad-h-input} * 2); // FIXME (rtl)
   }
   &:checked + .field-input-label::after {
     content: 'checkbox.checked';

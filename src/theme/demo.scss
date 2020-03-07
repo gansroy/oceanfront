@@ -7,6 +7,9 @@
 
 @import 'base/uibasic';
 
+@import 'base/overlay';
+@import 'base/utils';
+
 .theme-base {
   // $font-base-path: 'base/';
   @import 'base';

@@ -112,7 +112,7 @@ export default defineComponent({
     const config = props.config || {}
     const initValue = props.value === undefined ? config.value : props.value
     const store = props.store || storeRef(initValue)
-    const elt = ref<HTMLInputElement>()
+    const elt = ref<HTMLInputElement | undefined>()
     const disabled = computed(() => config.disabled || props.disabled)
     const focused = ref(false)
     const readonly = computed(
@@ -137,11 +137,11 @@ export default defineComponent({
         focused.value = false
       },
       change: (evt: Event) => {
-        inputValue.value = elt.value.value
-        store.value = elt.value.value
+        inputValue.value = elt.value?.value
+        store.value = elt.value?.value
       },
       input: (evt: InputEvent) => {
-        inputValue.value = elt.value.value
+        inputValue.value = elt.value?.value
       },
       focus: (evt: FocusEvent) => {
         focused.value = true

@@ -110,8 +110,8 @@ class BasicEventListenerSet<T> implements EventListenerSet<T> {
 class BasicStoreRef<T> implements StoreRef<T> {
   // readonly beforeUpdate: EventListenerSet<StoreUpdate<T>> // maybe global beforeStore(val), afterStore(val)
   // readonly afterUpdate: EventListenerSet<StoreUpdate<T>>
-  private _locked: Ref<StoreLock>
-  private _pendingUpdate: Ref<StoreUpdate<T>>
+  private _locked: Ref<StoreLock | undefined>
+  private _pendingUpdate: Ref<StoreUpdate<T> | undefined>
   private _storedValue: Ref
   private _value: Ref
 
