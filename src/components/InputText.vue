@@ -19,13 +19,7 @@ import FieldOuter from './FieldOuter.vue'
 import { StoreRef, storeRef } from '../lib/store'
 import { hasOwn } from '../lib/util'
 
-const copyAttrs = new Set([
-  'autocomplete',
-  'placeholder',
-  'size',
-  'tabIndex',
-  'value'
-])
+const copyAttrs = new Set(['autocomplete', 'placeholder', 'size', 'value'])
 
 const mapStateAttrs = {
   id: 'inputId',
@@ -34,7 +28,6 @@ const mapStateAttrs = {
   readonly: 'readOnly',
   required: 'required',
   style: 'inputStyle',
-  tabindex: 'tabIndex',
   type: 'inputType',
   variant: 'inputVariant'
 }
@@ -122,7 +115,6 @@ export default defineComponent({
       placeholder?: string
       readonly?: boolean
       store?: StoreRef
-      tabindex?: number
       value?: string
       variant?: string
       [key: string]: any
@@ -162,25 +154,25 @@ export default defineComponent({
       }
     })
     const handlers = {
-      blur: (evt: FocusEvent) => {
+      blur(evt: FocusEvent) {
         focused.value = false
         ctx.emit('blur')
       },
-      change: (evt: Event) => {
+      change(evt: Event) {
         inputValue.value = elt.value?.value
         store.value = elt.value?.value
         ctx.emit('change', inputValue.value)
       },
-      focus: (evt: FocusEvent) => {
+      focus(evt: FocusEvent) {
         focused.value = true
         ctx.emit('focus')
       },
-      input: (evt: InputEvent) => {
+      input(evt: InputEvent) {
         inputValue.value = elt.value?.value
         ctx.emit('input', inputValue.value)
         ctx.emit('update:modelValue', inputValue.value)
       },
-      keydown: (evt: KeyboardEvent) => {
+      keydown(evt: KeyboardEvent) {
         ctx.emit('keydown', evt)
       }
     }
@@ -209,7 +201,6 @@ export default defineComponent({
         maxlength: props.maxlength || config.maxlength,
         placeholder: props.placeholder || config.placeholder,
         readonly: readonly.value,
-        tabIndex: props.tabindex,
         value: inputValue.value
       })),
       elt,

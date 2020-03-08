@@ -1,11 +1,32 @@
 <template>
-  <input
-    ref="input"
-    v-bind="attrs"
-    v-on="handlers"
-    :id="field.inputId"
-    :value="field.value"
-  />
+  <field-outer v-bind="fieldAttrs">
+    <div ref="elt" v-bind="attrs" v-on="handlers">
+      <slot>{{ value }}</slot>
+    </div>
+  </field-outer>
+  <overlay
+    :active="showPopup"
+    :attach="'#' + fieldAttrs.id"
+    :capture="false"
+    :shade="false"
+    @click="outerClick"
+    @blur="outerClick"
+  >
+    <template v-slot="{ active }">
+      <transition name="slide-down">
+        <div role="menu" class="dialog menu-outer" v-if="active">
+          <slot>
+            <nav-group>
+              <template v-slot="{ focused }">
+                <menu-item>Hello there</menu-item>
+                <menu-item>Yes you</menu-item>
+              </template>
+            </nav-group>
+          </slot>
+        </div>
+      </transition>
+    </template>
+  </overlay>
 </template>
 
 <script lang="ts">
@@ -15,37 +36,100 @@ import {
   SetupContext,
   reactive,
   computed,
-  Ref
+  Ref,
+  watch
 } from 'vue'
-import { FieldState } from '../lib/field'
+import { FieldConfig } from '../lib/field'
+import FieldOuter from './FieldOuter.vue'
+import MenuItem from './MenuItem.vue'
+import NavGroup from './NavGroup.vue'
+import Overlay from './Overlay.vue'
 
 export default defineComponent({
-  setup(props: { field: FieldState; type?: string }, ctx: SetupContext) {
-    const field = props.field
-    let attrs: any = { type: props.type || 'text' }
-    for (const param of ['readOnly', 'placeholder']) {
-      ;(attrs[param] as any) = field[param]
-    }
-    const input: Ref<HTMLInputElement> = ref()
+  name: 'input-text',
+  components: { FieldOuter, Overlay, NavGroup, MenuItem },
+  props: {
+    class: String, // or object or list
+    config: Object,
+    disabled: Boolean,
+    id: String,
+    label: String,
+    maxlength: Number,
+    modelValue: String,
+    placeholder: String,
+    readonly: Boolean,
+    value: String,
+    variant: String
+  },
+  setup(props, ctx: SetupContext) {
+    const config = props.config || {}
+    const inputValue = ref(
+      props.value === undefined ? props.modelValue : props.value
+    )
+    watch(
+      () => props.modelValue,
+      val => {
+        inputValue.value = val
+      }
+    )
+    const disabled = computed(() => config.disabled || props.disabled)
+    const elt = ref<HTMLElement | undefined>()
+    const focused = ref(false)
+    const readonly = computed(
+      () => (config.readonly || props.readonly) && !disabled.value
+    )
+    const id =
+      props.id || config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
+    const showPopup = ref(false)
     const handlers = {
-      blur: (evt: FocusEvent) => {
-        field.inputFocused = false
+      blur(evt: FocusEvent) {
+        focused.value = false
+        ctx.emit('blur')
       },
-      change: (evt: Event) => {
-        field.value = input.value.value
+      click(evt: MouseEvent) {
+        showPopup.value = true
+        ctx.emit('open')
       },
-      input: (evt: InputEvent) => {
-        field.inputValue = input.value.value
+      focus(evt: FocusEvent) {
+        focused.value = true
+        ctx.emit('focus')
       },
-      focus: (evt: FocusEvent) => {
-        field.inputFocused = true
+      keydown(evt: KeyboardEvent) {
+        ctx.emit('keydown', evt)
       }
     }
+    const outerClick = () => {
+      showPopup.value = false
+    }
+    const blank = computed(() => {
+      // FIXME ask formatter
+      const val = inputValue.value
+      return val === undefined || val === null || val === ''
+    })
+    const fieldAttrs = computed(() => ({
+      blank: blank.value,
+      class: ['field-select', props.class],
+      config,
+      disabled: disabled.value,
+      focused: focused.value,
+      id: id + '-outer',
+      inputId: id,
+      label: props.label === undefined ? config.label : props.label,
+      readonly: readonly.value,
+      variant: props.variant
+    }))
     return {
-      attrs,
-      field,
+      attrs: computed(() => ({
+        id,
+        class: 'field-input',
+        tabindex: 0
+      })),
+      elt,
+      fieldAttrs,
       handlers,
-      input
+      outerClick,
+      showPopup,
+      value: inputValue.value
     }
   }
 })

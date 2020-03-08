@@ -1,33 +1,42 @@
 .overlay-outer {
   position: fixed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   top: 0;
   left: 0;
   bottom: 0;
+  padding: var(--overlay-dyn-pad-top, var(--overlay-pad, 0px))
+    var(--overlay-dyn-pad-right, var(--overlay-pad, 0px))
+    var(--overlay-dyn-pad-bottom, var(--overlay-pad, 0px))
+    var(--overlay-dyn-pad-left, var(--overlay-pad, 0px));
   pointer-events: none;
   right: 0;
   z-index: 200;
 }
+.overlay-outer > * {
+  pointer-events: auto;
+}
 .overlay-outer.capture {
   pointer-events: initial;
+}
+.overlay-outer.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .shade {
   background-color: rgba(0, 0, 0, 0.4);
 }
 .overlay-outer.pad {
-  padding: 24px;
+  --overlay-pad: 24px;
 }
 
-.shade.v-enter-active {
+.overlay-outer.v-enter-active {
   transition: opacity 400ms ease;
 }
-.shade.v-leave-active {
+.overlay-outer.v-leave-active {
   transition: opacity 200ms cubic-bezier(1, 0.5, 0.8, 1);
 }
-.shade.v-enter-from,
-.shade.v-leave-to {
+.overlay-outer.v-enter-from,
+.overlay-outer.v-leave-to {
   opacity: 0;
 }
 

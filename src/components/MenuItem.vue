@@ -1,7 +1,7 @@
 <template>
   <div
     ref="elt"
-    class="menu-item"
+    class="menu-option menu-item"
     :tabindex="navActive ? 0 : -1"
     v-on="handlers"
   >
@@ -28,8 +28,12 @@ import { INavGroup } from './NavGroup.vue'
 
 export default defineComponent({
   name: 'menu-item',
+  props: {
+    disabled: Boolean
+  },
   setup(props, ctx: SetupContext) {
     let unreg: (() => void) | undefined
+    const disabled = computed(() => props.disabled)
     const elt = ref<HTMLElement | undefined>()
     const focused = ref(false)
     const navActive = ref(false)
@@ -46,13 +50,13 @@ export default defineComponent({
         focused.value = true
       },
       keydown(evt: KeyboardEvent) {
-        if (navGroup && navGroup.nav({ key: evt.key })) return false
+        if (navGroup && navGroup.nav({ event: evt })) return false
       }
     }
     onMounted(() => {
       if (navGroup) {
         unreg = navGroup.navRegister(
-          reactive({ focused, elt, navActive, navTo })
+          reactive({ disabled, elt, focused, navActive, navTo })
         )
       }
     })

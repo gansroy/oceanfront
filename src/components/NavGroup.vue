@@ -27,7 +27,7 @@ export type NavTarget = {
 
 export type INavGroup = {
   navRegister: (target: NavTarget) => () => void
-  nav(target: string | { key: string } | { id: string }): boolean
+  nav(target: string | { event: KeyboardEvent } | { id: string }): boolean
 }
 
 export default defineComponent({
@@ -81,18 +81,19 @@ export default defineComponent({
           items.delete(target)
         }
       },
-      nav(target: string | { key: string } | { id: string }): boolean {
+      nav(target: string | { event: KeyboardEvent } | { id: string }): boolean {
         const ordered = orderedItems.value
         const scanVal = scan.value
         if (!ordered.length || scanVal.active === undefined) return false
-        if (typeof target === 'object') {
-          const key = (target as any).key
-          if (key === 'ArrowDown' || key === 'ArrowRight') {
-            target = 'next'
-          } else if (key === 'ArrowUp' || key === 'ArrowLeft') {
-            target = 'previous'
-          } else if (key) return false
-        }
+        const event: KeyboardEvent | undefined = (
+          typeof target === 'object' && (target as any)
+        ).event
+        const key = event?.key
+        if (key === 'ArrowDown' || key === 'ArrowRight') {
+          target = 'next'
+        } else if (key === 'ArrowUp' || key === 'ArrowLeft') {
+          target = 'previous'
+        } else if (event) return false
         if (target === 'previous' || target === 'next') {
           let idx = scanVal.active
           let offs = target === 'next' ? 1 : -1
@@ -103,6 +104,7 @@ export default defineComponent({
             if (idx === scanVal.active) return false // looped around
             if (ordered[idx] && !ordered[idx].disabled && ordered[idx].navTo) {
               ordered[idx].navTo!()
+              if (event) event.preventDefault()
               return true
             }
           }

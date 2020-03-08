@@ -1,5 +1,5 @@
 <template>
-  <overlay :active="active" @click="outerClick">
+  <overlay :active="active" @blur="hide">
     <template v-slot="{ active }">
       <transition name="slide-down">
         <div
@@ -49,7 +49,7 @@ export default defineComponent({
     )
     const loading = computed(() => props.loading)
     const classAttr = computed(() => props.class)
-    const outerClick = () => {
+    const hide = () => {
       active.value = false
       ctx.emit('update:modelValue', false)
     }
@@ -58,8 +58,8 @@ export default defineComponent({
       active,
       id: computed(() => props.id),
       classAttr,
+      hide,
       loading,
-      outerClick,
       show
     }
   }

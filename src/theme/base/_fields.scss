@@ -282,7 +282,8 @@
       color: $color-input-placeholder;
     }
   }
-  &.field-text .field-input {
+  &.field-text .field-input,
+  &.field-select .field-input {
     padding: $pad-v-input $pad-h-input;
   }
   &.field-textarea .field-input {
@@ -414,7 +415,8 @@
     }
   }
 
-  &.field-text .field-input {
+  &.field-text .field-input,
+  &.field-select .field-input {
     //padding: calc(#{$font-size-input} - 2px) $font-size-input
     //  calc(#{$font-size-input} - 4px);
     padding: 0 $pad-h-field;
@@ -502,9 +504,14 @@
     }
   }
 
-  &.field-text .field-input {
+  &.field-text .field-input /*,
+  &.field-select .field-input*/ {
     //padding: calc(#{$font-size-input} + #{$pad-v-field}) $font-size-input calc(#{$pad-v-field} + 1px);
     padding: $font-size-input $pad-h-field 0;
+  }
+  &.field-select .field-inner {
+    padding: calc(#{$font-size-input} + #{$pad-v-field}) $pad-h-field 0;
+    line-height: 1.9;
   }
   &.field-textarea {
     .field-inner {
