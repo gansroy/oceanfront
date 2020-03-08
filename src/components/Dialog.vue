@@ -1,7 +1,7 @@
 <template>
   <overlay :active="active" @click="outerClick">
     <template v-slot="{ active }">
-      <transition name="slide-down" appear>
+      <transition name="slide-down">
         <div
           role="dialog"
           :id="id"

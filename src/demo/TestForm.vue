@@ -5,6 +5,12 @@
         <of-dialog overlay-class="theme-base" v-model="dialogActive" />
         <button @click="showDialog">show dialog</button>
       </div>
+      <nav-group>
+        <template v-slot="{ focused }">
+          <menu-item>Hello there</menu-item>
+          <menu-item>Yes you</menu-item>
+        </template>
+      </nav-group>
     </div>
     <div class="row">
       <div class="column md-4">
@@ -88,6 +94,8 @@ import OfDialog from '../components/Dialog.vue'
 import InputTextarea from '../components/InputTextarea.vue'
 import InputText from '../components/InputText.vue'
 import InputToggle from '../components/InputToggle.vue'
+import MenuItem from '../components/MenuItem.vue'
+import NavGroup from '../components/NavGroup.vue'
 import { fieldState } from '../lib/field'
 
 function sleep(ms: number) {
@@ -118,7 +126,14 @@ const testCheckField = fieldState({
 })
 
 export default defineComponent({
-  components: { OfDialog, InputText, InputTextarea, InputToggle },
+  components: {
+    OfDialog,
+    InputText,
+    InputTextarea,
+    InputToggle,
+    MenuItem,
+    NavGroup
+  },
   /*async */ setup() {
     const textValue = ref('62.14')
     const change = () => {

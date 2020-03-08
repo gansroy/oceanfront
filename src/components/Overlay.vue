@@ -1,5 +1,5 @@
 <template>
-  <transition appear>
+  <transition>
     <div
       :id="id"
       class="overlay-outer"
