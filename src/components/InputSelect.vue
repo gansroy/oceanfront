@@ -5,12 +5,11 @@
     </div>
   </field-outer>
   <overlay
-    :active="showPopup"
+    :active="opened"
     :attach="'#' + fieldAttrs.id"
     :capture="false"
     :shade="false"
-    @click="outerClick"
-    @blur="outerClick"
+    @blur="closePopup"
   >
     <template v-slot="{ active }">
       <transition name="slide-down">
@@ -75,19 +74,19 @@ export default defineComponent({
     const disabled = computed(() => config.disabled || props.disabled)
     const elt = ref<HTMLElement | undefined>()
     const focused = ref(false)
+    const opened = ref(false)
     const readonly = computed(
       () => (config.readonly || props.readonly) && !disabled.value
     )
     const id =
       props.id || config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
-    const showPopup = ref(false)
     const handlers = {
       blur(evt: FocusEvent) {
         focused.value = false
         ctx.emit('blur')
       },
       click(evt: MouseEvent) {
-        showPopup.value = true
+        opened.value = true
         ctx.emit('open')
       },
       focus(evt: FocusEvent) {
@@ -98,8 +97,8 @@ export default defineComponent({
         ctx.emit('keydown', evt)
       }
     }
-    const outerClick = () => {
-      showPopup.value = false
+    const closePopup = () => {
+      opened.value = false
     }
     const blank = computed(() => {
       // FIXME ask formatter
@@ -111,10 +110,11 @@ export default defineComponent({
       class: ['field-select', props.class],
       config,
       disabled: disabled.value,
-      focused: focused.value,
+      focused: focused.value || opened.value,
       id: id + '-outer',
       inputId: id,
       label: props.label === undefined ? config.label : props.label,
+      opened: opened.value,
       readonly: readonly.value,
       variant: props.variant
     }))
@@ -127,8 +127,8 @@ export default defineComponent({
       elt,
       fieldAttrs,
       handlers,
-      outerClick,
-      showPopup,
+      closePopup,
+      opened,
       value: inputValue.value
     }
   }
