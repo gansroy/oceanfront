@@ -44,7 +44,6 @@ export default defineComponent({
       },
       focus(evt: FocusEvent) {
         focused.value = true
-        console.log('focused')
       },
       keydown(evt: KeyboardEvent) {
         if (navGroup && navGroup.nav({ key: evt.key })) return false
