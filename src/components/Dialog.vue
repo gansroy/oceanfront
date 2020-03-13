@@ -1,11 +1,11 @@
 <template>
-  <overlay :active="active" @blur="hide">
+  <of-overlay :active="active" @blur="hide">
     <template v-slot="{ active }">
       <transition name="slide-down">
         <div
           role="dialog"
           :id="id"
-          class="dialog"
+          class="of-dialog"
           :class="classAttr"
           v-if="active"
         >
@@ -14,7 +14,7 @@
         </div>
       </transition>
     </template>
-  </overlay>
+  </of-overlay>
 </template>
 
 <script lang="ts">
@@ -27,11 +27,11 @@ import {
   Ref,
   watch
 } from 'vue'
-import Overlay from './Overlay.vue'
+import OfOverlay from './Overlay.vue'
 
 export default defineComponent({
-  name: 'dialog',
-  components: { Overlay },
+  name: 'of-dialog',
+  components: { OfOverlay },
   inheritAttrs: false,
   props: {
     class: String,

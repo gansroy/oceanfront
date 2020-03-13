@@ -31,7 +31,7 @@ export type INavGroup = {
 }
 
 export default defineComponent({
-  name: 'nav-group',
+  name: 'of-nav-group',
   setup(props, ctx: SetupContext) {
     const items = reactive(new Set<NavTarget>())
     const orderedItems = computed(() =>
@@ -112,7 +112,7 @@ export default defineComponent({
         return false
       }
     }
-    provide('navGroup', provided)
+    provide('of_NavGroup', provided)
     return {
       focused
     }

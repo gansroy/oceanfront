@@ -1,19 +1,19 @@
 <template>
-  <overlay :active="active" align="left" :pad="false" @blur="hide">
+  <of-overlay :active="active" align="left" :pad="false" @blur="hide">
     <template v-slot="{ active }">
       <transition name="slide-right">
         <div
-          role="navigation"
-          :id="id"
-          class="sidebar"
+          class="of-sidebar"
           :class="classAttr"
+          :id="id"
+          role="navigation"
           v-if="active"
         >
           <slot></slot>
         </div>
       </transition>
     </template>
-  </overlay>
+  </of-overlay>
 </template>
 
 <script lang="ts">
@@ -26,11 +26,11 @@ import {
   Ref,
   watch
 } from 'vue'
-import Overlay from './Overlay.vue'
+import OfOverlay from './Overlay.vue'
 
 export default defineComponent({
-  name: 'sidebar',
-  components: { Overlay },
+  name: 'of-sidebar',
+  components: { OfOverlay },
   inheritAttrs: false,
   props: {
     class: String,

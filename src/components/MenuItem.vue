@@ -1,7 +1,7 @@
 <template>
   <div
     ref="elt"
-    class="menu-option menu-item"
+    class="menu-option of-menu-item"
     :tabindex="navActive ? 0 : -1"
     v-on="handlers"
   >
@@ -27,7 +27,7 @@ import {
 import { INavGroup } from './NavGroup.vue'
 
 export default defineComponent({
-  name: 'menu-item',
+  name: 'of-menu-item',
   props: {
     disabled: Boolean
   },
@@ -37,7 +37,7 @@ export default defineComponent({
     const elt = ref<HTMLElement | undefined>()
     const focused = ref(false)
     const navActive = ref(false)
-    const navGroup = inject<INavGroup>('navGroup')
+    const navGroup = inject<INavGroup>('of_NavGroup')
     const navTo = () => {
       let focus = elt.value
       if (focus && focus.focus) focus.focus()

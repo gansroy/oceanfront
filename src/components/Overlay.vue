@@ -2,7 +2,7 @@
   <transition>
     <div
       :id="id"
-      class="overlay-outer"
+      class="of-overlay-outer"
       :class="classAttr"
       role="document"
       ref="elt"
@@ -64,7 +64,7 @@ const checkFocused = (elt?: HTMLElement) => {
 }
 
 export default defineComponent({
-  name: 'overlay',
+  name: 'of-overlay',
   components: { OfSpinner },
   inheritAttrs: false,
   props: {

@@ -1,7 +1,7 @@
 <template>
-  <field-outer v-bind="fieldAttrs">
+  <of-field-outer v-bind="fieldAttrs">
     <input ref="elt" v-bind="attrs" v-on="handlers" />
-  </field-outer>
+  </of-field-outer>
 </template>
 
 <script lang="ts">
@@ -15,22 +15,11 @@ import {
   watch
 } from 'vue'
 import { FieldConfig, FieldState, fieldState } from '../lib/field'
-import FieldOuter from './FieldOuter.vue'
+import OfFieldOuter from './FieldOuter.vue'
 import { StoreRef, storeRef } from '../lib/store'
 import { hasOwn } from '../lib/util'
 
 const copyAttrs = new Set(['autocomplete', 'placeholder', 'size', 'value'])
-
-const mapStateAttrs = {
-  id: 'inputId',
-  class: 'inputClass',
-  maxlength: 'maxLength',
-  readonly: 'readOnly',
-  required: 'required',
-  style: 'inputStyle',
-  type: 'inputType',
-  variant: 'inputVariant'
-}
 
 // types that can be inherited from state.type
 // setting state.inputType allows any value
@@ -52,56 +41,9 @@ const inputTypeFrom = (type?: string) => {
   return 'text'
 }
 
-const variantClasses: Record<string, string> = {
-  default: 'input-text',
-  plain: ''
-}
-
-const makeAttrs = (
-  config: FieldConfig,
-  id: string,
-  attrs: Record<string, any>
-) => {
-  const result: Record<string, any> = {}
-  /*for (const k of copyAttrs) {
-    const v = state[k] as any
-    if (v !== undefined) result[k] = v
-  }
-  if (state.disabled) {
-    result['disabled'] = true
-  } else if (state.readOnly || state.store.locked) {
-    result['readOnly'] = true
-  }
-  result['id'] = state.inputId
-  result['class'] = [
-    variantClasses[(state.inputVariant || 'default') as string],
-    state.inputClass
-  ]
-  result['style'] = state.inputStyle
-  result['type'] = state.inputType || inputTypeFrom(state.type)*/
-  result['id'] = id
-  result['class'] = 'field-input field-text'
-  return result
-}
-
-const loadContextAttrs = (attrs: Record<string, any>, state: FieldState) => {
-  if (!attrs) return
-  const result = {}
-  for (const k in attrs) {
-    if (k === 'config' || k === 'store' || k === 'value') continue
-    if (hasOwn(mapStateAttrs, k)) {
-      // FIXME may want to merge values, inputClass/Style can hold a list
-      state[mapStateAttrs[k]] = attrs[k]
-    } else {
-      if (!state.inputAttrs) state.inputAttrs = {}
-      state.inputAttrs[k] = attrs[k]
-    }
-  }
-}
-
 export default defineComponent({
-  name: 'input-text',
-  components: { FieldOuter },
+  name: 'of-text-field',
+  components: { OfFieldOuter },
   inheritAttrs: false,
   setup(
     props: {
@@ -183,7 +125,7 @@ export default defineComponent({
     })
     const fieldAttrs = computed(() => ({
       blank: blank.value,
-      class: ['field-text', props.class],
+      class: ['of-field-text', props.class],
       config,
       disabled: disabled.value,
       focused: focused.value,
@@ -196,7 +138,7 @@ export default defineComponent({
     return {
       attrs: computed(() => ({
         id,
-        class: 'field-input',
+        class: 'of-field-input',
         disabled: disabled.value,
         maxlength: props.maxlength || config.maxlength,
         placeholder: props.placeholder || config.placeholder,

@@ -1,10 +1,10 @@
 <template>
-  <sidebar v-model="sidebarActive">
-    <nav-group>
-      <menu-item>Hello there</menu-item>
-      <menu-item>Yes you</menu-item>
-    </nav-group>
-  </sidebar>
+  <of-sidebar v-model="sidebarActive">
+    <of-nav-group>
+      <of-menu-item>Hello there</of-menu-item>
+      <of-menu-item>Yes you</of-menu-item>
+    </of-nav-group>
+  </of-sidebar>
   <div class="container theme-base">
     <div class="row">
       <div class="column">
@@ -13,28 +13,28 @@
         <button @click="showSidebar">show sidebar</button>
       </div>
       <div class="column">
-        <nav-group>
+        <of-nav-group>
           <template v-slot="{ focused }">
-            <menu-item>Hello there</menu-item>
-            <menu-item>Yes you</menu-item>
+            <of-menu-item>Hello there</of-menu-item>
+            <of-menu-item>Yes you</of-menu-item>
           </template>
-        </nav-group>
+        </of-nav-group>
       </div>
     </div>
     <div class="row">
       <div class="column">
-        <input-select
+        <of-select
           label="Select input"
           value="Selected"
           variant="filled"
-        ></input-select>
+        ></of-select>
       </div>
     </div>
     <div class="row">
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <input-text
+            <of-text-field
               :config="testField"
               variant="basic"
               v-model="textValue"
@@ -42,7 +42,7 @@
           </div>
           <br />
           <div class="form-cell">
-            <input-text
+            <of-text-field
               :config="testField"
               variant="outlined"
               v-model="textValue"
@@ -50,7 +50,7 @@
           </div>
           <br />
           <div class="form-cell">
-            <input-text
+            <of-text-field
               :config="testField"
               variant="filled"
               v-model="textValue"
@@ -63,30 +63,30 @@
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <input-textarea :config="testField" rows="3" variant="basic" />
+            <of-textarea :config="testField" rows="3" variant="basic" />
           </div>
           <br />
           <div class="form-cell">
-            <input-textarea :config="testField" rows="3" variant="outlined" />
+            <of-textarea :config="testField" rows="3" variant="outlined" />
           </div>
           <br />
           <div class="form-cell">
-            <input-textarea :config="testField" rows="3" variant="filled" />
+            <of-textarea :config="testField" rows="3" variant="filled" />
           </div>
         </div>
       </div>
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <input-toggle :config="testCheckField" variant="basic" />
+            <of-toggle :config="testCheckField" variant="basic" />
           </div>
           <br />
           <div class="form-cell">
-            <input-toggle :config="testCheckField" variant="outlined" />
+            <of-toggle :config="testCheckField" variant="outlined" />
           </div>
           <br />
           <div class="form-cell">
-            <input-toggle
+            <of-toggle
               :config="testCheckField"
               type="checkbox"
               variant="filled"
@@ -109,13 +109,13 @@ import {
   nextTick
 } from 'vue'
 import OfDialog from '../components/Dialog.vue'
-import InputSelect from '../components/InputSelect.vue'
-import InputText from '../components/InputText.vue'
-import InputTextarea from '../components/InputTextarea.vue'
-import InputToggle from '../components/InputToggle.vue'
-import MenuItem from '../components/MenuItem.vue'
-import NavGroup from '../components/NavGroup.vue'
-import Sidebar from '../components/Sidebar.vue'
+import OfSelect from '../components/Select.vue'
+import OfTextField from '../components/TextField.vue'
+import OfTextarea from '../components/Textarea.vue'
+import OfToggle from '../components/Toggle.vue'
+import OfMenuItem from '../components/MenuItem.vue'
+import OfNavGroup from '../components/NavGroup.vue'
+import OfSidebar from '../components/Sidebar.vue'
 import { fieldState } from '../lib/field'
 
 function sleep(ms: number) {
@@ -148,13 +148,13 @@ const testCheckField = fieldState({
 export default defineComponent({
   components: {
     OfDialog,
-    InputSelect,
-    InputText,
-    InputTextarea,
-    InputToggle,
-    MenuItem,
-    NavGroup,
-    Sidebar
+    OfSelect,
+    OfTextField,
+    OfTextarea,
+    OfToggle,
+    OfMenuItem,
+    OfNavGroup,
+    OfSidebar
   },
   /*async */ setup() {
     const textValue = ref('62.14')

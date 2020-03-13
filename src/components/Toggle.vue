@@ -1,10 +1,10 @@
 <template>
-  <field-outer v-bind="fieldAttrs">
+  <of-field-outer v-bind="fieldAttrs">
     <input ref="elt" type="checkbox" v-bind="attrs" v-on="handlers" />
-    <div class="field-input-label">
+    <div class="of-field-input-label">
       <label :for="id">{{ label }}</label>
     </div>
-  </field-outer>
+  </of-field-outer>
 </template>
 
 <script lang="ts">
@@ -17,7 +17,7 @@ import {
   Ref
 } from 'vue'
 import { FieldConfig, FieldState, fieldState } from '../lib/field'
-import FieldOuter from './FieldOuter.vue'
+import OfFieldOuter from './FieldOuter.vue'
 import { StoreRef, storeRef } from '../lib/store'
 import { hasOwn } from '../lib/util'
 
@@ -71,8 +71,8 @@ const loadContextAttrs = (attrs: Record<string, any>, state: FieldState) => {
 */
 
 export default defineComponent({
-  name: 'input-toggle',
-  components: { FieldOuter },
+  name: 'of-toggle',
+  components: { OfFieldOuter },
   inheritAttrs: false,
   setup(
     props: {
@@ -123,7 +123,7 @@ export default defineComponent({
     })
     const fieldAttrs = computed(() => ({
       blank: false, // blank for indeterminate?
-      class: ['field-toggle', props.class],
+      class: ['of-field-toggle', props.class],
       config,
       disabled: disabled.value,
       focused: focused.value,
@@ -137,7 +137,7 @@ export default defineComponent({
       attrs: computed(() => ({
         id,
         checked: !!inputValue.value, // ask formatter?
-        class: 'field-input',
+        class: 'of-field-input',
         disabled: disabled.value,
         tabIndex: props.tabindex
       })),

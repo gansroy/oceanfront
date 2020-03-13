@@ -314,33 +314,41 @@
       </div>
       <div class="row demo-row">
         <div class="demo-inline">
-          <input-text
+          <of-text-field
             class="input-sm"
             value="Small text input"
             style="width: 10em"
           />
         </div>
         <div class="demo-inline">
-          <input-text value="Normal text input" style="width: 10em" />
+          <of-text-field value="Normal text input" style="width: 10em" />
         </div>
         <div class="demo-inline">
-          <input-text
+          <of-text-field
             class="input-lg"
             value="Large text input"
             style="width: 10em"
           />
         </div>
         <div class="demo-inline">
-          <input-text readonly="1" value="Read-only text" style="width: 10em" />
+          <of-text-field
+            readonly="1"
+            value="Read-only text"
+            style="width: 10em"
+          />
         </div>
         <div class="demo-inline">
-          <input-text disabled="1" value="Disabled text" style="width: 10em" />
+          <of-text-field
+            disabled="1"
+            value="Disabled text"
+            style="width: 10em"
+          />
         </div>
         <div class="demo-inline">
-          <input-text placeholder="Placeholder" style="width: 10em" />
+          <of-text-field placeholder="Placeholder" style="width: 10em" />
         </div>
         <div class="demo-inline">
-          <input-text
+          <of-text-field
             class="input-compact"
             style="width: 10em"
             value="Compact"
@@ -349,31 +357,31 @@
       </div>
       <div class="row demo-row">
         <div class="demo-inline">
-          <input-textarea
+          <of-textarea
             class="input-sm"
             style="width: 10em"
             value="Small text area"
           />
         </div>
         <div class="demo-inline">
-          <input-textarea style="width: 10em" value="Normal text area" />
+          <of-textarea style="width: 10em" value="Normal text area" />
         </div>
         <div class="demo-inline">
-          <input-textarea
+          <of-textarea
             class="input-lg"
             style="width: 10em"
             value="Large text area"
           />
         </div>
         <div class="demo-inline">
-          <input-textarea
+          <of-textarea
             readonly="1"
             style="width: 10em"
             value="Read-only text area"
           />
         </div>
         <div class="demo-inline">
-          <input-textarea
+          <of-textarea
             disabled="1"
             style="width: 10em"
             value="Disabled text area"
@@ -693,7 +701,7 @@
               >Input label</label
             >
             <input
-              class="input-text border-left"
+              class="of-text-field border-left"
               value="Text input"
               id="group-text"
             />
@@ -831,7 +839,7 @@
           <div class="input-field input-field-group input-success">
             <input
               type="text"
-              class="input-text text-right"
+              class="of-text-field text-right"
               size="3"
               value="50"
             />
@@ -1017,11 +1025,11 @@ import {
   reactive,
   computed
 } from 'vue'
-import InputText from '../components/InputText.vue'
-import InputTextarea from '../components/InputTextarea.vue'
+import OfTextField from '../components/TextField.vue'
+import OfTextarea from '../components/Textarea.vue'
 
 export default defineComponent({
-  components: { InputText, InputTextarea },
+  components: { OfTextField, OfTextarea },
   setup(props, ctx) {
     const baseFontSize = ref('16')
     const updateFont = function(evt: Event) {

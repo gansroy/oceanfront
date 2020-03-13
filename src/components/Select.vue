@@ -1,10 +1,10 @@
 <template>
-  <field-outer v-bind="fieldAttrs" @click="open">
+  <of-field-outer v-bind="fieldAttrs" @click="open">
     <div ref="elt" v-bind="attrs" v-on="handlers">
       <slot>{{ value }}</slot>
     </div>
-  </field-outer>
-  <overlay
+  </of-field-outer>
+  <of-overlay
     :active="opened"
     :capture="false"
     :shade="false"
@@ -13,19 +13,19 @@
   >
     <template v-slot="{ active }">
       <transition name="slide-down">
-        <div role="menu" class="dialog menu-outer" v-if="active">
+        <div role="menu" class="of-dialog of-menu-outer" v-if="active">
           <slot>
-            <nav-group>
+            <of-nav-group>
               <template v-slot="{ focused }">
-                <menu-item>Hello there</menu-item>
-                <menu-item>Yes you</menu-item>
+                <of-menu-item>Hello there</of-menu-item>
+                <of-menu-item>Yes you</of-menu-item>
               </template>
-            </nav-group>
+            </of-nav-group>
           </slot>
         </div>
       </transition>
     </template>
-  </overlay>
+  </of-overlay>
 </template>
 
 <script lang="ts">
@@ -39,14 +39,14 @@ import {
   watch
 } from 'vue'
 import { FieldConfig } from '../lib/field'
-import FieldOuter from './FieldOuter.vue'
-import MenuItem from './MenuItem.vue'
-import NavGroup from './NavGroup.vue'
-import Overlay from './Overlay.vue'
+import OfFieldOuter from './FieldOuter.vue'
+import OfMenuItem from './MenuItem.vue'
+import OfNavGroup from './NavGroup.vue'
+import OfOverlay from './Overlay.vue'
 
 export default defineComponent({
-  name: 'input-text',
-  components: { FieldOuter, Overlay, NavGroup, MenuItem },
+  name: 'of-select',
+  components: { OfFieldOuter, OfMenuItem, OfNavGroup, OfOverlay },
   props: {
     class: String, // or object or list
     config: Object,
@@ -114,7 +114,7 @@ export default defineComponent({
     })
     const fieldAttrs = computed(() => ({
       blank: blank.value,
-      class: ['field-select', props.class],
+      class: ['of-field-select', props.class],
       config,
       disabled: disabled.value,
       focused: focused.value || opened.value,
@@ -128,7 +128,7 @@ export default defineComponent({
     return {
       attrs: computed(() => ({
         id,
-        class: 'field-input',
+        class: 'of-field-input',
         tabindex: 0
       })),
       closePopup,

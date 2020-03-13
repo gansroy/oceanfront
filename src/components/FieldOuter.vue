@@ -1,16 +1,16 @@
 <template>
-  <div :id="id" class="field-outer" :class="classAttrs" v-on="handlers">
-    <div class="field-above">
-      <div class="field-label-wrap" v-if="withLabel">
+  <div :id="id" class="of-field-outer" :class="classAttrs" v-on="handlers">
+    <div class="of-field-above">
+      <div class="of-field-label-wrap" v-if="withLabel">
         <slot name="label">
-          <label :for="inputId" class="field-label">{{ label }}</label>
+          <label :for="inputId" class="of-field-label">{{ label }}</label>
         </slot>
       </div>
     </div>
-    <div class="field-inner">
+    <div class="of-field-inner">
       <slot />
     </div>
-    <div class="field-below">
+    <div class="of-field-below">
       <slot name="below" />
     </div>
   </div>
@@ -22,7 +22,7 @@ import { FieldState, FieldConfig, fieldState } from '../lib/field'
 import { StoreRef } from '../lib/store'
 
 export default defineComponent({
-  name: 'field-outer',
+  name: 'of-field-outer',
   inheritAttrs: false,
   setup(
     props: {
@@ -59,7 +59,7 @@ export default defineComponent({
         'with-label': withLabel.value
       }
       const variant = props.variant || 'basic'
-      return [cls, 'field-' + variant, props.class]
+      return [cls, 'of-field-' + variant, props.class]
     })
     const handlers = {
       click(evt: MouseEvent) {

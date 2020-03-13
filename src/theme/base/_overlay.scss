@@ -1,4 +1,4 @@
-.overlay-outer {
+.of-overlay-outer {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,24 +11,24 @@
   right: 0;
   z-index: 200;
 }
-.overlay-outer > * {
+.of-overlay-outer > * {
   pointer-events: auto;
 }
-.overlay-outer.capture {
+.of-overlay-outer.capture {
   pointer-events: initial;
 }
-.overlay-outer.center {
+.of-overlay-outer.center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.overlay-outer.left {
+.of-overlay-outer.left {
   display: flex;
   align-items: flex-start;
   flex-flow: column nowrap;
   justify-content: center;
 }
-.overlay-outer.right {
+.of-overlay-outer.right {
   display: flex;
   align-items: flex-end;
   flex-flow: column nowrap;
@@ -37,22 +37,22 @@
 .shade {
   background-color: rgba(0, 0, 0, 0.4);
 }
-.overlay-outer.pad {
+.of-overlay-outer.pad {
   --overlay-pad: 24px;
 }
 
-.overlay-outer.v-enter-active {
+.of-overlay-outer.v-enter-active {
   transition: opacity 400ms ease;
 }
-.overlay-outer.v-leave-active {
+.of-overlay-outer.v-leave-active {
   transition: opacity 200ms cubic-bezier(1, 0.5, 0.8, 1);
 }
-.overlay-outer.v-enter-from,
-.overlay-outer.v-leave-to {
+.of-overlay-outer.v-enter-from,
+.of-overlay-outer.v-leave-to {
   opacity: 0;
 }
 
-.dialog {
+.of-dialog {
   border-radius: 5px;
   background: #fff;
   min-height: 200px;
@@ -73,7 +73,7 @@
   transform: translateY(20px);
 }
 
-.sidebar {
+.of-sidebar {
   border-radius: 0 5px 5px 0;
   background: #fff;
   height: 100%;
