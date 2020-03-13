@@ -101,7 +101,6 @@ export default defineComponent({
           if (focused) {
             focused = false
             ctx.emit('blur')
-            console.log('.')
           }
         }
       }

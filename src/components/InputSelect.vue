@@ -1,5 +1,5 @@
 <template>
-  <field-outer v-bind="fieldAttrs">
+  <field-outer v-bind="fieldAttrs" @click="open">
     <div ref="elt" v-bind="attrs" v-on="handlers">
       <slot>{{ value }}</slot>
     </div>
@@ -80,14 +80,21 @@ export default defineComponent({
     )
     const id =
       props.id || config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
+    const focus = () => {
+      elt.value?.focus()
+    }
+    const open = (evt?: Event) => {
+      if (evt) evt.preventDefault()
+      if (!disabled.value) opened.value = true
+      ctx.emit('open')
+    }
     const handlers = {
       blur(evt: FocusEvent) {
         focused.value = false
         ctx.emit('blur')
       },
       click(evt: MouseEvent) {
-        opened.value = true
-        ctx.emit('open')
+        open(evt)
       },
       focus(evt: FocusEvent) {
         focused.value = true
@@ -124,10 +131,12 @@ export default defineComponent({
         class: 'field-input',
         tabindex: 0
       })),
+      closePopup,
       elt,
       fieldAttrs,
+      focus,
       handlers,
-      closePopup,
+      open,
       opened,
       value: inputValue.value
     }

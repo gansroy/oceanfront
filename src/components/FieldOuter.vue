@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" class="field-outer" :class="classAttrs">
+  <div :id="id" class="field-outer" :class="classAttrs" v-on="handlers">
     <div class="field-above">
       <div class="field-label-wrap" v-if="withLabel">
         <slot name="label">
@@ -61,8 +61,17 @@ export default defineComponent({
       const variant = props.variant || 'basic'
       return [cls, 'field-' + variant, props.class]
     })
+    const handlers = {
+      click(evt: MouseEvent) {
+        ctx.emit('click', evt)
+      },
+      mousedown(evt: MouseEvent) {
+        ctx.emit('mousedown', evt)
+      }
+    }
     return {
       classAttrs,
+      handlers,
       id: computed(() => props.id),
       inputId: computed(() => props.inputId),
       label,
