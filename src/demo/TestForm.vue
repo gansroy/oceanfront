@@ -1,9 +1,16 @@
 <template>
+  <sidebar v-model="sidebarActive">
+    <nav-group>
+      <menu-item>Hello there</menu-item>
+      <menu-item>Yes you</menu-item>
+    </nav-group>
+  </sidebar>
   <div class="container theme-base">
     <div class="row">
       <div class="column">
         <of-dialog overlay-class="theme-base" v-model="dialogActive" />
         <button @click="showDialog">show dialog</button>
+        <button @click="showSidebar">show sidebar</button>
       </div>
       <div class="column">
         <nav-group>
@@ -108,6 +115,7 @@ import InputTextarea from '../components/InputTextarea.vue'
 import InputToggle from '../components/InputToggle.vue'
 import MenuItem from '../components/MenuItem.vue'
 import NavGroup from '../components/NavGroup.vue'
+import Sidebar from '../components/Sidebar.vue'
 import { fieldState } from '../lib/field'
 
 function sleep(ms: number) {
@@ -145,7 +153,8 @@ export default defineComponent({
     InputTextarea,
     InputToggle,
     MenuItem,
-    NavGroup
+    NavGroup,
+    Sidebar
   },
   /*async */ setup() {
     const textValue = ref('62.14')
@@ -153,15 +162,20 @@ export default defineComponent({
       textValue.value = new Date().getTime().toString()
     }
     const dialogActive = ref(false)
+    const sidebarActive = ref(false)
     const showDialog = () =>
       nextTick(() => (dialogActive.value = !dialogActive.value))
+    const showSidebar = () =>
+      nextTick(() => (sidebarActive.value = !sidebarActive.value))
     return {
       change,
       testField,
       testCheckField,
       textValue,
       dialogActive,
-      showDialog
+      showDialog,
+      showSidebar,
+      sidebarActive
     }
   }
 })

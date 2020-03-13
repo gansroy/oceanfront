@@ -69,18 +69,21 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     active: { default: false },
-    attach: {},
+    align: { default: 'center' },
     capture: { default: true },
     class: String,
     id: String,
     loading: { default: false },
-    shade: { default: true }
+    pad: { default: true }, // FIXME change to string enum
+    shade: { default: true },
+    target: {}
   },
   setup(props, ctx: SetupContext) {
     const active = computed(() => props.active)
-    const attach = computed(() => {
+    const align = computed(() => props.align)
+    const target = computed(() => {
       active.value // trigger re-eval
-      const src = props.attach
+      const src = props.target
       if (typeof src === 'string') {
         return document.documentElement.querySelector(src)
       } else if (src instanceof Element) {
@@ -95,9 +98,7 @@ export default defineComponent({
       click(evt: MouseEvent) {
         const outer = elt.value
         if (!outer) return
-        // evt.stopPropagation()
         if (evt.target === outer) {
-          // evt.preventDefault()
           if (focused) {
             focused = false
             ctx.emit('blur')
@@ -116,7 +117,7 @@ export default defineComponent({
     }
     const onScroll = () => {
       // FIXME use normal debounce
-      if (attach.value) scrolled.value = new Date().getTime()
+      if (target.value) scrolled.value = new Date().getTime()
     }
     const bind = (flag: boolean) => {
       if (typeof window === 'undefined') return
@@ -148,13 +149,12 @@ export default defineComponent({
       focused = true
     }
     const reposition = () => {
-      const target = attach.value
+      const targetElt = target.value
       const outer = elt.value
       if (!outer) return // or not in document
-      if (!target) return // or make fixed/absolute
-      // outer.style.position = 'absolute'
+      if (!targetElt) return // or make fixed/absolute
       const parentRect = relativeParentRect(outer)
-      const targetRect = target.getBoundingClientRect()
+      const targetRect = targetElt.getBoundingClientRect()
       if (!targetRect || !parentRect) return // or hide?
       outer.style.setProperty(
         '--overlay-dyn-pad-left',
@@ -187,9 +187,9 @@ export default defineComponent({
       const cls = {
         active: active.value,
         capture: active.value && props.capture,
-        center: !attach.value,
+        [align.value]: !target.value,
         loading: props.loading,
-        pad: true,
+        pad: props.pad,
         shade: props.shade
       }
       return [cls, props.class]

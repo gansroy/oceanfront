@@ -6,9 +6,9 @@
   </field-outer>
   <overlay
     :active="opened"
-    :attach="'#' + fieldAttrs.id"
     :capture="false"
     :shade="false"
+    :target="'#' + fieldAttrs.id"
     @blur="closePopup"
   >
     <template v-slot="{ active }">
