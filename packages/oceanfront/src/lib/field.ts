@@ -9,7 +9,6 @@ import {
 } from 'vue'
 import { storeRef, StoreRef } from './store'
 import { isObject, hasOwn } from './util'
-const __DEV__ = true // FIXME
 let fieldSeq = 0
 
 const defaultFormatters = new Map<String, FieldFormatter>()

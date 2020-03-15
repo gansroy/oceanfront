@@ -17,8 +17,8 @@
 
 <script lang="ts">
 import { onErrorCaptured, ref, defineComponent, SetupContext } from 'vue'
-import TestForm from './demo/TestForm.vue'
-import TestInputs from './demo/TestInputs.vue'
+import TestForm from './components/TestForm.vue'
+import TestInputs from './components/TestInputs.vue'
 
 function formatError(e: Error) {
   return (e.stack || e).toString()

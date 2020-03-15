@@ -108,21 +108,12 @@ import {
   computed,
   nextTick
 } from 'vue'
-import OfDialog from '../components/Dialog.vue'
-import OfSelect from '../components/Select.vue'
-import OfTextField from '../components/TextField.vue'
-import OfTextarea from '../components/Textarea.vue'
-import OfToggle from '../components/Toggle.vue'
-import OfMenuItem from '../components/MenuItem.vue'
-import OfNavGroup from '../components/NavGroup.vue'
-import OfSidebar from '../components/Sidebar.vue'
-import { fieldState } from '../lib/field'
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const testField = fieldState({
+const testField = {
   description: 'Field description',
   help: 'field help',
   hidden: false,
@@ -131,9 +122,9 @@ const testField = fieldState({
   readOnly: false,
   required: true,
   type: 'float'
-})
+}
 
-const testCheckField = fieldState({
+const testCheckField = {
   description: 'Field description',
   help: 'field help',
   hidden: false,
@@ -143,19 +134,9 @@ const testCheckField = fieldState({
   required: true,
   type: 'float',
   labelPosition: 'input'
-})
+}
 
 export default defineComponent({
-  components: {
-    OfDialog,
-    OfSelect,
-    OfTextField,
-    OfTextarea,
-    OfToggle,
-    OfMenuItem,
-    OfNavGroup,
-    OfSidebar
-  },
   /*async */ setup() {
     const textValue = ref('62.14')
     const change = () => {

@@ -1,0 +1,7 @@
+@font-face {
+  font-family: 'uibasic';
+  font-style: normal;
+  font-weight: 400;
+  src: url('base/uibasic.woff2') format('woff2'),
+    url('base/uibasic.woff') format('woff');
+}

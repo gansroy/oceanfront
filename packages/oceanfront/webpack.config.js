@@ -1,0 +1,135 @@
+const { resolve } = require('path')
+const webpack = require('webpack')
+const { VueLoaderPlugin } = require('vue-loader')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+// const TerserPlugin = require('terser-webpack-plugin')
+const version = process.env.VERSION || require('./package.json').version
+
+module.exports = (env = {}) => {
+  let config = {
+    mode: env.prod ? 'production' : 'development',
+    devtool: 'source-map',
+    entry: ['./src/index.ts'],
+    externals: {
+      vue: {
+        commonjs: 'vue',
+        commonjs2: 'vue',
+        amd: 'vue',
+        root: 'Vue'
+      }
+    },
+    output: {
+      path: resolve('./dist'),
+      publicPath: '/dist/',
+      library: 'Oceanfront',
+      libraryTarget: 'umd',
+      libraryExport: 'default',
+      filename: env.prod ? 'oceanfront.min.js' : 'oceanfront.js'
+    },
+    resolve: {
+      extensions: ['.js', '.ts', '.vue'],
+      alias: {
+        // this isn't technically needed, since the default `vue` entry for bundlers
+        // is a simple `export * from '@vue/runtime-dom`. However having this
+        // extra re-export somehow causes webpack to always invalidate the module
+        // on the first HMR update and causes the page to reload.
+        //vue: '@vue/runtime-dom'
+
+        oceanfront: resolve('./src')
+      }
+    },
+    module: {
+      rules: [
+        {
+          test: /\.vue$/,
+          use: 'vue-loader'
+        },
+        {
+          test: /\.ts$/,
+          loader: 'ts-loader',
+          options: { appendTsSuffixTo: [/\.vue$/] },
+          exclude: /node_modules/
+        },
+        {
+          test: /\.scss$/,
+          use: [
+            // 'vue-style-loader',
+            'css-loader',
+            // 'resolve-url-loader',
+            'sass-loader'
+          ]
+        },
+        {
+          test: /\.css$/,
+          use: [
+            /*{
+              loader: MiniCssExtractPlugin.loader,
+              options: { hmr: !env.prod }
+            },*/
+            'style-loader',
+            'css-loader'
+          ]
+        }
+      ]
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        __DEV__: JSON.stringify(!env.prod),
+        'process.env': {
+          NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+        }
+      }),
+      new VueLoaderPlugin()
+      /*new MiniCssExtractPlugin({
+        filename: '[name].css'
+      })*/
+    ],
+    devServer: {
+      inline: true,
+      hot: true,
+      stats: 'minimal',
+      contentBase: __dirname,
+      overlay: true
+    },
+    node: {
+      fs: 'empty'
+    },
+    performance: {
+      hints: false
+    },
+    stats: { children: false }
+  }
+  if (env.prod) {
+    config.plugins = config.plugins.concat([
+      new webpack.BannerPlugin({
+        banner: `/*!
+* Oceanfront v${version}
+* Released under the MIT License.
+*/     `,
+        raw: true,
+        entryOnly: true
+      })
+    ])
+    config.optimization = {
+      minimizer: [
+        /*new TerserPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: true
+        }),*/
+        new OptimizeCssAssetsPlugin({
+          assetNameRegExp: /\.css$/g,
+          cssProcessor: require('cssnano'),
+          cssProcessorOptions: {
+            discardComments: { removeAll: true },
+            postcssZindex: false,
+            reduceIdents: false
+          },
+          canPrint: false
+        })
+      ]
+    }
+  }
+  return config
+}

@@ -1025,11 +1025,8 @@ import {
   reactive,
   computed
 } from 'vue'
-import OfTextField from '../components/TextField.vue'
-import OfTextarea from '../components/Textarea.vue'
 
 export default defineComponent({
-  components: { OfTextField, OfTextarea },
   setup(props, ctx) {
     const baseFontSize = ref('16')
     const updateFont = function(evt: Event) {

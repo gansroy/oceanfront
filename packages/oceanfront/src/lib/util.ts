@@ -1,5 +1,3 @@
-const __DEV__ = true // FIXME
-
 export const hasOwnProperty = Object.prototype.hasOwnProperty
 export const hasOwn = (
   val: object,
