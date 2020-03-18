@@ -9,6 +9,8 @@ import OfTextarea from './components/Textarea.vue'
 import OfTextField from './components/TextField.vue'
 import OfToggle from './components/Toggle.vue'
 
+import './scss/index.scss'
+
 export const components: Record<string, Component> = {
   OfDialog,
   OfMenuItem,

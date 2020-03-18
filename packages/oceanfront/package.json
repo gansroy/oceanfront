@@ -4,7 +4,7 @@
   "license": "MIT",
   "main": "dist/oceanfront.js",
   "module": "dist/oceanfront.js",
-  "typings": "./dist/oceanfront.d.ts",
+  "types": "dist/oceanfront.d.ts",
   "files": [
     "dist",
     "src"
@@ -20,6 +20,7 @@
     "@types/webpack-env": "1.15.0",
     "@vue/compiler-sfc": "~3.0.0-alpha.8",
     "@vue/eslint-config-prettier": "^6.0.0",
+    "copy-webpack-plugin": "^5.1.0",
     "css-loader": "^3.4.0",
     "eslint": "^5.16.0",
     "eslint-plugin-prettier": "^3.1.2",

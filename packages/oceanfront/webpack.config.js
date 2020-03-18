@@ -1,16 +1,19 @@
 const { resolve } = require('path')
 const webpack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
+const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-// const TerserPlugin = require('terser-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const version = process.env.VERSION || require('./package.json').version
 
 module.exports = (env = {}) => {
   let config = {
     mode: env.prod ? 'production' : 'development',
     devtool: 'source-map',
-    entry: ['./src/index.ts'],
+    entry: {
+      oceanfront: './src/index.ts'
+    },
     externals: {
       vue: {
         commonjs: 'vue',
@@ -25,7 +28,7 @@ module.exports = (env = {}) => {
       library: 'Oceanfront',
       libraryTarget: 'umd',
       libraryExport: 'default',
-      filename: env.prod ? 'oceanfront.min.js' : 'oceanfront.js'
+      filename: env.prod ? '[name].min.js' : '[name].js'
     },
     resolve: {
       extensions: ['.js', '.ts', '.vue'],
@@ -54,19 +57,24 @@ module.exports = (env = {}) => {
         {
           test: /\.scss$/,
           use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: { hmr: !env.prod }
+            },
             // 'vue-style-loader',
             'css-loader',
             // 'resolve-url-loader',
             'sass-loader'
-          ]
+          ],
+          exclude: /node_modules/
         },
         {
           test: /\.css$/,
           use: [
-            /*{
+            {
               loader: MiniCssExtractPlugin.loader,
               options: { hmr: !env.prod }
-            },*/
+            },
             'style-loader',
             'css-loader'
           ]
@@ -80,10 +88,11 @@ module.exports = (env = {}) => {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV)
         }
       }),
-      new VueLoaderPlugin()
-      /*new MiniCssExtractPlugin({
+      new VueLoaderPlugin(),
+      new MiniCssExtractPlugin({
         filename: '[name].css'
-      })*/
+      }),
+      new CopyPlugin([{ from: 'src/global.d.ts', to: 'oceanfront.d.ts' }])
     ],
     devServer: {
       inline: true,
@@ -105,6 +114,7 @@ module.exports = (env = {}) => {
       new webpack.BannerPlugin({
         banner: `/*!
 * Oceanfront v${version}
+* Copyright 2020 1CRM Systems Inc.
 * Released under the MIT License.
 */     `,
         raw: true,
@@ -113,11 +123,11 @@ module.exports = (env = {}) => {
     ])
     config.optimization = {
       minimizer: [
-        /*new TerserPlugin({
+        new TerserPlugin({
           cache: true,
           parallel: true,
           sourceMap: true
-        }),*/
+        }),
         new OptimizeCssAssetsPlugin({
           assetNameRegExp: /\.css$/g,
           cssProcessor: require('cssnano'),

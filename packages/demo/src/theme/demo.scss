@@ -5,7 +5,12 @@
   color: #334;
 }
 
-@import 'base/uibasic';
+@import '../../../../node_modules/oceanfront/src/scss';
+
+@import '../../../../node_modules/oceanfront/fonts/uibasic.css';
+@import '../../../../node_modules/oceanfront/fonts/uibasic-icons.css';
+
+/*@import 'base/uibasic';
 
 @import 'base/overlay';
 @import 'base/utils';
@@ -18,3 +23,4 @@
 .theme-material {
   @import 'material';
 }
+*/
