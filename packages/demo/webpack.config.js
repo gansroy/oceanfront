@@ -75,8 +75,8 @@ module.exports = (env = {}) => ({
     })
   ],
   devServer: {
-    inline: false,
-    hot: false,
+    inline: true,
+    hot: true,
     stats: 'minimal',
     contentBase: __dirname,
     overlay: true

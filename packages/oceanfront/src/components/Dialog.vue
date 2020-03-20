@@ -1,13 +1,13 @@
 <template>
   <of-overlay :active="active" @blur="hide">
-    <template v-slot="{ active }">
+    <template v-slot="{ state }">
       <transition name="slide-down">
         <div
           role="dialog"
           :id="id"
           class="of-dialog"
           :class="classAttr"
-          v-if="active"
+          v-if="state"
         >
           <slot name="title"></slot>
           <slot></slot>

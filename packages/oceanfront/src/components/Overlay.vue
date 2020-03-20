@@ -6,14 +6,14 @@
       :class="classAttr"
       role="document"
       ref="elt"
-      :tabindex="active ? '-1' : null"
+      :tabindex="state === 'active' ? '-1' : null"
       v-on="handlers"
-      v-show="active"
+      v-show="state"
     >
       <slot name="loading" v-if="loading">
         <of-spinner />
       </slot>
-      <slot :active="active"></slot>
+      <slot :state="state"></slot>
     </div>
   </transition>
 </template>
@@ -72,6 +72,7 @@ export default defineComponent({
     align: { default: 'center' },
     capture: { default: true },
     class: String,
+    embed: { default: false },
     id: String,
     loading: { default: false },
     pad: { default: true }, // FIXME change to string enum
@@ -79,10 +80,12 @@ export default defineComponent({
     target: {}
   },
   setup(props, ctx: SetupContext) {
-    const active = computed(() => props.active)
     const align = computed(() => props.align)
+    const state = computed(() =>
+      props.embed ? 'embed' : props.active ? 'active' : null
+    )
     const target = computed(() => {
-      active.value // trigger re-eval
+      state.value // trigger re-eval
       const src = props.target
       if (typeof src === 'string') {
         return document.documentElement.querySelector(src)
@@ -92,6 +95,7 @@ export default defineComponent({
     })
     let bound = false
     let focused = false
+    let swapped: Comment | null = null
     const elt = ref<HTMLElement | undefined>()
     const scrolled = ref<number>()
     const handlers = {
@@ -148,6 +152,25 @@ export default defineComponent({
       ;((findFocus as HTMLElement) || outer).focus()
       focused = true
     }
+    const reparent = () => {
+      if (!elt.value) return
+      let eltParent = elt.value.parentNode as HTMLElement
+      if (!parent) return
+      const swap = state.value !== 'embed'
+      if (swap && !swapped) {
+        let newParent =
+          eltParent.closest('[data-overlay-parent]') ?? document.body
+        if (newParent !== eltParent) {
+          swapped = document.createComment('')
+          eltParent.insertBefore(swapped, elt.value)
+          newParent.appendChild(elt.value)
+        }
+      } else if (!swap && swapped) {
+        swapped.parentNode!.insertBefore(elt.value, swapped)
+        swapped.parentNode!.removeChild(swapped)
+        swapped = null
+      }
+    }
     const reposition = () => {
       const targetElt = target.value
       const outer = elt.value
@@ -166,10 +189,11 @@ export default defineComponent({
       )
     }
     watch(
-      () => active.value,
-      active => {
-        bind(active)
-        if (active) {
+      () => state.value,
+      state => {
+        reparent()
+        bind(state === 'active')
+        if (state === 'active') {
           nextTick(() => {
             reposition()
             focus()
@@ -184,33 +208,30 @@ export default defineComponent({
       }
     )
     const classAttr = computed(() => {
+      const active = state.value === 'active'
       const cls = {
-        active: active.value,
-        capture: active.value && props.capture,
-        [align.value]: !target.value,
+        active: active,
+        capture: active && props.capture,
+        embed: state.value === 'embed',
         loading: props.loading,
         pad: props.pad,
-        shade: props.shade
+        shade: active && props.shade
       }
+      if (state.value !== 'embed' && !target.value)
+        (cls as any)[align.value] = true
       return [cls, props.class]
     })
-    onMounted(() => {
-      if (!elt.value) return
-      let parent = elt.value.parentNode as HTMLElement
-      parent =
-        (parent && parent.closest('[data-overlay-parent]')) ?? document.body
-      parent.appendChild(elt.value)
-    })
+    onMounted(reparent)
     onUnmounted(() => {
       bind(false)
     })
     return {
-      active,
       classAttr,
       elt,
       focus,
       handlers,
-      id: computed(() => props.id)
+      id: computed(() => props.id),
+      state
     }
   }
 })

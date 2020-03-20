@@ -1,16 +1,22 @@
 <template>
-  <of-overlay :active="active" align="left" :pad="false" @blur="hide">
-    <template v-slot="{ active }">
+  <of-overlay
+    :active="active"
+    align="left"
+    :pad="false"
+    :embed="embed"
+    @blur="hide"
+  >
+    <template v-slot="{ state }">
       <transition name="slide-right">
-        <div
+        <nav
           class="of-sidebar"
           :class="classAttr"
           :id="id"
           role="navigation"
-          v-if="active"
+          v-if="state"
         >
           <slot></slot>
-        </div>
+        </nav>
       </transition>
     </template>
   </of-overlay>
@@ -34,6 +40,7 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     class: String,
+    embed: { default: false },
     id: String,
     loading: { default: false },
     modelValue: Boolean
@@ -46,6 +53,7 @@ export default defineComponent({
         active.value = props.modelValue
       }
     )
+    const embed = computed(() => props.embed)
     const loading = computed(() => props.loading)
     const classAttr = computed(() => props.class)
     const hide = () => {
@@ -57,6 +65,7 @@ export default defineComponent({
       active,
       id: computed(() => props.id),
       classAttr,
+      embed,
       hide,
       loading,
       show

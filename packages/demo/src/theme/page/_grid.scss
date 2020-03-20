@@ -1,16 +1,16 @@
 .container {
   box-sizing: border-box;
-  margin: 0 auto $container-bottom-gutter auto;
+  margin: 0 0 $container-bottom-gutter 0;
   padding: 0 $grid-gutter-size;
-  @include screen-sm-min {
-    width: ($screen-sm - 20);
-  }
-  @include screen-md-min {
-    width: ($screen-md - 25);
-  }
-  @include screen-lg-min {
-    width: ($screen-lg - 30);
-  }
+  // @include screen-sm-min {
+  //   width: ($screen-sm - 20);
+  // }
+  // @include screen-md-min {
+  //   width: ($screen-md - 25);
+  // }
+  // @include screen-lg-min {
+  //   width: ($screen-lg - 30);
+  // }
 }
 
 .row {

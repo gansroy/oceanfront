@@ -1034,6 +1034,7 @@ export default defineComponent({
       baseFontSize.value = size
       document.documentElement.style.fontSize = size + 'px'
     }
+    console.log(ctx)
     return { baseFontSize, updateFont }
   }
 })

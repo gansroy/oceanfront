@@ -16,9 +16,9 @@
     :target="'#' + fieldAttrs.id"
     @blur="closePopup"
   >
-    <template v-slot="{ active }">
+    <template v-slot="{ state }">
       <transition name="slide-down">
-        <div role="menu" class="of-dialog of-menu-outer" v-if="active">
+        <div role="menu" class="of-dialog of-menu-outer" v-if="state">
           <slot>
             <of-nav-group>
               <template v-slot="{ focused }">

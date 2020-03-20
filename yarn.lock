@@ -7867,6 +7867,11 @@ vue-loader@^16.0.0-alpha.3:
     merge-source-map "^1.1.0"
     source-map "^0.6.1"
 
+vue-router@^4.0.0-alpha.3:
+  version "4.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.0-alpha.3.tgz#f2c341132981c25c4c218e289447b55078cb4445"
+  integrity sha512-eaR9ZTbEIr/GkkScpTZRAcdoxxMTShvGe8OG8JJvMl7khzrpYPgUuat3I3gImHxSh3UWPshEdb+BmWhfbSIrow==
+
 vue-style-loader@^4.0.1:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/vue-style-loader/-/vue-style-loader-4.1.2.tgz#dedf349806f25ceb4e64f3ad7c0a44fba735fcf8"

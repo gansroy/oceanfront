@@ -1,10 +1,4 @@
 <template>
-  <of-sidebar v-model="sidebarActive">
-    <of-nav-group>
-      <of-menu-item>Hello there</of-menu-item>
-      <of-menu-item>Yes you</of-menu-item>
-    </of-nav-group>
-  </of-sidebar>
   <div class="container theme-base">
     <div class="row">
       <div class="column">

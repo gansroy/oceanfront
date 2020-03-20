@@ -1,4 +1,4 @@
-.of-overlay-outer {
+.of-overlay-outer:not(.embed) {
   position: fixed;
   top: 0;
   left: 0;
