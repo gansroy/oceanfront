@@ -2,18 +2,18 @@
   <transition>
     <div
       :id="id"
-      class="of-overlay-outer"
+      class="of-overlay"
       :class="classAttr"
       role="document"
       ref="elt"
       :tabindex="state === 'active' ? '-1' : null"
       v-on="handlers"
-      v-show="state"
+      v-show="active"
     >
       <slot name="loading" v-if="loading">
         <of-spinner />
       </slot>
-      <slot :state="state"></slot>
+      <slot :active="active" :state="state"></slot>
     </div>
   </transition>
 </template>
@@ -30,7 +30,8 @@ import {
   watch,
   nextTick,
   watchEffect,
-  onUnmounted
+  onUnmounted,
+  onBeforeUnmount
 } from 'vue'
 import OfSpinner from './Spinner.vue'
 
@@ -80,12 +81,11 @@ export default defineComponent({
     target: {}
   },
   setup(props, ctx: SetupContext) {
+    const active = computed(() => props.active)
     const align = computed(() => props.align)
-    const state = computed(() =>
-      props.embed ? 'embed' : props.active ? 'active' : null
-    )
+    const state = computed(() => (props.embed ? 'embed' : 'overlay'))
     const target = computed(() => {
-      state.value // trigger re-eval
+      active.value, state.value // trigger re-eval
       const src = props.target
       if (typeof src === 'string') {
         return document.documentElement.querySelector(src)
@@ -188,19 +188,16 @@ export default defineComponent({
         Math.max(targetRect.bottom, 0) + 'px'
       )
     }
-    watch(
-      () => state.value,
-      state => {
-        reparent()
-        bind(state === 'active')
-        if (state === 'active') {
-          nextTick(() => {
-            reposition()
-            focus()
-          })
-        }
+    watch([active, state], ([active, state]) => {
+      reparent()
+      bind(active && state === 'overlay')
+      if (active && state === 'overlay') {
+        nextTick(() => {
+          reposition()
+          focus()
+        })
       }
-    )
+    })
     watch(
       () => scrolled.value,
       _ => {
@@ -208,24 +205,31 @@ export default defineComponent({
       }
     )
     const classAttr = computed(() => {
-      const active = state.value === 'active'
       const cls = {
-        active: active,
-        capture: active && props.capture,
-        embed: state.value === 'embed',
-        loading: props.loading,
-        pad: props.pad,
-        shade: active && props.shade
+        'of--active': active.value,
+        'of--capture': active.value && props.capture,
+        'of--embed': state.value === 'embed',
+        'of--loading': props.loading,
+        'of--overlay': state.value === 'overlay',
+        'of--pad': props.pad,
+        'of--shade': active.value && props.shade
       }
       if (state.value !== 'embed' && !target.value)
-        (cls as any)[align.value] = true
+        (cls as any)['of--' + align.value] = true
       return [cls, props.class]
     })
     onMounted(reparent)
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       bind(false)
+      console.log('unmount', swapped, elt.value)
+      if (swapped && elt.value && elt.value.parentNode) {
+        console.log('remove')
+        elt.value.parentNode.removeChild(elt.value)
+        swapped = null
+      }
     })
     return {
+      active,
       classAttr,
       elt,
       focus,

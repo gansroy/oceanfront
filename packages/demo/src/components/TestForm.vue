@@ -4,7 +4,6 @@
       <div class="column">
         <of-dialog overlay-class="theme-base" v-model="dialogActive" />
         <button @click="showDialog">show dialog</button>
-        <button @click="showSidebar">show sidebar</button>
       </div>
       <div class="column">
         <of-nav-group>
@@ -137,20 +136,15 @@ export default defineComponent({
       textValue.value = new Date().getTime().toString()
     }
     const dialogActive = ref(false)
-    const sidebarActive = ref(false)
     const showDialog = () =>
       nextTick(() => (dialogActive.value = !dialogActive.value))
-    const showSidebar = () =>
-      nextTick(() => (sidebarActive.value = !sidebarActive.value))
     return {
       change,
       testField,
       testCheckField,
       textValue,
       dialogActive,
-      showDialog,
-      showSidebar,
-      sidebarActive
+      showDialog
     }
   }
 })

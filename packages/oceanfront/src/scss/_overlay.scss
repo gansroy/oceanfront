@@ -1,4 +1,4 @@
-.of-overlay-outer:not(.embed) {
+.of-overlay.of--overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,44 +11,44 @@
   right: 0;
   z-index: 200;
 }
-.of-overlay-outer > * {
+.of-overlay > * {
   pointer-events: auto;
 }
-.of-overlay-outer.capture {
+.of-overlay.of--capture {
   pointer-events: initial;
 }
-.of-overlay-outer.center {
+.of-overlay.of--center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.of-overlay-outer.left {
+.of-overlay.of--left {
   display: flex;
   align-items: flex-start;
   flex-flow: column nowrap;
   justify-content: center;
 }
-.of-overlay-outer.right {
+.of-overlay.of--right {
   display: flex;
   align-items: flex-end;
   flex-flow: column nowrap;
   justify-content: center;
 }
-.shade {
+.of-overlay.of--shade {
   background-color: rgba(0, 0, 0, 0.4);
 }
-.of-overlay-outer.pad {
+.of-overlay.of--pad {
   --overlay-pad: 24px;
 }
 
-.of-overlay-outer.v-enter-active {
+.of--overlay.v-enter-active {
   transition: opacity 400ms ease;
 }
-.of-overlay-outer.v-leave-active {
+.of--overlay.v-leave-active {
   transition: opacity 200ms cubic-bezier(1, 0.5, 0.8, 1);
 }
-.of-overlay-outer.v-enter-from,
-.of-overlay-outer.v-leave-to {
+.of--overlay.v-enter-from,
+.of--overlay.v-leave-to {
   opacity: 0;
 }
 

@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 import TestForm from './components/TestForm.vue'
 import TestInputs from './components/TestInputs.vue'
 
-export const routerHistory = createWebHistory()
+export const routerHistory = createWebHashHistory()
 export const router = createRouter({
   history: routerHistory,
   routes: [

@@ -4,7 +4,7 @@
       <div class="input-icon icon-menu"></div>
     </div>
     <div class="app-title">Oceanfront</div>
-    <div class="app-tag">alpha</div>
+    <div class="app-tag">dev</div>
   </header>
   <div class="app-body">
     <of-sidebar v-model="sidebarActive" :embed="true">
