@@ -5,14 +5,6 @@
         <of-dialog overlay-class="theme-base" v-model="dialogActive" />
         <button @click="showDialog">show dialog</button>
       </div>
-      <div class="column">
-        <of-nav-group>
-          <template v-slot="{ focused }">
-            <of-menu-item>Hello there</of-menu-item>
-            <of-menu-item>Yes you</of-menu-item>
-          </template>
-        </of-nav-group>
-      </div>
     </div>
     <div class="row">
       <div class="column">
@@ -92,15 +84,7 @@
 </template>
 
 <script lang="ts">
-import {
-  onErrorCaptured,
-  ref,
-  defineComponent,
-  SetupContext,
-  reactive,
-  computed,
-  nextTick
-} from 'vue'
+import { ref, defineComponent, nextTick } from 'vue'
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))

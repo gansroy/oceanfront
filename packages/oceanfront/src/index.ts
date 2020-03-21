@@ -1,7 +1,7 @@
 import { App, Component, Plugin } from 'vue'
 
 import OfDialog from './components/Dialog.vue'
-import OfMenuItem from './components/MenuItem.vue'
+import OfListItem from './components/ListItem.vue'
 import OfNavGroup from './components/NavGroup.vue'
 import OfSelect from './components/Select.vue'
 import OfSidebar from './components/Sidebar.vue'
@@ -13,7 +13,7 @@ import './scss/index.scss'
 
 export const components: Record<string, Component> = {
   OfDialog,
-  OfMenuItem,
+  OfListItem,
   OfNavGroup,
   OfSelect,
   OfSidebar,

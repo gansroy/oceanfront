@@ -1,0 +1,28 @@
+.of-list-item {
+  color: $color-input;
+  cursor: pointer;
+  display: block;
+  outline: none;
+  padding: 2px 4px;
+  text-decoration: none;
+  transition: color 300ms;
+  &.of--disabled {
+    color: $color-input-disabled;
+    cursor: default;
+  }
+}
+.of-list-item-inner {
+  background: transparent;
+  border-radius: 5px;
+  display: flex;
+  padding: 0.3em 0.8em;
+  transition: background-color 300ms;
+}
+.of--enabled {
+  &.of-list-item:hover {
+    color: $color-input-hover;
+  }
+  &:hover > .of-list-item-inner {
+    background: $bg-label;
+  }
+}

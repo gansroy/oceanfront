@@ -9,8 +9,16 @@
   <div class="app-body">
     <of-sidebar v-model="sidebarActive" :embed="true">
       <of-nav-group>
-        <of-menu-item to="/">Test form</of-menu-item>
-        <of-menu-item to="/inputs">Test inputs</of-menu-item>
+        <of-list-item disabled>Icons</of-list-item>
+        <of-list-item disabled>Lists</of-list-item>
+        <of-list-item disabled>Overlays</of-list-item>
+        <of-list-item disabled>Select Inputs</of-list-item>
+        <of-list-item disabled>Text Inputs</of-list-item>
+        <of-list-item disabled>Toggle Inputs</of-list-item>
+        <of-list-item disabled>Picker Inputs</of-list-item>
+        <of-list-item disabled>Field Formatters</of-list-item>
+        <of-list-item to="/">Test form</of-list-item>
+        <of-list-item to="/inputs">Test inputs</of-list-item>
       </of-nav-group>
     </of-sidebar>
     <main class="app-main">

@@ -6,6 +6,7 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "lerna run --parallel build",
     "watch": "lerna run --parallel watch"
   },
   "devDependencies": {

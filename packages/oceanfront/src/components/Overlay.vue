@@ -6,7 +6,7 @@
       :class="classAttr"
       role="document"
       ref="elt"
-      :tabindex="state === 'active' ? '-1' : null"
+      :tabindex="active ? '-1' : null"
       v-on="handlers"
       v-show="active"
     >
@@ -188,16 +188,18 @@ export default defineComponent({
         Math.max(targetRect.bottom, 0) + 'px'
       )
     }
-    watch([active, state], ([active, state]) => {
+    const updateState = () => {
+      const activeOverlay = active.value && state.value === 'overlay'
       reparent()
-      bind(active && state === 'overlay')
-      if (active && state === 'overlay') {
+      bind(activeOverlay)
+      if (activeOverlay) {
         nextTick(() => {
           reposition()
           focus()
         })
       }
-    })
+    }
+    watch([active, state], updateState)
     watch(
       () => scrolled.value,
       _ => {
@@ -214,16 +216,14 @@ export default defineComponent({
         'of--pad': props.pad,
         'of--shade': active.value && props.shade
       }
-      if (state.value !== 'embed' && !target.value)
+      if (state.value !== 'embed' && !target.value && align.value)
         (cls as any)['of--' + align.value] = true
       return [cls, props.class]
     })
-    onMounted(reparent)
+    onMounted(updateState)
     onBeforeUnmount(() => {
       bind(false)
-      console.log('unmount', swapped, elt.value)
       if (swapped && elt.value && elt.value.parentNode) {
-        console.log('remove')
         elt.value.parentNode.removeChild(elt.value)
         swapped = null
       }

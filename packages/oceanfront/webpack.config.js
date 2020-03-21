@@ -5,12 +5,13 @@ const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const isProd = process.env.NODE_ENV === 'production'
 const version = process.env.VERSION || require('./package.json').version
 
 module.exports = (env = {}) => {
   let config = {
-    mode: env.prod ? 'production' : 'development',
-    devtool: 'source-map',
+    mode: isProd ? 'production' : 'development',
+    devtool: isProd ? 'source-map' : 'inline-source-map',
     entry: {
       oceanfront: './src/index.ts'
     },
@@ -27,8 +28,8 @@ module.exports = (env = {}) => {
       publicPath: '/dist/',
       library: 'Oceanfront',
       libraryTarget: 'umd',
-      libraryExport: 'default',
-      filename: env.prod ? '[name].min.js' : '[name].js'
+      // libraryExport: 'default',
+      filename: isProd ? '[name].min.js' : '[name].js'
     },
     resolve: {
       extensions: ['.js', '.ts', '.vue'],
@@ -39,7 +40,8 @@ module.exports = (env = {}) => {
         // on the first HMR update and causes the page to reload.
         //vue: '@vue/runtime-dom'
 
-        oceanfront: resolve('./src')
+        oceanfront: resolve('./src'),
+        '@': resolve('./src')
       }
     },
     module: {
@@ -59,7 +61,7 @@ module.exports = (env = {}) => {
           use: [
             {
               loader: MiniCssExtractPlugin.loader,
-              options: { hmr: !env.prod }
+              options: { hmr: !isProd }
             },
             // 'vue-style-loader',
             'css-loader',
@@ -73,7 +75,7 @@ module.exports = (env = {}) => {
           use: [
             {
               loader: MiniCssExtractPlugin.loader,
-              options: { hmr: !env.prod }
+              options: { hmr: !isProd }
             },
             'style-loader',
             'css-loader'
@@ -83,7 +85,7 @@ module.exports = (env = {}) => {
     },
     plugins: [
       new webpack.DefinePlugin({
-        __DEV__: JSON.stringify(!env.prod),
+        __DEV__: JSON.stringify(!isProd),
         'process.env': {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV)
         }
@@ -109,12 +111,12 @@ module.exports = (env = {}) => {
     },
     stats: { children: false }
   }
-  if (env.prod) {
+  if (isProd) {
     config.plugins = config.plugins.concat([
       new webpack.BannerPlugin({
         banner: `/*!
 * Oceanfront v${version}
-* Copyright 2020 1CRM Systems Inc.
+* Copyright 2020 1CRM Systems Corp.
 * Released under the MIT License.
 */     `,
         raw: true,
@@ -122,11 +124,13 @@ module.exports = (env = {}) => {
       })
     ])
     config.optimization = {
+      // usedExports: true,
       minimizer: [
         new TerserPlugin({
           cache: true,
           parallel: true,
-          sourceMap: true
+          sourceMap: true,
+          extractComments: true
         }),
         new OptimizeCssAssetsPlugin({
           assetNameRegExp: /\.css$/g,

@@ -22,8 +22,8 @@
           <slot>
             <of-nav-group>
               <template v-slot="{ focused }">
-                <of-menu-item>Hello there</of-menu-item>
-                <of-menu-item>Yes you</of-menu-item>
+                <of-list-item>Hello there</of-list-item>
+                <of-list-item>Yes you</of-list-item>
               </template>
             </of-nav-group>
           </slot>
@@ -45,13 +45,13 @@ import {
 } from 'vue'
 import { FieldConfig } from '../lib/field'
 import OfFieldOuter from './FieldOuter.vue'
-import OfMenuItem from './MenuItem.vue'
+import OfListItem from './ListItem.vue'
 import OfNavGroup from './NavGroup.vue'
 import OfOverlay from './Overlay.vue'
 
 export default defineComponent({
   name: 'of-select',
-  components: { OfFieldOuter, OfMenuItem, OfNavGroup, OfOverlay },
+  components: { OfFieldOuter, OfListItem, OfNavGroup, OfOverlay },
   props: {
     class: String, // or object or list
     config: Object,

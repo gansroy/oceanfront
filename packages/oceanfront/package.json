@@ -10,8 +10,8 @@
     "src"
   ],
   "scripts": {
-    "build": "NODE_ENV=production webpack --progress --hide-modules",
-    "watch": "TARGET=development webpack --hide-modules --watch"
+    "build": "NODE_ENV=production webpack",
+    "watch": "TARGET=development webpack --watch"
   },
   "peerDependencies": {
     "vue": "~3.0.0-alpha.8"
@@ -41,5 +41,9 @@
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.1"
-  }
+  },
+  "sideEffects": [
+    "*.scss",
+    "*.css"
+  ]
 }

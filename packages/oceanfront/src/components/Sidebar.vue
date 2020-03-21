@@ -6,14 +6,14 @@
     :embed="embed"
     @blur="hide"
   >
-    <template v-slot="{ state }">
+    <template v-slot="{ active }">
       <transition name="slide-right">
         <nav
           class="of-sidebar"
           :class="classAttr"
           :id="id"
           role="navigation"
-          v-if="state"
+          v-if="active"
         >
           <slot></slot>
         </nav>

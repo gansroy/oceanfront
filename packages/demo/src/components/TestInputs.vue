@@ -1017,14 +1017,7 @@
 </template>
 
 <script lang="ts">
-import {
-  onErrorCaptured,
-  ref,
-  defineComponent,
-  SetupContext,
-  reactive,
-  computed
-} from 'vue'
+import { ref, defineComponent } from 'vue'
 
 export default defineComponent({
   setup(props, ctx) {
@@ -1034,7 +1027,6 @@ export default defineComponent({
       baseFontSize.value = size
       document.documentElement.style.fontSize = size + 'px'
     }
-    console.log(ctx)
     return { baseFontSize, updateFont }
   }
 })
