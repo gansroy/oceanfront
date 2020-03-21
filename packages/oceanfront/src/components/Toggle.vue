@@ -8,108 +8,49 @@
 </template>
 
 <script lang="ts">
-import {
-  ref,
-  defineComponent,
-  SetupContext,
-  reactive,
-  computed,
-  Ref
-} from 'vue'
-import { FieldConfig, FieldState, fieldState } from '../lib/field'
+import { ref, defineComponent, SetupContext, computed, Ref, watch } from 'vue'
 import OfFieldOuter from './FieldOuter.vue'
-import { StoreRef, storeRef } from '../lib/store'
-import { hasOwn } from '../lib/util'
-
-/*
-const copyAttrs = new Set(['tabIndex', 'value'])
-
-const mapStateAttrs = {
-  id: 'inputId',
-  class: 'inputClass',
-  style: 'inputStyle',
-  tabindex: 'tabIndex',
-  variant: 'inputVariant'
-}
-
-const variantClasses: Record<string, string> = {
-  default: 'input-check',
-  plain: ''
-}
-
-const makeAttrs = (state: FieldState) => {
-  const result: Record<string, any> = Object.assign({}, state.inputAttrs)
-  for (const k of copyAttrs) {
-    const v = state[k] as any
-    if (v !== undefined) result[k] = v
-  }
-  if (state.disabled) {
-    result['disabled'] = true
-  }
-  result['id'] = state.inputId
-  result['class'] = [
-    variantClasses[(state.inputVariant || 'default') as string],
-    state.inputClass
-  ]
-  result['style'] = state.inputStyle
-  return result
-}
-
-const loadContextAttrs = (attrs: Record<string, any>, state: FieldState) => {
-  if (!attrs) return
-  for (const k in attrs) {
-    if (k === 'state' || k === 'value') continue
-    if (hasOwn(mapStateAttrs, k)) {
-      // FIXME may want to merge values, inputClass/Style can hold a list
-      state[mapStateAttrs[k]] = attrs[k]
-    } else {
-      if (!state.inputAttrs) state.inputAttrs = {}
-      state.inputAttrs[k] = attrs[k]
-    }
-  }
-}
-*/
 
 export default defineComponent({
   name: 'of-toggle',
   components: { OfFieldOuter },
   inheritAttrs: false,
-  setup(
-    props: {
-      checked?: boolean
-      class?: string // or object or list
-      config?: FieldConfig
-      disabled?: boolean
-      id?: string
-      label?: string
-      modelValue?: string
-      store?: StoreRef
-      tabindex?: number
-      variant?: string
-      [key: string]: any
-    },
-    ctx: SetupContext
-  ) {
-    // FIXME pull out known attributes, leave any unknown ones
-    const config = props.config || {}
-    const inputValue = ref(props.modelValue)
-    const store = props.store || storeRef(inputValue.value) // FIXME
-    const elt: Ref<HTMLInputElement | undefined> = ref()
-    const disabled = computed(() => config.disabled || props.disabled)
-    const focused = ref(false)
-    const id =
-      props.id || config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
-    const label = computed(() =>
-      props.label === undefined ? config.label : props.label
+  props: {
+    checked: [Boolean, String],
+    class: String,
+    config: Object,
+    disabled: [Boolean, String],
+    id: String,
+    label: String,
+    modelValue: String,
+    tabindex: [Number, String],
+    variant: String
+  },
+  setup(props, ctx: SetupContext) {
+    const config = props.config || props
+    const inputValue = ref(
+      props.checked === undefined ? props.modelValue : props.checked
     )
+    watch(
+      () => props.modelValue,
+      val => {
+        inputValue.value = val
+      }
+    )
+    const elt: Ref<HTMLInputElement | undefined> = ref()
+    const disabled = computed(() => config.disabled)
+    const focused = ref(false)
+    const id = config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
+    const label = computed(() => config.label)
     const handlers = {
       blur: (evt: FocusEvent) => {
         focused.value = false
         ctx.emit('blur')
       },
       change: (evt: Event) => {
-        store.value = elt.value?.checked
-        ctx.emit('change', elt.value?.checked)
+        inputValue.value = elt.value?.checked
+        ctx.emit('change', inputValue.value)
+        ctx.emit('update:modelValue', inputValue.value)
       },
       focus: (evt: FocusEvent) => {
         focused.value = true
@@ -123,15 +64,14 @@ export default defineComponent({
     })
     const fieldAttrs = computed(() => ({
       blank: false, // blank for indeterminate?
-      class: ['of-field-toggle', props.class],
+      class: ['of-field-toggle', config.class],
       config,
       disabled: disabled.value,
       focused: focused.value,
       inputId: id,
-      label: props.label === undefined ? config.label : props.label,
+      label: config.label,
       showLabel: false,
-      store,
-      variant: props.variant
+      variant: config.variant
     }))
     return {
       attrs: computed(() => ({
@@ -139,7 +79,7 @@ export default defineComponent({
         checked: !!inputValue.value, // ask formatter?
         class: 'of-field-input',
         disabled: disabled.value,
-        tabIndex: props.tabindex
+        tabIndex: config.tabindex
       })),
       elt,
       fieldAttrs,

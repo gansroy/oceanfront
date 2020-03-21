@@ -20,24 +20,21 @@
         <div class="form-outer">
           <div class="form-cell">
             <of-text-field
-              :config="testField"
-              variant="basic"
+              :config="{ ...testField, variant: 'basic' }"
               v-model="textValue"
             />
           </div>
           <br />
           <div class="form-cell">
             <of-text-field
-              :config="testField"
-              variant="outlined"
+              :config="{ ...testField, variant: 'outlined' }"
               v-model="textValue"
             />
           </div>
           <br />
           <div class="form-cell">
             <of-text-field
-              :config="testField"
-              variant="filled"
+              :config="{ ...testField, variant: 'filled' }"
               v-model="textValue"
             />
           </div>
@@ -48,34 +45,36 @@
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <of-textarea :config="testField" rows="3" variant="basic" />
+            <of-textarea
+              :config="{ ...testField, rows: 3, variant: 'basic' }"
+            />
           </div>
           <br />
           <div class="form-cell">
-            <of-textarea :config="testField" rows="3" variant="outlined" />
+            <of-textarea
+              :config="{ ...testField, rows: 3, variant: 'outlined' }"
+            />
           </div>
           <br />
           <div class="form-cell">
-            <of-textarea :config="testField" rows="3" variant="filled" />
+            <of-textarea
+              :config="{ ...testField, rows: 3, variant: 'filled' }"
+            />
           </div>
         </div>
       </div>
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <of-toggle :config="testCheckField" variant="basic" />
+            <of-toggle :config="{ ...testCheckField, variant: 'basic' }" />
           </div>
           <br />
           <div class="form-cell">
-            <of-toggle :config="testCheckField" variant="outlined" />
+            <of-toggle :config="{ ...testCheckField, variant: 'outlined' }" />
           </div>
           <br />
           <div class="form-cell">
-            <of-toggle
-              :config="testCheckField"
-              type="checkbox"
-              variant="filled"
-            />
+            <of-toggle :config="{ ...testCheckField, variant: 'filled' }" />
           </div>
         </div>
       </div>
