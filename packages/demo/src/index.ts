@@ -8,7 +8,7 @@ import { Oceanfront } from 'oceanfront'
 import 'highlight.js/styles/vs2015.css'
 
 createApp(App)
-  .use(Oceanfront)
+  .use(Oceanfront, { icons: [{ name: 'random' }] })
   .use(demo)
   .use(router)
   .mount('#app')

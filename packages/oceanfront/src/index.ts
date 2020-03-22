@@ -1,7 +1,8 @@
 import { App, Component, Plugin, Directive } from 'vue'
 
-import { OfConfig } from './lib/config'
+import { initConfig, OfConfig } from './lib/config'
 import OfDialog from './components/Dialog.vue'
+import { OfIcon, IconHandler } from './components/Icon'
 import OfListItem from './components/ListItem.vue'
 import OfNavGroup from './components/NavGroup.vue'
 import OfSelect from './components/Select.vue'
@@ -15,6 +16,7 @@ import './scss/index.scss'
 export const components: Record<string, Component> = {
   OfConfig,
   OfDialog,
+  OfIcon,
   OfListItem,
   OfNavGroup,
   OfSelect,
@@ -27,7 +29,8 @@ export const components: Record<string, Component> = {
 export const directives: Record<string, Directive> = {}
 
 export const Oceanfront: Plugin = {
-  install(vue: App) {
+  install(vue: App, args: any) {
+    initConfig({ icons: new IconHandler() }, args)
     for (const idx in components) {
       vue.component(idx, components[idx])
     }

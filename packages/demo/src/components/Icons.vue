@@ -9,175 +9,17 @@
     </p>
 
     <div class="row demo-row">
-      <div class="demo-inline">
-        <div
-          class="demo-icon input-icon icon-expand-up"
-          title="expand up"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-expand-down"
-          title="expand down"
-        ></div>
-        <div class="demo-icon input-icon icon-expand" title="expand"></div>
-        <div
-          class="demo-icon input-icon icon-expand-close"
-          title="expand close"
-        ></div>
-        <div class="demo-icon input-icon icon-menu" title="menu"></div>
-        <div class="demo-icon input-icon icon-alt-menu" title="alt menu"></div>
-        <div class="demo-icon input-icon icon-ellipsis" title="ellipsis"></div>
-        <div class="demo-icon input-icon icon-accept" title="accept"></div>
-        <div class="demo-icon input-icon icon-cancel" title="cancel"></div>
-        <div class="demo-icon input-icon icon-gear" title="gear"></div>
-        <div class="demo-icon input-icon icon-print" title="print"></div>
-        <div class="demo-icon input-icon icon-refresh" title="refresh"></div>
+      <div class="demo-inline" v-for="iconset of icons">
+        <of-icon v-for="(desc, icon) of iconset" :name="icon" :title="desc" />
       </div>
       <div class="demo-inline">
-        <div class="demo-icon input-icon icon-required" title="required"></div>
-        <div class="demo-icon input-icon icon-email" title="email"></div>
-        <div class="demo-icon input-icon icon-mobile" title="mobile"></div>
-        <div class="demo-icon input-icon icon-phone" title="phone"></div>
-        <div class="demo-icon input-icon icon-external" title="external"></div>
-        <div class="demo-icon input-icon icon-attach" title="attachment"></div>
-        <div class="demo-icon input-icon icon-plus" title="plus"></div>
-        <div class="demo-icon input-icon icon-user" title="user"></div>
-        <div class="demo-icon input-icon icon-lock" title="lock"></div>
-        <div class="demo-icon input-icon icon-search" title="search"></div>
-        <div class="demo-icon input-icon icon-date" title="date"></div>
-        <div class="demo-icon input-icon icon-time" title="time"></div>
-        <div
-          class="demo-icon input-icon icon-hourglass"
-          title="hourglass"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-hamburger"
-          title="hamburger"
-        ></div>
-      </div>
-      <div class="demo-inline">
-        <div class="demo-icon input-icon icon-checkbox" title="check off"></div>
-        <div
-          class="demo-icon input-icon icon-checkbox checked"
-          title="check on"
-        ></div>
-        <div class="demo-icon input-icon icon-radio" title="radio off"></div>
-        <div
-          class="demo-icon input-icon icon-radio checked"
-          title="radio on"
-        ></div>
-        <div class="demo-icon input-icon icon-star" title="star off"></div>
-        <div
-          class="demo-icon input-icon icon-star checked"
-          title="star on"
-        ></div>
-      </div>
-      <div class="demo-inline">
-        <div class="demo-icon input-icon icon-arrow-up" title="up arrow"></div>
-        <div
-          class="demo-icon input-icon icon-arrow-down"
-          title="down arrow"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-arrow-left"
-          title="left arrow"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-arrow-right"
-          title="right arrow"
-        ></div>
-        <div class="demo-icon input-icon icon-nav-first" title="first"></div>
-        <div
-          class="demo-icon input-icon icon-nav-previous"
-          title="fprevious"
-        ></div>
-        <div class="demo-icon input-icon icon-nav-next" title="fnext"></div>
-        <div class="demo-icon input-icon icon-nav-last" title="last"></div>
-        <div class="demo-icon input-icon icon-previous" title="previous"></div>
-        <div class="demo-icon input-icon icon-next" title="next"></div>
-        <div
-          class="demo-icon input-icon icon-triangle-up"
-          title="triangle up"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-triangle-down"
-          title="triangle down"
-        ></div>
-      </div>
-      <div class="demo-inline">
-        <div
-          class="demo-icon input-icon icon-circle-ellipsis"
-          title="circle ellipsis"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-circle-attach"
-          title="circle attachment"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-circle-check"
-          title="circle check"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-circle-cross"
-          title="circle cross"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-circle-info"
-          title="circle info"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-circle-error"
-          title="circle error"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-circle-plus"
-          title="circle plus"
-        ></div>
-        <div
-          class="demo-icon input-icon icon-circle-minus"
-          title="circle minus"
-        ></div>
-        <!-- div
-        class="demo-icon input-icon icon-circle-split"
-        title="circle split"
-      ></div>
-      <div
-        class="demo-icon input-icon icon-circle-join"
-        title="circle join"
-      ></div>
-      <div
-        class="demo-icon input-icon icon-circle-refresh"
-        title="circle refresh"
-      ></div -->
-      </div>
-      <div class="demo-inline">
-        <div
-          class="demo-icon input-icon input-led led-grey"
-          title="grey led"
-        ></div>
-        <div
-          class="demo-icon input-icon input-led led-green"
-          title="green led"
-        ></div>
-        <div
-          class="demo-icon input-icon input-led led-red"
-          title="red led"
-        ></div>
-        <div
-          class="demo-icon input-icon input-led led-yellow"
-          title="yellow led"
-        ></div>
-        <div
-          class="demo-icon input-icon input-led led-violet"
-          title="violet led"
-        ></div>
-        <div
-          class="demo-icon input-icon input-led led-blue"
-          title="blue led"
-        ></div>
-        <div
-          class="demo-icon input-icon input-led led-orange"
-          title="orange led"
-        ></div>
+        <div class="of-icon input-led led-grey" title="grey led"></div>
+        <div class="of-icon input-led led-green" title="green led"></div>
+        <div class="of-icon input-led led-red" title="red led"></div>
+        <div class="of-icon input-led led-yellow" title="yellow led"></div>
+        <div class="of-icon input-led led-violet" title="violet led"></div>
+        <div class="of-icon input-led led-blue" title="blue led"></div>
+        <div class="of-icon input-led led-orange" title="orange led"></div>
       </div>
     </div>
   </div>
@@ -187,17 +29,87 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  setup(props, ctx) {}
+  setup(props, ctx) {
+    return {
+      icons: [
+        {
+          'expand-up': 'expand up',
+          'expand-down': 'expand down',
+          expand: 'expand',
+          'expand-close': 'expand close',
+          menu: 'menu',
+          'alt-menu': 'alt menu',
+          ellipsis: 'ellipsis',
+          accept: 'accept',
+          cancel: 'cancel',
+          gear: 'gear',
+          print: 'print',
+          refresh: 'refresh'
+        },
+        {
+          required: 'required',
+          email: 'email',
+          mobile: 'mobile',
+          phone: 'phone',
+          external: 'external',
+          attach: 'attachment',
+          plus: 'plus',
+          user: 'user',
+          lock: 'lock',
+          search: 'search',
+          date: 'date',
+          time: 'time',
+          hourglass: 'hourglass',
+          hamburger: 'hamburger'
+        },
+        {
+          checkbox: 'check off',
+          'checkbox checked': 'check on',
+          radio: 'radio off',
+          'radio checked': 'radio on',
+          star: 'star off',
+          'star checked': 'star on'
+        },
+        {
+          'arrow-up': 'up arrow',
+          'arrow-down': 'down arrow',
+          'arrow-left': 'left arrow',
+          'arrow-right': 'right arrow',
+          'nav-first': 'nav first',
+          'nav-previous': 'nav previous',
+          'nav-next': 'nav next',
+          'nav-last': 'nav last',
+          'triangle-up': 'triangle up',
+          'triangle-down': 'triangle down',
+          previous: 'previous',
+          next: 'next'
+        },
+        {
+          'circle-ellipsis': 'circle ellipsis',
+          'circle-attach': 'circle attachment',
+          'circle-check': 'circle check',
+          'circle-cross': 'circle cross',
+          'circle-info': 'circle info',
+          'circle-error': 'circle error',
+          'circle-plus': 'circle plus',
+          'circle-minus': 'circle minus',
+          'circle-help': 'circle help'
+          // circle-split
+          // circle-refresh
+        }
+      ]
+    }
+  }
 })
 </script>
 
 <style lang="scss" scoped>
-.demo-icon {
+.demo-row .of-icon {
   box-sizing: content-box;
   display: inline-block;
   border-radius: 2px;
-  font-size: 28px;
-  line-height: 28px;
+  font-size: 1.75rem;
+  line-height: 1;
   border: 1px solid #eee;
   background: #fffefd;
   color: #444;
