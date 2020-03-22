@@ -10,17 +10,10 @@
 @import '../../../../node_modules/oceanfront/fonts/uibasic.css';
 @import '../../../../node_modules/oceanfront/fonts/uibasic-icons.css';
 
-/*@import 'base/uibasic';
-
-@import 'base/overlay';
-@import 'base/utils';
-
-.theme-base {
-  // $font-base-path: 'base/';
-  @import 'base';
+.of-code {
+  border-radius: 5px;
+  background: #444a55;
+  color: #f6f6f6;
+  font-family: monospace;
+  padding: 1ch;
 }
-
-.theme-material {
-  @import 'material';
-}
-*/

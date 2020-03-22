@@ -42,6 +42,7 @@ export default defineComponent({
       if (router && props.to) {
         const rt = router.resolve(props.to)
         if (rt) {
+          console.log(rt)
           return router.createHref(rt)
         }
       }

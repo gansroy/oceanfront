@@ -1,20 +1,4 @@
 <template>
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,700"
-  />
-  <section class="container">
-    <label for="baseFontSize">Base font size ({{ baseFontSize }}px)</label>
-    <input
-      id="baseFontSize"
-      type="range"
-      min="10"
-      max="30"
-      step="2"
-      :value="baseFontSize"
-      @change="updateFont"
-    />
-  </section>
   <section class="container">
     <div class="demo-block">
       <div class="demo-title">
@@ -1020,15 +1004,7 @@
 import { ref, defineComponent } from 'vue'
 
 export default defineComponent({
-  setup(props, ctx) {
-    const baseFontSize = ref('16')
-    const updateFont = function(evt: Event) {
-      const size = (evt.target as HTMLInputElement).value
-      baseFontSize.value = size
-      document.documentElement.style.fontSize = size + 'px'
-    }
-    return { baseFontSize, updateFont }
-  }
+  setup(props, ctx) {}
 })
 </script>
 

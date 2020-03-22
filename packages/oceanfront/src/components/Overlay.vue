@@ -6,7 +6,7 @@
       :class="classAttr"
       role="document"
       ref="elt"
-      :tabindex="active ? '-1' : null"
+      :tabindex="active && state === 'overlay' ? '-1' : null"
       v-on="handlers"
       v-show="active"
     >

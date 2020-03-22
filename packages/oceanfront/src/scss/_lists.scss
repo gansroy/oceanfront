@@ -5,7 +5,7 @@
   outline: none;
   padding: 2px 4px;
   text-decoration: none;
-  transition: color 300ms;
+  transition: color 200ms;
   &.of--disabled {
     color: $color-input-disabled;
     cursor: default;
@@ -16,7 +16,7 @@
   border-radius: 5px;
   display: flex;
   padding: 0.3em 0.8em;
-  transition: background-color 300ms;
+  transition: background-color 200ms;
 }
 .of--enabled {
   &.of-list-item:hover {

@@ -78,8 +78,7 @@ module.exports = (env = {}) => {
               options: { hmr: !isProd }
             },
             'css-loader'
-          ],
-          exclude: /node_modules/
+          ]
         }
       ]
     },
@@ -96,10 +95,11 @@ module.exports = (env = {}) => {
     devServer: {
       inline: true,
       hot: true,
+      overlay: true,
       stats: 'minimal',
       // contentBase: resolve(__dirname, './dist'),
       contentBasePublicPath: '/ofdocs/',
-      overlay: true
+      watchContentBase: true // fix reload of html, bit drastic
     }
   }
   if (isProd) {

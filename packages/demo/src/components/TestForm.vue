@@ -1,11 +1,5 @@
 <template>
-  <div class="container theme-base">
-    <div class="row">
-      <div class="column">
-        <of-dialog overlay-class="theme-base" v-model="dialogActive" />
-        <button @click="showDialog">show dialog</button>
-      </div>
-    </div>
+  <div class="container">
     <div class="row">
       <div class="column">
         <of-select
@@ -13,6 +7,7 @@
           value="Selected"
           variant="filled"
         ></of-select>
+        <of-highlight lang="html" value="<html>" />
       </div>
     </div>
     <div class="row">
@@ -118,19 +113,12 @@ export default defineComponent({
     const change = () => {
       textValue.value = new Date().getTime().toString()
     }
-    const dialogActive = ref(false)
-    const showDialog = () =>
-      nextTick(() => (dialogActive.value = !dialogActive.value))
     return {
       change,
       testField,
       testCheckField,
-      textValue,
-      dialogActive,
-      showDialog
+      textValue
     }
   }
 })
 </script>
-
-<style scoped></style>
