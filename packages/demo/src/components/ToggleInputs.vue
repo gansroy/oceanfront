@@ -7,15 +7,15 @@
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <of-toggle :config="{ ...testCheckField, variant: 'basic' }" />
+            <of-toggle v-bind="testCheckField" variant="basic" />
           </div>
           <br />
           <div class="form-cell">
-            <of-toggle :config="{ ...testCheckField, variant: 'outlined' }" />
+            <of-toggle v-bind="testCheckField" variant="outlined" />
           </div>
           <br />
           <div class="form-cell">
-            <of-toggle :config="{ ...testCheckField, variant: 'filled' }" />
+            <of-toggle v-bind="testCheckField" variant="filled" />
           </div>
         </div>
       </div>

@@ -16,18 +16,17 @@ export default defineComponent({
   components: { OfFieldOuter },
   inheritAttrs: false,
   props: {
-    checked: [Boolean, String],
+    checked: Boolean,
     class: String,
-    config: Object,
-    disabled: [Boolean, String],
+    disabled: Boolean,
     id: String,
     label: String,
+    labelPosition: String,
     modelValue: String,
-    tabindex: [Number, String],
+    tabindex: Number,
     variant: String
   },
   setup(props, ctx: SetupContext) {
-    const config = props.config || props
     const inputValue = ref(
       props.checked === undefined ? props.modelValue : props.checked
     )
@@ -38,10 +37,10 @@ export default defineComponent({
       }
     )
     const elt: Ref<HTMLInputElement | undefined> = ref()
-    const disabled = computed(() => config.disabled)
+    const disabled = computed(() => props.disabled)
     const focused = ref(false)
-    const id = config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
-    const label = computed(() => config.label)
+    const id = props.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
+    const label = computed(() => props.label)
     const handlers = {
       blur: (evt: FocusEvent) => {
         focused.value = false
@@ -64,14 +63,14 @@ export default defineComponent({
     })
     const fieldAttrs = computed(() => ({
       blank: false, // blank for indeterminate?
-      class: ['of-field-toggle', config.class],
-      config,
+      class: ['of-field-toggle', props.class],
       disabled: disabled.value,
       focused: focused.value,
       inputId: id,
-      label: config.label,
+      label: props.label,
+      labelPosition: props.labelPosition,
       showLabel: false,
-      variant: config.variant
+      variant: props.variant
     }))
     return {
       attrs: computed(() => ({
@@ -79,7 +78,7 @@ export default defineComponent({
         checked: !!inputValue.value, // ask formatter?
         class: 'of-field-input',
         disabled: disabled.value,
-        tabIndex: config.tabindex
+        tabIndex: props.tabindex
       })),
       elt,
       fieldAttrs,

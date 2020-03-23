@@ -18,15 +18,7 @@
 </template>
 
 <script lang="ts">
-import {
-  ref,
-  defineComponent,
-  SetupContext,
-  reactive,
-  computed,
-  Ref,
-  watch
-} from 'vue'
+import { ref, defineComponent, SetupContext, computed, watch } from 'vue'
 import OfOverlay from './Overlay.vue'
 
 export default defineComponent({

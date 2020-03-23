@@ -23,13 +23,11 @@ import {
   ref,
   defineComponent,
   SetupContext,
-  reactive,
   computed,
   Ref,
   onMounted,
   watch,
   nextTick,
-  watchEffect,
   onUnmounted,
   onBeforeUnmount
 } from 'vue'
@@ -39,7 +37,8 @@ const relativeParentRect = (elt: Element) => {
   let parent = elt.parentNode as Element | undefined
   if (!parent) return
   while (parent) {
-    if (getComputedStyle(parent).position == 'relative') break
+    const ppos = getComputedStyle(parent).position
+    if (ppos === 'relative' || ppos === 'absolute') break
     parent =
       [window, document.documentElement].indexOf(parent.parentNode as any) !==
       -1
@@ -69,15 +68,15 @@ export default defineComponent({
   components: { OfSpinner },
   inheritAttrs: false,
   props: {
-    active: { default: false },
-    align: { default: 'center' },
-    capture: { default: true },
+    active: { type: Boolean, default: false },
+    align: { type: String, default: 'center' },
+    capture: { type: Boolean, default: true },
     class: String,
-    embed: { default: false },
+    embed: Boolean,
     id: String,
-    loading: { default: false },
-    pad: { default: true }, // FIXME change to string enum
-    shade: { default: true },
+    loading: Boolean,
+    pad: { type: Boolean, default: true }, // FIXME change to string enum
+    shade: { type: Boolean, default: true },
     target: {}
   },
   setup(props, ctx: SetupContext) {

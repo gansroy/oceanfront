@@ -12,14 +12,13 @@ import { computed, defineComponent, ref } from 'vue'
 export default defineComponent({
   name: 'of-list-group',
   props: {
-    modelValue: [Boolean, String],
+    modelValue: Boolean,
     transition: String,
-    value: [Boolean, String]
+    value: Boolean
   },
   setup(props, ctx) {
     const state = ref(!!props.modelValue || props.value)
     const toggle = (args?: any) => {
-      console.trace()
       state.value = !state.value
       ctx.emit('update:modelValue', state.value)
     }

@@ -8,22 +8,25 @@
         <div class="form-outer">
           <div class="form-cell">
             <of-text-field
-              :config="{ ...testField, variant: 'basic' }"
+              v-bind="testField"
               v-model="textValue"
+              variant="basic"
             />
           </div>
           <br />
           <div class="form-cell">
             <of-text-field
-              :config="{ ...testField, variant: 'outlined' }"
+              v-bind="testField"
               v-model="textValue"
+              variant="outlined"
             />
           </div>
           <br />
           <div class="form-cell">
             <of-text-field
-              :config="{ ...testField, variant: 'filled' }"
+              v-bind="testField"
               v-model="textValue"
+              variant="filled"
             />
           </div>
           <!-- br />
@@ -33,21 +36,15 @@
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <of-textarea
-              :config="{ ...testField, rows: 3, variant: 'basic' }"
-            />
+            <of-textarea v-bind="testField" rows="3" variant="basic" />
           </div>
           <br />
           <div class="form-cell">
-            <of-textarea
-              :config="{ ...testField, rows: 3, variant: 'outlined' }"
-            />
+            <of-textarea v-bind="testField" rows="3" variant="outlined" />
           </div>
           <br />
           <div class="form-cell">
-            <of-textarea
-              :config="{ ...testField, rows: 3, variant: 'filled' }"
-            />
+            <of-textarea v-bind="testField" rows="3" variant="filled" />
           </div>
         </div>
       </div>

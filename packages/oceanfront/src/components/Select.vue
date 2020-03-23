@@ -54,7 +54,6 @@ export default defineComponent({
   components: { OfFieldOuter, OfListItem, OfNavGroup, OfOverlay },
   props: {
     class: String, // or object or list
-    config: Object,
     disabled: Boolean,
     id: String,
     label: String,
@@ -66,7 +65,6 @@ export default defineComponent({
     variant: String
   },
   setup(props, ctx: SetupContext) {
-    const config = props.config || {}
     const inputValue = ref(
       props.value === undefined ? props.modelValue : props.value
     )
@@ -76,15 +74,12 @@ export default defineComponent({
         inputValue.value = val
       }
     )
-    const disabled = computed(() => config.disabled || props.disabled)
+    const disabled = computed(() => props.disabled)
     const elt = ref<HTMLElement | undefined>()
     const focused = ref(false)
     const opened = ref(false)
-    const readonly = computed(
-      () => (config.readonly || props.readonly) && !disabled.value
-    )
-    const id =
-      props.id || config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
+    const readonly = computed(() => props.readonly && !disabled.value)
+    const id = props.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
     const focus = () => {
       elt.value?.focus()
     }
@@ -120,12 +115,11 @@ export default defineComponent({
     const fieldAttrs = computed(() => ({
       blank: blank.value,
       class: ['of-field-select', props.class],
-      config,
       disabled: disabled.value,
       focused: focused.value || opened.value,
       id: id + '-outer',
       inputId: id,
-      label: props.label === undefined ? config.label : props.label,
+      label: props.label === undefined ? props.label : props.label,
       opened: opened.value,
       readonly: readonly.value,
       variant: props.variant
@@ -148,5 +142,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style scoped></style>

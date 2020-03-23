@@ -40,9 +40,9 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     class: String,
-    embed: { default: false },
+    embed: Boolean,
     id: String,
-    loading: { default: false },
+    loading: Boolean,
     modelValue: Boolean
   },
   setup(props, ctx: SetupContext) {

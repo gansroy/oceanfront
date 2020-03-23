@@ -24,29 +24,24 @@ import { StoreRef } from '../lib/store'
 export default defineComponent({
   name: 'of-field-outer',
   inheritAttrs: false,
-  setup(
-    props: {
-      blank?: boolean
-      class?: any
-      config?: FieldConfig
-      disabled?: boolean
-      focused?: boolean
-      id?: string
-      inputId?: string
-      label?: any
-      opened?: boolean
-      readonly?: boolean
-      store?: StoreRef
-      variant?: string
-    },
-    ctx: SetupContext
-  ) {
-    const config = props.config || {}
+  props: {
+    blank: Boolean,
+    class: String,
+    disabled: Boolean,
+    focused: Boolean,
+    id: String,
+    inputId: String,
+    label: String,
+    labelPosition: String,
+    opened: Boolean,
+    readonly: Boolean,
+    variant: String
+  },
+  setup(props, ctx: SetupContext) {
     const label = computed(() => props.label)
     const withLabel = computed(
       () =>
-        (!config.labelPosition || config.labelPosition === 'field') &&
-        label.value
+        (!props.labelPosition || props.labelPosition === 'field') && label.value
     )
     const classAttrs = computed(() => {
       const blank = props.blank && !(props.focused || props.opened)

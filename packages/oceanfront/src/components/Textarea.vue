@@ -13,14 +13,14 @@
 import { ref, defineComponent, SetupContext, computed, Ref, watch } from 'vue'
 import OfFieldOuter from './FieldOuter.vue'
 
-const copyAttrs = new Set([
-  'autocomplete',
-  'placeholder',
-  'cols',
-  'rows',
-  'tabIndex',
-  'value'
-])
+// const copyAttrs = new Set([
+//   'autocomplete',
+//   'placeholder',
+//   'cols',
+//   'rows',
+//   'tabIndex',
+//   'value'
+// ])
 
 const calcHeight = (input: Ref<HTMLTextAreaElement>) => {
   let ht = input.value && input.value.scrollHeight
@@ -33,20 +33,19 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     class: String,
-    config: Object,
-    disabled: [Boolean, String],
+    disabled: Boolean,
     id: String,
+    label: String,
     modelValue: String,
     placeholder: String,
-    readonly: [Boolean, String],
-    rows: [Number, String],
+    readonly: Boolean,
+    rows: Number,
     value: String,
     variant: String
   },
   setup(props, ctx: SetupContext) {
-    const config = props.config || props
     const elt = ref<HTMLInputElement | undefined>()
-    const disabled = computed(() => config.disabled)
+    const disabled = computed(() => props.disabled)
     const focused = ref(false)
     const inputValue = ref(
       props.value === undefined ? props.modelValue : props.value
@@ -57,8 +56,8 @@ export default defineComponent({
         inputValue.value = val
       }
     )
-    const readonly = computed(() => config.readonly && !disabled.value)
-    const id = config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
+    const readonly = computed(() => props.readonly && !disabled.value)
+    const id = props.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
     const value: Ref<any> = computed({
       get: () => {
         // FIXME format stored value
@@ -95,23 +94,22 @@ export default defineComponent({
     })
     const fieldAttrs = computed(() => ({
       blank: blank.value,
-      class: ['of-field-textarea', config.class],
-      config,
+      class: ['of-field-textarea', props.class],
       disabled: disabled.value,
       focused: focused.value,
       inputId: id,
-      label: config.label,
+      label: props.label,
       readonly: readonly.value,
-      variant: config.variant
+      variant: props.variant
     }))
     return {
       attrs: computed(() => ({
         id,
         class: 'of-field-input',
         disabled: disabled.value,
-        placeholder: config.placeholder,
+        placeholder: props.placeholder,
         readonly: readonly.value,
-        rows: config.rows
+        rows: props.rows
       })),
       elt,
       fieldAttrs,

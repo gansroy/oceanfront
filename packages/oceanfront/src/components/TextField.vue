@@ -8,7 +8,7 @@
 import { ref, defineComponent, SetupContext, computed, Ref, watch } from 'vue'
 import OfFieldOuter from './FieldOuter.vue'
 
-const copyAttrs = new Set(['autocomplete', 'placeholder', 'size', 'value'])
+// const copyAttrs = new Set(['autocomplete', 'placeholder', 'size', 'value'])
 
 // types that can be inherited from state.type
 // setting state.inputType allows any value
@@ -36,19 +36,17 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     class: String,
-    config: Object,
-    disabled: [Boolean, String],
+    disabled: Boolean,
     id: String,
     label: String,
     maxlength: Number,
     modelValue: String,
     placeholder: String,
-    readonly: [Boolean, String],
+    readonly: Boolean,
     value: String,
     variant: String
   },
   setup(props, ctx: SetupContext) {
-    const config = props.config || props
     const inputValue = ref(
       props.value === undefined ? props.modelValue : props.value
     )
@@ -59,10 +57,10 @@ export default defineComponent({
       }
     )
     const elt = ref<HTMLInputElement | undefined>()
-    const disabled = computed(() => config.disabled)
+    const disabled = computed(() => props.disabled)
     const focused = ref(false)
-    const readonly = computed(() => config.readonly && !disabled.value)
-    const id = config.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
+    const readonly = computed(() => props.readonly && !disabled.value)
+    const id = props.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
     const value: Ref<any> = computed({
       get: () => {
         // FIXME format stored value
@@ -103,21 +101,21 @@ export default defineComponent({
     })
     const fieldAttrs = computed(() => ({
       blank: blank.value,
-      class: ['of-field-text', config.class],
+      class: ['of-field-text', props.class],
       disabled: disabled.value,
       focused: focused.value,
       inputId: id,
-      label: config.label,
+      label: props.label,
       readonly: readonly.value,
-      variant: config.variant
+      variant: props.variant
     }))
     return {
       attrs: computed(() => ({
         id,
         class: 'of-field-input',
         disabled: disabled.value,
-        maxlength: config.maxlength,
-        placeholder: config.placeholder,
+        maxlength: props.maxlength,
+        placeholder: props.placeholder,
         readonly: readonly.value,
         value: inputValue.value
       })),

@@ -37,7 +37,7 @@
           <of-list-item to="/icons">Icons</of-list-item>
           <of-list-group value="1">
             <template #activator="{ state, toggle }">
-              <of-list-item :expand="state" @click="toggle"
+              <of-list-item :expand="state" @click.prevent="toggle"
                 >Forms &amp; Inputs</of-list-item
               >
             </template>
@@ -119,7 +119,7 @@ export default defineComponent({
 }
 .app-header {
   align-items: center;
-  background: linear-gradient(to bottom, #88aed3, #88bbd3);
+  background: linear-gradient(to bottom, #88aed3, #88bbd3 60%);
   color: #fbfdff;
   display: flex;
   flex: none;
