@@ -1,5 +1,13 @@
 // @import 'uibasic-icons';
 
+.of-icon {
+  display: inline-flex; // allow scaling of contents
+  transform: scale($scale-icon-x, $scale-icon-y);
+  &.left {
+    margin-right: 0.25em;
+  }
+}
+
 %icon-base {
   font-family: uibasic;
   font-style: normal;

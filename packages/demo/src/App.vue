@@ -2,14 +2,14 @@
   <of-config :form="{ locked: true }">
     <header class="app-header">
       <div class="app-menu-source" @click.prevent="toggleSidebar">
-        <div class="input-icon icon-menu"></div>
+        <of-icon name="menu" />
       </div>
       <div class="app-header-main">
         <div class="app-title">Oceanfront</div>
         <div class="app-tag">dev</div>
       </div>
       <div class="app-config-source" @click.prevent="showConfig">
-        <div class="input-icon icon-gear"></div>
+        <of-icon name="gear" />
         <of-dialog v-model="configActive">
           <div class="container">
             <h4>Theme Config</h4>
@@ -35,15 +35,23 @@
           <of-list-item to="/">Overview</of-list-item>
           <of-list-item disabled>Buttons</of-list-item>
           <of-list-item to="/icons">Icons</of-list-item>
+          <of-list-group value="1">
+            <template #activator="{ state, toggle }">
+              <of-list-item :expand="state" @click="toggle"
+                >Forms &amp; Inputs</of-list-item
+              >
+            </template>
+            <of-list-item to="/select-inputs">Select Inputs</of-list-item>
+            <of-list-item to="/text-inputs">Text Inputs</of-list-item>
+            <of-list-item to="/toggle-inputs">Toggle Inputs</of-list-item>
+            <of-list-item disabled>Picker Inputs</of-list-item>
+            <of-list-item disabled>Formatters</of-list-item>
+          </of-list-group>
           <of-list-item disabled>Lists</of-list-item>
-          <of-list-item disabled>Dialogs</of-list-item>
           <of-list-item disabled>Menus</of-list-item>
-          <of-list-item disabled>Forms</of-list-item>
-          <of-list-item to="/select-inputs">Select Inputs</of-list-item>
-          <of-list-item to="/text-inputs">Text Inputs</of-list-item>
-          <of-list-item to="/toggle-inputs">Toggle Inputs</of-list-item>
-          <of-list-item disabled>Picker Inputs</of-list-item>
-          <of-list-item disabled>Formatters</of-list-item>
+          <of-list-item disabled>Tabs</of-list-item>
+          <of-list-item disabled>Pagers</of-list-item>
+          <of-list-item disabled>Dialogs</of-list-item>
         </of-nav-group>
       </of-sidebar>
       <main class="app-main">
@@ -65,7 +73,7 @@ import { onErrorCaptured, ref, defineComponent, SetupContext } from 'vue'
 import TestForm from './components/TestForm.vue'
 import TestInputs from './components/TestInputs.vue'
 
-function formatError(e: Error) {
+function formatError(e: any) {
   return (e.stack || e).toString()
 }
 

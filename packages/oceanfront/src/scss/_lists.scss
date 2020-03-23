@@ -1,3 +1,18 @@
+.of-list-group {
+  overflow: hidden;
+  max-height: 100%;
+  padding-left: 1em;
+  &.v-enter-active {
+    transition: all 200ms ease;
+  }
+  &.v-leave-active {
+    transition: all 200ms ease;
+  }
+  &.v-enter-from,
+  &.v-leave-to {
+    max-height: 0;
+  }
+}
 .of-list-item {
   color: $color-input;
   cursor: pointer;
@@ -12,11 +27,15 @@
   }
 }
 .of-list-item-inner {
+  align-items: center;
   background: transparent;
   border-radius: 5px;
   display: flex;
   padding: 0.3em 0.8em;
   transition: background-color 200ms;
+}
+.of-list-item-content {
+  flex: auto;
 }
 .of--enabled {
   &.of-list-item:hover {

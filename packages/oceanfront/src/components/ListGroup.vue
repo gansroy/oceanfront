@@ -1,0 +1,34 @@
+<template>
+  <slot name="activator" v-bind="{ state, toggle }"></slot>
+  <transition :name="transition"
+    ><div class="of-list-group" v-show="state">
+      <slot :state="state"></slot></div
+  ></transition>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, ref } from 'vue'
+
+export default defineComponent({
+  name: 'of-list-group',
+  props: {
+    modelValue: [Boolean, String],
+    transition: String,
+    value: [Boolean, String]
+  },
+  setup(props, ctx) {
+    const state = ref(!!props.modelValue || props.value)
+    const toggle = (args?: any) => {
+      console.trace()
+      state.value = !state.value
+      ctx.emit('update:modelValue', state.value)
+    }
+    const transition = computed(() => props.transition)
+    return {
+      state,
+      toggle,
+      transition
+    }
+  }
+})
+</script>

@@ -1,18 +1,14 @@
 <script lang="ts">
 import {
-  h,
-  defineComponent,
-  SetupContext,
-  provide,
-  ComponentPublicInstance,
-  watchEffect,
-  Ref,
   computed,
-  reactive,
+  defineComponent,
+  h,
   inject,
+  reactive,
   ref,
-  onMounted,
-  onUnmounted,
+  resolveComponent,
+  Ref,
+  SetupContext,
   VNode
 } from 'vue'
 import { INavGroup } from './NavGroup.vue'
@@ -20,14 +16,16 @@ import { INavGroup } from './NavGroup.vue'
 export default defineComponent({
   name: 'of-list-item',
   props: {
-    disabled: [Boolean, String],
+    disabled: Boolean,
+    expand: { type: Boolean, default: null },
     href: String,
     to: [String, Object]
   },
   setup(props, ctx: SetupContext) {
     let unreg: (() => void) | undefined
-    const disabled = computed(() => !!props.disabled || props.disabled === '')
+    const disabled = computed(() => props.disabled)
     const elt = ref<HTMLElement | undefined>()
+    const expand = computed(() => props.expand)
     const focused = ref(false)
     const navActive = ref(false)
     const navGroup = inject<INavGroup>('of_NavGroup')
@@ -82,6 +80,20 @@ export default defineComponent({
       }
     }
 
+    const content = () => {
+      const result = [
+        h('div', { class: 'of-list-item-content' }, ctx.slots.default!())
+      ]
+      if (expand.value !== null) {
+        result.push(
+          h(resolveComponent('of-icon') as any, {
+            name: expand.value ? 'expand-up' : 'expand-down'
+          })
+        )
+      }
+      return result
+    }
+
     return () => {
       const hrefVal = disabled.value ? null : href.value
       return h(
@@ -98,7 +110,7 @@ export default defineComponent({
           ref: 'elt',
           ...handlers
         },
-        [h('div', { class: 'of-list-item-inner' }, ctx.slots.default!())]
+        h('div', { class: 'of-list-item-inner' }, content())
       )
     }
   }

@@ -60,14 +60,6 @@
   --font-size-input: #{$font-size-input-lg};
 }
 
-.input-icon {
-  display: inline-flex; // allow scaling of contents
-  transform: scale($scale-icon-x, $scale-icon-y);
-  &.left {
-    margin-right: 0.25em;
-  }
-}
-
 // for complex field content (ref input)
 .input-wrapper {
   display: inline-block;

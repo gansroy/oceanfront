@@ -4,6 +4,7 @@ import { initConfig, OfConfig } from './lib/config'
 import OfDialog from './components/Dialog.vue'
 import { OfIcon, IconHandler } from './components/Icon'
 import OfListItem from './components/ListItem.vue'
+import OfListGroup from './components/ListGroup.vue'
 import OfNavGroup from './components/NavGroup.vue'
 import OfSelect from './components/Select.vue'
 import OfSidebar from './components/Sidebar.vue'
@@ -18,6 +19,7 @@ export const components: Record<string, Component> = {
   OfDialog,
   OfIcon,
   OfListItem,
+  OfListGroup,
   OfNavGroup,
   OfSelect,
   OfSidebar,
