@@ -5,19 +5,38 @@
     <br />
     <div class="row">
       <div class="column md-4">
-        <div class="form-outer">
-          <div class="form-cell">
-            <of-toggle v-bind="testCheckField" variant="basic" />
-          </div>
-          <br />
-          <div class="form-cell">
-            <of-toggle v-bind="testCheckField" variant="outlined" />
-          </div>
-          <br />
-          <div class="form-cell">
-            <of-toggle v-bind="testCheckField" variant="filled" />
-          </div>
-        </div>
+        <of-toggle v-bind="testCheckField" variant="basic" />
+        <br /><br />
+        <of-toggle v-bind="testCheckField" variant="outlined" />
+        <br /><br />
+        <of-toggle v-bind="testCheckField" variant="filled" />
+      </div>
+      <div class="column md-4">
+        <form>
+          <of-toggle
+            v-bind="testCheckField"
+            name="testr"
+            type="radio"
+            variant="basic"
+            value="1"
+          />
+          <br /><br />
+          <of-toggle
+            v-bind="testCheckField"
+            name="testr"
+            type="radio"
+            variant="outlined"
+            value="2"
+          />
+          <br /><br />
+          <of-toggle
+            v-bind="testCheckField"
+            name="testr"
+            type="radio"
+            variant="filled"
+            value="3"
+          />
+        </form>
       </div>
     </div>
   </div>
