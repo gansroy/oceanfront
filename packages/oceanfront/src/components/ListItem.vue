@@ -6,12 +6,12 @@ import {
   inject,
   reactive,
   ref,
-  resolveComponent,
   Ref,
   SetupContext,
   VNode
 } from 'vue'
 import { INavGroup } from './NavGroup.vue'
+import { OfIcon } from './Icon'
 
 export default defineComponent({
   name: 'of-list-item',
@@ -86,7 +86,7 @@ export default defineComponent({
       ]
       if (expand.value !== null) {
         result.push(
-          h(resolveComponent('of-icon') as any, {
+          h(OfIcon, {
             name: expand.value ? 'expand-up' : 'expand-down'
           })
         )

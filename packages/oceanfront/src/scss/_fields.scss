@@ -150,18 +150,27 @@
   // caret-color
 }
 
-.of-field-toggle .of-field-input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  -webkit-appearance: none;
-  appearance: none;
-  font-size: inherit;
-  margin: 0;
-  outline: none;
-  + .of-field-input-label {
+.of-field-toggle {
+  .of-field-input {
+    // input is invisible and covers the entire container
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    font-size: inherit;
+    margin: 0;
+    outline: none;
+  }
+
+  .of-toggle-icon {
+    font-size: 115%;
+    margin-left: 0.5em;
+  }
+
+  /*+ .of-field-input-label {
     display: flex;
     label {
       flex: auto;
@@ -181,12 +190,12 @@
   }
   &[type='radio']:checked + .of-field-input-label::after {
     content: 'radio.checked';
-  }
+  }*/
 }
 
-.of-field-input-label {
-  flex: auto;
-}
+// .of-field-input-label {
+//   flex: auto;
+// }
 
 .of-select-arrow {
   padding-left: 1em;
@@ -226,6 +235,7 @@
   }
 
   .of-field-inner {
+    align-items: center;
     display: flex;
     background: $bg-input;
     border: $border-width-input solid $border-color-input;
@@ -369,7 +379,7 @@
       }
     }
     &::after {
-      border-radius: 0 $border-radius-field $border-radius-field 0;
+      border-radius: 0 $border-radius-field $border-radius-field 0; // inherit?
       border: var(--cur-border);
       border-left: none;
       content: '';

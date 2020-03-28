@@ -59,6 +59,7 @@ export default defineComponent({
     label: String,
     maxlength: Number,
     modelValue: String,
+    name: String,
     placeholder: String,
     readonly: Boolean,
     value: String,

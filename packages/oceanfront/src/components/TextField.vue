@@ -41,6 +41,7 @@ export default defineComponent({
     label: String,
     maxlength: Number,
     modelValue: String,
+    name: String,
     placeholder: String,
     readonly: Boolean,
     value: String,
@@ -115,6 +116,7 @@ export default defineComponent({
         class: 'of-field-input',
         disabled: disabled.value,
         maxlength: props.maxlength,
+        name: props.name,
         placeholder: props.placeholder,
         readonly: readonly.value,
         value: inputValue.value

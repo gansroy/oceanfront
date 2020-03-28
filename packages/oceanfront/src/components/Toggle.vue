@@ -1,6 +1,7 @@
 <template>
   <of-field-outer v-bind="fieldAttrs">
-    <input ref="elt" type="checkbox" v-bind="attrs" v-on="handlers" />
+    <of-icon :name="icon" class="of-toggle-icon" v-if="icon" />
+    <input ref="elt" :type="inputType" v-bind="attrs" />
     <div class="of-field-input-label">
       <label :for="id">{{ label }}</label>
     </div>
@@ -8,8 +9,19 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, SetupContext, computed, Ref, watch } from 'vue'
+import {
+  ref,
+  defineComponent,
+  SetupContext,
+  computed,
+  Ref,
+  watch,
+  onMounted,
+  onBeforeUnmount
+} from 'vue'
 import OfFieldOuter from './FieldOuter.vue'
+
+export const supportedTypes = new Set(['checkbox', 'radio', 'switch'])
 
 export default defineComponent({
   name: 'of-toggle',
@@ -23,7 +35,9 @@ export default defineComponent({
     label: String,
     labelPosition: String,
     modelValue: String,
-    tabindex: Number,
+    name: String,
+    type: String,
+    value: String,
     variant: String
   },
   setup(props, ctx: SetupContext) {
@@ -41,21 +55,17 @@ export default defineComponent({
     const focused = ref(false)
     const id = props.id || 'input-' + Math.round(Math.random() * 1000) // FIXME
     const label = computed(() => props.label)
-    const handlers = {
-      blur: (evt: FocusEvent) => {
-        focused.value = false
-        ctx.emit('blur')
-      },
-      change: (evt: Event) => {
-        inputValue.value = elt.value?.checked
-        ctx.emit('change', inputValue.value)
-        ctx.emit('update:modelValue', inputValue.value)
-      },
-      focus: (evt: FocusEvent) => {
-        focused.value = true
-        ctx.emit('focus')
-      }
-    }
+    const type = computed(() =>
+      props.type && supportedTypes.has(props.type) ? props.type : 'checkbox'
+    )
+    const inputType = computed(() =>
+      type.value === 'radio' ? 'radio' : 'checkbox'
+    )
+    const icon = computed(() =>
+      type.value === 'switch'
+        ? null
+        : type.value + (inputValue.value ? ' checked' : '')
+    )
     const blank = computed(() => {
       // FIXME ask formatter
       const val = inputValue.value
@@ -72,19 +82,50 @@ export default defineComponent({
       showLabel: false,
       variant: props.variant
     }))
+    // const formChanged = (evt: Event) => {
+    //   if (inputType.value === 'radio' && elt.value && !elt.value.checked) {
+    //   }
+    // }
+    // onMounted(() => {
+    //   if (elt.value && elt.value.form && inputType.value === 'radio') {
+    //     elt.value.form.addEventListener('change', formChanged)
+    //   }
+    // })
+    // onBeforeUnmount(() => {
+    //   if (elt.value && elt.value.form) {
+    //     elt.value.form.removeEventListener('change', formChanged)
+    //   }
+    // })
     return {
       attrs: computed(() => ({
-        id,
-        checked: !!inputValue.value, // ask formatter?
         class: 'of-field-input',
+        id,
         disabled: disabled.value,
-        tabIndex: props.tabindex
+        name: props.name,
+        value: props.value,
+        onBlur: (evt: FocusEvent) => {
+          focused.value = false
+        },
+        onClick: (evt: Event) => {
+          if (inputType.value === 'radio') {
+            inputValue.value = props.value
+          } else {
+            inputValue.value = elt.value?.checked
+          }
+          ctx.emit('update:modelValue', inputValue.value)
+        },
+        onFocus: (evt: FocusEvent) => {
+          focused.value = true
+        }
       })),
       elt,
       fieldAttrs,
+      icon,
       id,
-      handlers,
-      label
+      inputType,
+      inputValue,
+      label,
+      type
     }
   }
 })

@@ -37,6 +37,7 @@ export default defineComponent({
     id: String,
     label: String,
     modelValue: String,
+    name: String,
     placeholder: String,
     readonly: Boolean,
     rows: Number,
@@ -107,6 +108,7 @@ export default defineComponent({
         id,
         class: 'of-field-input',
         disabled: disabled.value,
+        name: props.name,
         placeholder: props.placeholder,
         readonly: readonly.value,
         rows: props.rows

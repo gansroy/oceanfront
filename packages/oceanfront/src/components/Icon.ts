@@ -25,6 +25,7 @@ export class IconHandler implements ConfigHandler {
 export const OfIcon = defineComponent({
   name: 'of-icon',
   props: {
+    class: String,
     name: String
   },
   setup(props, ctx) {
@@ -34,7 +35,11 @@ export const OfIcon = defineComponent({
       const iconVal = icon.value || {}
       return h(
         'i',
-        { class: ['of-icon', iconVal?.class], ...ctx.attrs },
+        {
+          'aria-hidden': 'true',
+          class: ['of-icon', props.class, iconVal?.class],
+          ...ctx.attrs
+        },
         ctx.slots.default
           ? ctx.slots.default()
           : // iconVal.component ? h(iconVal.component, {name: props.name, ...(iconVal.props || {})})
