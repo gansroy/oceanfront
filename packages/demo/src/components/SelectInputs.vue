@@ -8,6 +8,18 @@
         <of-select
           label="Select input"
           value="Selected"
+          variant="basic"
+        ></of-select>
+        <br /><br />
+        <of-select
+          label="Select input"
+          value="Selected"
+          variant="outlined"
+        ></of-select>
+        <br /><br />
+        <of-select
+          label="Select input"
+          value="Selected"
           variant="filled"
         ></of-select>
       </div>

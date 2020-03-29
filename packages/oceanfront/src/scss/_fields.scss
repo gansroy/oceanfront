@@ -315,7 +315,6 @@
   display: inline-flex;
 
   .of-field-inner {
-    align-items: stretch;
     box-sizing: border-box;
     display: flex;
     min-height: calc(3em + 2 * #{$pad-v-field});
@@ -417,6 +416,7 @@
   }
 
   .of-field-inner {
+    align-items: center;
     > * {
       opacity: 0;
       transition: opacity 180ms;
@@ -430,7 +430,7 @@
   }
 
   &.of-field-text .of-field-input,
-  &.of-field-select .of-field-input {
+  &.of-field-select .of-field-inner {
     //padding: calc(#{$font-size-input} - 2px) $font-size-input
     //  calc(#{$font-size-input} - 4px);
     padding: 0 $pad-h-field;
@@ -502,6 +502,7 @@
   }
 
   .of-field-inner {
+    align-items: stretch;
     border-bottom: 1px solid $border-color-field;
     > * {
       opacity: 0;
