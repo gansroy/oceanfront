@@ -1,5 +1,4 @@
 <template>
-  <i :class="{ focused }"></i>
   <slot :focused="focused"></slot>
 </template>
 

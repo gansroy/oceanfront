@@ -22,8 +22,10 @@
           <slot>
             <of-nav-group>
               <template v-slot="{ focused }">
-                <of-list-item>Hello there</of-list-item>
-                <of-list-item>Goodbye</of-list-item>
+                <div class="of-list-outer">
+                  <of-list-item>Hello there</of-list-item>
+                  <of-list-item>Goodbye</of-list-item>
+                </div>
               </template>
             </of-nav-group>
           </slot>

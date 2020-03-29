@@ -113,7 +113,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .error-message {
   white-space: pre-wrap;
 }
@@ -164,5 +164,10 @@ export default defineComponent({
   margin-left: 1.5ch;
   padding: 0 0.5ch;
   text-transform: uppercase;
+}
+// temporary
+.of-sidebar {
+  padding-bottom: 0.25em;
+  padding-top: 0.25em;
 }
 </style>

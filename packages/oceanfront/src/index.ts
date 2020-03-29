@@ -1,6 +1,6 @@
 import { App, Component, Plugin, Directive } from 'vue'
 
-import { initConfig, OfConfig } from './lib/config'
+import { initConfig, OfConfig, useConfig as _useConfig } from './lib/config'
 import OfDialog from './components/Dialog.vue'
 import { OfIcon } from './components/Icon'
 import OfListItem from './components/ListItem.vue'
@@ -41,5 +41,7 @@ export const Oceanfront: Plugin = {
     }
   }
 }
+
+export const useConfig = _useConfig
 
 export default Oceanfront
