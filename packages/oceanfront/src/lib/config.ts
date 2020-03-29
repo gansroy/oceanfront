@@ -2,14 +2,31 @@ import {
   defineComponent,
   inject,
   provide,
+  readonly,
   ref,
   Component,
   InjectionKey
 } from 'vue'
 
+let useRoute: any = null,
+  useRouter: any = null
+try {
+  const { useRoute: _useRoute, useRouter: _useRouter } = require('vue-router')
+  useRoute = _useRoute
+  useRouter = _useRouter
+} catch (er) {
+  console.log('vue-router not found')
+}
+
+import { IconHandler } from '../components/Icon'
+
 export interface Config {
   icons: {
     resolve(name?: string): Icon | null
+  }
+  routes: {
+    activeRoute?: any
+    router?: any
   }
 }
 
@@ -22,7 +39,7 @@ export interface Icon {
 }
 
 export interface ConfigHandler {
-  getPublic(states: any[]): any
+  inject(states: any[]): any
   loadConfigState(config: any, prev?: any[]): any
 }
 
@@ -93,7 +110,15 @@ class ConfigImpl {
 
   handler(key: string): any {
     const handler = this._handlers[key]
-    return handler ? handler.getPublic(this.extract(key)) : null
+    return handler ? handler.inject(this.extract(key)) : null
+  }
+
+  reactiveState(): Readonly<Config> {
+    const hs: Record<string, any> = {}
+    for (const key in this._handlers) {
+      hs[key] = this._handlers[key].inject(this.extract(key))
+    }
+    return readonly(hs as Config)
   }
 
   get state() {
@@ -101,42 +126,56 @@ class ConfigImpl {
   }
 }
 
-const configProxy: ProxyHandler<any> = {
-  get(target: ConfigImpl, key: string, receiver: object): any {
-    return target.handler(key)
-  },
-  has(target: ConfigImpl, key: string): boolean {
-    return target.has(key)
-  },
-  ownKeys(target: ConfigImpl): (string | number | symbol)[] {
-    return target.keys()
-  },
-  set(target: ConfigImpl, key: string, value: any, receiver: object): boolean {
-    if (__DEV__) {
-      console.error('Cannot set property of Config')
-    }
-    return true
-  },
-  deleteProperty(target: ConfigImpl, key: string): boolean {
-    if (__DEV__) {
-      console.error('Cannot delete property of Config')
-    }
-    return true
+class RouteAccessor {
+  protected _states: any[]
+  protected _router: any
+  protected _route: any
+  constructor(states: any[], router: any, route: any) {
+    this._states = states
+    this._router = router
+    this._route = route
+  }
+
+  get activeRoute() {
+    return this._route
+  }
+
+  get router() {
+    return this._router
+  }
+}
+
+class RouteHandler implements ConfigHandler {
+  inject(states: any[]): any {
+    const router = useRouter ? useRouter() : null
+    const route = useRoute ? useRoute() : null
+    return new RouteAccessor(states, router, route)
+  }
+  loadConfigState(state: any): any {
+    return state
   }
 }
 
 const globalConfig = ref<ConfigImpl>(new ConfigImpl())
 
 export function initConfig(
-  handlers: Record<string, ConfigHandler>,
+  handlers?: Record<string, ConfigHandler>,
   config?: ConfigUpdate
 ) {
-  globalConfig.value = new ConfigImpl(handlers, undefined, config)
+  const defaultHandlers = {
+    icons: new IconHandler(),
+    routes: new RouteHandler()
+  }
+  globalConfig.value = new ConfigImpl(
+    { ...defaultHandlers, ...(handlers || {}) },
+    undefined,
+    config
+  )
 }
 
 export function useConfig(): Config {
   const config = injectConfig()
-  return new Proxy(config, configProxy)
+  return config.reactiveState()
 }
 
 export function injectConfig(): ConfigImpl {
@@ -145,8 +184,8 @@ export function injectConfig(): ConfigImpl {
 
 export function provideConfig(config: ConfigUpdate) {
   if (config) {
-    const config = injectConfig()
-    provide(configKey, config.extend(config))
+    const existConfig = injectConfig()
+    provide(configKey, existConfig.extend(config))
   }
 }
 

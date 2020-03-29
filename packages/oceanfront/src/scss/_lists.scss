@@ -45,3 +45,9 @@
     background: $bg-label;
   }
 }
+.of--active > .of-list-item-inner {
+  background: #cef;
+}
+.of--active:hover > .of-list-item-inner {
+  background: #c6e6f6;
+}

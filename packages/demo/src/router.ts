@@ -10,10 +10,11 @@ export const routerHistory = createWebHashHistory('/ofdocs')
 export const router = createRouter({
   history: routerHistory,
   routes: [
-    { path: '/', component: Overview },
-    { path: '/icons', component: Icons },
-    { path: '/select-inputs', component: SelectInputs },
-    { path: '/text-inputs', component: TextInputs },
-    { path: '/toggle-inputs', component: ToggleInputs }
+    // 'as any' to work around a temporary vue-router typing issue
+    { path: '/', name: 'index', component: Overview as any },
+    { path: '/icons', component: Icons as any },
+    { path: '/select-inputs', component: SelectInputs as any },
+    { path: '/text-inputs', component: TextInputs as any },
+    { path: '/toggle-inputs', component: ToggleInputs as any }
   ]
 })

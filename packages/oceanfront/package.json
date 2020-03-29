@@ -16,6 +16,9 @@
   "peerDependencies": {
     "vue": "~3.0.0-alpha.9"
   },
+  "optionalDependencies": {
+    "vue-router": "^4.0.0-alpha.4"
+  },
   "devDependencies": {
     "@types/webpack-env": "1.15.0",
     "@vue/compiler-sfc": "~3.0.0-alpha.9",

@@ -16,12 +16,8 @@ module.exports = (env = {}) => {
       oceanfront: './src/index.ts'
     },
     externals: {
-      vue: {
-        commonjs: 'vue',
-        commonjs2: 'vue',
-        amd: 'vue',
-        root: 'Vue'
-      }
+      vue: { commonjs: 'vue', commonjs2: 'vue' },
+      'vue-router': { commonjs: 'vue-router', commonjs2: 'vue-router' }
     },
     output: {
       path: resolve('./dist'),

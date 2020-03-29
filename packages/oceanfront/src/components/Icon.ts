@@ -14,7 +14,7 @@ class IconAccessor {
 }
 
 export class IconHandler implements ConfigHandler {
-  getPublic(states: any[]): any {
+  inject(states: any[]): any {
     return new IconAccessor(states)
   }
   loadConfigState(state: any): any {
