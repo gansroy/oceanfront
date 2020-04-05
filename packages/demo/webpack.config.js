@@ -99,7 +99,8 @@ module.exports = (env = {}) => {
       stats: 'minimal',
       // contentBase: resolve(__dirname, './dist'),
       contentBasePublicPath: '/ofdocs/',
-      watchContentBase: true // fix reload of html, bit drastic
+      watchContentBase: true, // fix reload of html, bit drastic
+      host: '0.0.0.0'
     }
   }
   if (isProd) {

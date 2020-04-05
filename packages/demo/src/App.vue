@@ -45,7 +45,7 @@
             <of-list-item to="/text-inputs">Text Inputs</of-list-item>
             <of-list-item to="/toggle-inputs">Toggle Inputs</of-list-item>
             <of-list-item disabled>Picker Inputs</of-list-item>
-            <of-list-item disabled>Formatters</of-list-item>
+            <of-list-item to="/formatters">Formatters</of-list-item>
           </of-list-group>
           <of-list-item disabled>Lists</of-list-item>
           <of-list-item disabled>Menus</of-list-item>

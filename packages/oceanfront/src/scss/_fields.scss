@@ -22,42 +22,11 @@
   --font-size-input: #{$font-size-input-lg};
 }
 
-// .field-placeholder {
-//   color: $color-field-placeholder;
-// }
-
 .of-field-outer {
-  // > .field-label {
-  //   box-sizing: content-box;
-  //   &:not(.single):not(.limit-height) {
-  //     display: flex; // to preserve padding
-  //   }
-  //   min-height: calc(
-  //     1em * #{$line-height-input} - 1px
-  //   ); // 1px for rounding error
-  //   &.limit-height {
-  //     max-height: calc(3em * #{$line-height-input} - 1px);
-  //   }
-  //   padding: $pad-v-input $pad-h-input;
-  //   vertical-align: top;
-  // }
   .input-icon {
     color: $color-input-icon;
   }
-  // &:hover,
-  // &.focus,
-  // &.active,
-  // &.disabled,
-  // &.opened {
-  //   .input-icon {
-  //     color: inherit;
-  //   }
-  // }
-  // &.disabled {
-  //   .input-icon {
-  //     opacity: 0.6;
-  //   }
-  // }
+
   .wait-icon,
   .wait-icon.dynamic {
     height: 18px;
@@ -70,46 +39,10 @@
   text-align: left;
   @include no-select;
 
-  // background: $bg-input;
-  // border: $border-width-input solid $border-color-input;
-  // border-radius: $border-radius-input;
-  // box-shadow: $box-shadow-input;
-  // box-sizing: border-box;
-  // color: $color-input;
-  // font-size: $font-size-input;
-  // max-width: 100%; // don't extend past containing cell
-  // vertical-align: $vertical-align-input;
-
-  // @include field-text-base;
-
-  &:hover:not(.static) {
-    // border: $border-width-input solid $border-color-input-hover;
-    // color: $color-input-hover;
-  }
   &.focus {
-    //background: $bg-input-focus;
-    // border: $border-width-input solid $border-color-input-focus;
-    // box-shadow: $box-shadow-input-focus;
     .of-field-label {
       color: $color-field-focus;
     }
-  }
-  /*&.active {
-    background: $bg-input-active;
-    // border: $border-width-input solid $border-color-input-active;
-    // box-shadow: $box-shadow-input-active;
-    color: $color-input-active;
-    outline: none;
-  }*/
-  &.readonly {
-    // background: $bg-input-disabled;
-    // border-color: $border-color-input-disabled;
-  }
-  &.disabled {
-    // background: $bg-input-disabled;
-    // border-color: $border-color-input-disabled;
-    // opacity: $opacity-input-disabled;
-    // @include input-text-disabled;
   }
 }
 
@@ -118,29 +51,6 @@
   text-overflow: ellipsis;
   white-space: normal;
   word-wrap: break-word;
-  // @include field-text-base;
-  // &.single {
-  //   align-items: center;
-  //   display: block;
-  //   max-width: 100%;
-  //   overflow: hidden;
-  //   white-space: nowrap;
-  // }
-  // &.limit-height {
-  //   overflow: hidden;
-  //   display: -webkit-box;
-  //   display: box;
-  //   -webkit-line-clamp: 3;
-  //   line-clamp: 3;
-  //   -webkit-box-orient: vertical;
-  //   box-orient: vertical;
-  // }
-  /*&.zero-left {
-		padding-left: 0;
-	}
-	&.zero-right {
-		padding-right: 0;
-  }*/
 }
 
 .of-field-input {
@@ -169,47 +79,11 @@
     font-size: 115%;
     margin-left: 0.5em;
   }
-
-  /*+ .of-field-input-label {
-    display: flex;
-    label {
-      flex: auto;
-    }
-  }
-  + .of-field-input-label::after {
-    display: inline-flex;
-    content: 'checkbox';
-    font-family: uibasic; // FIXME (customizable)
-    margin-left: calc(#{$pad-h-input} * 2); // FIXME (rtl)
-  }
-  &:checked + .of-field-input-label::after {
-    content: 'checkbox.checked';
-  }
-  &[type='radio'] + .of-field-input-label::after {
-    content: 'radio';
-  }
-  &[type='radio']:checked + .of-field-input-label::after {
-    content: 'radio.checked';
-  }*/
 }
-
-// .of-field-input-label {
-//   flex: auto;
-// }
 
 .of-select-arrow {
   padding-left: 1em;
 }
-
-// .field-outer {
-//   &:hover,
-//   &.focus,
-//   &.active {
-//     .field-placeholder {
-//       color: inherit;
-//     }
-//   }
-// }
 
 .of-field-basic {
   display: inline-block;
@@ -230,8 +104,6 @@
   }
   .static .of-field-label {
     color: initial;
-  }
-  .disabled .of-field-label {
   }
 
   .of-field-inner {
@@ -262,13 +134,6 @@
   .static .of-field-inner {
     border-color: $border-color-input;
   }
-  /*&.active {
-      background: $bg-input-active;
-      // border: $border-width-input solid $border-color-input-active;
-      // box-shadow: $box-shadow-input-active;
-      color: $color-input-active;
-      outline: none;
-    }*/
   &.readonly,
   &.disabled {
     .of-field-inner {
@@ -540,90 +405,3 @@
     align-items: center;
   }
 }
-
-// .input-bullet {
-//   &::after {
-//     // content: ""; // must be set by mixin
-//     display: inline-block;
-//     text-align: center;
-//     text-shadow: none;
-//     transform: scale($scale-bullet);
-//     transform-origin: 50% 0.5em;
-//     width: $width-bullet;
-//   }
-
-//   &.input-label {
-//     margin-right: -2px;
-//     &::after {
-//       position: relative;
-//       top: -1px;
-//     }
-//   }
-
-//   &.input-field {
-//     padding-right: calc(#{$width-bullet} - 2px);
-//     position: relative;
-//     &::after {
-//       bottom: 0;
-//       border-radius: 0 calc(#{$border-radius-input} - 1px)
-//         calc(#{$border-radius-input} - 1px) 0;
-//       font-size: $font-size-bullet;
-//       line-height: #{$font-size-input};
-//       position: absolute;
-//       right: 2px;
-//       top: $pad-v-input;
-//     }
-//     &.readonly::after {
-//       @include input-text-disabled;
-//     }
-//   }
-
-//   &.input-button {
-//     padding-right: calc(#{$width-bullet} + #{$pad-h-input} - 2px);
-//     position: relative;
-//     &::after {
-//       position: absolute;
-//       top: $pad-v-input;
-//       right: 2px;
-//     }
-//   }
-// }
-
-/*
-.input-text {
-  // line-height: normal; // fix placeholder position
-  -webkit-appearance: none; // remove extra shadow on iOS
-  &[readonly] {
-    //border-color: @border-color-field;
-    background: $bg-input-disabled;
-  }
-}
-
-// needed for proper height in safari - sets a special minimum height of around 115% line height?
-input.input-text {
-  height: calc(
-    1em * #{$line-height-input} + 2 * #{$pad-v-input} + 2 * #{$border-width-input}
-  );
-}
-
-textarea.input-text {
-  height: auto;
-  padding-right: $pad-h-input;
-}
-*/
-
-// .field.opened {
-//   background-color: $bg-button-active;
-//   border-color: $border-color-button-active;
-//   color: $color-button-active;
-//   text-shadow: none;
-//   &.opened-above {
-//     @include flat-top;
-//   }
-//   &:not(.opened-above) {
-//     @include flat-bottom;
-//   }
-//   .field-placeholder {
-//     color: inherit;
-//   }
-// }

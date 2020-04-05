@@ -7,6 +7,7 @@
 <script lang="ts">
 import { ref, defineComponent, SetupContext, computed, Ref, watch } from 'vue'
 import OfFieldOuter from './FieldOuter.vue'
+import { NumberFormatter } from '../lib/format'
 
 // const copyAttrs = new Set(['autocomplete', 'placeholder', 'size', 'value'])
 
@@ -37,10 +38,11 @@ export default defineComponent({
   props: {
     class: String,
     disabled: Boolean,
+    format: [String, Object],
     id: String,
     label: String,
     maxlength: Number,
-    modelValue: String,
+    modelValue: [String, Number, Date],
     name: String,
     placeholder: String,
     readonly: Boolean,
@@ -48,9 +50,13 @@ export default defineComponent({
     variant: String
   },
   setup(props, ctx: SetupContext) {
-    const inputValue = ref(
-      props.value === undefined ? props.modelValue : props.value
-    )
+    // FIXME - get formatter instance from config as a computed ref
+    const formatter = props.format === 'number' ? new NumberFormatter() : null
+    let initValue = props.value === undefined ? props.modelValue : props.value
+    if (formatter) {
+      initValue = formatter.format(initValue)
+    }
+    const inputValue = ref(initValue)
     watch(
       () => props.modelValue,
       val => {
@@ -76,23 +82,25 @@ export default defineComponent({
     const handlers = {
       blur(evt: FocusEvent) {
         focused.value = false
-        ctx.emit('blur')
       },
       change(evt: Event) {
         inputValue.value = elt.value?.value
-        ctx.emit('change', inputValue.value)
       },
       focus(evt: FocusEvent) {
         focused.value = true
-        ctx.emit('focus')
       },
       input(evt: InputEvent) {
-        inputValue.value = elt.value?.value
-        ctx.emit('input', inputValue.value)
+        if (formatter) {
+          formatter.handleInput(evt)
+        }
+        // inputValue.value = elt.value?.value // FIXME - makes safari jump to end of input
+        // will become update:modelInput with modelValue bound to change event
         ctx.emit('update:modelValue', inputValue.value)
       },
       keydown(evt: KeyboardEvent) {
-        ctx.emit('keydown', evt)
+        if (formatter) {
+          formatter.handleKeyDown(evt)
+        }
       }
     }
     const blank = computed(() => {
@@ -115,6 +123,7 @@ export default defineComponent({
         id,
         class: 'of-field-input',
         disabled: disabled.value,
+        inputmode: formatter ? formatter.inputMode() : undefined,
         maxlength: props.maxlength,
         name: props.name,
         placeholder: props.placeholder,

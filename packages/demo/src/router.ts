@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
+import Formatters from './components/Formatters.vue'
 import Icons from './components/Icons.vue'
 import Overview from './components/Overview.vue'
 import SelectInputs from './components/SelectInputs.vue'
@@ -13,6 +14,7 @@ export const router = createRouter({
     // 'as any' to work around a temporary vue-router typing issue
     { path: '/', name: 'index', component: Overview as any },
     { path: '/icons', component: Icons as any },
+    { path: '/formatters', component: Formatters as any },
     { path: '/select-inputs', component: SelectInputs as any },
     { path: '/text-inputs', component: TextInputs as any },
     { path: '/toggle-inputs', component: ToggleInputs as any }

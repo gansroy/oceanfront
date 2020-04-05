@@ -24,6 +24,9 @@ export interface Config {
   icons: {
     resolve(name?: string): Icon | null
   }
+  locale: {
+    numberFormat: { groupSep: string; decimalSep: string }
+  }
   routes: {
     activeRoute?: any
     router?: any
@@ -126,6 +129,26 @@ class ConfigImpl {
   }
 }
 
+class LocaleAccessor {
+  protected _states: any[]
+  constructor(states: any[]) {
+    this._states = states
+  }
+
+  get numberFormat() {
+    return ref({ groupSep: "'", decimalSep: ',' })
+  }
+}
+
+class LocaleHandler implements ConfigHandler {
+  inject(states: any[]): any {
+    return new LocaleAccessor(states)
+  }
+  loadConfigState(state: any): any {
+    return state
+  }
+}
+
 class RouteAccessor {
   protected _states: any[]
   protected _router: any
@@ -164,6 +187,7 @@ export function initConfig(
 ) {
   const defaultHandlers = {
     icons: new IconHandler(),
+    locale: new LocaleHandler(),
     routes: new RouteHandler()
   }
   globalConfig.value = new ConfigImpl(

@@ -5,9 +5,10 @@
       <h3>Why a new library?</h3>
       <ul>
         <li>
-          Theming is designed around CSS variables and calculations, which
-          limits support to newer browsers (Edge 15 in particular) but allows
-          for dynamic customization of various theme parameters.
+          Unlike existing libraries, theming is designed around CSS variables,
+          which limits support to newer browsers (Edge 15 and newer in
+          particular) but allows for dynamic customization of various theme
+          parameters.
         </li>
         <li>
           Configuration settings are scoped using a provider, not (only)

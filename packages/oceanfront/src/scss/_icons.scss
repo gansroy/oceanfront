@@ -1,20 +1,9 @@
-// @import 'uibasic-icons';
-
 .of-icon {
   display: inline-flex; // allow scaling of contents
   transform: scale($scale-icon-x, $scale-icon-y);
   &.left {
     margin-right: 0.25em;
   }
-}
-
-%icon-base {
-  font-family: uibasic;
-  font-style: normal;
-  font-weight: 400;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 .input-led {
@@ -77,72 +66,4 @@
   background-color: #d80;
   box-shadow: 0 0 0.1em rgba(40, 40, 40, 0.9),
     0 0.1em 0.1em rgba(150, 150, 150, 0.4);
-}
-
-.input-bullet {
-  &::after {
-    @extend %icon-base;
-    content: 'triangle-down';
-  }
-  &.bullet-add::after {
-    content: 'plus';
-  }
-  &.bullet-up::after {
-    content: 'triangle-up';
-  }
-  &.bullet-down::after {
-    content: 'triangle-down';
-  }
-  &.bullet-left::after {
-    content: 'previous';
-  }
-  &.bullet-right::after {
-    content: 'next';
-  }
-  &.bullet-expand-down::after {
-    content: 'expand-down';
-  }
-  &.bullet-expand-up::after {
-    content: 'expand-up';
-  }
-  &.bullet-menu::after {
-    content: 'menu';
-  }
-  &.bullet-alt-menu::after {
-    content: 'alt-menu';
-  }
-  &.bullet-expand::after {
-    content: 'expand';
-  }
-  &.bullet-accept::after {
-    content: 'accept';
-  }
-  &.bullet-cancel::after {
-    content: 'cancel';
-  }
-}
-
-.input-check {
-  input[type='checkbox'] {
-    -webkit-appearance: none;
-    appearance: none;
-    &::after {
-      @extend %icon-base;
-      content: 'checkbox';
-    }
-    &:checked::after {
-      content: 'checkbox.checked';
-    }
-  }
-  input[type='radio'] {
-    -webkit-appearance: none;
-    appearance: none;
-    &::after {
-      @extend %icon-base;
-      content: 'radio';
-    }
-    &:checked::after {
-      content: 'radio.checked';
-    }
-  }
 }
