@@ -20,8 +20,7 @@ export interface ValueFormatter {
   validate(): boolean // + warnings
   render(): VNode | string
   // get attachments (ie. currency symbol, date icon, unit)
-  // get input classes (number format)
-  // get input mode for keyboard
+  inputClass: string | undefined
   inputMode: string | undefined
 }
 
@@ -57,6 +56,10 @@ export class NumberFormatter implements ValueFormatter {
       }
       return opts
     })
+  }
+
+  get inputClass() {
+    return 'of-numeric'
   }
 
   get inputMode() {

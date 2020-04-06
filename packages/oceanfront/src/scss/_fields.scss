@@ -22,6 +22,13 @@
   --font-size-input: #{$font-size-input-lg};
 }
 
+.of-numeric {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.of-text-right {
+  text-align: right;
+}
+
 .of-field-outer {
   .input-icon {
     color: $color-input-icon;

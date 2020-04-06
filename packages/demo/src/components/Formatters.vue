@@ -7,6 +7,7 @@
         <h4>Number Input</h4>
         <of-config v-bind="config">
           <of-text-field
+            align="right"
             style="width: 10em"
             format="number"
             v-model="inputValue"

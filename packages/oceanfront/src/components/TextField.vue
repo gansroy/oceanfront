@@ -37,6 +37,7 @@ export default defineComponent({
   components: { OfFieldOuter },
   inheritAttrs: false,
   props: {
+    align: String,
     class: String,
     disabled: Boolean,
     format: [String, Function, Object],
@@ -121,7 +122,11 @@ export default defineComponent({
     }))
     const attrs = computed(() => ({
       id,
-      class: 'of-field-input',
+      class: [
+        'of-field-input',
+        formatter.value?.inputClass,
+        props.align === 'right' ? 'of-text-right' : undefined
+      ],
       disabled: disabled.value,
       inputmode: formatter.value?.inputMode,
       maxlength: props.maxlength,
