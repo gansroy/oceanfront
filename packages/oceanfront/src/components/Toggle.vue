@@ -41,15 +41,6 @@ export default defineComponent({
     variant: String
   },
   setup(props, ctx: SetupContext) {
-    const inputValue = ref(
-      props.checked === undefined ? props.modelValue : props.checked
-    )
-    watch(
-      () => props.modelValue,
-      val => {
-        inputValue.value = val
-      }
-    )
     const elt: Ref<HTMLInputElement | undefined> = ref()
     const disabled = computed(() => props.disabled)
     const focused = ref(false)
@@ -61,11 +52,30 @@ export default defineComponent({
     const inputType = computed(() =>
       type.value === 'radio' ? 'radio' : 'checkbox'
     )
-    const icon = computed(() =>
-      type.value === 'switch'
-        ? null
-        : type.value + (inputValue.value ? ' checked' : '')
+    const inputValue = ref(
+      inputType.value === 'radio'
+        ? props.modelValue
+        : props.checked === undefined
+        ? props.modelValue
+        : props.checked
     )
+    watch(
+      () => props.modelValue,
+      val => {
+        inputValue.value = val
+      }
+    )
+    const icon = computed(() => {
+      let checked: boolean
+      if (inputType.value === 'radio') {
+        checked = inputValue.value === props.value
+      } else {
+        checked = !!inputValue.value
+      }
+      return type.value === 'switch'
+        ? null
+        : type.value + (checked ? ' checked' : '')
+    })
     const blank = computed(() => {
       // FIXME ask formatter
       const val = inputValue.value

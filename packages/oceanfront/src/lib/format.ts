@@ -1,10 +1,20 @@
-import { computed, VNode } from 'vue'
+import { computed, Ref, VNode } from 'vue'
+import { Config } from './config'
 
 const isDigit = (s: string) => s >= '0' && s <= '9'
 
+export interface InputResult {
+  error?: string
+  nativeValue?: any
+  selStart?: number
+  selEnd?: number
+  updated: boolean
+  value?: string
+}
+
 export interface ValueFormatter {
   format(modelValue: any): string
-  handleInput(evt: InputEvent): void // + warnings
+  handleInput(evt: InputEvent): InputResult // + warnings
   handleKeyDown(evt: KeyboardEvent): void // + warnings
   // ^ should return new native value + optional new formatted value
   validate(): boolean // + warnings
@@ -12,15 +22,13 @@ export interface ValueFormatter {
   // get attachments (ie. currency symbol, date icon, unit)
   // get input classes (number format)
   // get input mode for keyboard
-  inputMode(): string | undefined
+  inputMode: string | undefined
 }
 
-export class NumberFormatter implements ValueFormatter {
-  // move into options
-  defaultValue?: any
+export interface NumberFormatterOptions {
   decimalSeparator?: string
   groupSeparator?: string
-  locale?: string | string[] = 'de-CH'
+  locale?: string
   minimumIntegerDigits?: number
   maximumFractionDigits?: number
   minimumFractionDigits?: number
@@ -30,23 +38,48 @@ export class NumberFormatter implements ValueFormatter {
   signDisplay?: string // = 'exceptZero'
   style?: string // = 'decimal' // currency, percent, unit
   useGrouping?: boolean
+}
 
-  inputMode() {
+export class NumberFormatter implements ValueFormatter {
+  private _config?: Config
+  private _options: Ref<NumberFormatterOptions>
+
+  constructor(config?: Config, options?: NumberFormatterOptions) {
+    this._config = config
+    this._options = computed(() => {
+      const opts: any = {}
+      if (this._config) {
+        opts.locale = this._config.l10n.locale
+        Object.assign(opts, this._config.l10n.numberFormat)
+      }
+      if (this._options) {
+        Object.assign(opts, this._options)
+      }
+      return opts
+    })
+  }
+
+  get inputMode() {
     return 'numeric'
   }
 
+  get options() {
+    return this._options.value
+  }
+
   formatterOptions(editing?: boolean): Intl.NumberFormatOptions {
+    let opts = this.options
     return {
       // minimumIntegerDigits: this.minimumIntegerDigits, // requires extra leading zero handling
-      maximumFractionDigits: editing ? 5 : this.maximumFractionDigits,
-      minimumFractionDigits: this.maximumFractionDigits,
+      maximumFractionDigits: opts.maximumFractionDigits || 3, // editing ? 5 : opts.maximumFractionDigits,
+      minimumFractionDigits: opts.minimumFractionDigits,
       maximumSignificantDigits: editing
         ? undefined
-        : this.maximumSignificantDigits,
-      minimumSignificantDigits: this.minimumSignificantDigits,
+        : opts.maximumSignificantDigits,
+      minimumSignificantDigits: opts.minimumSignificantDigits,
       // signDisplay: this.signDisplay  // NYI in browsers
-      style: this.style,
-      useGrouping: this.useGrouping
+      style: opts.style,
+      useGrouping: opts.useGrouping
     }
   }
 
@@ -59,10 +92,10 @@ export class NumberFormatter implements ValueFormatter {
     if (decPos < 0) {
       if (
         seps.decimal !== '.' &&
-        selStart > 0 &&
+        selStart === input.length &&
         input.substring(selStart - 1, selStart) === '.'
       ) {
-        // allow typing '.' as a decimal separator
+        // always interpret user entering terminal '.' as a decimal separator
         decPos = selStart - 1
       } else {
         decPos = null
@@ -109,10 +142,11 @@ export class NumberFormatter implements ValueFormatter {
   }
 
   getSeparators() {
-    let group = this.groupSeparator
-    let decimal = this.decimalSeparator
+    let opts = this.options
+    let group = opts.groupSeparator
+    let decimal = opts.decimalSeparator
     if (group === undefined || decimal === undefined) {
-      const formatter = Intl.NumberFormat(this.locale)
+      const formatter = Intl.NumberFormat(opts.locale)
       const parts: any[] = (formatter as any).formatToParts(12345.6)
       for (const part of parts) {
         if (part.type === 'group' && group === undefined) group = part.value
@@ -133,22 +167,21 @@ export class NumberFormatter implements ValueFormatter {
     } else {
       value = this.unformat(modelValue).value
     }
-    const fmt = Intl.NumberFormat(this.locale, this.formatterOptions())
+    const fmt = Intl.NumberFormat(this.options.locale, this.formatterOptions())
     return fmt.format(value)
   }
 
-  handleInput(evt: InputEvent): void {
+  handleInput(evt: InputEvent): InputResult {
     const input = evt.target as HTMLInputElement
     let value = input.value
     let selStart = input.selectionStart || 0
     if (value.length) {
       const fmtOpts = this.formatterOptions(true)
       const unformat = this.unformat(value, selStart)
-      console.log(unformat)
       let { minDecs, seps } = unformat
       if (minDecs !== null)
         minDecs = Math.min(minDecs, fmtOpts.maximumFractionDigits!)
-      const formatter = Intl.NumberFormat(this.locale, fmtOpts)
+      const formatter = Intl.NumberFormat(this.options.locale, fmtOpts)
       const parts: any[] = (formatter as any).formatToParts(unformat.value)
       value = ''
       let parsedPos = 0
@@ -181,10 +214,15 @@ export class NumberFormatter implements ValueFormatter {
       if (minDecs !== null) {
         value += seps.decimal + '0'.repeat(minDecs)
       }
-      input.value = value
-      input.setSelectionRange(selStart, selStart)
+      return {
+        nativeValue: unformat.value,
+        selStart,
+        selEnd: selStart,
+        updated: input.value !== value,
+        value
+      }
     }
-    // return native value, error message
+    return { updated: false }
   }
   handleKeyDown(evt: KeyboardEvent): void {
     // FIXME handle compositionstart, compositionend?

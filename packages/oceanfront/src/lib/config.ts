@@ -24,7 +24,8 @@ export interface Config {
   icons: {
     resolve(name?: string): Icon | null
   }
-  locale: {
+  l10n: {
+    locale: string | undefined
     numberFormat: { groupSep: string; decimalSep: string }
   }
   routes: {
@@ -129,10 +130,18 @@ class ConfigImpl {
   }
 }
 
-class LocaleAccessor {
+class LocalizationAccessor {
   protected _states: any[]
   constructor(states: any[]) {
     this._states = states
+  }
+
+  get locale(): string | undefined {
+    let locale = navigator.language
+    for (const s of this._states) {
+      if (s.locale !== undefined) locale = s.locale
+    }
+    return locale
   }
 
   get numberFormat() {
@@ -140,9 +149,9 @@ class LocaleAccessor {
   }
 }
 
-class LocaleHandler implements ConfigHandler {
+class LocalizationHandler implements ConfigHandler {
   inject(states: any[]): any {
-    return new LocaleAccessor(states)
+    return new LocalizationAccessor(states)
   }
   loadConfigState(state: any): any {
     return state
@@ -187,7 +196,7 @@ export function initConfig(
 ) {
   const defaultHandlers = {
     icons: new IconHandler(),
-    locale: new LocaleHandler(),
+    l10n: new LocalizationHandler(),
     routes: new RouteHandler()
   }
   globalConfig.value = new ConfigImpl(

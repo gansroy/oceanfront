@@ -1,13 +1,14 @@
 <template>
   <of-field-outer v-bind="fieldAttrs">
-    <input ref="elt" v-bind="attrs" v-on="handlers" />
+    <input ref="elt" v-bind="attrs" />
   </of-field-outer>
 </template>
 
 <script lang="ts">
 import { ref, defineComponent, SetupContext, computed, Ref, watch } from 'vue'
 import OfFieldOuter from './FieldOuter.vue'
-import { NumberFormatter } from '../lib/format'
+import { useConfig } from '../lib/config'
+import { NumberFormatter, ValueFormatter } from '../lib/format'
 
 // const copyAttrs = new Set(['autocomplete', 'placeholder', 'size', 'value'])
 
@@ -38,7 +39,7 @@ export default defineComponent({
   props: {
     class: String,
     disabled: Boolean,
-    format: [String, Object],
+    format: [String, Function, Object],
     id: String,
     label: String,
     maxlength: Number,
@@ -50,11 +51,23 @@ export default defineComponent({
     variant: String
   },
   setup(props, ctx: SetupContext) {
-    // FIXME - get formatter instance from config as a computed ref
-    const formatter = props.format === 'number' ? new NumberFormatter() : null
+    const config = useConfig()
+    const formatter = computed<ValueFormatter | undefined>(() => {
+      let fmtCtor
+      if (typeof props.format === 'string') {
+        // FIXME look up registered formatter
+        fmtCtor = (c: any) => new NumberFormatter(c)
+      } else if (typeof props.format === 'function') {
+        fmtCtor = props.format
+      } else if (typeof props.format === 'object') {
+        return props.format as ValueFormatter
+      }
+      if (fmtCtor) return fmtCtor(config)
+    })
     let initValue = props.value === undefined ? props.modelValue : props.value
-    if (formatter) {
-      initValue = formatter.format(initValue)
+    const stateValue = ref(initValue)
+    if (formatter.value) {
+      initValue = formatter.value.format(initValue)
     }
     const inputValue = ref(initValue)
     watch(
@@ -79,30 +92,18 @@ export default defineComponent({
         inputValue.value = val
       }
     })
-    const handlers = {
-      blur(evt: FocusEvent) {
-        focused.value = false
-      },
-      change(evt: Event) {
-        inputValue.value = elt.value?.value
-      },
-      focus(evt: FocusEvent) {
-        focused.value = true
-      },
-      input(evt: InputEvent) {
-        if (formatter) {
-          formatter.handleInput(evt)
-        }
-        // inputValue.value = elt.value?.value // FIXME - makes safari jump to end of input
-        // will become update:modelInput with modelValue bound to change event
-        ctx.emit('update:modelValue', inputValue.value)
-      },
-      keydown(evt: KeyboardEvent) {
-        if (formatter) {
-          formatter.handleKeyDown(evt)
+    const formatValue = computed(() => {
+      if (formatter.value) return formatter.value.format(stateValue.value)
+      return inputValue.value
+    })
+    watch(
+      () => formatValue.value,
+      fmtVal => {
+        if (!focused.value && elt.value) {
+          elt.value.value = fmtVal as string
         }
       }
-    }
+    )
     const blank = computed(() => {
       // FIXME ask formatter
       const val = inputValue.value
@@ -118,21 +119,53 @@ export default defineComponent({
       readonly: readonly.value,
       variant: props.variant
     }))
+    const attrs = computed(() => ({
+      id,
+      class: 'of-field-input',
+      disabled: disabled.value,
+      inputmode: formatter.value?.inputMode,
+      maxlength: props.maxlength,
+      name: props.name,
+      placeholder: props.placeholder,
+      readonly: readonly.value,
+      value: initValue,
+      onBlur(evt: FocusEvent) {
+        focused.value = false
+      },
+      onChange(evt: Event) {
+        if (formatter.value) {
+          inputValue.value = formatter.value.format(elt.value?.value)
+          return
+        }
+        inputValue.value = elt.value?.value
+      },
+      onFocus(evt: FocusEvent) {
+        focused.value = true
+      },
+      onInput(evt: InputEvent) {
+        if (formatter.value) {
+          const upd = formatter.value.handleInput(evt)
+          if (upd) {
+            if (!upd.updated) return
+            elt.value!.value = upd.value!
+            elt.value!.setSelectionRange(upd.selStart!, upd.selEnd!)
+            stateValue.value = upd.nativeValue
+          }
+        }
+        // inputValue.value = elt.value?.value // FIXME - makes safari jump to end of input
+        // will become update:modelInput with modelValue bound to change event
+        ctx.emit('update:modelValue', inputValue.value)
+      },
+      onKeydown(evt: KeyboardEvent) {
+        if (formatter.value) {
+          formatter.value.handleKeyDown(evt)
+        }
+      }
+    }))
     return {
-      attrs: computed(() => ({
-        id,
-        class: 'of-field-input',
-        disabled: disabled.value,
-        inputmode: formatter ? formatter.inputMode() : undefined,
-        maxlength: props.maxlength,
-        name: props.name,
-        placeholder: props.placeholder,
-        readonly: readonly.value,
-        value: inputValue.value
-      })),
+      attrs,
       elt,
-      fieldAttrs,
-      handlers
+      fieldAttrs
     }
   }
 })
