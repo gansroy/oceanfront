@@ -8,29 +8,55 @@
       for.
     </p>
 
-    <div class="row demo-row">
-      <div class="demo-inline" v-for="iconset of icons">
-        <of-icon v-for="(desc, icon) of iconset" :name="icon" :title="desc" />
+    <of-config :icon-font="iconFont">
+      <div class="row demo-row">
+        <div class="demo-inline" v-for="iconset of icons">
+          <of-icon v-for="(desc, icon) of iconset" :name="icon" :title="desc" />
+        </div>
+        <div class="demo-inline">
+          <div class="of-icon input-led led-grey" title="grey led"></div>
+          <div class="of-icon input-led led-green" title="green led"></div>
+          <div class="of-icon input-led led-red" title="red led"></div>
+          <div class="of-icon input-led led-yellow" title="yellow led"></div>
+          <div class="of-icon input-led led-violet" title="violet led"></div>
+          <div class="of-icon input-led led-blue" title="blue led"></div>
+          <div class="of-icon input-led led-orange" title="orange led"></div>
+        </div>
       </div>
-      <div class="demo-inline">
-        <div class="of-icon input-led led-grey" title="grey led"></div>
-        <div class="of-icon input-led led-green" title="green led"></div>
-        <div class="of-icon input-led led-red" title="red led"></div>
-        <div class="of-icon input-led led-yellow" title="yellow led"></div>
-        <div class="of-icon input-led led-violet" title="violet led"></div>
-        <div class="of-icon input-led led-blue" title="blue led"></div>
-        <div class="of-icon input-led led-orange" title="orange led"></div>
+    </of-config>
+
+    <div class="row">
+      <div class="column">
+        <h4>Select Icon Set</h4>
+        <template v-for="opt of fontOpts">
+          <of-toggle
+            :label="opt.text"
+            labelPosition="none"
+            type="radio"
+            variant="basic"
+            v-model="iconFont"
+            :value="opt.value"
+          />
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   setup(props, ctx) {
+    const iconFont = ref('')
+    const fontOpts = [
+      { value: '', text: 'Default' },
+      { value: 'uii', text: 'UIBasic' },
+      { value: 'mi', text: 'Material' }
+    ]
     return {
+      iconFont,
+      fontOpts,
       icons: [
         {
           'expand-up': 'expand up',
@@ -59,8 +85,7 @@ export default defineComponent({
           search: 'search',
           date: 'date',
           time: 'time',
-          hourglass: 'hourglass',
-          hamburger: 'hamburger'
+          hourglass: 'hourglass'
         },
         {
           checkbox: 'check off',
@@ -103,7 +128,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .demo-row .of-icon {
   box-sizing: content-box;
   display: inline-block;

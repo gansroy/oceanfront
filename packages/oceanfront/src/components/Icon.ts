@@ -11,12 +11,13 @@ export default defineComponent({
     const mgr = useIcons()
     const icon = computed(() => mgr.resolve(props.name))
     return () => {
-      const iconVal = icon.value || {}
+      const iconVal = icon.value
+      if (!iconVal) return
       return h(
         'i',
         {
           'aria-hidden': 'true',
-          class: ['of-icon', props.class, iconVal?.class],
+          class: ['of-icon', props.class, iconVal.class],
           ...ctx.attrs
         },
         ctx.slots.default

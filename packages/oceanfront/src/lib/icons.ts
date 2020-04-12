@@ -17,6 +17,10 @@ export interface IconResolver {
   resolve(name: string): Icon | string | null
 }
 
+export interface IconFont {
+  resolve(name: string): Icon | null
+}
+
 function makeResolver(mapping: IconMapping): IconResolver {
   return {
     resolve: (name: string) => (mapping && mapping[name]) || null
@@ -85,12 +89,11 @@ const uiiIcons = [
   'nav-last'
 ]
 
-const uiiIconFont: IconResolver = {
+const uiiIconFont: IconFont = {
   resolve(name) {
-    if (name in uiiIcons) {
-      let cls = 'uibasic-icon icon-' + name
+    if (uiiIcons.includes(name)) {
       return {
-        class: cls
+        class: 'uibasic-icon icon-' + name
       }
     }
     return null
@@ -159,14 +162,14 @@ const materialIcons = {
   'nav-last': 'last_page'
 }
 
-const materialIconFont: IconResolver = {
+const materialIconFont: IconFont = {
   resolve(name) {
     let icon = (materialIcons as any)[name]
     if (icon) {
       let cls = 'material-icons'
       const spp = icon.indexOf(' ')
       if (spp !== -1) {
-        cls += icon.substring(spp + 1)
+        cls += icon.substring(spp)
         icon = icon.substring(0, spp)
       }
       return {
@@ -180,24 +183,44 @@ const materialIconFont: IconResolver = {
 
 class IconManager {
   defaultFont: string | undefined
-  fonts: { [name: string]: IconResolver }
+  fonts: { [name: string]: IconFont }
   resolvers: IconResolver[]
   showMissing: boolean = false
 
   constructor() {
+    this.defaultFont = 'uii'
     this.fonts = { uii: uiiIconFont, mi: materialIconFont }
     this.resolvers = []
   }
 
   resolve(name?: string): Icon | null {
     if (!name) return null
-    return { name, class: 'uibasic-icon icon-' + name }
+    let spp = name.indexOf(' ')
+    if (spp !== -1) {
+      const font = name.substring(0, spp)
+      if (font in this.fonts) {
+        return this.fonts[font].resolve(name.substring(spp + 1))
+      }
+    }
+    for (const r of this.resolvers) {
+      const ret = r.resolve(name)
+      if (typeof ret === 'string') return this.resolve(ret)
+      else if (ret) return ret
+    }
+    let ret = null
+    if (this.defaultFont) {
+      ret = this.fonts[this.defaultFont].resolve(name)
+    }
+    if (!ret && this.showMissing) {
+      ret = { text: 'xx' }
+    }
+    return ret
   }
 }
 
 const configManager = new ConfigManager('oficon', IconManager)
 
-export function defineIconFont(name: string, def: IconResolver) {
+export function defineIconFont(name: string, def: IconFont) {
   const mgr = configManager.activeManager
   if (!mgr || !def) return
   mgr.fonts[name] = def

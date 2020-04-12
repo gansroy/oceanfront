@@ -1,15 +1,18 @@
 import { defineComponent } from 'vue'
 import { extendConfig } from '../lib/config'
+import { setDefaultIconFont } from '../lib/icons'
 import { setLocale, useLocale } from '../lib/locale'
 
 export default defineComponent({
   name: 'of-config',
   props: {
+    iconFont: String,
     locale: String,
     theme: String
   },
   setup(props, ctx) {
     extendConfig(() => {
+      if (props.iconFont) setDefaultIconFont(props.iconFont)
       if (props.locale) setLocale(props.locale)
     })
     const localeMgr = useLocale()

@@ -49,7 +49,7 @@ export const Oceanfront: Plugin = {
 export { NumberFormatter } from './lib/format'
 
 export { useConfig, extendConfig } from './lib/config'
-export { useIcons } from './lib/icons'
+export { useIcons, showMissingIcons } from './lib/icons'
 export { useLocale } from './lib/locale'
 export { useRoutes } from './lib/routes'
 
