@@ -45,7 +45,6 @@ import {
   Ref,
   watch
 } from 'vue'
-import { FieldConfig } from '../lib/field'
 import OfFieldOuter from './FieldOuter.vue'
 import OfListItem from './ListItem.vue'
 import OfNavGroup from './NavGroup.vue'

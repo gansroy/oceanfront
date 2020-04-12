@@ -17,9 +17,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, SetupContext, reactive, computed } from 'vue'
-import { FieldState, FieldConfig, fieldState } from '../lib/field'
-import { StoreRef } from '../lib/store'
+import { defineComponent, SetupContext, computed } from 'vue'
 
 export default defineComponent({
   name: 'of-field-outer',

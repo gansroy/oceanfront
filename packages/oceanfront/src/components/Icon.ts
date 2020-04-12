@@ -1,36 +1,15 @@
-import { useConfig, ConfigHandler, Icon } from '../lib/config'
+import { useIcons } from '../lib/icons'
 import { computed, defineComponent, h, createTextVNode } from 'vue'
 
-class IconAccessor {
-  protected _states: any[]
-  constructor(states: any[]) {
-    this._states = states
-  }
-
-  resolve(name?: string): Icon | null {
-    if (!name) return null
-    return { name, class: 'uibasic-icon icon-' + name }
-  }
-}
-
-export class IconHandler implements ConfigHandler {
-  inject(states: any[]): any {
-    return new IconAccessor(states)
-  }
-  loadConfigState(state: any): any {
-    return state
-  }
-}
-
-export const OfIcon = defineComponent({
+export default defineComponent({
   name: 'of-icon',
   props: {
     class: String,
     name: String
   },
   setup(props, ctx) {
-    const config = useConfig()
-    const icon = computed(() => config.icons.resolve(props.name!))
+    const mgr = useIcons()
+    const icon = computed(() => mgr.resolve(props.name))
     return () => {
       const iconVal = icon.value || {}
       return h(

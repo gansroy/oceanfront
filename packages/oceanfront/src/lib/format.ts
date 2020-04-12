@@ -1,5 +1,6 @@
 import { computed, Ref, VNode } from 'vue'
 import { Config } from './config'
+import { useLocale, LocaleState, LocaleNumberFormat } from './locale'
 
 const isDigit = (s: string) => s >= '0' && s <= '9'
 
@@ -40,17 +41,15 @@ export interface NumberFormatterOptions {
 }
 
 export class NumberFormatter implements ValueFormatter {
-  private _config?: Config
+  private _locale: LocaleState
   private _options: Ref<NumberFormatterOptions>
 
   constructor(config?: Config, options?: NumberFormatterOptions) {
-    this._config = config
+    this._locale = useLocale(config)
     this._options = computed(() => {
       const opts: any = {}
-      if (this._config) {
-        opts.locale = this._config.l10n.locale
-        Object.assign(opts, this._config.l10n.numberFormat)
-      }
+      opts.locale = this._locale.locale
+      Object.assign(opts, this._locale.numberFormat)
       if (this._options) {
         Object.assign(opts, this._options)
       }

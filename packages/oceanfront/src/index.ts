@@ -1,9 +1,9 @@
 import { App, Component, Plugin, Directive } from 'vue'
 
-import { initConfig, OfConfig, useConfig as _useConfig } from './lib/config'
-import { NumberFormatter as _NumberFormatter } from './lib/format'
+import { extendDefaultConfig } from './lib/config'
+import OfConfig from './components/Config'
 import OfDialog from './components/Dialog.vue'
-import { OfIcon } from './components/Icon'
+import OfIcon from './components/Icon'
 import OfListItem from './components/ListItem.vue'
 import OfListGroup from './components/ListGroup.vue'
 import OfNavGroup from './components/NavGroup.vue'
@@ -33,7 +33,10 @@ export const directives: Record<string, Directive> = {}
 
 export const Oceanfront: Plugin = {
   install(vue: App, args: any) {
-    initConfig({}, args)
+    if (args && typeof args.config === 'function') {
+      extendDefaultConfig(args.config)
+    }
+    // FIXME register components using a config manager
     for (const idx in components) {
       vue.component(idx, components[idx])
     }
@@ -43,8 +46,11 @@ export const Oceanfront: Plugin = {
   }
 }
 
-export const NumberFormatter = _NumberFormatter
+export { NumberFormatter } from './lib/format'
 
-export const useConfig = _useConfig
+export { useConfig, extendConfig } from './lib/config'
+export { useIcons } from './lib/icons'
+export { useLocale } from './lib/locale'
+export { useRoutes } from './lib/routes'
 
 export default Oceanfront

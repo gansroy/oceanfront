@@ -5,13 +5,17 @@
     <div class="row">
       <div class="column sm-4">
         <h4>Number Input</h4>
-        <of-config v-bind="config">
-          <of-text-field
-            align="right"
-            style="width: 10em"
-            format="number"
-            v-model="inputValue"
-          />
+        <of-config :locale="locale">
+          <template v-slot="{ locale }">
+            <of-text-field
+              align="right"
+              style="width: 10em"
+              format="number"
+              v-model="inputValue"
+            />
+            <br />
+            Effective locale: {{ locale }}
+          </template>
         </of-config>
       </div>
       <div class="column sm-4">
@@ -53,7 +57,6 @@ export default defineComponent({
     ]
     const locale = ref<string | undefined>()
     return {
-      config: { l10n: { locale } },
       locale,
       localeOpts,
       sampleCode,

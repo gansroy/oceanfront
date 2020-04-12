@@ -1,230 +1,136 @@
 import {
-  defineComponent,
   inject,
   provide,
+  reactive,
   readonly,
-  ref,
-  Component,
-  InjectionKey
+  InjectionKey,
+  ComputedRef,
+  computed,
+  Ref
 } from 'vue'
 
-let useRoute: any = null,
-  useRouter: any = null
-try {
-  const { useRoute: _useRoute, useRouter: _useRouter } = require('vue-router')
-  useRoute = _useRoute
-  useRouter = _useRouter
-} catch (er) {
-  console.log('vue-router not found')
-}
+export type Config = ConfigState
+export type ConfigFunction = () => void
 
-import { IconHandler } from '../components/Icon'
+export class ConfigState {
+  _cb: ConfigFunction
+  _cache: Record<any, any>
 
-export interface Config {
-  icons: {
-    resolve(name?: string): Icon | null
-  }
-  l10n: {
-    locale: string | undefined
-    numberFormat: { groupSep: string; decimalSep: string }
-  }
-  routes: {
-    activeRoute?: any
-    router?: any
-  }
-}
-
-export interface Icon {
-  class?: string
-  component?: Component | string
-  name?: string
-  props?: object
-  text?: string
-}
-
-export interface ConfigHandler {
-  inject(states: any[]): any
-  loadConfigState(config: any, prev?: any[]): any
-}
-
-type ConfigState = Record<string, any>
-type ConfigUpdate = Record<string, any>
-
-const configKey = ('of_config' as unknown) as InjectionKey<ConfigImpl>
-
-class ConfigImpl {
-  protected _handlers: Record<string, ConfigHandler>
-  protected _state: ConfigState[]
-
-  constructor(
-    handlers?: Record<string, ConfigHandler>,
-    state?: ConfigState[],
-    config?: ConfigUpdate
-  ) {
-    this._handlers = handlers || {}
-    this._state = state || []
-    if (config) {
-      const ext = this.loadUpdate(config)
-      if (ext) {
-        this._state.push(ext)
-      }
-    }
+  constructor(cb: ConfigFunction) {
+    this._cb = cb
+    this._cache = {}
   }
 
-  addHandler(key: string, handler: ConfigHandler) {
-    this._handlers[key] = handler
+  apply() {
+    this._cb()
   }
 
-  has(key: string): boolean {
-    return key in this._handlers
+  getCache<T>(key: InjectionKey<T>): T | undefined {
+    return this._cache[key as any] as T
   }
 
-  keys(): string[] {
-    return Object.keys(this._handlers)
-  }
-
-  extend(update: ConfigUpdate): ConfigImpl {
-    const ext = this.loadUpdate(update)
-    return ext ? new ConfigImpl(this._handlers, [...this._state, ext]) : this
-  }
-
-  loadUpdate(update: ConfigUpdate): ConfigState | null {
-    let ret: ConfigState | null = null
-    for (const key in update) {
-      if (key in this._handlers) {
-        const prev = this.extract(key)
-        const state = this._handlers[key].loadConfigState(update[key], prev)
-        if (state) {
-          if (!ret) ret = {}
-          ret[key] = state
-        }
-      }
-    }
-    return ret
-  }
-
-  extract(key: string): any[] {
-    return this._state.reduce((accum: any[], entry) => {
-      if (key in entry) {
-        accum.push(entry[key])
-      }
-      return accum
-    }, [])
-  }
-
-  handler(key: string): any {
-    const handler = this._handlers[key]
-    return handler ? handler.inject(this.extract(key)) : null
-  }
-
-  reactiveState(): Readonly<Config> {
-    const hs: Record<string, any> = {}
-    for (const key in this._handlers) {
-      hs[key] = this._handlers[key].inject(this.extract(key))
-    }
-    return readonly(hs as Config)
-  }
-
-  get state() {
-    return this._state
+  setCache(key: any, value: any) {
+    this._cache[key] = value
   }
 }
 
-class LocalizationAccessor {
-  protected _states: any[]
-  constructor(states: any[]) {
-    this._states = states
+const defaultConfigs = reactive<Array<() => void>>([])
+const defaultConfig = new ConfigState(() => {
+  for (const cb of defaultConfigs) {
+    cb()
   }
+})
 
-  get locale(): string | undefined {
-    let locale = navigator.language
-    for (const s of this._states) {
-      if (s.locale !== undefined) locale = s.locale
-    }
-    return locale
-  }
+export const injectKey: InjectionKey<Config> = Symbol('ofcfg')
 
-  get numberFormat() {
-    return ref({ groupSep: "'", decimalSep: ',' })
-  }
-}
-
-class LocalizationHandler implements ConfigHandler {
-  inject(states: any[]): any {
-    return new LocalizationAccessor(states)
-  }
-  loadConfigState(state: any): any {
-    return state
-  }
-}
-
-class RouteAccessor {
-  protected _states: any[]
-  protected _router: any
-  protected _route: any
-  constructor(states: any[], router: any, route: any) {
-    this._states = states
-    this._router = router
-    this._route = route
-  }
-
-  get activeRoute() {
-    return this._route
-  }
-
-  get router() {
-    return this._router
-  }
-}
-
-class RouteHandler implements ConfigHandler {
-  inject(states: any[]): any {
-    const router = useRouter ? useRouter() : null
-    const route = useRoute ? useRoute() : null
-    return new RouteAccessor(states, router, route)
-  }
-  loadConfigState(state: any): any {
-    return state
-  }
-}
-
-const globalConfig = ref<ConfigImpl>(new ConfigImpl())
-
-export function initConfig(
-  handlers?: Record<string, ConfigHandler>,
-  config?: ConfigUpdate
-) {
-  const defaultHandlers = {
-    icons: new IconHandler(),
-    l10n: new LocalizationHandler(),
-    routes: new RouteHandler()
-  }
-  globalConfig.value = new ConfigImpl(
-    { ...defaultHandlers, ...(handlers || {}) },
-    undefined,
-    config
-  )
+export function extendDefaultConfig(cb: () => void | Array<() => void>) {
+  if (!cb) return
+  if (Array.isArray(cb)) defaultConfigs.concat(cb)
+  else defaultConfigs.push(cb)
 }
 
 export function useConfig(): Config {
-  const config = injectConfig()
-  return config.reactiveState()
+  return inject(injectKey, defaultConfig)
 }
 
-export function injectConfig(): ConfigImpl {
-  return inject(configKey, globalConfig.value) as ConfigImpl
+export function extendConfig(cb: () => void) {
+  const cfg = useConfig()
+  const newfn = new ConfigState(() => {
+    cfg.apply()
+    cb()
+  })
+  provide(injectKey, newfn)
 }
 
-export function provideConfig(config: ConfigUpdate) {
-  if (config) {
-    const existConfig = injectConfig()
-    provide(configKey, existConfig.extend(config))
+export class ConfigManager<T> {
+  protected _activeManager?: T
+  protected _ctor: { new (): T }
+  protected _injectKey: InjectionKey<ComputedRef<T>>
+
+  constructor(ident: string, ctor: { new (): T }) {
+    this._ctor = ctor
+    this._injectKey = Symbol(ident)
+  }
+
+  createManager(): T {
+    return new this._ctor()
+  }
+
+  get activeManager(): T | undefined {
+    if (!this._activeManager) {
+      if (__DEV__) {
+        console.warn('Cannot extend config: not inside provider')
+      }
+    }
+    return this._activeManager
+  }
+
+  inject(config?: Config): ComputedRef<T> {
+    let cfg = config || useConfig()
+    let cache = cfg.getCache(this.injectKey)
+    if (!cache) {
+      cache = computed(() => {
+        const am = this._activeManager
+        const ret = (this._activeManager = this.createManager())
+        cfg.apply() // execute config functions
+        this._activeManager = am
+        console.debug('inject', ret, cfg)
+        return ret
+      })
+      cfg.setCache(this.injectKey, cache)
+    }
+    return cache
+  }
+
+  get injectKey() {
+    return this._injectKey
   }
 }
 
-export const OfConfig = defineComponent({
-  setup(props, ctx) {
-    provideConfig(ctx.attrs)
-    return () => ctx.slots.default!({ config: useConfig() })
+const readonlyUnwrapHandlers = {
+  get(target: Ref, key: string, receiver: object): any {
+    return Reflect.get(target.value, key)
+  },
+  has(target: Ref, key: string | number | symbol): boolean {
+    return Reflect.has(target.value, key)
+  },
+  ownKeys(target: Ref): (string | number | symbol)[] {
+    return Reflect.ownKeys(target.value)
+  },
+  set(target: Ref, key: string, value: any, receiver: object): boolean {
+    if (__DEV__) {
+      console.warn('Cannot assign to readonly ref')
+    }
+    return true
+  },
+  deleteProperty(target: Ref, key: string): boolean {
+    if (__DEV__) {
+      console.warn('Cannot delete property of readonly ref')
+    }
+    return true
   }
-})
+}
+
+export function readonlyUnwrap<T>(val: Ref<T>) {
+  return (new Proxy(val, readonlyUnwrapHandlers) as any) as T
+}

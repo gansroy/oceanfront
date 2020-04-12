@@ -11,8 +11,8 @@ import {
   VNode
 } from 'vue'
 import { INavGroup } from './NavGroup.vue'
-import { OfIcon } from './Icon'
-import { useConfig } from '../lib/config'
+import OfIcon from './Icon'
+import { useRoutes } from '../lib/routes'
 
 export default defineComponent({
   name: 'of-list-item',
@@ -24,7 +24,7 @@ export default defineComponent({
   },
   setup(props, ctx: SetupContext) {
     let unreg: (() => void) | undefined
-    const config = useConfig()
+    const routes = useRoutes()
     const disabled = computed(() => props.disabled)
     const elt = ref<HTMLElement | undefined>()
     const expand = computed(() => props.expand)
@@ -35,8 +35,8 @@ export default defineComponent({
       let focus = elt.value
       if (focus && focus.focus) focus.focus()
     }
-    const route = config.routes.activeRoute
-    const router = config.routes.router
+    const route = routes?.activeRoute
+    const router = routes?.router
     const resolveRoute = computed(() => {
       if (router && props.to) {
         return router.resolve(props.to)
@@ -45,14 +45,14 @@ export default defineComponent({
     const href = computed(() => {
       if (props.href) return props.href
       const rt = resolveRoute.value
-      if (rt) return router.createHref(rt)
+      if (rt && router) return router.createHref(rt)
     })
     const active = computed(() => {
       // FIXME allow override via active prop, default null
       if (!href.value) return false
       const rt = resolveRoute.value
       // FIXME not an accurate comparison, only looks at path
-      return rt ? rt.path === route.path : false
+      return rt && route ? rt.path === route.path : false
     })
     const clicked = (evt: Event) => {
       if (href.value && router) {
