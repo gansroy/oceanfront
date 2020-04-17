@@ -1,6 +1,6 @@
 import {
   Router,
-  RouteLocationNormalizedResolved,
+  RouteLocationNormalizedLoaded,
   RouteLocationNormalized
 } from 'vue-router'
 
@@ -16,13 +16,13 @@ try {
 
 class RouteAccessor {
   protected _router: Router
-  protected _route: RouteLocationNormalizedResolved
-  constructor(router: Router, route: RouteLocationNormalizedResolved) {
+  protected _route: RouteLocationNormalizedLoaded
+  constructor(router: Router, route: RouteLocationNormalizedLoaded) {
     this._router = router
     this._route = route
   }
 
-  get activeRoute(): RouteLocationNormalizedResolved {
+  get activeRoute(): RouteLocationNormalizedLoaded {
     return this._route
   }
 

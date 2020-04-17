@@ -14,14 +14,14 @@
     "watch": "TARGET=development webpack --watch"
   },
   "peerDependencies": {
-    "vue": "~3.0.0-alpha.9"
+    "vue": "3.0.0-beta.1"
   },
   "optionalDependencies": {
-    "vue-router": "^4.0.0-alpha.4"
+    "vue-router": "4.0.0-alpha.6"
   },
   "devDependencies": {
     "@types/webpack-env": "1.15.0",
-    "@vue/compiler-sfc": "~3.0.0-alpha.9",
+    "@vue/compiler-sfc": "3.0.0-beta.1",
     "@vue/eslint-config-prettier": "^6.0.0",
     "copy-webpack-plugin": "^5.1.0",
     "css-loader": "^3.4.0",
@@ -38,8 +38,9 @@
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.5",
     "url-loader": "^3.0.0",
-    "vue": "~3.0.0-alpha.9",
+    "vue": "3.0.0-beta.1",
     "vue-loader": "^16.0.0-alpha.3",
+    "vue-router": "4.0.0-alpha.6",
     "vue-style-loader": "^4.0.1",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",

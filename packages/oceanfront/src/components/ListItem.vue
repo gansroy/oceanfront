@@ -45,7 +45,7 @@ export default defineComponent({
     const href = computed(() => {
       if (props.href) return props.href
       const rt = resolveRoute.value
-      if (rt && router) return router.createHref(rt)
+      if (rt) return rt.href
     })
     const active = computed(() => {
       // FIXME allow override via active prop, default null
@@ -75,10 +75,16 @@ export default defineComponent({
         if (result) return false
       },
       onVnodeMounted(vnode: VNode) {
-        elt.value = vnode.el
+        elt.value = (vnode as VNode<HTMLElement>).el || undefined
         if (navGroup) {
           unreg = navGroup.navRegister(
-            reactive({ disabled, elt, focused, navActive, navTo })
+            reactive({
+              disabled: disabled as Ref<boolean | undefined>, // FIXME cast should not be necessary
+              elt,
+              focused,
+              navActive,
+              navTo
+            })
           )
         }
       },
