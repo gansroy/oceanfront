@@ -89,14 +89,21 @@ const uiiIcons = [
   'nav-last'
 ]
 
+const uiiAlias = {
+  'bullet-select': 'triangle-down of-icon-scale-sm',
+  'bullet-select-open': 'triangle-up of-icon-scale-sm'
+}
+
 const uiiIconFont: IconFont = {
   resolve(name) {
-    if (uiiIcons.includes(name)) {
-      return {
-        class: 'uibasic-icon icon-' + name
-      }
+    if (name in uiiAlias) {
+      name = (uiiAlias as any)[name]
+    } else if (!uiiIcons.includes(name)) {
+      return null
     }
-    return null
+    return {
+      class: 'uibasic-icon icon-' + name
+    }
   }
 }
 
@@ -147,19 +154,21 @@ const materialIcons = {
   'circle-join': '',
   'circle-refresh': '🔃',
   'circle-attach': 'attach_file',
-  'arrow-left': 'arrow_forward icon-horiz-flip',
+  'arrow-left': 'arrow_forward of-icon-flip-horiz',
   'arrow-right': 'arrow_forward',
   'arrow-up': 'arrow_upward',
   'arrow-down': 'arrow_downward',
-  previous: 'arrow_left icon-scale-lg',
-  next: 'arrow_right icon-scale-lg',
-  'triangle-down': 'arrow_drop_down icon-scale-lg',
-  'triangle-up': 'arrow_drop_up icon-scale-lg',
+  previous: 'arrow_left of-icon-scale-lg',
+  next: 'arrow_right of-icon-scale-lg',
+  'triangle-down': 'arrow_drop_down of-icon-scale-lg',
+  'triangle-up': 'arrow_drop_up of-icon-scale-lg',
   'nav-top': 'vertical_align_top',
   'nav-first': 'first_page',
   'nav-previous': 'navigate_before',
   'nav-next': 'navigate_next',
-  'nav-last': 'last_page'
+  'nav-last': 'last_page',
+  'bullet-select': 'triangle-down',
+  'bullet-select-open': 'triangle-up'
 }
 
 const materialIconFont: IconFont = {

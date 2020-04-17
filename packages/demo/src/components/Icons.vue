@@ -11,16 +11,32 @@
     <of-config :icon-font="iconFont">
       <div class="row demo-row">
         <div class="demo-inline" v-for="iconset of icons">
-          <of-icon v-for="(desc, icon) of iconset" :name="icon" :title="desc" />
+          <div class="demo-icon" v-for="(desc, icon) of iconset">
+            <of-icon :name="icon" :title="desc" />
+          </div>
         </div>
         <div class="demo-inline">
-          <div class="of-icon input-led led-grey" title="grey led"></div>
-          <div class="of-icon input-led led-green" title="green led"></div>
-          <div class="of-icon input-led led-red" title="red led"></div>
-          <div class="of-icon input-led led-yellow" title="yellow led"></div>
-          <div class="of-icon input-led led-violet" title="violet led"></div>
-          <div class="of-icon input-led led-blue" title="blue led"></div>
-          <div class="of-icon input-led led-orange" title="orange led"></div>
+          <div class="demo-icon">
+            <div class="of-icon input-led led-grey" title="grey led"></div>
+          </div>
+          <div class="demo-icon">
+            <div class="of-icon input-led led-green" title="green led"></div>
+          </div>
+          <div class="demo-icon">
+            <div class="of-icon input-led led-red" title="red led"></div>
+          </div>
+          <div class="demo-icon">
+            <div class="of-icon input-led led-yellow" title="yellow led"></div>
+          </div>
+          <div class="demo-icon">
+            <div class="of-icon input-led led-violet" title="violet led"></div>
+          </div>
+          <div class="demo-icon">
+            <div class="of-icon input-led led-blue" title="blue led"></div>
+          </div>
+          <div class="demo-icon">
+            <div class="of-icon input-led led-orange" title="orange led"></div>
+          </div>
         </div>
       </div>
     </of-config>
@@ -129,7 +145,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.demo-row .of-icon {
+.demo-icon {
   box-sizing: content-box;
   display: inline-block;
   border-radius: 2px;

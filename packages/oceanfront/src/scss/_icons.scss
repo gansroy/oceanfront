@@ -1,9 +1,22 @@
 .of-icon {
   display: inline-flex; // allow scaling of contents
-  transform: scale($scale-icon-x, $scale-icon-y);
+  font-size: inherit;
+  transform: scale($scale-icon, $scale-icon);
   &.left {
     margin-right: 0.25em;
   }
+}
+
+.of-icon-scale-sm {
+  --of-icon-scale-indiv: 0.8;
+}
+
+.of-icon-scale-lg {
+  --of-icon-scale-indiv: 1.33;
+}
+
+.of-icon.of-icon-flip-horiz {
+  transform: scale(calc(0 - #{$scale-icon}), $scale-icon);
 }
 
 .input-led {

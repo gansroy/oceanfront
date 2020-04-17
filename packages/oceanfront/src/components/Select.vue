@@ -3,11 +3,10 @@
     <div ref="elt" v-bind="attrs" v-on="handlers">
       <slot>{{ value }}</slot>
     </div>
-    <span
-      :class="
-        'of-select-arrow input-bullet ' + (opened ? 'bullet-up' : 'bullet-down')
-      "
-    ></span>
+    <of-icon
+      :name="opened ? 'bullet-select-close' : 'bullet-select'"
+      class="of-bullet-select"
+    ></of-icon>
   </of-field-outer>
   <of-overlay
     :active="opened"
