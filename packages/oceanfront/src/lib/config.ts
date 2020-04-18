@@ -109,7 +109,11 @@ export class ConfigManager<T> {
 
 const readonlyUnwrapHandlers = {
   get(target: Ref, key: string, receiver: object): any {
-    return Reflect.get(target.value, key)
+    let result = Reflect.get(target.value, key)
+    // if (typeof result === 'object') {
+    //   result = readonly(result)
+    // }
+    return result
   },
   has(target: Ref, key: string | number | symbol): boolean {
     return Reflect.has(target.value, key)

@@ -1,14 +1,14 @@
 import { Config, ConfigManager, readonlyUnwrap } from '../lib/config'
 
 export interface LocaleNumberFormat {
-  groupSeparator: string
-  decimalSeparator: string
-  auto: boolean
+  readonly groupSeparator: string
+  readonly decimalSeparator: string
+  readonly auto: boolean
 }
 
 export interface LocaleState {
-  locale: string
-  numberFormat?: LocaleNumberFormat
+  readonly locale: string
+  readonly numberFormat?: LocaleNumberFormat
 }
 
 class LocaleManager implements LocaleState {
@@ -26,7 +26,6 @@ export function setLocale(loc: string) {
   let mgr = configManager.activeManager
   if (!mgr) return
   mgr.locale = loc
-  console.log('mgr', mgr)
 }
 
 export function useLocale(config?: Config): LocaleState {

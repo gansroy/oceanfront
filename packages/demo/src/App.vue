@@ -30,7 +30,7 @@
       </div>
     </header>
     <div class="app-body">
-      <of-sidebar v-model="sidebarActive" :embed="true">
+      <of-sidebar v-model="sidebarActive" :embed="!isMobile">
         <of-nav-group>
           <of-list-item to="/">Overview</of-list-item>
           <of-list-item disabled>Buttons</of-list-item>
@@ -69,7 +69,14 @@
 </template>
 
 <script lang="ts">
-import { onErrorCaptured, ref, defineComponent, SetupContext } from 'vue'
+import {
+  onErrorCaptured,
+  ref,
+  defineComponent,
+  SetupContext,
+  computed
+} from 'vue'
+import { useLayout } from 'oceanfront'
 import TestForm from './components/TestForm.vue'
 import TestInputs from './components/TestInputs.vue'
 
@@ -86,9 +93,25 @@ export default defineComponent({
       error.value = formatError(e)
       return true
     })
+    const layoutMgr = useLayout()
     const baseFontSize = ref('16')
     const configActive = ref(false)
-    const sidebarActive = ref(true)
+    const isMobile = computed(() => layoutMgr.isMobile)
+    const sidebarMobileActive = ref(false)
+    const sidebarDesktopActive = ref(true)
+    const sidebarActive = computed({
+      get() {
+        return isMobile.value
+          ? sidebarMobileActive.value
+          : sidebarDesktopActive.value
+      },
+      set(val: boolean) {
+        ;(isMobile.value
+          ? sidebarMobileActive
+          : sidebarDesktopActive
+        ).value = val
+      }
+    })
     const updateFont = function(evt: Event) {
       const size = (evt.target as HTMLInputElement).value
       baseFontSize.value = size
@@ -98,12 +121,14 @@ export default defineComponent({
       configActive.value = true
     }
     const toggleSidebar = () => {
-      sidebarActive.value = !sidebarActive.value
+      if (isMobile.value) sidebarMobileActive.value = !sidebarMobileActive.value
+      else sidebarDesktopActive.value = !sidebarDesktopActive.value
     }
     return {
       baseFontSize,
       configActive,
       error,
+      isMobile,
       showConfig,
       sidebarActive,
       toggleSidebar,
@@ -169,5 +194,8 @@ export default defineComponent({
 .of-sidebar {
   padding-bottom: 0.25em;
   padding-top: 0.25em;
+}
+.of--overlay > .of-sidebar {
+  margin-top: 48px;
 }
 </style>
