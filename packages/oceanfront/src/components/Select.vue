@@ -21,9 +21,29 @@
           <slot>
             <of-nav-group>
               <template v-slot="{ focused }">
-                <div class="of-list-outer">
-                  <of-list-item>Hello there</of-list-item>
-                  <of-list-item>Goodbye</of-list-item>
+                <div v-if="!formatItems.length" style="padding: 0 0.5em">
+                  No items
+                </div>
+                <div class="of-list-outer" v-else>
+                  <template v-for="item of formatItems">
+                    <div
+                      class="of-list-header"
+                      v-if="item.special === 'header'"
+                      v-text="item.text"
+                    />
+                    <div
+                      class="of-list-divider"
+                      v-else-if="item.special === 'divider'"
+                      v-text="item.text"
+                    />
+                    <of-list-item
+                      :active="item.selected"
+                      :disabled="item.disabled"
+                      @click="setValue(item.value)"
+                      v-else
+                      >{{ item.text }}</of-list-item
+                    >
+                  </template>
                 </div>
               </template>
             </of-nav-group>
@@ -48,6 +68,7 @@ import OfFieldOuter from './FieldOuter.vue'
 import OfListItem from './ListItem.vue'
 import OfNavGroup from './NavGroup.vue'
 import OfOverlay from './Overlay.vue'
+import { useItems } from '../lib/items'
 
 export default defineComponent({
   name: 'of-select',
@@ -56,6 +77,7 @@ export default defineComponent({
     class: String, // or object or list
     disabled: Boolean,
     id: String,
+    items: [String, Array, Object],
     label: String,
     maxlength: Number,
     modelValue: String,
@@ -66,6 +88,7 @@ export default defineComponent({
     variant: String
   },
   setup(props, ctx: SetupContext) {
+    const itemMgr = useItems()
     const inputValue = ref(
       props.value === undefined ? props.modelValue : props.value
     )
@@ -125,6 +148,48 @@ export default defineComponent({
       readonly: readonly.value,
       variant: props.variant
     }))
+    const items = computed(
+      () => itemMgr.getItemList(props.items) || { items: [] }
+    )
+    const formatItems = computed(() => {
+      const resolved = items.value
+      const value = inputValue.value
+      const disabledKey =
+        resolved.disabledKey === undefined ? 'disabled' : resolved.disabledKey
+      const specialKey =
+        resolved.specialKey === undefined ? 'special' : resolved.specialKey
+      const textKey = resolved.textKey === undefined ? 'text' : resolved.textKey
+      const valueKey =
+        resolved.valueKey === undefined ? 'value' : resolved.valueKey
+      const rows = []
+      for (const item of resolved.items) {
+        if (typeof item === 'string') {
+          rows.push({
+            disabled: false,
+            text: item,
+            selected: item === value,
+            value: item
+          })
+        } else if (typeof item === 'object') {
+          rows.push({
+            disabled: item[disabledKey],
+            text: item[textKey],
+            value: item[valueKey],
+            selected: item[valueKey] === value,
+            special: item[specialKey]
+          })
+        }
+      }
+      return rows
+    })
+    const specialKey = computed(() => {
+      const def = items.value.specialKey
+      return def === undefined ? 'special' : def
+    })
+    const textKey = computed(() => {
+      const def = items.value.textKey
+      return def === undefined ? 'text' : def
+    })
     return {
       attrs: computed(() => ({
         id,
@@ -135,10 +200,16 @@ export default defineComponent({
       elt,
       fieldAttrs,
       focus,
+      formatItems,
       handlers,
       open,
       opened,
-      value: inputValue.value
+      setValue(val: any) {
+        inputValue.value = val
+        ctx.emit('update:modelValue', val)
+        closePopup()
+      },
+      value: inputValue
     }
   }
 })

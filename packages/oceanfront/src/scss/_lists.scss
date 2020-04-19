@@ -56,3 +56,26 @@
   padding-bottom: 0.25em;
   padding-top: 0.25em;
 }
+
+.of-list-header {
+  color: #555;
+  cursor: default;
+  font-size: 80%;
+  overflow: hidden;
+  padding: 0 1.25ch;
+  pointer-events: none;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: no-wrap;
+}
+
+.of-list-divider {
+  &::before {
+    content: '';
+    display: block;
+    background: rgba(0, 0, 0, 0.25);
+    height: 1px;
+    margin: 0.15em 0.5em;
+  }
+}

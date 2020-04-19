@@ -16,6 +16,9 @@ import { useRoutes } from '../lib/routes'
 
 export default defineComponent({
   name: 'of-list-item',
+  emits: {
+    click: null
+  },
   props: {
     disabled: Boolean,
     expand: { type: Boolean, default: null },
@@ -59,6 +62,8 @@ export default defineComponent({
         router.push(props.to)
         evt.preventDefault()
         return true
+      } else {
+        ctx.emit('click', evt)
       }
     }
     const handlers = {

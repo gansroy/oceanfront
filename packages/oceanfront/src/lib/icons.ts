@@ -91,7 +91,7 @@ const uiiIcons = [
 
 const uiiAlias = {
   'bullet-select': 'triangle-down of-icon-scale-sm',
-  'bullet-select-open': 'triangle-up of-icon-scale-sm'
+  'bullet-select-close': 'triangle-up of-icon-scale-sm'
 }
 
 const uiiIconFont: IconFont = {
@@ -168,7 +168,7 @@ const materialIcons = {
   'nav-next': 'navigate_next',
   'nav-last': 'last_page',
   'bullet-select': 'triangle-down',
-  'bullet-select-open': 'triangle-up'
+  'bullet-select-close': 'triangle-up'
 }
 
 const materialIconFont: IconFont = {

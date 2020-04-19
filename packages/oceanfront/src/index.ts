@@ -52,6 +52,8 @@ export { NumberFormatter } from './lib/format'
 
 export { extendConfig, useConfig } from './lib/config'
 export { showMissingIcons, useIcons } from './lib/icons'
+export { useFormats } from './lib/format'
+export { defineItemList, useItems } from './lib/items'
 export { setMobileBreakpoint, useLayout } from './lib/layout'
 export { useLocale } from './lib/locale'
 export { useRoutes } from './lib/routes'
