@@ -15,6 +15,9 @@
             />
             <br />
             Effective locale: {{ locale }}
+            <br />
+            test format:
+            <of-format type="number" :value="inputValue" />
           </template>
         </of-config>
       </div>

@@ -1,5 +1,5 @@
-import { computed, Ref, VNode } from 'vue'
-import { Config } from './config'
+import { computed, Ref, VNode, reactive } from 'vue'
+import { Config, ConfigManager, readonlyUnwrap } from './config'
 import { useLocale, LocaleState, LocaleNumberFormat } from './locale'
 
 const isDigit = (s: string) => s >= '0' && s <= '9'
@@ -13,13 +13,18 @@ export interface InputResult {
   value?: string
 }
 
+export interface RenderResult {
+  class?: string
+  content: VNode | string
+}
+
 export interface ValueFormatter {
-  format(modelValue: any): string
+  format(modelValue: any, record?: Record<string, any>, key?: string): string
   handleInput(evt: InputEvent): InputResult // + warnings
   handleKeyDown(evt: KeyboardEvent): void // + warnings
   // ^ should return new native value + optional new formatted value
   validate(): boolean // + warnings
-  render(): VNode | string
+  render(modelValue: any): RenderResult
   // get attachments (ie. currency symbol, date icon, unit)
   inputClass: string | undefined
   inputMode: string | undefined
@@ -173,6 +178,14 @@ export class NumberFormatter implements ValueFormatter {
     return fmt.format(value)
   }
 
+  render(modelValue: any): RenderResult {
+    const val = this.format(modelValue)
+    return {
+      class: 'of-numeric',
+      content: val
+    }
+  }
+
   handleInput(evt: InputEvent): InputResult {
     const input = evt.target as HTMLInputElement
     let value = input.value
@@ -226,6 +239,7 @@ export class NumberFormatter implements ValueFormatter {
     }
     return { updated: false }
   }
+
   handleKeyDown(evt: KeyboardEvent): void {
     // FIXME handle compositionstart, compositionend?
     const input = evt.target as HTMLInputElement
@@ -258,10 +272,52 @@ export class NumberFormatter implements ValueFormatter {
       }
     }
   }
+
   validate(): boolean {
     return true
   }
-  render(): VNode | string {
-    return ''
+}
+
+type FormatterCtor = { new (config?: Config, options?: any): ValueFormatter }
+type FormatterFn = { (config?: Config, options?: any): ValueFormatter }
+
+type FormatterDef = ValueFormatter | FormatterCtor | FormatterFn
+
+export interface FormatState {
+  getFormatter(type: string, options?: any): ValueFormatter | undefined
+}
+
+class FormatManager implements FormatState {
+  readonly formats: Record<string, FormatterDef> = {}
+  readonly config: Config
+
+  constructor(config: Config) {
+    this.config = config
+    this.formats['number'] = NumberFormatter
   }
+
+  getFormatter(type: string, options?: any): ValueFormatter | undefined {
+    const def = this.formats[type]
+    if (def) {
+      if (typeof def === 'function') {
+        if ('format' in def.prototype)
+          return new (def as FormatterCtor)(this.config, options)
+        return (def as FormatterFn)(this.config, options)
+      }
+    }
+    return def
+  }
+}
+
+const configManager = new ConfigManager('offmt', FormatManager)
+
+export function defineFormat(name: string, fmt: FormatterDef) {
+  let mgr = configManager.activeManager
+  if (!mgr) return
+  mgr.formats[name] = fmt
+}
+
+export function useFormats(config?: Config): FormatState {
+  const mgr = configManager.inject(config)
+  return readonlyUnwrap(mgr)
 }

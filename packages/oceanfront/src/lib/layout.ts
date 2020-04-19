@@ -38,7 +38,7 @@ export interface LayoutState {
 class LayoutManager implements LayoutState {
   mobileBreakpoint: number = 1024
 
-  constructor() {}
+  constructor(_config: Config) {}
 
   get isMobile() {
     return windowRect.width < this.mobileBreakpoint

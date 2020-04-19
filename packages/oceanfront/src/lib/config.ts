@@ -62,18 +62,20 @@ export function extendConfig(cb: () => void) {
   provide(injectKey, newfn)
 }
 
+type ConfigHandlerCtor<T> = { new (config: Config): T }
+
 export class ConfigManager<T> {
   protected _activeManager?: T
-  protected _ctor: { new (): T }
+  protected _ctor: ConfigHandlerCtor<T>
   protected _injectKey: InjectionKey<ComputedRef<T>>
 
-  constructor(ident: string, ctor: { new (): T }) {
+  constructor(ident: string, ctor: ConfigHandlerCtor<T>) {
     this._ctor = ctor
     this._injectKey = Symbol(ident)
   }
 
-  createManager(): T {
-    return new this._ctor()
+  createManager(config: Config): T {
+    return new this._ctor(config)
   }
 
   get activeManager(): T | undefined {
@@ -91,7 +93,7 @@ export class ConfigManager<T> {
     if (!cache) {
       cache = computed(() => {
         const am = this._activeManager
-        const ret = (this._activeManager = this.createManager())
+        const ret = (this._activeManager = this.createManager(cfg))
         cfg.apply() // execute config functions
         this._activeManager = am
         console.debug('inject', ret, cfg)
