@@ -20,9 +20,9 @@ export default defineComponent({
     click: null
   },
   props: {
-    active: { type: Boolean, default: null },
+    active: { type: [Boolean, String], default: null },
     disabled: Boolean,
-    expand: { type: Boolean, default: null },
+    expand: { type: [Boolean, String], default: null },
     href: String,
     to: [String, Object]
   },

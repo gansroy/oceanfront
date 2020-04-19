@@ -4,7 +4,7 @@ import { useFormats } from '../lib/format'
 export default defineComponent({
   name: 'of-format',
   props: {
-    type: String,
+    type: [String, Function, Object],
     options: Object,
     value: {}
   },
@@ -21,7 +21,7 @@ export default defineComponent({
           return h('div', { class: render.class }, render.content)
         }
       }
-      return '' + props.value
+      return props.value === undefined ? '' : '' + props.value
     }
   }
 })

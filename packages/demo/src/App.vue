@@ -47,8 +47,15 @@
             <of-list-item disabled>Picker Inputs</of-list-item>
             <of-list-item to="/formatters">Formatters</of-list-item>
           </of-list-group>
-          <of-list-item disabled>Lists</of-list-item>
-          <of-list-item disabled>Menus</of-list-item>
+          <of-list-group value="1">
+            <template #activator="{ state, toggle }">
+              <of-list-item :expand="state" @click.prevent="toggle"
+                >Lists</of-list-item
+              >
+            </template>
+            <of-list-item to="/data-tables">Data Tables</of-list-item>
+            <of-list-item disabled>Menus</of-list-item>
+          </of-list-group>
           <of-list-item disabled>Tabs</of-list-item>
           <of-list-item disabled>Pagers</of-list-item>
           <of-list-item disabled>Dialogs</of-list-item>

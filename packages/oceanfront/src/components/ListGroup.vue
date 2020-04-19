@@ -14,7 +14,7 @@ export default defineComponent({
   props: {
     modelValue: Boolean,
     transition: String,
-    value: Boolean
+    value: [Boolean, String]
   },
   setup(props, ctx) {
     const state = ref(!!props.modelValue || props.value)

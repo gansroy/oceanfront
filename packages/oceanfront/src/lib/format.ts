@@ -26,8 +26,9 @@ export interface ValueFormatter {
   validate(): boolean // + warnings
   render(modelValue: any): RenderResult
   // get attachments (ie. currency symbol, date icon, unit)
-  inputClass: string | undefined
-  inputMode: string | undefined
+  inputClass?: string | string[]
+  inputMode?: string
+  align?: 'start' | 'center' | 'end'
 }
 
 export interface NumberFormatterOptions {
@@ -60,6 +61,10 @@ export class NumberFormatter implements ValueFormatter {
       }
       return opts
     })
+  }
+
+  get align(): 'start' | 'center' | 'end' {
+    return 'end'
   }
 
   get inputClass() {
@@ -284,7 +289,10 @@ type FormatterFn = { (config?: Config, options?: any): ValueFormatter }
 type FormatterDef = ValueFormatter | FormatterCtor | FormatterFn
 
 export interface FormatState {
-  getFormatter(type: string, options?: any): ValueFormatter | undefined
+  getFormatter(
+    type?: string | FormatterDef,
+    options?: any
+  ): ValueFormatter | undefined
 }
 
 class FormatManager implements FormatState {
@@ -296,8 +304,13 @@ class FormatManager implements FormatState {
     this.formats['number'] = NumberFormatter
   }
 
-  getFormatter(type: string, options?: any): ValueFormatter | undefined {
-    const def = this.formats[type]
+  getFormatter(
+    type?: string | FormatterDef,
+    options?: any
+  ): ValueFormatter | undefined {
+    let def: FormatterDef | undefined
+    if (typeof type === 'string') def = this.formats[type]
+    else def = type
     if (def) {
       if (typeof def === 'function') {
         if ('format' in def.prototype)

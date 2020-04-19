@@ -2,6 +2,7 @@ import { App, Component, Plugin, Directive } from 'vue'
 
 import { extendDefaultConfig } from './lib/config'
 import OfConfig from './components/Config'
+import OfDataTable from './components/DataTable.vue'
 import OfDialog from './components/Dialog.vue'
 import OfIcon from './components/Icon'
 import OfFormat from './components/Format'
@@ -18,6 +19,7 @@ import './scss/index.scss'
 
 export const components: Record<string, Component> = {
   OfConfig,
+  OfDataTable,
   OfDialog,
   OfIcon,
   OfFormat,

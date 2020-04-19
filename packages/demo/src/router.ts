@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
+import DataTables from './components/DataTables.vue'
 import Formatters from './components/Formatters.vue'
 import Icons from './components/Icons.vue'
 import Overview from './components/Overview.vue'
@@ -11,12 +12,13 @@ export const routerHistory = createWebHashHistory('/ofdocs')
 export const router = createRouter({
   history: routerHistory,
   routes: [
-    // 'as any' to work around a temporary vue-router typing issue
+    // 'as any' to work around a temporary typing issue
     { path: '/', name: 'index', component: Overview as any },
     { path: '/icons', component: Icons as any },
     { path: '/formatters', component: Formatters as any },
     { path: '/select-inputs', component: SelectInputs as any },
     { path: '/text-inputs', component: TextInputs as any },
-    { path: '/toggle-inputs', component: ToggleInputs as any }
+    { path: '/toggle-inputs', component: ToggleInputs as any },
+    { path: '/data-tables', component: DataTables as any }
   ]
 })
