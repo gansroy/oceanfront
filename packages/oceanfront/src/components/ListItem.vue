@@ -20,6 +20,7 @@ export default defineComponent({
     click: null
   },
   props: {
+    active: { type: Boolean, default: null },
     disabled: Boolean,
     expand: { type: Boolean, default: null },
     href: String,
@@ -32,7 +33,6 @@ export default defineComponent({
     const elt = ref<HTMLElement | undefined>()
     const expand = computed(() => props.expand)
     const focused = ref(false)
-    const navActive = ref(false)
     const navGroup = inject<INavGroup>('of_NavGroup')
     const navTo = () => {
       let focus = elt.value
@@ -51,12 +51,15 @@ export default defineComponent({
       if (rt) return rt.href
     })
     const active = computed(() => {
-      // FIXME allow override via active prop, default null
-      if (!href.value) return false
-      const rt = resolveRoute.value
-      // FIXME not an accurate comparison, only looks at path
-      return rt && route ? rt.path === route.path : false
+      if (props.active === null) {
+        if (!href.value) return false
+        const rt = resolveRoute.value
+        // FIXME not an accurate comparison, only looks at path
+        return rt && route ? rt.path === route.path : false
+      }
+      return props.active
     })
+    const navActive = ref(active.value)
     const clicked = (evt: Event) => {
       if (href.value && router) {
         router.push(props.to)
@@ -87,7 +90,7 @@ export default defineComponent({
               disabled: disabled as Ref<boolean | undefined>, // FIXME cast should not be necessary
               elt,
               focused,
-              navActive,
+              navActive: navActive as Ref<boolean>, // FIXME cast should not be necessary
               navTo
             })
           )

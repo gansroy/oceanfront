@@ -1,15 +1,24 @@
 .of-overlay.of--overlay {
   position: fixed;
+  display: flex;
+  flex-flow: column;
   top: 0;
   left: 0;
   bottom: 0;
-  padding: var(--overlay-dyn-pad-top, var(--overlay-pad, 0px))
+  padding: var(--overlay-pad, 0px)
     var(--overlay-dyn-pad-right, var(--overlay-pad, 0px))
-    var(--overlay-dyn-pad-bottom, var(--overlay-pad, 0px))
-    var(--overlay-dyn-pad-left, var(--overlay-pad, 0px));
+    var(--overlay-pad, 0px) var(--overlay-dyn-pad-left, var(--overlay-pad, 0px));
   pointer-events: none;
   right: 0;
   z-index: 200;
+  &::before {
+    content: '';
+    flex: 0 1 calc(var(--overlay-dyn-pad-top, 0px) - var(--overlay-pad, 0px));
+  }
+  &::after {
+    content: '';
+    flex: 0 1 calc(var(--overlay-dyn-pad-bottom, 0px) - var(--overlay-pad, 0px));
+  }
 }
 .of-overlay > * {
   pointer-events: auto;
@@ -18,18 +27,14 @@
   pointer-events: initial;
 }
 .of-overlay.of--center {
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 .of-overlay.of--left {
-  display: flex;
   align-items: flex-start;
   flex-flow: column nowrap;
   justify-content: center;
 }
 .of-overlay.of--right {
-  display: flex;
   align-items: flex-end;
   flex-flow: column nowrap;
   justify-content: center;
@@ -101,9 +106,11 @@
 .of-menu {
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   background: #fff;
-  min-width: 200px;
+  max-height: 100%;
   max-width: 400px;
-  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+  overflow: hidden auto;
 }

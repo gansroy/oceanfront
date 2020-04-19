@@ -58,16 +58,19 @@
 }
 
 .of-list-header {
+  background: #eee;
   color: #555;
   cursor: default;
   font-size: 80%;
   overflow: hidden;
   padding: 0 1.25ch;
   pointer-events: none;
+  position: sticky;
   text-overflow: ellipsis;
   text-transform: uppercase;
+  top: 0px;
   user-select: none;
-  white-space: no-wrap;
+  white-space: nowrap;
 }
 
 .of-list-divider {

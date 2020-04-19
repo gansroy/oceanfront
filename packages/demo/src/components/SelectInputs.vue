@@ -14,8 +14,8 @@
         <br /><br />
         <of-select
           :items="tzOpts"
-          label="Select input"
-          value="Selected"
+          label="Select timezone"
+          value="America/Vancouver"
           variant="outlined"
         ></of-select>
         <br /><br />
@@ -427,7 +427,7 @@ export default defineComponent({
     let tzGrp = null
     for (const value of timezones) {
       const gPos = value.indexOf('/')
-      const text = value.replace('_', ' ')
+      const text = value.replace(/_/g, ' ')
       const grp = value.substring(0, gPos)
       if (grp !== tzGrp) {
         tzOpts.items.push({ special: 'header', text: grp })
