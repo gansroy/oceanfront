@@ -11,13 +11,13 @@ yarn install
 ### Live Development Server
 
 ```sh
-lerna watch
+yarn watch
 ```
 
 ### Build Packages
 
-This produces minified sources in `packages/oceanfront/dist` and a demo site in `packages/demo/dist`. The site expects to be available at `/ofdocs/` when hosted.
+This produces minified sources in `packages/oceanfront/dist` and a demo site in `packages/demo/dist`. The demo site expects to be available at `/ofdocs/` when hosted.
 
 ```sh
-lerna build
+yarn build
 ```
