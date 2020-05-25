@@ -1,3 +1,5 @@
+import { Ref, toRef } from 'vue'
+
 export const hasOwnProperty = Object.prototype.hasOwnProperty
 export const hasOwn = (
   val: object,
@@ -58,4 +60,21 @@ export function extendReactive(
       return true
     }
   })
+}
+
+export function extractRefs<T extends object, K extends keyof T>(
+  props: T,
+  names: K[]
+): {
+  [K in keyof T]?: Ref<T[K]>
+} {
+  const ret: {
+    [K in keyof T]?: Ref<T[K]>
+  } = {}
+  if (names) {
+    for (const k of names) {
+      ret[k] = toRef(props, k)
+    }
+  }
+  return ret
 }

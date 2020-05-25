@@ -8,7 +8,7 @@
 import { ref, defineComponent, SetupContext, computed, Ref, watch } from 'vue'
 import OfFieldOuter from './FieldOuter.vue'
 import { useConfig } from '../lib/config'
-import { NumberFormatter, ValueFormatter } from '../lib/format'
+import { NumberFormatter, TextFormatter } from '../lib/format'
 
 // const copyAttrs = new Set(['autocomplete', 'placeholder', 'size', 'value'])
 
@@ -53,7 +53,7 @@ export default defineComponent({
   },
   setup(props, ctx: SetupContext) {
     const config = useConfig()
-    const formatter = computed<ValueFormatter | undefined>(() => {
+    const formatter = computed<TextFormatter | undefined>(() => {
       let fmtCtor
       if (typeof props.format === 'string') {
         // FIXME look up registered formatter
@@ -61,7 +61,7 @@ export default defineComponent({
       } else if (typeof props.format === 'function') {
         fmtCtor = props.format
       } else if (typeof props.format === 'object') {
-        return props.format as ValueFormatter
+        return props.format as TextFormatter
       }
       if (fmtCtor) return fmtCtor(config)
     })

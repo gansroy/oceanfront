@@ -44,15 +44,15 @@ export default defineComponent({
     const classAttrs = computed(() => {
       const blank = props.blank && !(props.focused || props.opened)
       const cls = {
-        active: !blank,
-        blank: blank,
-        focus: props.focused,
-        readonly: props.readonly,
-        disabled: props.disabled,
-        'with-label': withLabel.value
+        'of--active': !blank,
+        'of--blank': blank,
+        'of--focus': props.focused,
+        'of--readonly': props.readonly,
+        'of--disabled': props.disabled,
+        'of--with-label': withLabel.value
       }
       const variant = props.variant || 'basic'
-      return [cls, 'of-field-' + variant, props.class]
+      return [cls, 'of--variant-' + variant, props.class]
     })
     const handlers = {
       click(evt: MouseEvent) {

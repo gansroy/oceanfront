@@ -11,16 +11,18 @@ export default defineComponent({
   setup(props, ctx) {
     const formatMgr = useFormats()
     const formatter = computed(() =>
-      props.type ? formatMgr.getFormatter(props.type, props.options) : undefined
+      props.type
+        ? formatMgr.getTextFormatter(props.type, props.options)
+        : undefined
     )
     return () => {
       const fmt = formatter.value
-      if (fmt) {
+      /*if (fmt) {
         const render = fmt.render(props.value)
         if (render) {
           return h('div', { class: render.class }, render.content)
         }
-      }
+      }*/
       return props.value === undefined ? '' : '' + props.value
     }
   }

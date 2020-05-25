@@ -10,4 +10,5 @@ export interface DataTableHeader {
   width?: string | number
   filter?: (value: any, search: string, item: any) => boolean // provide via formatter?
   sort?: (a: any, b: any) => number // provide via formatter?
+  editable?: boolean | string
 }

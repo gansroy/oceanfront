@@ -1,33 +1,31 @@
 import { computed, Ref, VNode, reactive } from 'vue'
 import { Config, ConfigManager, readonlyUnwrap } from './config'
+import { FieldConstructor } from './fields'
 import { useLocale, LocaleState, LocaleNumberFormat } from './locale'
 
 const isDigit = (s: string) => s >= '0' && s <= '9'
 
-export interface InputResult {
+export interface TextFormatResult {
+  blank?: boolean
   error?: string
-  nativeValue?: any
+  inputValue?: string
+  value?: any
+}
+export interface TextInputResult extends TextFormatResult {
   selStart?: number
   selEnd?: number
   updated: boolean
-  value?: string
 }
 
-export interface RenderResult {
-  class?: string
-  content: VNode | string
-}
-
-export interface ValueFormatter {
-  format(modelValue: any, record?: Record<string, any>, key?: string): string
-  handleInput(evt: InputEvent): InputResult // + warnings
-  handleKeyDown(evt: KeyboardEvent): void // + warnings
-  // ^ should return new native value + optional new formatted value
-  validate(): boolean // + warnings
-  render(modelValue: any): RenderResult
+export interface TextFormatter {
+  format(modelValue: any): TextFormatResult
+  unformat(input: string): any
+  handleInput?: (evt: InputEvent) => TextInputResult // + warnings
+  handleKeyDown?: (evt: KeyboardEvent) => void // + warnings
   // get attachments (ie. currency symbol, date icon, unit)
   inputClass?: string | string[]
   inputMode?: string
+  inputType?: string
   align?: 'start' | 'center' | 'end'
 }
 
@@ -46,7 +44,7 @@ export interface NumberFormatterOptions {
   useGrouping?: boolean
 }
 
-export class NumberFormatter implements ValueFormatter {
+export class NumberFormatter implements TextFormatter {
   private _locale: LocaleState
   private _options: Ref<NumberFormatterOptions>
 
@@ -95,7 +93,7 @@ export class NumberFormatter implements ValueFormatter {
     }
   }
 
-  unformat(input: string, selStart?: number) {
+  parseInput(input: string, selStart?: number) {
     const seps = this.getSeparators()
 
     if (typeof selStart !== 'number') selStart = 0
@@ -171,44 +169,71 @@ export class NumberFormatter implements ValueFormatter {
     return { decimal, group }
   }
 
-  format(modelValue: any): string {
-    let value: number
-    if (typeof modelValue === 'number') {
-      // or bigint?
-      value = modelValue
-    } else {
-      value = this.unformat(modelValue).value
+  loadValue(modelValue: any): number | null {
+    // bigint?
+    if (typeof modelValue === 'number') return modelValue
+    if (modelValue === null || modelValue === undefined) return null
+    if (typeof modelValue === 'string') {
+      modelValue = modelValue.trim()
+      if (!modelValue.length) return null
+      return parseFloat(modelValue)
     }
-    const fmt = Intl.NumberFormat(this.options.locale, this.formatterOptions())
-    return fmt.format(value)
+    throw new TypeError('Unsupported value')
   }
 
-  render(modelValue: any): RenderResult {
-    const val = this.format(modelValue)
+  format(modelValue: any): TextFormatResult {
+    let value = modelValue
+    let inputValue = ''
+    let error
+    try {
+      let value = this.loadValue(modelValue)
+      if (value != null) {
+        const fmt = Intl.NumberFormat(
+          this.options.locale,
+          this.formatterOptions()
+        )
+        inputValue = fmt.format(value)
+      }
+    } catch (e) {
+      error = e.toString()
+    }
     return {
-      class: 'of-numeric',
-      content: val
+      error,
+      value,
+      inputValue
     }
   }
 
-  handleInput(evt: InputEvent): InputResult {
+  unformat(input: string): number | null {
+    // bigint?
+    if (typeof input === 'number') return input
+    if (input === null || input === undefined) return null
+    if (typeof input === 'string') {
+      input = input.trim()
+      if (!input.length) return null
+      return parseFloat(input)
+    }
+    throw new TypeError('Unsupported value')
+  }
+
+  handleInput(evt: InputEvent): TextInputResult {
     const input = evt.target as HTMLInputElement
-    let value = input.value
+    let inputValue = input.value
     let selStart = input.selectionStart || 0
-    if (value.length) {
+    if (inputValue.length) {
       const fmtOpts = this.formatterOptions(true)
-      const unformat = this.unformat(value, selStart)
+      const unformat = this.parseInput(inputValue, selStart)
       let { minDecs, seps } = unformat
       if (minDecs !== null)
         minDecs = Math.min(minDecs, fmtOpts.maximumFractionDigits!)
       const formatter = Intl.NumberFormat(this.options.locale, fmtOpts)
       const parts: any[] = (formatter as any).formatToParts(unformat.value)
-      value = ''
+      inputValue = ''
       let parsedPos = 0
       for (const part of parts) {
-        if (part.type === 'group') value += seps.group
+        if (part.type === 'group') inputValue += seps.group
         else if (part.type === 'decimal') {
-          value += seps.decimal
+          inputValue += seps.decimal
           parsedPos++
         } else if (part.type === 'integer' || part.type === 'fraction') {
           let pval = part.value as string
@@ -219,27 +244,27 @@ export class NumberFormatter implements ValueFormatter {
           }
           for (const c of pval.split('')) {
             if (!unformat.selAfterDigit && parsedPos === unformat.selStart) {
-              selStart = value.length
+              selStart = inputValue.length
             }
             parsedPos++
-            value += c
+            inputValue += c
             if (unformat.selAfterDigit && parsedPos === unformat.selStart) {
-              selStart = value.length
+              selStart = inputValue.length
             }
           }
         } else {
-          value += part.value
+          inputValue += part.value
         }
       }
       if (minDecs !== null) {
-        value += seps.decimal + '0'.repeat(minDecs)
+        inputValue += seps.decimal + '0'.repeat(minDecs)
       }
       return {
-        nativeValue: unformat.value,
+        inputValue,
         selStart,
         selEnd: selStart,
-        updated: input.value !== value,
-        value
+        updated: input.value !== inputValue,
+        value: unformat.value
       }
     }
     return { updated: false }
@@ -283,39 +308,47 @@ export class NumberFormatter implements ValueFormatter {
   }
 }
 
-type FormatterCtor = { new (config?: Config, options?: any): ValueFormatter }
-type FormatterFn = { (config?: Config, options?: any): ValueFormatter }
+type TextFormatterCtor = { new (config?: Config, options?: any): TextFormatter }
+type TextFormatterFn = { (config?: Config, options?: any): TextFormatter }
 
-type FormatterDef = ValueFormatter | FormatterCtor | FormatterFn
+type TextFormatterDef = TextFormatter | TextFormatterCtor | TextFormatterFn
+export type TextFormatterProp = TextFormatterDef | string
 
 export interface FormatState {
-  getFormatter(
-    type?: string | FormatterDef,
+  getFieldFormatter(type?: string): FieldConstructor | undefined
+
+  getTextFormatter(
+    type?: string | TextFormatterDef,
     options?: any
-  ): ValueFormatter | undefined
+  ): TextFormatter | undefined
 }
 
 class FormatManager implements FormatState {
-  readonly formats: Record<string, FormatterDef> = {}
+  readonly fieldFormats: Record<string, FieldConstructor> = {}
+  readonly textFormats: Record<string, TextFormatterDef> = {}
   readonly config: Config
 
   constructor(config: Config) {
     this.config = config
-    this.formats['number'] = NumberFormatter
+    this.textFormats['number'] = NumberFormatter
   }
 
-  getFormatter(
-    type?: string | FormatterDef,
+  getFieldFormatter(type: string): FieldConstructor | undefined {
+    return this.fieldFormats[type]
+  }
+
+  getTextFormatter(
+    type?: TextFormatterProp,
     options?: any
-  ): ValueFormatter | undefined {
-    let def: FormatterDef | undefined
-    if (typeof type === 'string') def = this.formats[type]
+  ): TextFormatter | undefined {
+    let def: TextFormatterDef | undefined
+    if (typeof type === 'string') def = this.textFormats[type]
     else def = type
     if (def) {
       if (typeof def === 'function') {
         if ('format' in def.prototype)
-          return new (def as FormatterCtor)(this.config, options)
-        return (def as FormatterFn)(this.config, options)
+          return new (def as TextFormatterCtor)(this.config, options)
+        return (def as TextFormatterFn)(this.config, options)
       }
     }
     return def
@@ -324,10 +357,16 @@ class FormatManager implements FormatState {
 
 const configManager = new ConfigManager('offmt', FormatManager)
 
-export function defineFormat(name: string, fmt: FormatterDef) {
+export function defineFieldFormat(name: string, fmt: FieldConstructor) {
   let mgr = configManager.activeManager
   if (!mgr) return
-  mgr.formats[name] = fmt
+  mgr.fieldFormats[name] = fmt
+}
+
+export function defineTextFormat(name: string, fmt: TextFormatterDef) {
+  let mgr = configManager.activeManager
+  if (!mgr) return
+  mgr.textFormats[name] = fmt
 }
 
 export function useFormats(config?: Config): FormatState {

@@ -7,11 +7,11 @@
         <h4>Number Input</h4>
         <of-config :locale="locale">
           <template v-slot="{ locale }">
-            <of-text-field
-              align="right"
+            <of-field
+              label="hello"
               style="width: 10em"
               format="number"
-              v-model="inputValue"
+              v-model:value="inputValue"
             />
             <br />
             Effective locale: {{ locale }}

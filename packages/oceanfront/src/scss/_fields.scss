@@ -46,7 +46,7 @@
   text-align: left;
   @include no-select;
 
-  &.focus {
+  &.of--focus {
     .of-field-label {
       color: $color-field-focus;
     }
@@ -92,7 +92,7 @@
   padding-left: 1em;
 }
 
-.of-field-basic {
+.of--variant-basic {
   display: inline-block;
   margin: 0 0.3em;
 
@@ -129,7 +129,7 @@
 
     @include field-text-base;
   }
-  &.focus .of-field-inner {
+  &.of--focus .of-field-inner {
     background: $bg-input-focus;
     border-color: $border-color-input-focus;
     box-shadow: $box-shadow-field-basic-focus;
@@ -141,14 +141,14 @@
   .static .of-field-inner {
     border-color: $border-color-input;
   }
-  &.readonly,
-  &.disabled {
+  &.of--readonly,
+  &.of--disabled {
     .of-field-inner {
       background: $bg-input-disabled;
       border-color: $border-color-input-disabled;
     }
   }
-  &.disabled .of-field-inner {
+  &.of--disabled .of-field-inner {
     opacity: $opacity-input-disabled;
     @include input-text-disabled;
   }
@@ -261,7 +261,7 @@
   &:hover {
     --cur-border: 1px solid #{$border-color-field-hover};
   }
-  &.focus {
+  &.of--focus {
     --cur-border: 2px solid #{$border-color-field-focus};
     .of-field-label-wrap label {
       top: -1px;
@@ -277,8 +277,8 @@
     backface-visibility: hidden; // avoid some jumping?
     // will-change: transform; // FIXME currently blurry in chrome
   }
-  &.focus,
-  &.active {
+  &.of--focus,
+  &.of--active {
     .of-field-label-wrap {
       border-top-color: transparent;
     }
@@ -295,7 +295,7 @@
       will-change: opacity;
     }
   }
-  &.active {
+  &.of--active {
     .of-field-inner > * {
       opacity: 1;
     }
@@ -328,7 +328,7 @@
   &:hover {
     background: $background-field-filled-hover;
   }
-  &.focus {
+  &.of--focus {
     background: $background-field-filled-focus;
   }
 
@@ -349,7 +349,7 @@
       will-change: opacity, transform;
     }
   }
-  &.focus .of-field-above::after {
+  &.of--focus .of-field-above::after {
     opacity: 1;
     transform: scaleX(1);
   }
@@ -366,8 +366,8 @@
     // will-change: transform; // FIXME currently blurry in chrome
   }
 
-  &.focus,
-  &.active {
+  &.of--focus,
+  &.of--active {
     .of-field-label {
       transform: none;
     }
@@ -385,7 +385,7 @@
   &:hover .of-field-inner {
     border-bottom-color: $border-color-field-hover;
   }
-  &.active {
+  &.of--active {
     .of-field-inner > * {
       opacity: 1;
     }

@@ -1,4 +1,5 @@
 import { Config, ConfigManager, readonlyUnwrap } from './config'
+import { Component } from 'vue'
 
 export interface ItemList {
   avatarKey?: string
@@ -7,10 +8,14 @@ export interface ItemList {
   specialKey?: string
   textKey?: string
   valueKey?: string
-  loading?: boolean
-  filter?: (query: string) => any[]
+  count?: number
+  // details?: (key: any) => VNode
+  error?: string // maybe multiple messages, maybe hint as well
+  // format?:  formatter for values
+  filter?: (query: string) => any[] | ItemList
   items: any[]
-  error?: string
+  loading?: boolean | string // string for placeholder message
+  lookup?: (key: any) => any
 }
 
 export function makeItemList(items: any[] | ItemList): ItemList {
