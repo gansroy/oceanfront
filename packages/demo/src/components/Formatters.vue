@@ -8,7 +8,6 @@
         <of-config :locale="locale">
           <template v-slot="{ locale }">
             <of-field
-              label="hello"
               style="width: 10em"
               format="number"
               v-model:value="inputValue"

@@ -182,8 +182,8 @@
   }
 }
 
-.of-field-outlined,
-.of-field-filled {
+.of--variant-outlined,
+.of--variant-filled {
   display: inline-flex;
 
   .of-field-inner {
@@ -225,7 +225,7 @@
   }
 }
 
-.of-field-outlined {
+.of--variant-outlined {
   --cur-border: 1px solid #{$border-color-field};
   .of-field-above {
     display: flex;
@@ -321,7 +321,7 @@
   }
 }
 
-.of-field-filled {
+.of--variant-filled {
   background: $background-field-filled;
   border-radius: $border-radius-field $border-radius-field 0 0;
 

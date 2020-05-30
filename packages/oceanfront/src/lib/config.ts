@@ -2,7 +2,6 @@ import {
   inject,
   provide,
   reactive,
-  readonly,
   InjectionKey,
   ComputedRef,
   computed,
@@ -10,19 +9,31 @@ import {
 } from 'vue'
 
 export type Config = ConfigState
-export type ConfigFunction = () => void
+export type ConfigFunction = (state: ConfigState) => void
+
+let cfgId = 0
 
 export class ConfigState {
   _cb: ConfigFunction
   _cache: Record<any, any>
+  _id: number
 
   constructor(cb: ConfigFunction) {
     this._cb = cb
     this._cache = {}
+    this._id = cfgId++
   }
 
   apply() {
-    this._cb()
+    if (buildingConfig === this) {
+      console.log('skip self', this._id)
+      return
+    }
+    let cfg = buildingConfig
+    if (!buildingConfig) buildingConfig = this
+    console.log('build', this._id, buildingConfig._id)
+    this._cb(this)
+    buildingConfig = cfg
   }
 
   getCache<T>(key: InjectionKey<T>): T | undefined {
@@ -53,13 +64,15 @@ export function useConfig(): Config {
   return inject(injectKey, defaultConfig)
 }
 
+let buildingConfig: ConfigState | undefined = undefined
+
 export function extendConfig(cb: () => void) {
   const cfg = useConfig()
-  const newfn = new ConfigState(() => {
+  const newcfg = new ConfigState(() => {
     cfg.apply()
     cb()
   })
-  provide(injectKey, newfn)
+  provide(injectKey, newcfg)
 }
 
 type ConfigHandlerCtor<T> = { new (config: Config): T }
@@ -80,6 +93,7 @@ export class ConfigManager<T> {
 
   get activeManager(): T | undefined {
     if (!this._activeManager) {
+      if (buildingConfig) return this.inject(buildingConfig).value
       if (__DEV__) {
         console.warn('Cannot extend config: not inside provider')
       }
@@ -92,13 +106,19 @@ export class ConfigManager<T> {
     let cache = cfg.getCache(this.injectKey)
     if (!cache) {
       cache = computed(() => {
-        const am = this._activeManager
-        const ret = (this._activeManager = this.createManager(cfg))
+        const mgr = this.createManager(cfg)
+        console.trace()
+        console.log(this._injectKey)
         cfg.apply() // execute config functions
+        return mgr
+      })
+      /*const am = this._activeManager
+        const ret = (this._activeManager = this.createManager(cfg))
+        // cfg.apply() // execute config functions
         this._activeManager = am
         console.debug('inject', ret, cfg)
         return ret
-      })
+      })*/
       cfg.setCache(this.injectKey, cache)
     }
     return cache

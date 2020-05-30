@@ -4,7 +4,11 @@ import {
   computed,
   h,
   shallowRef,
-  toRef
+  shallowReadonly,
+  toRef,
+  reactive,
+  readonly,
+  PropType
 } from 'vue'
 import { FieldContext, FieldProps } from '@/lib/fields'
 import { useFormats } from '@/lib/format'
@@ -23,7 +27,7 @@ export const OfField = defineComponent({
     loading: Boolean,
     locked: Boolean,
     // messages
-    mode: String,
+    mode: String as PropType<'edit' | 'readonly' | 'view'>,
     muted: Boolean,
     name: String,
     required: Boolean,
@@ -40,10 +44,10 @@ export const OfField = defineComponent({
     // FIXME derive from config
     const variant = computed(() => props.variant || 'basic')
 
-    const fctx: FieldContext = shallowRef({
+    const fctx: FieldContext = readonly({
       container: 'of-field',
-      mode,
-      ...extractRefs(props, [
+      mode: mode as any, // FIXME type of computedref not unwrapped correctly
+      ...(extractRefs(props, [
         'id',
         'label',
         'loading',
@@ -52,10 +56,13 @@ export const OfField = defineComponent({
         'name',
         'required',
         'size',
-        'value' // probably not passed directly
-      ])
+        'value'
+      ]) as any[]), // FIXME type issues
       // form
       // initialValue - defined by form?
+      onUpdate(value: any) {
+        ctx.emit('update:value', value)
+      }
     })
 
     const format = computed(() => {
@@ -89,7 +96,11 @@ export const OfField = defineComponent({
           {
             'of--active': !blank,
             'of--blank': blank,
-            'of--focus': fmt.focused
+            'of--focused': fmt.focused,
+            'of--muted': props.muted,
+            'of--loading': fmt.loading,
+            // 'of--locked': fmt.locked,
+            'of--updated': fmt.updated
             // readonly: props.readonly,
             // disabled: props.disabled,
             // 'with-label': withLabel.value

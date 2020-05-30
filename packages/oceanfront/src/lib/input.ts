@@ -248,13 +248,13 @@ export const textInput = defineFieldFormat(
     const pendingValue = ref()
     const stateValue = ref()
     watch(
-      () => props.value,
+      () => ctx.value,
       val => {
         const fmt = formatter.value
         if (fmt) {
           const fval = fmt.format(val)
           if (fval.error) {
-            console.error('Error loading field value:', fval.error)
+            console.error('Error loading field value:', fval.error, val)
           } else {
             lazyInputValue = fval.inputValue ?? ''
             val = fval.value
@@ -284,9 +284,10 @@ export const textInput = defineFieldFormat(
       }
       return id
     })
-    const focus = () => {
+    const focus = (select?: boolean) => {
       if (elt.value) {
         elt.value.focus()
+        if (select) elt.value.select()
         return true
       }
     }
@@ -299,14 +300,12 @@ export const textInput = defineFieldFormat(
       },
       onChange(evt: Event) {
         lazyInputValue = (evt.target as HTMLInputElement)?.value
-        let val
-        if (formatter.value) {
-          val = formatter.value.unformat(lazyInputValue)
-        } else {
-          val = lazyInputValue
-        }
+        let val = formatter.value
+          ? formatter.value.unformat(lazyInputValue)
+          : lazyInputValue
         stateValue.value = val
         inputValue.value = lazyInputValue
+        if (ctx.onUpdate) ctx.onUpdate(val)
       },
       onInput(evt: InputEvent) {
         const fmt = formatter.value
@@ -354,15 +353,15 @@ export const textInput = defineFieldFormat(
           inputmode: fmt?.inputMode,
           id: inputId.value,
           maxlength: props.maxlength,
-          name: props.name,
-          placeholder: props.placeholder,
+          name: ctx.name,
+          placeholder: props.placeholder, // FIXME allow formatter override
           readonly: ctx.mode === 'readonly' || ctx.locked,
           value: lazyInputValue,
           ...hooks
           // ctx.label as aria label
         })
       },
-      click: focus,
+      click: () => focus(true),
       cursor: 'text', // FIXME depends if editable
       focus,
       focused,

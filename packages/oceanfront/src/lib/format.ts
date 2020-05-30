@@ -134,7 +134,7 @@ export class NumberFormatter implements TextFormatter {
       }
     }
     if (parsedSelStart === null) parsedSelStart = parsed.length
-    const value = parseFloat(parsed)
+    const value = parsed.length ? parseFloat(parsed) : null
 
     // if input is integer-only (maxFractionDigits: 0):
     // - if user just typed a decimal, wipe it out
@@ -211,7 +211,8 @@ export class NumberFormatter implements TextFormatter {
     if (typeof input === 'string') {
       input = input.trim()
       if (!input.length) return null
-      return parseFloat(input)
+      let parsed = this.parseInput(input)
+      return parsed.value
     }
     throw new TypeError('Unsupported value')
   }
@@ -227,7 +228,10 @@ export class NumberFormatter implements TextFormatter {
       if (minDecs !== null)
         minDecs = Math.min(minDecs, fmtOpts.maximumFractionDigits!)
       const formatter = Intl.NumberFormat(this.options.locale, fmtOpts)
-      const parts: any[] = (formatter as any).formatToParts(unformat.value)
+      const parts: any[] =
+        unformat.value === null
+          ? []
+          : (formatter as any).formatToParts(unformat.value)
       inputValue = ''
       let parsedPos = 0
       for (const part of parts) {
@@ -259,6 +263,7 @@ export class NumberFormatter implements TextFormatter {
       if (minDecs !== null) {
         inputValue += seps.decimal + '0'.repeat(minDecs)
       }
+      selStart = Math.min(selStart, inputValue.length)
       return {
         inputValue,
         selStart,

@@ -1,5 +1,5 @@
 import { useIcons } from '../lib/icons'
-import { computed, defineComponent, h, createTextVNode } from 'vue'
+import { computed, defineComponent, h } from 'vue'
 
 export default defineComponent({
   name: 'of-icon',
@@ -23,9 +23,7 @@ export default defineComponent({
         ctx.slots.default
           ? ctx.slots.default()
           : // iconVal.component ? h(iconVal.component, {name: props.name, ...(iconVal.props || {})})
-          iconVal.text
-          ? createTextVNode(iconVal.text)
-          : undefined
+            iconVal.text
       )
     }
   }

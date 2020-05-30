@@ -41,6 +41,10 @@ export interface FieldContext {
   mode?: 'view' | 'edit' | 'readonly' // | 'disabled' | 'locked'
   muted?: boolean // if editable, reduce indicators
   name?: string
+  // onFocus, onBlur
+  onUpdate?: (value: any) => void
+  // onUpdate:value? - handled by field container
+  // onInput? - watch inputValue
   // record?: Record<string, any>  possibly a Form object with associated locks
   required?: boolean
   size?: number | string
@@ -73,7 +77,7 @@ export interface FieldProps {
 
 export interface FieldSetup {
   append?: () => VNode | undefined
-  // afterContent?
+  // afterContent? (below)
   blank?: boolean
   class?: string | string[]
   click?: (evt?: MouseEvent) => boolean | undefined
