@@ -1,5 +1,5 @@
 import { Config, ConfigManager, readonlyUnwrap } from '../lib/config'
-import { computed, Component, InjectionKey, inject } from 'vue'
+import { Component } from 'vue'
 
 export interface Icon {
   class?: string

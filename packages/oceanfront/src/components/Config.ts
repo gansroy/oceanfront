@@ -4,7 +4,7 @@ import { setDefaultIconFont } from '../lib/icons'
 import { useLayout } from '../lib/layout'
 import { setLocale, useLocale } from '../lib/locale'
 
-export default defineComponent({
+export const OfConfig = defineComponent({
   name: 'of-config',
   props: {
     iconFont: String,

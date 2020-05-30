@@ -1,5 +1,4 @@
 import { Config, ConfigManager, readonlyUnwrap } from './config'
-import { Component } from 'vue'
 
 export interface ItemList {
   avatarKey?: string

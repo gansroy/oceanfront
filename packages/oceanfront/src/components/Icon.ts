@@ -1,7 +1,7 @@
 import { useIcons } from '../lib/icons'
 import { computed, defineComponent, h } from 'vue'
 
-export default defineComponent({
+export const OfIcon = defineComponent({
   name: 'of-icon',
   props: {
     class: String,

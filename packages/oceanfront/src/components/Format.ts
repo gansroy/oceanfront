@@ -1,7 +1,7 @@
 import { computed, defineComponent, h } from 'vue'
 import { useFormats } from '../lib/format'
 
-export default defineComponent({
+export const OfFormat = defineComponent({
   name: 'of-format',
   props: {
     type: [String, Function, Object],
@@ -17,12 +17,12 @@ export default defineComponent({
     )
     return () => {
       const fmt = formatter.value
-      /*if (fmt) {
-        const render = fmt.render(props.value)
-        if (render) {
-          return h('div', { class: render.class }, render.content)
+      if (fmt) {
+        const result = fmt.format(props.value)
+        if (result) {
+          return h('div', { class: result.textClass }, result.textValue)
         }
-      }*/
+      }
       return props.value === undefined ? '' : '' + props.value
     }
   }

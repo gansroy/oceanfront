@@ -18,6 +18,8 @@ export function isPromise<T = any>(val: unknown): val is PromiseLike<T> {
   return isObject(val) && isFunction(val.then)
 }
 
+export const isDigit = (s: string) => s >= '0' && s <= '9'
+
 export const isPrimitive = (val: unknown): val is Primitive => {
   const tval = typeof val
   return (

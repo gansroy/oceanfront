@@ -99,6 +99,7 @@ export interface FieldSetup {
   value?: any
 }
 
+// helper to infer type
 export function defineFieldFormat(f: FieldConstructor): FieldConstructor {
   return f
 }

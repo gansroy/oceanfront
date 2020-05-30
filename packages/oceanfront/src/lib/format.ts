@@ -1,14 +1,14 @@
-import { computed, Ref, VNode, reactive } from 'vue'
+import { computed, Ref } from 'vue'
 import { Config, ConfigManager, readonlyUnwrap } from './config'
 import { FieldConstructor } from './fields'
-import { useLocale, LocaleState, LocaleNumberFormat } from './locale'
-
-const isDigit = (s: string) => s >= '0' && s <= '9'
+import { useLocale, LocaleState } from './locale'
+import { isDigit } from './util'
 
 export interface TextFormatResult {
   blank?: boolean
   error?: string
-  inputValue?: string
+  textValue?: string
+  textClass?: string
   value?: any
 }
 export interface TextInputResult extends TextFormatResult {
@@ -183,7 +183,7 @@ export class NumberFormatter implements TextFormatter {
 
   format(modelValue: any): TextFormatResult {
     let value = modelValue
-    let inputValue = ''
+    let textValue = ''
     let error
     try {
       let value = this.loadValue(modelValue)
@@ -192,7 +192,7 @@ export class NumberFormatter implements TextFormatter {
           this.options.locale,
           this.formatterOptions()
         )
-        inputValue = fmt.format(value)
+        textValue = fmt.format(value)
       }
     } catch (e) {
       error = e.toString()
@@ -200,7 +200,7 @@ export class NumberFormatter implements TextFormatter {
     return {
       error,
       value,
-      inputValue
+      textValue
     }
   }
 
@@ -219,11 +219,11 @@ export class NumberFormatter implements TextFormatter {
 
   handleInput(evt: InputEvent): TextInputResult {
     const input = evt.target as HTMLInputElement
-    let inputValue = input.value
+    let textValue = input.value
     let selStart = input.selectionStart || 0
-    if (inputValue.length) {
+    if (textValue.length) {
       const fmtOpts = this.formatterOptions(true)
-      const unformat = this.parseInput(inputValue, selStart)
+      const unformat = this.parseInput(textValue, selStart)
       let { minDecs, seps } = unformat
       if (minDecs !== null)
         minDecs = Math.min(minDecs, fmtOpts.maximumFractionDigits!)
@@ -232,12 +232,12 @@ export class NumberFormatter implements TextFormatter {
         unformat.value === null
           ? []
           : (formatter as any).formatToParts(unformat.value)
-      inputValue = ''
+      textValue = ''
       let parsedPos = 0
       for (const part of parts) {
-        if (part.type === 'group') inputValue += seps.group
+        if (part.type === 'group') textValue += seps.group
         else if (part.type === 'decimal') {
-          inputValue += seps.decimal
+          textValue += seps.decimal
           parsedPos++
         } else if (part.type === 'integer' || part.type === 'fraction') {
           let pval = part.value as string
@@ -248,27 +248,27 @@ export class NumberFormatter implements TextFormatter {
           }
           for (const c of pval.split('')) {
             if (!unformat.selAfterDigit && parsedPos === unformat.selStart) {
-              selStart = inputValue.length
+              selStart = textValue.length
             }
             parsedPos++
-            inputValue += c
+            textValue += c
             if (unformat.selAfterDigit && parsedPos === unformat.selStart) {
-              selStart = inputValue.length
+              selStart = textValue.length
             }
           }
         } else {
-          inputValue += part.value
+          textValue += part.value
         }
       }
       if (minDecs !== null) {
-        inputValue += seps.decimal + '0'.repeat(minDecs)
+        textValue += seps.decimal + '0'.repeat(minDecs)
       }
-      selStart = Math.min(selStart, inputValue.length)
+      selStart = Math.min(selStart, textValue.length)
       return {
-        inputValue,
+        textValue,
         selStart,
         selEnd: selStart,
-        updated: input.value !== inputValue,
+        updated: input.value !== textValue,
         value: unformat.value
       }
     }

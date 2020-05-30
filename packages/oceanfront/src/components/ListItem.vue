@@ -11,7 +11,7 @@ import {
   VNode
 } from 'vue'
 import { INavGroup } from './NavGroup.vue'
-import OfIcon from './Icon'
+import { OfIcon } from './Icon'
 import { useRoutes } from '../lib/routes'
 
 export default defineComponent({
