@@ -52,9 +52,7 @@ class LayoutManager implements LayoutState {
 const configManager = new ConfigManager('oflay', LayoutManager)
 
 export function setMobileBreakpoint(bp: number) {
-  let mgr = configManager.activeManager
-  if (!mgr) return
-  mgr.mobileBreakpoint = bp
+  configManager.extendingManager.mobileBreakpoint = bp
 }
 
 export function useLayout(config?: Config): LayoutState {

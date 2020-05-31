@@ -13,35 +13,39 @@ export type ConfigFunction = (state: ConfigState) => void
 
 let cfgId = 0
 
+let buildingConfig: ConfigState
+
 export class ConfigState {
   _cb: ConfigFunction
-  _cache: Record<any, any>
+  _prev: ConfigState | undefined
+  _cache: ComputedRef<Record<any, any>>
+  _cacheVal: Record<any, any>
   _id: number
 
-  constructor(cb: ConfigFunction) {
+  constructor(cb: ConfigFunction, prev?: ConfigState) {
     this._cb = cb
-    this._cache = {}
+    this._prev = prev
+    this._cacheVal = {}
+    this._cache = computed(() => {
+      this._cacheVal = {}
+      const pbuild = buildingConfig
+      buildingConfig = this
+      this.apply()
+      buildingConfig = pbuild
+      return this._cacheVal
+    })
     this._id = cfgId++
   }
 
   apply() {
-    if (buildingConfig === this) {
-      console.log('skip self', this._id)
-      return
-    }
-    let cfg = buildingConfig
-    if (!buildingConfig) buildingConfig = this
-    console.log('build', this._id, buildingConfig._id)
+    // console.log('build', this._id)
+    if (this._prev) this._prev.apply()
     this._cb(this)
-    buildingConfig = cfg
   }
 
-  getCache<T>(key: InjectionKey<T>): T | undefined {
-    return this._cache[key as any] as T
-  }
-
-  setCache(key: any, value: any) {
-    this._cache[key] = value
+  getCache(): Record<any, any> {
+    if (buildingConfig === this) return this._cacheVal
+    return this._cache.value
   }
 }
 
@@ -64,14 +68,9 @@ export function useConfig(): Config {
   return inject(injectKey, defaultConfig)
 }
 
-let buildingConfig: ConfigState | undefined = undefined
-
 export function extendConfig(cb: () => void) {
-  const cfg = useConfig()
-  const newcfg = new ConfigState(() => {
-    cfg.apply()
-    cb()
-  })
+  const prev = useConfig()
+  const newcfg = new ConfigState(cb, prev)
   provide(injectKey, newcfg)
 }
 
@@ -91,37 +90,32 @@ export class ConfigManager<T> {
     return new this._ctor(config)
   }
 
-  get activeManager(): T | undefined {
-    if (!this._activeManager) {
-      if (buildingConfig) return this.inject(buildingConfig).value
-      if (__DEV__) {
-        console.warn('Cannot extend config: not inside provider')
-      }
+  getCached(config: ConfigState): T {
+    let cache = config.getCache()
+    let mgr = cache[this.injectKey as any]
+    if (!mgr) {
+      // console.log('config create', this.injectKey)
+      mgr = this.createManager(config)
+      cache[this.injectKey as any] = mgr
     }
-    return this._activeManager
+    return mgr
+  }
+
+  get extendingManager(): T {
+    if (!buildingConfig) {
+      throw new Error('Cannot extend config manager: use extendConfig')
+    }
+    return this.getCached(buildingConfig)
   }
 
   inject(config?: Config): ComputedRef<T> {
     let cfg = config || useConfig()
-    let cache = cfg.getCache(this.injectKey)
-    if (!cache) {
-      cache = computed(() => {
-        const mgr = this.createManager(cfg)
-        //console.trace()
-        console.log(this._injectKey)
-        cfg.apply() // execute config functions
-        return mgr
-      })
-      /*const am = this._activeManager
-        const ret = (this._activeManager = this.createManager(cfg))
-        // cfg.apply() // execute config functions
-        this._activeManager = am
-        console.debug('inject', ret, cfg)
-        return ret
-      })*/
-      cfg.setCache(this.injectKey, cache)
+    if (buildingConfig && buildingConfig !== cfg) {
+      throw new Error(
+        'Cannot inject config manager while building another config'
+      )
     }
-    return cache
+    return computed(() => this.getCached(cfg))
   }
 
   get injectKey() {

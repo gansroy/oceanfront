@@ -230,30 +230,25 @@ class IconManager {
 const configManager = new ConfigManager('oficon', IconManager)
 
 export function registerIconFont(name: string, def: IconFont) {
-  const mgr = configManager.activeManager
-  if (!mgr || !def) return
-  mgr.fonts[name] = def
+  if (!def) return
+  configManager.extendingManager.fonts[name] = def
 }
 
 export function registerIcons(icons: IconMapping | IconResolver) {
-  const mgr = configManager.activeManager
-  if (!mgr || !icons) return
+  if (!icons) return
   if (typeof icons === 'object') {
     icons = makeResolver(icons as IconMapping)
   }
-  mgr.resolvers.push(icons)
+  configManager.extendingManager.resolvers.push(icons)
 }
 
 export function setDefaultIconFont(name: string) {
-  const mgr = configManager.activeManager
-  if (!mgr) return
-  mgr.defaultFont = name
+  configManager.extendingManager.defaultFont = name
 }
 
 export function showMissingIcons(flag?: boolean) {
-  const mgr = configManager.activeManager
   if (flag === undefined) flag = true
-  if (mgr) mgr.showMissing = flag
+  configManager.extendingManager.showMissing = flag
 }
 
 export function iconConfig(cb: () => void) {}

@@ -90,21 +90,15 @@ class FormatManager implements FormatState {
 const configManager = new ConfigManager('offmt', FormatManager)
 
 export function registerFieldType(name: string, fmt: FieldType) {
-  let mgr = configManager.activeManager
-  if (!mgr) return
-  mgr.fieldTypes[name] = fmt
+  configManager.extendingManager.fieldTypes[name] = fmt
 }
 
 export function registerTextFormatter(name: string, fmt: TextFormatterDef) {
-  let mgr = configManager.activeManager
-  if (!mgr) return
-  mgr.textFormats[name] = fmt
+  configManager.extendingManager.textFormats[name] = fmt
 }
 
 export function setDefaultFieldType(name: string) {
-  let mgr = configManager.activeManager
-  if (!mgr) return
-  mgr.defaultFieldType = name
+  configManager.extendingManager.defaultFieldType = name
 }
 
 export function useFormats(config?: Config): FormatState {

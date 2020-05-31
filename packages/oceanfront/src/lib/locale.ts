@@ -23,9 +23,7 @@ class LocaleManager implements LocaleState {
 const configManager = new ConfigManager('ofloc', LocaleManager)
 
 export function setLocale(loc: string) {
-  let mgr = configManager.activeManager
-  if (!mgr) return
-  mgr.locale = loc
+  configManager.extendingManager.locale = loc
 }
 
 export function useLocale(config?: Config): LocaleState {
