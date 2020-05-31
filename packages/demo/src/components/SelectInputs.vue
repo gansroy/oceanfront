@@ -5,12 +5,12 @@
       <div class="column">
         <of-highlight lang="html" :value="sampleCode" />
         <br />
-        <of-select
+        <of-select-field
           :items="testItems"
           label="Select input"
           value="Selected"
           variant="basic"
-        ></of-select>
+        ></of-select-field>
         <of-field
           :format="{ items: testItems, type: 'select' }"
           label="Select input"
@@ -18,18 +18,18 @@
           variant="basic"
         ></of-field>
         <br /><br />
-        <of-select
+        <of-select-field
           :items="tzOpts"
           label="Select timezone"
           value="America/Vancouver"
           variant="outlined"
-        ></of-select>
+        ></of-select-field>
         <br /><br />
-        <of-select
+        <of-select-field
           label="Select input"
           value="Selected"
           variant="filled"
-        ></of-select>
+        ></of-select-field>
       </div>
     </div>
   </div>
@@ -41,9 +41,9 @@ import { ref, defineComponent } from 'vue'
 export default defineComponent({
   setup() {
     const sampleCode = `
-<of-select
+<of-select-field
   label="Select input"
-  value="Selected"
+  v-model:value="fieldValue"
   variant="filled"
 />`
     const testItems = [

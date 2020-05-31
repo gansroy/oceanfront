@@ -2,11 +2,11 @@
   <div class="container">
     <div class="row">
       <div class="column">
-        <of-select
+        <of-select-field
           label="Select input"
           value="Selected"
           variant="filled"
-        ></of-select>
+        ></of-select-field>
         <of-highlight lang="html" value="<html>" />
       </div>
     </div>

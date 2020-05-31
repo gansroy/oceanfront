@@ -10,7 +10,7 @@ import { OfFormat } from './components/Format'
 import OfListItem from './components/ListItem.vue'
 import OfListGroup from './components/ListGroup.vue'
 import OfNavGroup from './components/NavGroup.vue'
-import OfSelect from './components/Select.vue'
+import { OfSelectField } from './components/SelectField'
 import OfSidebar from './components/Sidebar.vue'
 import OfTextarea from './components/Textarea.vue'
 import { OfTextField } from './components/TextField'
@@ -33,7 +33,7 @@ export const components: Record<string, Component> = {
   OfListItem,
   OfListGroup,
   OfNavGroup,
-  OfSelect,
+  OfSelectField,
   OfSidebar,
   OfTextarea,
   OfTextField,

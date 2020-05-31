@@ -38,14 +38,15 @@ export interface BaseForm {
   // setValue(name: string, value: any)
 }
 
-// note: align, placeholder, size are somewhat redundant
-// but renderer looks at both (context wins)
+// note: align, items, placeholder, size are redundant - will be removed
+// need to add a way to dynamically extend a format descriptor (fieldprops)
 export interface FieldContext {
   align?: string
   container?: string
   // form?: BaseForm
   id?: string
   initialValue?: any // container normally loads from form
+  items?: string | any[] | ItemList
   label?: string
   locked?: boolean // | Lock
   mode?: 'view' | 'edit' | 'readonly' // | 'disabled' | 'locked'

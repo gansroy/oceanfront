@@ -93,7 +93,7 @@ export const SelectField = defineFieldType({
     })
     const opened = ref(false)
     const items = computed(
-      () => itemMgr.getItemList(props.items) || { items: [] }
+      () => itemMgr.getItemList(ctx.items || props.items) || { items: [] }
     )
     const formatItems = computed(() => {
       const resolved = items.value

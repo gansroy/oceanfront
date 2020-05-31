@@ -23,9 +23,9 @@ export const OfField = defineComponent({
     align: String,
     class: [String, Array, Object],
     // form
-    fieldType: String,
     format: [String, Function, Object],
     id: String,
+    items: [String, Array, Object],
     label: String,
     loading: Boolean,
     locked: Boolean,
@@ -38,7 +38,7 @@ export const OfField = defineComponent({
     required: Boolean,
     size: Number,
     // style
-    // type: String,
+    type: String,
     value: { default: null },
     variant: String
   },
@@ -57,6 +57,7 @@ export const OfField = defineComponent({
       ...(extractRefs(props, [
         'align',
         'id',
+        'items',
         'label',
         'loading',
         'locked',
@@ -77,7 +78,7 @@ export const OfField = defineComponent({
     const format = computed(() => {
       const fmt = props.format
       const extfmt = fmt ? (typeof fmt === 'string' ? { type: fmt } : fmt) : {}
-      let ftype = props.fieldType || extfmt.fieldType || extfmt.type || 'text'
+      let ftype = props.type || extfmt.fieldType || extfmt.type || 'text'
       let found = formats.getFieldType(ftype, true)
       if (!found) {
         // FIXME should always resolve something, but might
