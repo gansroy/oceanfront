@@ -13,7 +13,7 @@ import OfNavGroup from './components/NavGroup.vue'
 import OfSelect from './components/Select.vue'
 import OfSidebar from './components/Sidebar.vue'
 import OfTextarea from './components/Textarea.vue'
-// import OfTextField from './components/TextField.vue'
+import { OfTextField } from './components/TextField'
 import OfToggle from './components/Toggle.vue'
 
 import './scss/index.scss'
@@ -31,7 +31,7 @@ export const components: Record<string, Component> = {
   OfSelect,
   OfSidebar,
   OfTextarea,
-  // OfTextField,
+  OfTextField,
   OfToggle
 } as any
 

@@ -8,7 +8,8 @@ import {
   toRef,
   reactive,
   readonly,
-  PropType
+  PropType,
+  Ref
 } from 'vue'
 import { FieldContext, FieldProps } from '@/lib/fields'
 import { useFormats } from '@/lib/format'
@@ -20,8 +21,10 @@ export const OfField = defineComponent({
   name: 'of-field',
   inheritAttrs: false,
   props: {
+    align: String,
     class: [String, Array, Object],
     // form
+    fieldType: String,
     format: [String, Function, Object],
     id: String,
     label: String,
@@ -31,30 +34,36 @@ export const OfField = defineComponent({
     mode: String as PropType<'edit' | 'readonly' | 'view'>,
     muted: Boolean,
     name: String,
+    placeholder: String,
+    readonly: Boolean,
     required: Boolean,
     size: Number,
     // style
     // type: String,
-    value: [Boolean, Number, String, Object],
+    value: { default: null },
     variant: String
   },
   setup(props, ctx: SetupContext) {
     const formats = useFormats()
 
-    const mode = computed(() => props.mode || 'edit')
+    const mode = computed(
+      () => props.mode || (props.readonly ? 'readonly' : 'edit')
+    )
     // FIXME derive from config
     const variant = computed(() => props.variant || 'basic')
 
     const fctx: FieldContext = readonly({
       container: 'of-field',
-      mode: mode as any, // FIXME type of computedref not unwrapped correctly
+      mode: mode as any, // FIXME ref type not unwrapped correctly
       ...(extractRefs(props, [
+        'align',
         'id',
         'label',
         'loading',
         'locked',
         'muted',
         'name',
+        'placeholder',
         'required',
         'size',
         'value'
@@ -69,8 +78,8 @@ export const OfField = defineComponent({
     const format = computed(() => {
       const fmt = props.format
       const extfmt = fmt ? (typeof fmt === 'string' ? { type: fmt } : fmt) : {}
-      if (!extfmt.type) extfmt.type = 'text'
-      let found = formats.getFieldFormatter(extfmt.type)
+      let ftype = props.fieldType || extfmt.fieldType || extfmt.type || 'text'
+      let found = formats.getFieldFormatter(ftype)
       if (!found) {
         if (extfmt.type === 'enum')
           // FIXME temporary hack

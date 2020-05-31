@@ -9,7 +9,7 @@
           <div class="form-cell">
             <of-text-field
               v-bind="testField"
-              v-model="textValue"
+              v-model:value="textValue"
               variant="basic"
             />
           </div>
@@ -17,7 +17,7 @@
           <div class="form-cell">
             <of-text-field
               v-bind="testField"
-              v-model="textValue"
+              v-model:value="textValue"
               variant="outlined"
             />
           </div>
@@ -25,7 +25,7 @@
           <div class="form-cell">
             <of-text-field
               v-bind="testField"
-              v-model="textValue"
+              v-model:value="textValue"
               variant="filled"
             />
           </div>
@@ -154,7 +154,7 @@ export default defineComponent({
     const sampleCode = `
 <of-text-field
   label="Field Label"
-  v-model="fieldValue"
+  v-model:value="fieldValue"
   variant="filled"
 />`
     return {

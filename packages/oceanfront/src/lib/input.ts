@@ -335,6 +335,10 @@ export const textInput = defineFieldFormat(
         inputValue.value = lazyInputValue
         if (ctx.onUpdate) ctx.onUpdate(val)
       },
+      onClick(evt: MouseEvent) {
+        // prevent select() when clicking in unfocused field
+        evt.stopPropagation()
+      },
       onInput(evt: InputEvent) {
         const fmt = formatter.value
         if (fmt?.handleInput) {
@@ -376,13 +380,13 @@ export const textInput = defineFieldFormat(
           class: [
             'of-field-input',
             fmt?.inputClass,
-            'of--text-' + (props.align || fmt?.align || 'start')
+            'of--text-' + (ctx.align || props.align || fmt?.align || 'start')
           ],
           inputmode: fmt?.inputMode,
           id: inputId.value,
           maxlength: props.maxlength,
           name: ctx.name,
-          placeholder: props.placeholder, // FIXME allow formatter override
+          placeholder: ctx.placeholder ?? props.placeholder,
           readonly: ctx.mode === 'readonly' || ctx.locked,
           value: lazyInputValue,
           ...hooks

@@ -6,6 +6,7 @@ import { setLocale, useLocale } from '../lib/locale'
 
 export const OfConfig = defineComponent({
   name: 'of-config',
+  inheritAttrs: false,
   props: {
     iconFont: String,
     locale: String,

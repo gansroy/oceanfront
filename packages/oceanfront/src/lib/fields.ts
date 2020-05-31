@@ -34,7 +34,10 @@ export interface BaseForm {
   // setValue(name: string, value: any)
 }
 
+// note: align, placeholder, size are somewhat redundant
+// but renderer looks at both (context wins)
 export interface FieldContext {
+  align?: string
   container?: string
   // form?: BaseForm
   id?: string
@@ -44,6 +47,7 @@ export interface FieldContext {
   mode?: 'view' | 'edit' | 'readonly' // | 'disabled' | 'locked'
   muted?: boolean // if editable, reduce indicators
   name?: string
+  placeholder?: string
   // onFocus, onBlur
   onUpdate?: (value: any) => void
   // onUpdate:value? - handled by field container
@@ -55,7 +59,7 @@ export interface FieldContext {
 }
 
 export interface FieldProps {
-  defaultSize?: number | string
+  align?: string
   defaultValue?: any
   //id?: string
   items?: string | any[] | ItemList
@@ -63,6 +67,7 @@ export interface FieldProps {
   maxlength?: number | string // defaultMaxlength?
   //name?: string
   placeholder?: string
+  size?: number | string
   type?: string
   [key: string]: any
 }
