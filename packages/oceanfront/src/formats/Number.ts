@@ -41,7 +41,7 @@ export class NumberFormatter implements TextFormatter {
   }
 
   get inputClass() {
-    return 'of-numeric'
+    return 'of--text-numeric'
   }
 
   get inputMode() {

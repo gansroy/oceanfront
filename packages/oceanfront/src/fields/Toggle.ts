@@ -54,8 +54,10 @@ export const ToggleField = defineFieldType({
       let curelt = elt.value
       if (curelt) curelt.focus()
     }
-    const toggle = () => {
+    const clickToggle = (evt?: MouseEvent) => {
       stateValue.value = !stateValue.value
+      focus()
+      return false
     }
     const hooks = {
       onBlur(evt: FocusEvent) {
@@ -102,7 +104,7 @@ export const ToggleField = defineFieldType({
           )
         ]
       },
-      click: toggle,
+      click: clickToggle,
       cursor: 'pointer', // FIXME depends if editable
       focus,
       focused,

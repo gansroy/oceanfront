@@ -22,11 +22,29 @@
   --font-size-input: #{$font-size-input-lg};
 }
 
-.of-numeric {
+.of--text-numeric {
   font-variant-numeric: lining-nums tabular-nums;
 }
-.of-text-right {
+.of--text-left {
+  text-align: left;
+}
+.of--text-right {
   text-align: right;
+}
+.of--text-center {
+  text-align: center;
+}
+.of--text-start {
+  text-align: start;
+}
+.of--text-end {
+  text-align: end;
+}
+.of--cursor-default {
+  cursor: default;
+}
+.of--cursor-pointer {
+  cursor: pointer;
 }
 
 .of-field-outer {
@@ -55,6 +73,7 @@
 
 .of-field-label {
   color: $color-field-label;
+  // cursor: inherit;
   text-overflow: ellipsis;
   white-space: normal;
   word-wrap: break-word;
@@ -77,6 +96,7 @@
     width: 100%;
     -webkit-appearance: none;
     appearance: none;
+    cursor: inherit;
     font-size: inherit;
     margin: 0;
     outline: none;

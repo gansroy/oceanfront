@@ -136,9 +136,10 @@ export const SelectField = defineFieldType({
       return def === undefined ? 'text' : def
     })
 
-    const clickOpen = () => {
+    const clickOpen = (evt?: MouseEvent) => {
       // FIXME - ignore if in the middle of closing (allow click to close)
       opened.value = true
+      return false
     }
     const closePopup = () => {
       opened.value = false

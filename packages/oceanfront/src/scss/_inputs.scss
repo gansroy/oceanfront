@@ -16,7 +16,6 @@
 }
 
 @mixin no-select {
-  cursor: default;
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
   user-select: none;

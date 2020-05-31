@@ -92,8 +92,8 @@ export const OfField = defineComponent({
     const handlers = {
       onClick(evt: MouseEvent) {
         // ctx.emit('click', evt)
-        const fmt = format.value
-        if (fmt && fmt.click) fmt.click(evt)
+        const render = format.value
+        if (render && render.click) return render.click(evt)
       },
       onMousedown(evt: MouseEvent) {
         // ctx.emit('mousedown', evt)
@@ -102,48 +102,49 @@ export const OfField = defineComponent({
 
     return () => {
       try {
-        let fmt = format.value
-        const outerId = fmt.inputId ? fmt.inputId + '-outer' : props.id
-        const blank = fmt.blank && !(fmt.focused || fmt.popup)
+        let render = format.value
+        const outerId = render.inputId ? render.inputId + '-outer' : props.id
+        const blank = render.blank && !(render.focused || render.popup)
         const cls = [
           'of-field-outer',
           {
             'of--active': !blank,
             'of--blank': blank,
-            'of--focused': fmt.focused,
+            'of--focused': render.focused,
             'of--muted': props.muted,
-            'of--loading': fmt.loading,
+            'of--loading': render.loading,
             // 'of--locked': fmt.locked,
-            'of--updated': fmt.updated
+            'of--updated': render.updated
             // of--readonly: props.readonly,
             // of--disabled: props.disabled,
             // 'of--with-label': withLabel.value
           },
+          'of--cursor-' + (render.cursor || 'default'),
           'of--mode-' + mode.value,
           'of--variant-' + variant.value,
-          fmt.class,
+          render.class,
           props.class
         ]
         const label = ctx.slots.label
           ? ctx.slots.label()
           : props.label
-          ? h('label', { class: 'of-field-label', for: fmt.inputId }, [
+          ? h('label', { class: 'of-field-label', for: render.inputId }, [
               props.label
             ])
           : undefined
         const inner = []
-        const prepend = ctx.slots.prepend || fmt.prepend
-        const defslot = ctx.slots.default || fmt.content
-        const append = ctx.slots.append || fmt.append
+        const prepend = ctx.slots.prepend || render.prepend
+        const defslot = ctx.slots.default || render.content
+        const append = ctx.slots.append || render.append
         if (prepend) inner.push(prepend())
         if (defslot) inner.push(defslot())
         if (append) inner.push(append())
         let overlay, overlayActive, overlayBlur
         // if(ctx.slots.overlay) overlay = ctx.slots.overlay(); else
-        if (fmt.popup) {
-          overlay = fmt.popup.content
-          overlayActive = fmt.popup.visible ?? true
-          overlayBlur = fmt.popup.onBlur
+        if (render.popup) {
+          overlay = render.popup.content
+          overlayActive = render.popup.visible ?? true
+          overlayBlur = render.popup.onBlur
         }
         if (overlay) {
           overlay = h(
