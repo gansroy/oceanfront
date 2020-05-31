@@ -17,7 +17,7 @@ export interface ItemList {
   lookup?: (key: any) => any
 }
 
-export function makeItemList(items: any[] | ItemList): ItemList {
+export function makeItemList(items?: any[] | ItemList): ItemList {
   if (Array.isArray(items)) {
     return {
       items
@@ -32,14 +32,14 @@ export function makeItemList(items: any[] | ItemList): ItemList {
 }
 
 export interface ItemsState {
-  getItemList(name: string): ItemList | undefined
+  getItemList(items?: string | any[] | ItemList): ItemList | undefined
 }
 
 class ItemsManager implements ItemsState {
   readonly lists: Record<string, ItemList> = {}
   constructor(_config: Config) {}
 
-  getItemList(items: string | any[] | ItemList): ItemList | undefined {
+  getItemList(items?: string | any[] | ItemList): ItemList | undefined {
     // FIXME may also load from language manager
     if (typeof items === 'string') return this.lists[items]
     else return makeItemList(items)

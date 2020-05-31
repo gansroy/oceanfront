@@ -46,7 +46,7 @@
   text-align: left;
   @include no-select;
 
-  &.of--focus {
+  &.of--focused {
     .of-field-label {
       color: $color-field-focus;
     }
@@ -129,7 +129,7 @@
 
     @include field-text-base;
   }
-  &.of--focus .of-field-inner {
+  &.of--focused .of-field-inner {
     background: $bg-input-focus;
     border-color: $border-color-input-focus;
     box-shadow: $box-shadow-field-basic-focus;
@@ -261,7 +261,7 @@
   &:hover {
     --cur-border: 1px solid #{$border-color-field-hover};
   }
-  &.of--focus {
+  &.of--focused {
     --cur-border: 2px solid #{$border-color-field-focus};
     .of-field-label-wrap label {
       top: -1px;
@@ -277,7 +277,7 @@
     backface-visibility: hidden; // avoid some jumping?
     // will-change: transform; // FIXME currently blurry in chrome
   }
-  &.of--focus,
+  &.of--focused,
   &.of--active {
     .of-field-label-wrap {
       border-top-color: transparent;
@@ -328,7 +328,7 @@
   &:hover {
     background: $background-field-filled-hover;
   }
-  &.of--focus {
+  &.of--focused {
     background: $background-field-filled-focus;
   }
 
@@ -349,7 +349,7 @@
       will-change: opacity, transform;
     }
   }
-  &.of--focus .of-field-above::after {
+  &.of--focused .of-field-above::after {
     opacity: 1;
     transform: scaleX(1);
   }
@@ -366,7 +366,7 @@
     // will-change: transform; // FIXME currently blurry in chrome
   }
 
-  &.of--focus,
+  &.of--focused,
   &.of--active {
     .of-field-label {
       transform: none;

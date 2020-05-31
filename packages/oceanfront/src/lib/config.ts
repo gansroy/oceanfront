@@ -107,7 +107,7 @@ export class ConfigManager<T> {
     if (!cache) {
       cache = computed(() => {
         const mgr = this.createManager(cfg)
-        console.trace()
+        //console.trace()
         console.log(this._injectKey)
         cfg.apply() // execute config functions
         return mgr

@@ -46,7 +46,7 @@ export default defineComponent({
       const cls = {
         'of--active': !blank,
         'of--blank': blank,
-        'of--focus': props.focused,
+        'of--focused': props.focused,
         'of--readonly': props.readonly,
         'of--disabled': props.disabled,
         'of--with-label': withLabel.value

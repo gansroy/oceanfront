@@ -1,4 +1,5 @@
 import { VNode } from 'vue'
+import { ItemList } from './items'
 
 // format:
 // determines field format (type + options)
@@ -14,6 +15,8 @@ import { VNode } from 'vue'
 // renderSelect may have text input options
 
 let _fieldIndex = 0
+
+type Renderable = VNode | VNode[] | string
 
 export const newFieldId = () => {
   return 'of-field-' + _fieldIndex++
@@ -55,10 +58,7 @@ export interface FieldProps {
   defaultSize?: number | string
   defaultValue?: any
   //id?: string
-  // inputProps:
-  // onFocus, onBlur - handled by field container
-  // onUpdate:value? - handled by field container
-  // onInput? - watch inputValue
+  items?: string | any[] | ItemList
   // label?: string  / defaultLabel?
   maxlength?: number | string // defaultMaxlength?
   //name?: string
@@ -76,12 +76,12 @@ export interface FieldProps {
 // after timeout, change mode to readonly
 
 export interface FieldSetup {
-  append?: () => VNode | undefined
+  append?: () => Renderable | undefined
   // afterContent? (below)
   blank?: boolean
   class?: string | string[]
-  click?: (evt?: MouseEvent) => boolean | undefined
-  content?: () => VNode | undefined
+  click?: (evt?: MouseEvent) => boolean | void
+  content?: () => Renderable | undefined
   cursor?: string
   focus?: () => void
   focused?: boolean
@@ -92,11 +92,17 @@ export interface FieldSetup {
   loading?: boolean
   // messages
   pendingValue?: any
-  popup?: () => VNode | undefined
+  popup?: FieldPopup | undefined
   // popupPosition
-  prepend?: () => VNode | undefined
+  prepend?: () => Renderable | undefined
   updated?: boolean
   value?: any
+}
+
+export interface FieldPopup {
+  content?: () => Renderable | undefined
+  visible?: boolean
+  onBlur?: () => void
 }
 
 // helper to infer type

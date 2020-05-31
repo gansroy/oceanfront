@@ -12,8 +12,9 @@ import {
 } from 'vue'
 import { FieldContext, FieldProps } from '@/lib/fields'
 import { useFormats } from '@/lib/format'
-import { textInput } from '@/lib/input'
+import { selectInput, textInput } from '@/lib/input'
 import { extractRefs } from '@/lib/util'
+import OfOverlay from '../components/Overlay.vue'
 
 export const OfField = defineComponent({
   name: 'of-field',
@@ -71,7 +72,10 @@ export const OfField = defineComponent({
       if (!extfmt.type) extfmt.type = 'text'
       let found = formats.getFieldFormatter(extfmt.type)
       if (!found) {
-        found = textInput
+        if (extfmt.type === 'enum')
+          // FIXME temporary hack
+          found = selectInput
+        else found = textInput
       }
       return found(extfmt, fctx)
     })
@@ -90,6 +94,7 @@ export const OfField = defineComponent({
     return () => {
       try {
         let fmt = format.value
+        const outerId = fmt.inputId ? fmt.inputId + '-outer' : props.id
         const blank = fmt.blank && !(fmt.focused || fmt.popup)
         const cls = [
           'of-field-outer',
@@ -101,9 +106,9 @@ export const OfField = defineComponent({
             'of--loading': fmt.loading,
             // 'of--locked': fmt.locked,
             'of--updated': fmt.updated
-            // readonly: props.readonly,
-            // disabled: props.disabled,
-            // 'with-label': withLabel.value
+            // of--readonly: props.readonly,
+            // of--disabled: props.disabled,
+            // 'of--with-label': withLabel.value
           },
           'of--mode-' + mode.value,
           'of--variant-' + variant.value,
@@ -124,11 +129,31 @@ export const OfField = defineComponent({
         if (prepend) inner.push(prepend())
         if (defslot) inner.push(defslot())
         if (append) inner.push(append())
+        let overlay, overlayActive, overlayBlur
+        // if(ctx.slots.overlay) overlay = ctx.slots.overlay(); else
+        if (fmt.popup) {
+          overlay = fmt.popup.content
+          overlayActive = fmt.popup.visible ?? true
+          overlayBlur = fmt.popup.onBlur
+        }
+        if (overlay) {
+          overlay = h(
+            OfOverlay,
+            {
+              active: overlayActive,
+              capture: false,
+              shade: false,
+              target: '#' + outerId,
+              onBlur: overlayBlur
+            },
+            overlay
+          )
+        }
         return h(
           'div',
           {
             class: cls,
-            id: fmt.inputId ? fmt.inputId + '-outer' : props.id,
+            id: outerId,
             ...handlers
           },
           [
@@ -140,7 +165,8 @@ export const OfField = defineComponent({
                 : undefined
             ),
             h('div', { class: 'of-field-inner' }, inner),
-            h('div', { class: 'of-field-below' }) // custom slots.below or messages
+            h('div', { class: 'of-field-below' }), // custom slots.below or messages
+            overlay
           ]
         )
       } catch (e) {
