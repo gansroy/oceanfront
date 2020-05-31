@@ -5,7 +5,7 @@ import {
   FieldProps,
   newFieldId
 } from '@/lib/fields'
-import { useFormats } from '../lib/formats'
+import { useFormats } from '@/lib/formats'
 
 // of-input format=".." type=".."  type overrides format
 
@@ -109,6 +109,7 @@ export const TextField = defineFieldType({
       }
       return id
     })
+
     const focus = (select?: boolean) => {
       if (elt.value) {
         elt.value.focus()
@@ -163,13 +164,14 @@ export const TextField = defineFieldType({
         elt.value = vnode.el as HTMLInputElement
       }
     }
+
     return readonly({
       blank: computed(() => {
         // FIXME ask formatter
         const val = inputValue.value
         return val === undefined || val === null || val === ''
       }),
-      class: 'of-field-text',
+      class: 'of-text-field',
       content: () => {
         const fmt = formatter.value
         return h('input', {

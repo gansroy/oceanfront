@@ -83,7 +83,7 @@ export default defineComponent({
     })
     const fieldAttrs = computed(() => ({
       blank: false, // blank for indeterminate?
-      class: ['of-field-toggle', props.class],
+      class: ['of-toggle-field', props.class],
       disabled: disabled.value,
       focused: focused.value,
       inputId: id,

@@ -6,6 +6,7 @@
     <div class="row">
       <div class="column md-4">
         <of-toggle v-bind="testCheckField" variant="basic" />
+        <of-field type="toggle" v-bind="testCheckField" variant="basic" />
         <br /><br />
         <of-toggle v-bind="testCheckField" variant="outlined" />
         <br /><br />
@@ -53,7 +54,6 @@ const testCheckField = {
   placeholder: 'placeholder',
   readOnly: false,
   required: true,
-  type: 'float',
   labelPosition: 'input'
 }
 

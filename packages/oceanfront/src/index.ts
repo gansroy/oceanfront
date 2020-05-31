@@ -20,6 +20,7 @@ import { registerFieldType, registerTextFormatter } from './lib/formats'
 import { NumberFormatter } from './formats/Number'
 import { SelectField } from './fields/Select'
 import { TextField } from './fields/Text'
+import { ToggleField } from './fields/Toggle'
 
 import './scss/index.scss'
 
@@ -47,6 +48,7 @@ export const Oceanfront: Plugin = {
     extendDefaultConfig(() => {
       registerFieldType('select', SelectField)
       registerFieldType('text', TextField)
+      registerFieldType('toggle', ToggleField)
       registerTextFormatter('number', NumberFormatter)
     })
     if (args && typeof args.config === 'function') {

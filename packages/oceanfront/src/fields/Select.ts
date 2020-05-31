@@ -5,9 +5,9 @@ import {
   FieldProps,
   newFieldId
 } from '@/lib/fields'
-import { useItems } from '../lib/items'
-import OfNavGroup from '../components/NavGroup.vue'
-import OfListItem from '../components/ListItem.vue'
+import { useItems } from '@/lib/items'
+import OfNavGroup from '@/components/NavGroup.vue'
+import OfListItem from '@/components/ListItem.vue'
 import { OfIcon } from '@/components/Icon'
 
 export const renderSelectPopup = (
@@ -81,6 +81,7 @@ export const SelectField = defineFieldType({
       }
     )
 
+    const elt = ref<HTMLElement | undefined>()
     const focused = ref(false)
     let defaultFieldId: string
     const inputId = computed(() => {
@@ -134,12 +135,17 @@ export const SelectField = defineFieldType({
       const def = items.value.textKey
       return def === undefined ? 'text' : def
     })
+
     const clickOpen = () => {
-      // FIXME - ignore if in the middle of closing
+      // FIXME - ignore if in the middle of closing (allow click to close)
       opened.value = true
     }
     const closePopup = () => {
       opened.value = false
+    }
+    const focus = () => {
+      let curelt = elt.value
+      if (curelt) curelt.focus()
     }
     const setValue = (val: any) => {
       inputValue.value = val
@@ -152,6 +158,9 @@ export const SelectField = defineFieldType({
       },
       onFocus(evt: FocusEvent) {
         focused.value = true
+      },
+      onVnodeMounted(vnode: VNode) {
+        elt.value = vnode.el as HTMLElement
       }
     }
 
@@ -160,7 +169,7 @@ export const SelectField = defineFieldType({
         const val = inputValue.value
         return val === undefined || val === null || val === ''
       }),
-      class: 'of-field-select',
+      class: 'of-select-field',
       content: () => {
         return [
           h(

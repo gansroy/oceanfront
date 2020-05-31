@@ -22,6 +22,7 @@ export const OfField = defineComponent({
   props: {
     align: String,
     class: [String, Array, Object],
+    // density: Number
     // form
     format: [String, Function, Object],
     id: String,
@@ -78,7 +79,7 @@ export const OfField = defineComponent({
     const format = computed(() => {
       const fmt = props.format
       const extfmt = fmt ? (typeof fmt === 'string' ? { type: fmt } : fmt) : {}
-      let ftype = props.type || extfmt.fieldType || extfmt.type || 'text'
+      let ftype = props.type || extfmt.fieldType || extfmt.type
       let found = formats.getFieldType(ftype, true)
       if (!found) {
         // FIXME should always resolve something, but might

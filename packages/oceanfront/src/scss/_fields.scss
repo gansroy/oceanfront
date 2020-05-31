@@ -67,7 +67,7 @@
   // caret-color
 }
 
-.of-field-toggle {
+.of-toggle-field {
   .of-field-input {
     // input is invisible and covers the entire container
     position: absolute;
@@ -168,8 +168,8 @@
       color: $color-input-placeholder;
     }
   }
-  &.of-field-text .of-field-input,
-  &.of-field-select .of-field-input {
+  &.of-text-field .of-field-input,
+  &.of-select-field .of-field-input {
     padding: $pad-v-input $pad-h-input;
   }
   &.of-field-textarea .of-field-input {
@@ -301,8 +301,8 @@
     }
   }
 
-  &.of-field-text .of-field-input,
-  &.of-field-select .of-field-inner {
+  &.of-text-field .of-field-input,
+  &.of-select-field .of-field-inner {
     //padding: calc(#{$font-size-input} - 2px) $font-size-input
     //  calc(#{$font-size-input} - 4px);
     padding: 0 $pad-h-field;
@@ -316,7 +316,7 @@
       resize: vertical;
     }
   }
-  &.of-field-toggle .of-field-inner {
+  &.of-toggle-field .of-field-inner {
     align-items: center;
   }
 }
@@ -391,11 +391,11 @@
     }
   }
 
-  &.of-field-text .of-field-input {
+  &.of-text-field .of-field-input {
     //padding: calc(#{$font-size-input} + #{$pad-v-field}) $font-size-input calc(#{$pad-v-field} + 1px);
     padding: $font-size-input $pad-h-field 0;
   }
-  &.of-field-select .of-field-inner {
+  &.of-select-field .of-field-inner {
     padding: calc(#{$font-size-input} + #{$pad-v-field}) $pad-h-field 0;
     line-height: 1.9;
   }
@@ -408,7 +408,7 @@
       resize: vertical;
     }
   }
-  &.of-field-toggle .of-field-inner {
+  &.of-toggle-field .of-field-inner {
     align-items: center;
   }
 }
