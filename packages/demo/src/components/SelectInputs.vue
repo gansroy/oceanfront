@@ -11,6 +11,12 @@
           value="Selected"
           variant="basic"
         ></of-select>
+        <of-field
+          :format="{ items: testItems, type: 'select' }"
+          label="Select input"
+          value="Selected"
+          variant="basic"
+        ></of-field>
         <br /><br />
         <of-select
           :items="tzOpts"

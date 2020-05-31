@@ -14,18 +14,22 @@ import { ItemList } from './items'
 // -> renderTextInput() | renderTextArea() | renderSelect() ..
 // renderSelect may have text input options
 
-let _fieldIndex = 0
+export type Renderable = VNode | VNode[] | string
 
-type Renderable = VNode | VNode[] | string
+let _fieldIndex = 0
 
 export const newFieldId = () => {
   return 'of-field-' + _fieldIndex++
 }
 
-export type FieldConstructor = (
-  props: FieldProps,
-  ctx: FieldContext
-) => FieldSetup
+export type FieldType = FieldTypeConstructor | FieldSetup
+
+export interface FieldTypeConstructor {
+  name?: string
+  setup: FieldSetup
+}
+
+export type FieldSetup = (props: FieldProps, ctx: FieldContext) => FieldRender
 
 export interface BaseForm {
   getInitialValue(name: string): any
@@ -59,15 +63,14 @@ export interface FieldContext {
 }
 
 export interface FieldProps {
-  align?: string
+  align?: string // defaultAlign?
   defaultValue?: any
-  //id?: string
   items?: string | any[] | ItemList
   // label?: string  / defaultLabel?
   maxlength?: number | string // defaultMaxlength?
   //name?: string
   placeholder?: string
-  size?: number | string
+  size?: number | string //  defaultSize?
   type?: string
   [key: string]: any
 }
@@ -80,7 +83,7 @@ export interface FieldProps {
 // set 'locked' property of context, which should close any popups, abort/commit pending changes
 // after timeout, change mode to readonly
 
-export interface FieldSetup {
+export interface FieldRender {
   append?: () => Renderable | undefined
   // afterContent? (below)
   blank?: boolean
@@ -111,6 +114,6 @@ export interface FieldPopup {
 }
 
 // helper to infer type
-export function defineFieldFormat(f: FieldConstructor): FieldConstructor {
+export function defineFieldType<T extends FieldType>(f: T): T {
   return f
 }

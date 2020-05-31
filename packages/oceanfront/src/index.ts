@@ -16,6 +16,11 @@ import OfTextarea from './components/Textarea.vue'
 import { OfTextField } from './components/TextField'
 import OfToggle from './components/Toggle.vue'
 
+import { registerFieldType, registerTextFormatter } from './lib/formats'
+import { NumberFormatter } from './formats/Number'
+import { SelectField } from './fields/Select'
+import { TextField } from './fields/Text'
+
 import './scss/index.scss'
 
 export const components: Record<string, Component> = {
@@ -39,6 +44,11 @@ export const directives: Record<string, Directive> = {}
 
 export const Oceanfront: Plugin = {
   install(vue: App, args: any) {
+    extendDefaultConfig(() => {
+      registerFieldType('select', SelectField)
+      registerFieldType('text', TextField)
+      registerTextFormatter('number', NumberFormatter)
+    })
     if (args && typeof args.config === 'function') {
       extendDefaultConfig(args.config)
     }
@@ -52,12 +62,14 @@ export const Oceanfront: Plugin = {
   }
 }
 
-export { NumberFormatter } from './lib/format'
-
 export { extendConfig, useConfig } from './lib/config'
 export { showMissingIcons, useIcons } from './lib/icons'
-export { useFormats } from './lib/format'
-export { defineItemList, useItems } from './lib/items'
+export {
+  registerFieldType,
+  registerTextFormatter,
+  useFormats
+} from './lib/formats'
+export { registerItemList, useItems } from './lib/items'
 export { setMobileBreakpoint, useLayout } from './lib/layout'
 export { useLocale } from './lib/locale'
 export { useRoutes } from './lib/routes'

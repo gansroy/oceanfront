@@ -1,33 +1,8 @@
-import { computed, Ref } from 'vue'
-import { Config, ConfigManager, readonlyUnwrap } from './config'
-import { FieldConstructor } from './fields'
-import { useLocale, LocaleState } from './locale'
-import { isDigit } from './util'
-
-export interface TextFormatResult {
-  blank?: boolean
-  error?: string
-  textValue?: string
-  textClass?: string
-  value?: any
-}
-export interface TextInputResult extends TextFormatResult {
-  selStart?: number
-  selEnd?: number
-  updated: boolean
-}
-
-export interface TextFormatter {
-  format(modelValue: any): TextFormatResult
-  unformat(input: string): any
-  handleInput?: (evt: InputEvent) => TextInputResult // + warnings
-  handleKeyDown?: (evt: KeyboardEvent) => void // + warnings
-  // get attachments (ie. currency symbol, date icon, unit)
-  inputClass?: string | string[]
-  inputMode?: string
-  inputType?: string
-  align?: 'start' | 'center' | 'end'
-}
+import { Ref, computed } from 'vue'
+import { Config } from '@/lib/config'
+import { LocaleState, useLocale } from '@/lib/locale'
+import { TextFormatter, TextFormatResult, TextInputResult } from '@/lib/formats'
+import { isDigit } from '@/lib/util'
 
 export interface NumberFormatterOptions {
   decimalSeparator?: string
@@ -311,70 +286,4 @@ export class NumberFormatter implements TextFormatter {
   validate(): boolean {
     return true
   }
-}
-
-type TextFormatterCtor = { new (config?: Config, options?: any): TextFormatter }
-type TextFormatterFn = { (config?: Config, options?: any): TextFormatter }
-
-type TextFormatterDef = TextFormatter | TextFormatterCtor | TextFormatterFn
-export type TextFormatterProp = TextFormatterDef | string
-
-export interface FormatState {
-  getFieldFormatter(type?: string): FieldConstructor | undefined
-
-  getTextFormatter(
-    type?: string | TextFormatterDef,
-    options?: any
-  ): TextFormatter | undefined
-}
-
-class FormatManager implements FormatState {
-  readonly fieldFormats: Record<string, FieldConstructor> = {}
-  readonly textFormats: Record<string, TextFormatterDef> = {}
-  readonly config: Config
-
-  constructor(config: Config) {
-    this.config = config
-    this.textFormats['number'] = NumberFormatter
-  }
-
-  getFieldFormatter(type: string): FieldConstructor | undefined {
-    return this.fieldFormats[type]
-  }
-
-  getTextFormatter(
-    type?: TextFormatterProp,
-    options?: any
-  ): TextFormatter | undefined {
-    let def: TextFormatterDef | undefined
-    if (typeof type === 'string') def = this.textFormats[type]
-    else def = type
-    if (def) {
-      if (typeof def === 'function') {
-        if ('format' in def.prototype)
-          return new (def as TextFormatterCtor)(this.config, options)
-        return (def as TextFormatterFn)(this.config, options)
-      }
-    }
-    return def
-  }
-}
-
-const configManager = new ConfigManager('offmt', FormatManager)
-
-export function defineFieldFormat(name: string, fmt: FieldConstructor) {
-  let mgr = configManager.activeManager
-  if (!mgr) return
-  mgr.fieldFormats[name] = fmt
-}
-
-export function defineTextFormat(name: string, fmt: TextFormatterDef) {
-  let mgr = configManager.activeManager
-  if (!mgr) return
-  mgr.textFormats[name] = fmt
-}
-
-export function useFormats(config?: Config): FormatState {
-  const mgr = configManager.inject(config)
-  return readonlyUnwrap(mgr)
 }

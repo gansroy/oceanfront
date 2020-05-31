@@ -229,13 +229,13 @@ class IconManager {
 
 const configManager = new ConfigManager('oficon', IconManager)
 
-export function defineIconFont(name: string, def: IconFont) {
+export function registerIconFont(name: string, def: IconFont) {
   const mgr = configManager.activeManager
   if (!mgr || !def) return
   mgr.fonts[name] = def
 }
 
-export function defineIcons(icons: IconMapping | IconResolver) {
+export function registerIcons(icons: IconMapping | IconResolver) {
   const mgr = configManager.activeManager
   if (!mgr || !icons) return
   if (typeof icons === 'object') {

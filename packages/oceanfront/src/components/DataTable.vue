@@ -31,7 +31,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch, PropType } from 'vue'
 import { DataTableHeader } from '../lib/datatable'
-import { useFormats } from '../lib/format'
+import { useFormats } from '../lib/formats'
 // import OfFormat from './Format'
 
 export default defineComponent({

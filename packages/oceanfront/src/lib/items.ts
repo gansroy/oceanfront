@@ -48,7 +48,7 @@ class ItemsManager implements ItemsState {
 
 const configManager = new ConfigManager('ofitm', ItemsManager)
 
-export function defineItemList(name: string, items: any[] | ItemList) {
+export function registerItemList(name: string, items: any[] | ItemList) {
   let mgr = configManager.activeManager
   if (!mgr) return
   mgr.lists[name] = makeItemList(items)

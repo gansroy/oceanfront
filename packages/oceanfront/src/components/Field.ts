@@ -12,8 +12,7 @@ import {
   Ref
 } from 'vue'
 import { FieldContext, FieldProps } from '@/lib/fields'
-import { useFormats } from '@/lib/format'
-import { selectInput, textInput } from '@/lib/input'
+import { useFormats } from '@/lib/formats'
 import { extractRefs } from '@/lib/util'
 import OfOverlay from '../components/Overlay.vue'
 
@@ -79,14 +78,13 @@ export const OfField = defineComponent({
       const fmt = props.format
       const extfmt = fmt ? (typeof fmt === 'string' ? { type: fmt } : fmt) : {}
       let ftype = props.fieldType || extfmt.fieldType || extfmt.type || 'text'
-      let found = formats.getFieldFormatter(ftype)
+      let found = formats.getFieldType(ftype, true)
       if (!found) {
-        if (extfmt.type === 'enum')
-          // FIXME temporary hack
-          found = selectInput
-        else found = textInput
+        // FIXME should always resolve something, but might
+        // want a field type that just renders an error message
+        throw new TypeError(`Unknown field type: ${ftype}`)
       }
-      return found(extfmt, fctx)
+      return found.setup(extfmt, fctx)
     })
 
     const handlers = {

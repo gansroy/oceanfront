@@ -1,5 +1,5 @@
 import { computed, defineComponent, h } from 'vue'
-import { useFormats } from '../lib/format'
+import { useFormats } from '../lib/formats'
 
 export const OfFormat = defineComponent({
   name: 'of-format',

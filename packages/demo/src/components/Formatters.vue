@@ -47,7 +47,7 @@ export default defineComponent({
     const sampleCode = `
 <of-text-field
   label="Field Label"
-  v-model="fieldValue"
+  v-model:value="fieldValue"
   variant="filled"
 />`
     const localeOpts = [
