@@ -101,7 +101,7 @@ export interface FieldRender {
   loading?: boolean
   // messages
   pendingValue?: any
-  popup?: FieldPopup | undefined
+  popup?: FieldPopup
   // popupPosition
   prepend?: () => Renderable | undefined
   updated?: boolean

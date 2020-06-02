@@ -52,7 +52,7 @@ export interface FieldRender {
   inputValue?: any
   loading?: boolean
   pendingValue?: any
-  popup?: FieldPopup | undefined
+  popup?: FieldPopup
   prepend?: () => Renderable | undefined
   updated?: boolean
   value?: any
