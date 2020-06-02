@@ -1,19 +1,6 @@
 import { VNode } from 'vue'
 import { ItemList } from './items'
 
-// format:
-// determines field format (type + options)
-// container only recreates field when type changes
-// field props derived from this
-// calls field function with reactive props
-
-// container or helper must derive merged props:
-// reactive field options + value
-// formatter.render(() => {format: props.format, value: state.value})
-// of-input may pass all props?
-// -> renderTextInput() | renderTextArea() | renderSelect() ..
-// renderSelect may have text input options
-
 export type Renderable = VNode | VNode[] | string
 
 let _fieldIndex = 0
@@ -49,7 +36,7 @@ export interface FieldContext {
   items?: string | any[] | ItemList
   label?: string
   locked?: boolean // | Lock
-  mode?: 'view' | 'edit' | 'readonly' // | 'disabled' | 'locked'
+  mode?: 'view' | 'edit' | 'readonly' // | 'disabled'
   muted?: boolean // if editable, reduce indicators
   name?: string
   placeholder?: string
@@ -57,7 +44,6 @@ export interface FieldContext {
   onUpdate?: (value: any) => void
   // onUpdate:value? - handled by field container
   // onInput? - watch inputValue
-  // record?: Record<string, any>  possibly a Form object with associated locks
   required?: boolean
   size?: number | string
   value?: any

@@ -7,28 +7,9 @@ import {
 } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
 
-// of-input format=".." type=".."  type overrides format
-
-// density is an of-field property
-
-// list fields are more complicated because we support
-// multiple fields. probably cannot be editable in this case, except with a custom control
-// look at project assignment widgets for a complex field example
-
 // editing a list field does not necessarily mean swapping input to edit mode
-// it may/should show a popup instead
-// but sometimes we do want to embed the editable control in a list view
-// editable != can-edit  again
-// editable = popup is good to support in general
+// it may/should show a popup instead (this might be implied by 'muted' flag)
 
-// which is responsible for rendering display content, input or formatter?
-// pass from formatter to input? input doesn't seem to be aware of formatter
-// pass 'input processor' and validation (rules) function to input
-
-// const copyAttrs = new Set(['autocomplete', 'placeholder', 'size', 'value'])
-
-// types that can be inherited from state.type
-// setting state.inputType allows any value
 const allowInputTypes = new Set([
   'date',
   'datetime-local',
