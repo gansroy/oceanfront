@@ -15,15 +15,15 @@ export interface TextInputResult extends TextFormatResult {
 }
 
 export interface TextFormatter {
+  align?: 'start' | 'center' | 'end'
   format(modelValue: any): TextFormatResult
   unformat(input: string): any
-  handleInput?: (evt: InputEvent) => TextInputResult // + warnings
-  handleKeyDown?: (evt: KeyboardEvent) => void // + warnings
+  handleInput?: (evt: InputEvent) => TextInputResult
+  handleKeyDown?: (evt: KeyboardEvent) => void
   // get attachments (ie. currency symbol, date icon, unit)
   inputClass?: string | string[]
   inputMode?: string
   inputType?: string
-  align?: 'start' | 'center' | 'end'
 }
 
 type TextFormatterCtor = { new (config?: Config, options?: any): TextFormatter }

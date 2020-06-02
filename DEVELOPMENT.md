@@ -64,3 +64,20 @@ These properties are used by `OfField` and other components to display the Field
 Not yet implemented are the field type modes: fields will be able to dynamically switch between editing, viewing, and locked (editable-readonly) display modes based on the context.
 
 Field types are registered with the `FormatManager` and can be resolved automatically (and overridden) within a configuration scope. This will allow for flexible, metadata-driven form generation.
+
+## Text Formatters
+
+Lower level and simpler than `FieldType` is the `TextFormatters` interface. These two essentially live in the same namespace: when a field is rendered, its type will first be resolved as a `FieldType`. Failing this, the field is rendered as a `TextField` and the type is resolved as a `TextFormatter`. If one is located, the class is given control over the text input and validation. The current interface for reference:
+
+```typescript
+export interface TextFormatter {
+  align?: 'start' | 'center' | 'end'
+  format(modelValue: any): TextFormatResult
+  unformat(input: string): any
+  handleInput?: (evt: InputEvent) => TextInputResult
+  handleKeyDown?: (evt: KeyboardEvent) => void
+  inputClass?: string | string[]
+  inputMode?: string
+  inputType?: string
+}
+```
