@@ -6,6 +6,7 @@ import {
   newFieldId
 } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
+import { removeEmpty } from '@/lib/util'
 
 // editing a list field does not necessarily mean swapping input to edit mode
 // it may/should show a popup instead (this might be implied by 'muted' flag)
@@ -160,16 +161,19 @@ export const TextField = defineFieldType({
           class: [
             'of-field-input',
             fmt?.inputClass,
-            'of--text-' + (ctx.align || props.align || fmt?.align || 'start')
+            'of--text-' + (props.align || fmt?.align || 'start')
           ],
-          inputmode: fmt?.inputMode,
-          id: inputId.value,
-          maxlength: props.maxlength,
-          name: ctx.name,
-          placeholder: ctx.placeholder ?? props.placeholder,
-          readonly: ctx.mode === 'readonly' || ctx.locked,
-          value: lazyInputValue,
-          ...hooks
+          ...removeEmpty({
+            inputmode: fmt?.inputMode,
+            id: inputId.value,
+            maxlength: props.maxlength,
+            name: ctx.name,
+            placeholder: props.placeholder,
+            readonly: ctx.mode === 'readonly' || ctx.locked || undefined,
+            // size: props.size,  - need to implement at field level?
+            value: lazyInputValue,
+            ...hooks
+          })
           // ctx.label as aria label
         })
       },

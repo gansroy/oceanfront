@@ -13,7 +13,7 @@ import {
 } from 'vue'
 import { FieldContext, FieldProps } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
-import { extractRefs } from '@/lib/util'
+import { extractRefs, extendReactive } from '@/lib/util'
 import OfOverlay from '../components/Overlay.vue'
 
 export const OfField = defineComponent({
@@ -22,7 +22,7 @@ export const OfField = defineComponent({
   props: {
     align: String,
     class: [String, Array, Object],
-    // density: Number
+    // density: {type: Number, default: undefined}
     // form
     format: [String, Function, Object],
     id: String,
@@ -37,7 +37,7 @@ export const OfField = defineComponent({
     placeholder: String,
     readonly: Boolean,
     required: Boolean,
-    size: Number,
+    size: { type: Number, default: undefined },
     // style
     type: String,
     value: { default: null },
@@ -56,7 +56,6 @@ export const OfField = defineComponent({
       container: 'of-field',
       mode: mode as any, // FIXME ref type not unwrapped correctly
       ...(extractRefs(props, [
-        'align',
         'id',
         'items',
         'label',
@@ -64,9 +63,7 @@ export const OfField = defineComponent({
         'locked',
         'muted',
         'name',
-        'placeholder',
         'required',
-        'size',
         'value'
       ]) as any[]), // FIXME type issues
       // form
@@ -78,15 +75,30 @@ export const OfField = defineComponent({
 
     const format = computed(() => {
       const fmt = props.format
-      const extfmt = fmt ? (typeof fmt === 'string' ? { type: fmt } : fmt) : {}
+      let extfmt = fmt
+        ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
+          ? { type: fmt }
+          : fmt
+        : {}
       let ftype = props.type || extfmt.fieldType || extfmt.type
-      let found = formats.getFieldType(ftype, true)
+      const found =
+        typeof ftype === 'object' && 'setup' in ftype // raw FieldType
+          ? ftype
+          : formats.getFieldType(ftype, true)
       if (!found) {
         // FIXME should always resolve something, but might
         // want a field type that just renders an error message
         throw new TypeError(`Unknown field type: ${ftype}`)
       }
-      return found.setup(extfmt, fctx)
+      return found.setup(
+        extendReactive(
+          extfmt,
+          props,
+          ['align', 'placeholder', 'maxlength', 'size'],
+          true
+        ),
+        fctx
+      )
     })
 
     const handlers = {
