@@ -35,15 +35,37 @@
         </template>
       </div>
     </div>
+    <div class="row">
+      <div class="column sm-4">
+        <h4>Duration Input</h4>
+        <of-config :locale="locale">
+          <template v-slot="{ locale }">
+            <of-field
+              style="width: 10em"
+              format="duration"
+              v-model:value="inputDurationValue"
+            />
+            <br />
+            Effective locale: {{ locale }}
+            <br />
+            test format:
+            <of-format type="duration" :value="inputDurationValue" />
+          </template>
+        </of-config>
+      </div>
+      <div class="column sm-4">
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, nextTick } from 'vue'
+import { ref, defineComponent } from 'vue'
 
 export default defineComponent({
-  setup() {
+  setup () {
     const inputValue = ref(100125.99)
+    const inputDurationValue = ref(100)
     const sampleCode = `
 <of-text-field
   label="Field Label"
@@ -62,7 +84,8 @@ export default defineComponent({
       locale,
       localeOpts,
       sampleCode,
-      inputValue
+      inputValue,
+      inputDurationValue
     }
   }
 })

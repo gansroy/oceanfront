@@ -30,7 +30,7 @@ const inputTypeFrom = (type?: string) => {
 
 export const TextField = defineFieldType({
   name: 'text',
-  setup(props: FieldProps, ctx: FieldContext) {
+  setup (props: FieldProps, ctx: FieldContext) {
     const formatMgr = useFormats()
     const formatter = computed(() =>
       formatMgr.getTextFormatter(props.type, props.formatOptions)
@@ -41,9 +41,7 @@ export const TextField = defineFieldType({
       const fmt = formatter.value
       if (fmt) {
         const fval = fmt.format(initial)
-        if (fval.error)
-          console.error('Error loading initial value:', fval.error)
-        else initial = fval.value
+        if (fval.error) { console.error('Error loading initial value:', fval.error) } else initial = fval.value
       }
       if (initial === undefined) initial = null
       return initial
@@ -99,33 +97,41 @@ export const TextField = defineFieldType({
       }
     }
     const hooks = {
-      onBlur(evt: FocusEvent) {
+      onBlur (evt: FocusEvent) {
         focused.value = false
+        const fmt = formatter.value
+        if (fmt?.handleBlur) {
+          fmt.handleBlur(evt)
+        }
       },
-      onFocus(evt: FocusEvent) {
+      onFocus (evt: FocusEvent) {
         focused.value = true
+        const fmt = formatter.value
+        if (fmt?.handleFocus) {
+          fmt.handleFocus(evt)
+        }
       },
-      onChange(evt: Event) {
+      onChange (evt: Event) {
         lazyInputValue = (evt.target as HTMLInputElement)?.value
-        let val = formatter.value
+        const val = formatter.value
           ? formatter.value.unformat(lazyInputValue)
           : lazyInputValue
         stateValue.value = val
         inputValue.value = lazyInputValue
         if (ctx.onUpdate) ctx.onUpdate(val)
       },
-      onClick(evt: MouseEvent) {
+      onClick (evt: MouseEvent) {
         // avoid select() when clicking in unfocused field
         evt.stopPropagation()
       },
-      onInput(evt: InputEvent) {
+      onInput (evt: InputEvent) {
         const fmt = formatter.value
         if (fmt?.handleInput) {
           const upd = fmt.handleInput(evt)
           if (upd) {
             if (!upd.updated) return
-            let inputElt = evt.target as HTMLInputElement
-            let iVal = upd.textValue ?? ''
+            const inputElt = evt.target as HTMLInputElement
+            const iVal = upd.textValue ?? ''
             inputElt.value = iVal
             if (upd.selStart !== undefined) {
               inputElt.setSelectionRange(upd.selStart!, upd.selEnd!)
@@ -135,13 +141,13 @@ export const TextField = defineFieldType({
           }
         }
       },
-      onKeydown(evt: KeyboardEvent) {
+      onKeydown (evt: KeyboardEvent) {
         const fmt = formatter.value
         if (fmt?.handleKeyDown) {
           fmt.handleKeyDown(evt)
         }
       },
-      onVnodeMounted(vnode: VNode) {
+      onVnodeMounted (vnode: VNode) {
         elt.value = vnode.el as HTMLInputElement
       }
     }

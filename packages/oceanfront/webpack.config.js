@@ -95,6 +95,7 @@ module.exports = (env = {}) => {
     devServer: {
       inline: true,
       hot: true,
+      historyApiFallback: true,
       stats: 'minimal',
       contentBase: __dirname,
       overlay: true

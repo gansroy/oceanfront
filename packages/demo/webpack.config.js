@@ -8,7 +8,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = (env = {}) => {
-  let config = {
+  const config = {
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? 'source-map' : 'inline-source-map',
     entry: {
@@ -26,7 +26,7 @@ module.exports = (env = {}) => {
         // is a simple `export * from '@vue/runtime-dom`. However having this
         // extra re-export somehow causes webpack to always invalidate the module
         // on the first HMR update and causes the page to reload.
-        //vue: '@vue/runtime-dom'
+        // vue: '@vue/runtime-dom'
 
         '@': resolve('./src')
       }
@@ -100,7 +100,8 @@ module.exports = (env = {}) => {
       // contentBase: resolve(__dirname, './dist'),
       contentBasePublicPath: '/ofdocs/',
       watchContentBase: true, // fix reload of html, bit drastic
-      host: '0.0.0.0'
+      historyApiFallback: true,
+      host: 'localhost'
     }
   }
   if (isProd) {

@@ -20,6 +20,8 @@ export interface TextFormatter {
   unformat(input: string): any
   handleInput?: (evt: InputEvent) => TextInputResult
   handleKeyDown?: (evt: KeyboardEvent) => void
+  handleFocus?: (evt: FocusEvent) => void
+  handleBlur?: (evt: FocusEvent) => TextInputResult
   // get attachments (ie. currency symbol, date icon, unit)
   inputClass?: string | string[]
   inputMode?: string
@@ -50,11 +52,11 @@ class FormatManager implements FormatState {
   readonly textFormats: Record<string, TextFormatterDef> = {}
   readonly config: Config
 
-  constructor(config: Config) {
+  constructor (config: Config) {
     this.config = config
   }
 
-  getFieldType(
+  getFieldType (
     type: string,
     defaultType?: boolean | string
   ): FieldTypeConstructor | undefined {
@@ -69,7 +71,7 @@ class FormatManager implements FormatState {
     return ctor
   }
 
-  getTextFormatter(
+  getTextFormatter (
     type?: TextFormatterProp,
     options?: any
   ): TextFormatter | undefined {
@@ -78,8 +80,7 @@ class FormatManager implements FormatState {
     else def = type
     if (def) {
       if (typeof def === 'function') {
-        if ('format' in def.prototype)
-          return new (def as TextFormatterCtor)(this.config, options)
+        if ('format' in def.prototype) { return new (def as TextFormatterCtor)(this.config, options) }
         return (def as TextFormatterFn)(this.config, options)
       }
     }
@@ -89,19 +90,19 @@ class FormatManager implements FormatState {
 
 const configManager = new ConfigManager('offmt', FormatManager)
 
-export function registerFieldType(name: string, fmt: FieldType) {
+export function registerFieldType (name: string, fmt: FieldType) {
   configManager.extendingManager.fieldTypes[name] = fmt
 }
 
-export function registerTextFormatter(name: string, fmt: TextFormatterDef) {
+export function registerTextFormatter (name: string, fmt: TextFormatterDef) {
   configManager.extendingManager.textFormats[name] = fmt
 }
 
-export function setDefaultFieldType(name: string) {
+export function setDefaultFieldType (name: string) {
   configManager.extendingManager.defaultFieldType = name
 }
 
-export function useFormats(config?: Config): FormatState {
+export function useFormats (config?: Config): FormatState {
   const mgr = configManager.inject(config)
   return readonlyUnwrap(mgr)
 }

@@ -18,6 +18,7 @@ import OfToggle from './components/Toggle.vue'
 
 import { registerFieldType, registerTextFormatter } from './lib/formats'
 import { NumberFormatter } from './formats/Number'
+import { DurationFormatter } from './formats/Duration'
 import { SelectField } from './fields/Select'
 import { TextField } from './fields/Text'
 import { ToggleField } from './fields/Toggle'
@@ -44,12 +45,14 @@ export const components: Record<string, Component> = {
 export const directives: Record<string, Directive> = {}
 
 export const Oceanfront: Plugin = {
-  install(vue: App, args: any) {
+  install (vue: App, args: any) {
+    vue.config.devtools = true
     extendDefaultConfig(() => {
       registerFieldType('select', SelectField)
       registerFieldType('text', TextField)
       registerFieldType('toggle', ToggleField)
       registerTextFormatter('number', NumberFormatter)
+      registerTextFormatter('duration', DurationFormatter)
     })
     if (args && typeof args.config === 'function') {
       extendDefaultConfig(args.config)
