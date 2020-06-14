@@ -30,6 +30,7 @@ export interface BaseForm {
 export interface FieldContext {
   container?: string
   // form?: BaseForm
+  fieldType?: string // the resolved field type name
   id?: string
   initialValue?: any // container normally loads from form
   items?: string | any[] | ItemList
@@ -40,7 +41,6 @@ export interface FieldContext {
   name?: string
   // onFocus, onBlur
   onUpdate?: (value: any) => void
-  // onUpdate:value? - handled by field container
   // onInput? - watch inputValue
   required?: boolean
   value?: any
@@ -52,7 +52,7 @@ export interface FieldProps {
   items?: string | any[] | ItemList
   // label?: string  / defaultLabel?
   maxlength?: number | string // defaultMaxlength?
-  //name?: string
+  // name?: string
   placeholder?: string
   size?: number | string //  defaultSize?
   type?: string
@@ -80,6 +80,7 @@ export interface FieldRender {
   hovered?: boolean
   inputId?: string
   inputValue?: any
+  invalid?: boolean
   // labelPosition: 'content' | 'none' | undefined
   loading?: boolean
   // messages

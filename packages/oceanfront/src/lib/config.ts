@@ -38,7 +38,6 @@ export class ConfigState {
   }
 
   apply() {
-    // console.log('build', this._id)
     if (this._prev) this._prev.apply()
     this._cb(this)
   }
@@ -94,7 +93,6 @@ export class ConfigManager<T> {
     let cache = config.getCache()
     let mgr = cache[this.injectKey as any]
     if (!mgr) {
-      // console.log('config create', this.injectKey)
       mgr = this.createManager(config)
       cache[this.injectKey as any] = mgr
     }

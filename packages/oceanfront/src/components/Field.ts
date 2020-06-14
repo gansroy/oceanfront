@@ -46,6 +46,17 @@ export const OfField = defineComponent({
   setup(props, ctx: SetupContext) {
     const formats = useFormats()
 
+    const fieldType = computed(() => {
+      const fmt = props.format
+      return (
+        props.type ||
+        (fmt && typeof fmt === 'string'
+          ? fmt
+          : typeof fmt === 'object'
+          ? fmt.fieldType || fmt.type
+          : undefined)
+      )
+    })
     const mode = computed(
       () => props.mode || (props.readonly ? 'readonly' : 'edit')
     )
@@ -54,6 +65,7 @@ export const OfField = defineComponent({
 
     const fctx: FieldContext = readonly({
       container: 'of-field',
+      fieldType: fieldType as any,
       mode: mode as any, // FIXME ref type not unwrapped correctly
       ...(extractRefs(props, [
         'id',
@@ -74,13 +86,13 @@ export const OfField = defineComponent({
     })
 
     const format = computed(() => {
+      const ftype = fieldType.value
       const fmt = props.format
-      let extfmt = fmt
+      const extfmt = fmt
         ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
           ? { type: fmt }
           : fmt
-        : {}
-      let ftype = props.type || extfmt.fieldType || extfmt.type
+        : { type: ftype }
       const found =
         typeof ftype === 'object' && 'setup' in ftype // raw FieldType
           ? ftype
@@ -114,7 +126,7 @@ export const OfField = defineComponent({
 
     return () => {
       try {
-        let render = format.value
+        const render = format.value
         const outerId = render.inputId ? render.inputId + '-outer' : props.id
         const blank = render.blank && !(render.focused || render.popup)
         const cls = [
@@ -123,6 +135,7 @@ export const OfField = defineComponent({
             'of--active': !blank,
             'of--blank': blank,
             'of--focused': render.focused,
+            'of--invalid': render.invalid,
             'of--muted': props.muted,
             'of--loading': render.loading,
             // 'of--locked': fmt.locked,

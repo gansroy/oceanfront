@@ -161,7 +161,7 @@ export class NumberFormatter implements TextFormatter {
     let textValue = ''
     let error
     try {
-      let value = this.loadValue(modelValue)
+      value = this.loadValue(value)
       if (value != null) {
         const fmt = Intl.NumberFormat(
           this.options.locale,
@@ -281,9 +281,5 @@ export class NumberFormatter implements TextFormatter {
         evt.preventDefault()
       }
     }
-  }
-
-  validate(): boolean {
-    return true
   }
 }

@@ -54,32 +54,34 @@ export const TextField = defineFieldType({
     const inputValue = ref('')
     const pendingValue = ref()
     const stateValue = ref()
-    watch(
-      () => ctx.value,
-      val => {
-        const fmt = formatter.value
-        if (fmt) {
-          const fval = fmt.format(val)
-          if (fval.error) {
-            console.error('Error loading field value:', fval.error, val)
-          } else {
-            lazyInputValue = fval.textValue ?? ''
-            val = fval.value
-          }
+    const invalid = ref(false)
+    const updateValue = (val: any) => {
+      const fmt = formatter.value
+      let updInvalid = false
+      if (fmt) {
+        const fval = fmt.format(val)
+        if (fval.error) {
+          // FIXME set messages
+          console.error('Error loading field value:', fval.error, val)
+          updInvalid = true
         } else {
-          if (val === null || val === undefined) lazyInputValue = ''
-          else lazyInputValue = ('' + val).trim()
-          val = lazyInputValue
+          lazyInputValue = fval.textValue ?? ''
+          val = fval.value
         }
-        if (val === undefined || val === '') val = null
-        inputValue.value = lazyInputValue
-        stateValue.value = val
-        pendingValue.value = undefined
-      },
-      {
-        immediate: true
+      } else {
+        if (val === null || val === undefined) lazyInputValue = ''
+        else lazyInputValue = ('' + val).trim()
+        val = lazyInputValue
       }
-    )
+      if (val === undefined || val === '') val = null
+      inputValue.value = lazyInputValue
+      stateValue.value = val
+      pendingValue.value = undefined
+      invalid.value = updInvalid
+    }
+    watch(() => ctx.value, updateValue, {
+      immediate: true
+    })
     const elt = ref<HTMLInputElement | undefined>()
     const focused = ref(false)
     let defaultFieldId: string
@@ -91,6 +93,9 @@ export const TextField = defineFieldType({
       }
       return id
     })
+    const multiline = computed(
+      () => ctx.fieldType === 'textarea' || formatter.value?.multiline
+    )
 
     const focus = (select?: boolean) => {
       if (elt.value) {
@@ -107,12 +112,30 @@ export const TextField = defineFieldType({
         focused.value = true
       },
       onChange(evt: Event) {
-        lazyInputValue = (evt.target as HTMLInputElement)?.value
-        let val = formatter.value
-          ? formatter.value.unformat(lazyInputValue)
-          : lazyInputValue
-        stateValue.value = val
-        inputValue.value = lazyInputValue
+        const target = evt.target as HTMLInputElement | null
+        if (!target) return
+        let val = target.value
+        const fmt = formatter.value
+        if (fmt) {
+          try {
+            // FIXME change text formatter to catch exception
+            val = fmt.unformat(val)
+          } catch (e) {
+            invalid.value = true
+            // FIXME support an onInvalidInput hook maybe?
+            pendingValue.value = undefined
+            return
+          }
+        }
+        if (val === stateValue.value) {
+          // if the value has changed then this will be called automatically
+          // when the new value is bound to the component, otherwise call
+          // it manually so that the input reflects the formatted result
+          updateValue(val)
+          target.value = lazyInputValue
+        } else {
+          pendingValue.value = undefined
+        }
         if (ctx.onUpdate) ctx.onUpdate(val)
       },
       onClick(evt: MouseEvent) {
@@ -125,8 +148,8 @@ export const TextField = defineFieldType({
           const upd = fmt.handleInput(evt)
           if (upd) {
             if (!upd.updated) return
-            let inputElt = evt.target as HTMLInputElement
-            let iVal = upd.textValue ?? ''
+            const inputElt = evt.target as HTMLInputElement
+            const iVal = upd.textValue ?? ''
             inputElt.value = iVal
             if (upd.selStart !== undefined) {
               inputElt.setSelectionRange(upd.selStart!, upd.selEnd!)
@@ -156,7 +179,7 @@ export const TextField = defineFieldType({
       class: 'of-text-field',
       content: () => {
         const fmt = formatter.value
-        return h('input', {
+        return h(multiline.value ? 'textarea' : 'input', {
           type: fmt?.inputType || 'text',
           class: [
             'of-field-input',
@@ -184,6 +207,7 @@ export const TextField = defineFieldType({
       // hovered,
       inputId,
       inputValue,
+      invalid,
       // loading
       // messages
       pendingValue,

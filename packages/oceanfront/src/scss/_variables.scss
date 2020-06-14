@@ -8,6 +8,7 @@ $base-color-hover: #58b !default;
 $base-color-input-active-text: #3c68d4;
 $base-color-input-bg: #fff !default;
 $base-color-input-border: #939393 !default;
+$base-color-input-error: #930000 !default;
 $base-color-input-icon: #666 !default;
 $base-color-input-muted-bg: #e3e3e3 !default;
 $base-color-input-placeholder: #999 !default;
@@ -99,10 +100,13 @@ $border-color-input-focus: var(
   --border-color-input-focus,
   #{$base-color-focus}
 );
-
 $border-color-input-hover: var(
   --border-color-input-hover,
   #{$base-color-hover}
+);
+$border-color-input-invalid: var(
+  --border-color-input-invalid,
+  #{lighten($base-color-input-error, 10%)}
 );
 $border-color-label: var(--border-color-label, #{$base-color-label-border});
 $border-color-menu-header: var(

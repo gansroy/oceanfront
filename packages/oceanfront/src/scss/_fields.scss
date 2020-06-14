@@ -80,6 +80,7 @@
 }
 
 .of-field-input {
+  font-family: inherit;
   font-size: inherit;
   font-weight: normal;
   // letter-spacing
@@ -171,6 +172,9 @@
   &.of--disabled .of-field-inner {
     opacity: $opacity-input-disabled;
     @include input-text-disabled;
+  }
+  &.of--invalid:not(.of--focused) .of-field-inner {
+    border-color: $border-color-input-invalid;
   }
 
   .of-field-input {
@@ -286,6 +290,9 @@
     .of-field-label-wrap label {
       top: -1px;
     }
+  }
+  &.of--invalid:not(.of--focused) {
+    --cur-border: 1px solid #{$border-color-input-invalid};
   }
 
   .of-field-label {
@@ -409,6 +416,9 @@
     .of-field-inner > * {
       opacity: 1;
     }
+  }
+  &.of--invalid:not(.of--focused) .of-field-inner {
+    border-bottom-color: $border-color-input-invalid;
   }
 
   &.of-text-field .of-field-input {
