@@ -17,6 +17,7 @@ import { OfTextField } from './components/TextField'
 import OfToggle from './components/Toggle.vue'
 
 import { registerFieldType, registerTextFormatter } from './lib/formats'
+import { ColorFormatter } from './formats/Color'
 import { NumberFormatter } from './formats/Number'
 import { SelectField } from './fields/Select'
 import { TextField } from './fields/Text'
@@ -49,6 +50,7 @@ export const Oceanfront: Plugin = {
       registerFieldType('select', SelectField)
       registerFieldType('text', TextField)
       registerFieldType('toggle', ToggleField)
+      registerTextFormatter('color', ColorFormatter)
       registerTextFormatter('number', NumberFormatter)
     })
     if (args && typeof args.config === 'function') {
