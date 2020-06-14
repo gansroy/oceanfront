@@ -1,6 +1,6 @@
 @mixin field-text-disabled {
-  color: $color-input-disabled;
-  -webkit-text-fill-color: $color-input-disabled; // override needed for disabled state
+  color: $color-field-disabled;
+  -webkit-text-fill-color: $color-field-disabled; // override needed for disabled state
   text-shadow: $text-shadow-disabled;
 }
 
@@ -49,7 +49,7 @@
 
 .of-field-outer {
   .input-icon {
-    color: $color-input-icon;
+    color: $color-field-icon;
   }
 
   .wait-icon,
@@ -128,7 +128,7 @@
     padding: 0 0.5em 0.25em;
   }
   &:hover .of-field-label {
-    color: $color-input-hover;
+    color: $color-field-hover;
   }
   .static .of-field-label {
     color: initial;
@@ -137,12 +137,12 @@
   .of-field-inner {
     align-items: center;
     display: flex;
-    background: $bg-input;
-    border: $border-width-input solid $border-color-input;
+    background: $bg-field;
+    border: $border-width-input solid $border-color-field;
     border-radius: $border-radius-input;
-    box-shadow: $box-shadow-input;
+    box-shadow: $box-shadow-field-basic;
     box-sizing: border-box;
-    color: $color-input;
+    color: $color-field;
     font-size: $font-size-input;
     position: relative;
     max-width: 100%; // don't extend past containing cell
@@ -150,31 +150,31 @@
 
     @include field-text-base;
   }
+  &:hover .of-field-inner {
+    border-color: $border-color-field-hover;
+    // color: $color-field-hover;
+  }
   &.of--focused .of-field-inner {
-    background: $bg-input-focus;
-    border-color: $border-color-input-focus;
+    background: $bg-field-focus;
+    border-color: $border-color-field-focus;
     box-shadow: $box-shadow-field-basic-focus;
   }
-  &:hover .of-field-inner {
-    border-color: $border-color-input-hover;
-    // color: $color-input-hover;
-  }
   .static .of-field-inner {
-    border-color: $border-color-input;
+    border-color: $border-color-field;
   }
   &.of--readonly,
   &.of--disabled {
     .of-field-inner {
-      background: $bg-input-disabled;
-      border-color: $border-color-input-disabled;
+      background: $bg-field-disabled;
+      border-color: $border-color-field-disabled;
     }
   }
   &.of--disabled .of-field-inner {
     opacity: $opacity-input-disabled;
-    @include input-text-disabled;
+    @include field-text-disabled;
   }
   &.of--invalid:not(.of--focused) .of-field-inner {
-    border-color: $border-color-input-invalid;
+    border-color: $border-color-field-invalid;
   }
 
   .of-field-input {
@@ -189,7 +189,7 @@
     outline: none;
     width: 100%;
     &::placeholder {
-      color: $color-input-placeholder;
+      color: $color-field-placeholder;
     }
   }
   &.of-text-field .of-field-input,
@@ -292,7 +292,7 @@
     }
   }
   &.of--invalid:not(.of--focused) {
-    --cur-border: 1px solid #{$border-color-input-invalid};
+    --cur-border: 1px solid #{$border-color-field-invalid};
   }
 
   .of-field-label {
@@ -349,14 +349,14 @@
 }
 
 .of--variant-filled {
-  background: $background-field-filled;
+  background: $bg-field-filled;
   border-radius: $border-radius-field $border-radius-field 0 0;
 
   &:hover {
-    background: $background-field-filled-hover;
+    background: $bg-field-filled-hover;
   }
   &.of--focused {
-    background: $background-field-filled-focus;
+    background: $bg-field-filled-focus;
   }
 
   .of-field-above {
@@ -418,7 +418,7 @@
     }
   }
   &.of--invalid:not(.of--focused) .of-field-inner {
-    border-bottom-color: $border-color-input-invalid;
+    border-bottom-color: $border-color-field-invalid;
   }
 
   &.of-text-field .of-field-input {
