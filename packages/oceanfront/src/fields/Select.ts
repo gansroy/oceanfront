@@ -176,7 +176,10 @@ export const SelectField = defineFieldType({
           h(
             'div',
             {
-              class: ['of-field-input', 'of--text-' + (props.align || 'start')],
+              class: [
+                'of-field-input-label',
+                'of--text-' + (props.align || 'start')
+              ],
               id: inputId.value,
               tabindex: 0,
               ...hooks
@@ -184,7 +187,7 @@ export const SelectField = defineFieldType({
             [inputValue.value]
           ),
           h(OfIcon, {
-            class: 'of-bullet-select',
+            class: 'of-select-icon',
             name: opened.value ? 'bullet-select-close' : 'bullet-select'
           })
         ]

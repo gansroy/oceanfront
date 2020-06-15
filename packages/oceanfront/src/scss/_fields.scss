@@ -11,14 +11,14 @@
   line-height: $line-height-input;
 }
 
-.field-compact {
+.of--density-0 {
   --pad-h-input: #{$pad-h-compact-input};
   --pad-v-input: #{$pad-v-compact-input};
 }
-.field-sm {
+.of--small {
   --font-size-input: #{$font-size-input-sm};
 }
-.field-lg {
+.of--large {
   --font-size-input: #{$font-size-input-lg};
 }
 
@@ -46,6 +46,9 @@
 .of--cursor-pointer {
   cursor: pointer;
 }
+.of--cursor-text {
+  cursor: text;
+}
 
 .of-field-outer {
   .input-icon {
@@ -59,32 +62,49 @@
     vertical-align: top;
   }
 
+  color: $color-field;
   font-size: $font-size-input;
   position: relative;
   text-align: left;
   @include no-select;
 
+  .of-field-label {
+    color: $color-field-label;
+  }
+  &:hover .of-field-label {
+    color: $color-field-hover;
+  }
+  .static .of-field-label {
+    color: $color-field-label;
+  }
   &.of--focused {
     .of-field-label {
-      color: $color-field-focus;
+      color: $color-field-focus-label;
     }
   }
 }
 
 .of-field-label {
-  color: $color-field-label;
   // cursor: inherit;
   text-overflow: ellipsis;
   white-space: normal;
   word-wrap: break-word;
 }
 
-.of-field-input {
+.of-field-input,
+.of-field-input-label {
+  box-sizing: border-box;
+  color: inherit;
   font-family: inherit;
   font-size: inherit;
   font-weight: normal;
+  outline: none;
+  padding: $pad-v-input $pad-h-input;
   // letter-spacing
   // caret-color
+}
+.of-field-input-label {
+  cursor: inherit;
 }
 
 .of-toggle-field {
@@ -103,14 +123,35 @@
     outline: none;
   }
 
-  .of-toggle-icon {
+  .of-toggle-input {
+    align-self: center;
+    flex: none;
     font-size: 115%;
-    margin-left: 0.5em;
+    padding: 0.2em $pad-h-input;
+    justify-content: center;
+    position: relative;
+  }
+
+  .of-toggle-outer {
+    display: flex;
   }
 }
 
-.of-bullet-select {
-  padding-left: 1em;
+.of-select-icon {
+  padding: $pad-v-input $pad-h-input;
+}
+
+.of-field-inner {
+  align-items: flex-start;
+  box-sizing: border-box;
+  color: $color-field;
+  display: flex;
+  font-size: $font-size-input;
+  position: relative;
+  max-width: 100%; // don't extend past containing cell
+  vertical-align: $vertical-align-input;
+
+  @include field-text-base;
 }
 
 .of--variant-basic {
@@ -125,30 +166,14 @@
   .of-field-label {
     display: block;
     font-size: 80%;
-    padding: 0 0.5em 0.25em;
-  }
-  &:hover .of-field-label {
-    color: $color-field-hover;
-  }
-  .static .of-field-label {
-    color: initial;
+    padding: 0 $pad-v-input 0.25em;
   }
 
   .of-field-inner {
-    align-items: center;
-    display: flex;
     background: $bg-field;
     border: $border-width-input solid $border-color-field;
     border-radius: $border-radius-input;
     box-shadow: $box-shadow-field-basic;
-    box-sizing: border-box;
-    color: $color-field;
-    font-size: $font-size-input;
-    position: relative;
-    max-width: 100%; // don't extend past containing cell
-    vertical-align: $vertical-align-input;
-
-    @include field-text-base;
   }
   &:hover .of-field-inner {
     border-color: $border-color-field-hover;
@@ -183,26 +208,15 @@
     background: none;
     border: none;
     border-radius: 0;
-    box-sizing: border-box;
-    color: inherit;
     // height: 100%;
-    outline: none;
     width: 100%;
     &::placeholder {
       color: $color-field-placeholder;
     }
   }
-  &.of-text-field .of-field-input,
-  &.of-select-field .of-field-input {
-    padding: $pad-v-input $pad-h-input;
-  }
   &.of-field-textarea .of-field-input {
     padding: $pad-v-input $pad-h-input 0;
     resize: vertical;
-  }
-
-  .of-field-input-label {
-    padding: $pad-v-input $pad-h-input;
   }
 }
 
@@ -211,9 +225,8 @@
   display: inline-flex;
 
   .of-field-inner {
-    box-sizing: border-box;
-    display: flex;
     min-height: calc(3em + 2 * #{$pad-v-field});
+    padding-top: calc(0.75em - 1px);
   }
 
   .of-field-above {
@@ -231,10 +244,8 @@
     background: none;
     border: none;
     border-radius: 0;
-    box-sizing: border-box;
     // height: 100%;
     width: 100%;
-    outline: none;
     /*&:active {
       // highlight?
     }*/
@@ -242,14 +253,24 @@
       color: $color-field-label;
     }
   }
-
   .of-field-input-label {
-    padding: $pad-v-field $pad-h-field;
     pointer-events: none;
+  }
+  .of-field-input,
+  .of-field-input-label {
+    padding: $pad-v-input $pad-h-field;
+  }
+
+  &.of-field-textarea .of-field-input {
+    padding: $pad-v-input calc(#{$pad-h-field} - 2px) $pad-v-input;
+    resize: vertical;
+    vertical-align: bottom;
   }
 }
 
 .of--variant-outlined {
+  color: $color-field;
+
   --cur-border: 1px solid #{$border-color-field};
   .of-field-above {
     display: flex;
@@ -315,7 +336,6 @@
   }
 
   .of-field-inner {
-    align-items: center;
     > * {
       opacity: 0;
       transition: opacity 180ms;
@@ -327,30 +347,12 @@
       opacity: 1;
     }
   }
-
-  &.of-text-field .of-field-input,
-  &.of-select-field .of-field-inner {
-    //padding: calc(#{$font-size-input} - 2px) $font-size-input
-    //  calc(#{$font-size-input} - 4px);
-    padding: 0 $pad-h-field;
-  }
-  &.of-field-textarea {
-    .of-field-inner {
-      padding: $font-size-input 2px 2px;
-    }
-    .of-field-input {
-      padding: 2px calc(#{$pad-h-field} - 2px) $pad-v-input;
-      resize: vertical;
-    }
-  }
-  &.of-toggle-field .of-field-inner {
-    align-items: center;
-  }
 }
 
 .of--variant-filled {
   background: $bg-field-filled;
   border-radius: $border-radius-field $border-radius-field 0 0;
+  color: $color-field-filled;
 
   &:hover {
     background: $bg-field-filled-hover;
@@ -382,9 +384,10 @@
   }
 
   .of-field-label {
+    color: $color-field-filled-label;
     position: absolute;
     left: $pad-h-field;
-    top: 0.5em;
+    top: $pad-v-input;
     font-size: 0.75em;
     transform: translateY(0.75em) scale(1.3333);
     transform-origin: left top;
@@ -392,7 +395,17 @@
     backface-visibility: hidden; // avoid some jumping?
     // will-change: transform; // FIXME currently blurry in chrome
   }
-
+  &:hover .of-field-label {
+    color: $color-field-filled-hover;
+  }
+  .static .of-field-label {
+    color: $color-field-filled-label;
+  }
+  &.of--focused {
+    .of-field-label {
+      color: $color-field-filled-focus-label;
+    }
+  }
   &.of--focused,
   &.of--active {
     .of-field-label {
@@ -401,13 +414,15 @@
   }
 
   .of-field-inner {
-    align-items: stretch;
     border-bottom: 1px solid $border-color-field;
     > * {
       opacity: 0;
       transition: opacity 180ms;
       will-change: opacity;
     }
+  }
+  &.of--with-label .of-field-inner {
+    padding-top: 1em;
   }
   &:hover .of-field-inner {
     border-bottom-color: $border-color-field-hover;
@@ -419,26 +434,5 @@
   }
   &.of--invalid:not(.of--focused) .of-field-inner {
     border-bottom-color: $border-color-field-invalid;
-  }
-
-  &.of-text-field .of-field-input {
-    //padding: calc(#{$font-size-input} + #{$pad-v-field}) $font-size-input calc(#{$pad-v-field} + 1px);
-    padding: $font-size-input $pad-h-field 0;
-  }
-  &.of-select-field .of-field-inner {
-    padding: calc(#{$font-size-input} + #{$pad-v-field}) $pad-h-field 0;
-    line-height: 1.9;
-  }
-  &.of-field-textarea {
-    .of-field-inner {
-      padding: calc(1.25em + #{$pad-v-field}) 2px 2px;
-    }
-    .of-field-input {
-      padding: $pad-v-field calc(#{$pad-h-field} - 2px) $pad-v-input;
-      resize: vertical;
-    }
-  }
-  &.of-toggle-field .of-field-inner {
-    align-items: center;
   }
 }

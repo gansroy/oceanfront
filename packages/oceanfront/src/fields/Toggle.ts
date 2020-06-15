@@ -72,36 +72,39 @@ export const ToggleField = defineFieldType({
     }
 
     return readonly({
-      append: () => {
-        return h(OfIcon, {
-          class: 'of-icon-toggle',
-          name: icon.value
-        })
-      },
       blank: computed(() => !stateValue.value),
       class: 'of-toggle-field',
       content: () => {
         return [
-          h('input', {
-            class: 'of-field-input',
-            checked: !!stateValue.value, // FIXME - make lazy
-            id: inputId.value,
-            // disabled: disabled.value,
-            name: ctx.name,
-            type: 'checkbox',
-            value: '1',
-            ...hooks
-          }),
-          h(
-            'div',
-            {
-              class: [
-                'of-field-input-label',
-                'of--text-' + (props.align || 'start')
-              ]
-            },
-            [label.value]
-          )
+          h('div', { class: 'of-toggle-outer' }, [
+            h(
+              'label',
+              {
+                class: [
+                  'of-field-input-label',
+                  'of--text-' + (props.align || 'start')
+                ]
+                // for: inputId.value (need to capture click to avoid double toggle)
+              },
+              [label.value]
+            ),
+            h('div', { class: 'of-toggle-input' }, [
+              h('input', {
+                class: 'of-field-input',
+                checked: !!stateValue.value, // FIXME - make lazy
+                id: inputId.value,
+                // disabled: disabled.value,
+                name: ctx.name,
+                type: 'checkbox',
+                value: '1',
+                ...hooks
+              }),
+              h(OfIcon, {
+                class: 'of-toggle-icon',
+                name: icon.value
+              })
+            ])
+          ])
         ]
       },
       click: clickToggle,

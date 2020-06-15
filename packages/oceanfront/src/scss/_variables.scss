@@ -21,7 +21,9 @@ $base-color-label-text: #555 !default;
 $base-color-menu-header: #dedede !default;
 $base-color-muted: #888 !default; // fixme use alpha
 $base-color-quiet: #f6f6f6 !default; // fixme use alpha
+$base-color-sheet-bg: #fff;
 $base-color-soft: #dadada !default; // fixme use alpha
+$base-color-text: #333;
 
 :root {
   --of-bg-field: #{$base-color-field-bg};
@@ -31,6 +33,7 @@ $base-color-soft: #dadada !default; // fixme use alpha
   --of-bg-field-filled: #{rgba($base-color-field-filled, 0.6)};
   --of-bg-field-filled-hover: #{rgba($base-color-field-filled, 0.7)};
   --of-bg-field-filled-focus: #{rgba($base-color-field-filled, 0.8)};
+  --of-bg-sheet: #{$base-color-sheet-bg};
   --of-border-color-field: #{rgba($base-color-field-border, 0.42)};
   --of-border-color-field-active: #{$base-color-active-border};
   --of-border-color-field-disabled: #{lighten($base-color-disabled, 10%)};
@@ -49,10 +52,17 @@ $base-color-soft: #dadada !default; // fixme use alpha
   --of-color-field: #{$base-color-field-text};
   --of-color-field-active: #{$base-color-field-active-text};
   --of-color-field-disabled: #{$base-color-muted};
+  --of-color-field-filled: var(--of-color-field);
+  --of-color-field-filled-hover: var(--of-color-field-hover);
+  --of-color-field-filled-label: var(--of-color-field-label);
+  --of-color-field-filled-focus-label: var(--of-color-field-focus-label);
   --of-color-field-focus: var(--of-color-field);
+  --of-color-field-label: #{rgba($base-color-text, 0.6)};
+  --of-color-field-focus-label: var(--of-border-color-field-focus);
   --of-color-field-hover: #{$base-color-hover};
   --of-color-field-icon: #{$base-color-field-icon};
   --of-color-field-placeholder: #{$base-color-field-placeholder};
+  --of-color-sheet: #{$base-color-text};
 }
 
 $bg-active: var(
@@ -156,11 +166,16 @@ $color-button-icon: var(--color-button-icon, #{$base-color-field-icon});
 $color-field: var(--of-color-field);
 $color-field-active: var(--of-color-field-active);
 $color-field-disabled: var(--of-color-field-disabled);
+$color-field-filled: var(--of-color-field-filled);
+$color-field-filled-hover: var(--of-color-field-filled-hover);
+$color-field-filled-label: var(--of-color-field-filled-label);
+$color-field-filled-focus-label: var(--of-color-field-filled-focus-label);
 $color-field-focus: var(--of-color-field-focus);
 $color-field-hover: var(--of-color-field-hover);
 $color-field-icon: var(--of-color-field-icon);
 $color-field-placeholder: var(--of-color-field-placeholder);
-$color-field-label: rgba(#000, 0.6);
+$color-field-label: var(--of-color-field-label);
+$color-field-focus-label: var(--of-color-field-focus-label);
 $color-label: var(--color-label, #{$base-color-label-text});
 $color-menu-option: var(--color-menu-option, #{$base-color-field-text});
 $font-family-input: var(--font-family-input, inherit);

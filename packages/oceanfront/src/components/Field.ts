@@ -129,6 +129,13 @@ export const OfField = defineComponent({
         const render = format.value
         const outerId = render.inputId ? render.inputId + '-outer' : props.id
         const blank = render.blank && !(render.focused || render.popup)
+        const label = ctx.slots.label
+          ? ctx.slots.label()
+          : props.label
+          ? h('label', { class: 'of-field-label', for: render.inputId }, [
+              props.label
+            ])
+          : undefined
         const cls = [
           'of-field-outer',
           {
@@ -139,10 +146,10 @@ export const OfField = defineComponent({
             'of--muted': props.muted,
             'of--loading': render.loading,
             // 'of--locked': fmt.locked,
-            'of--updated': render.updated
+            'of--updated': render.updated,
             // of--readonly: props.readonly,
             // of--disabled: props.disabled,
-            // 'of--with-label': withLabel.value
+            'of--with-label': !!label
           },
           'of--cursor-' + (render.cursor || 'default'),
           'of--mode-' + mode.value,
@@ -150,13 +157,6 @@ export const OfField = defineComponent({
           render.class,
           props.class
         ]
-        const label = ctx.slots.label
-          ? ctx.slots.label()
-          : props.label
-          ? h('label', { class: 'of-field-label', for: render.inputId }, [
-              props.label
-            ])
-          : undefined
         const inner = []
         const prepend = ctx.slots.prepend || render.prepend
         const defslot = ctx.slots.default || render.content
