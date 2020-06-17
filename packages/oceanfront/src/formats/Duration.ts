@@ -114,7 +114,7 @@ export class DurationFormatter implements TextFormatter {
 
   minToDurationConvert (value: string): string {
     let valueNum = parseFloat(value)
-    if (valueNum < 10) {
+    if (valueNum < 10 || valueNum % 1 !== 0) {
       valueNum *= 60
     }
     let min = Math.round(valueNum)
