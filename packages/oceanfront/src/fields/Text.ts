@@ -113,7 +113,7 @@ export const TextField = defineFieldType({
       onFocus (evt: FocusEvent) {
         focused.value = true
       },
-      onChange(evt: Event) {
+      onChange (evt: Event) {
         const target = evt.target as HTMLInputElement | null
         if (!target) return
         let val = target.value

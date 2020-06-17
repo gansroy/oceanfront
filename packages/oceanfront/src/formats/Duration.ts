@@ -55,8 +55,8 @@ export class DurationFormatter implements TextFormatter {
   formatterOptions (editing?: boolean): Intl.NumberFormatOptions {
     const opts = this.options
     return {
-      maximumFractionDigits: 0,
-      minimumFractionDigits: 0,
+      maximumFractionDigits: opts.maximumFractionDigits || 3, // editing ? 5 : opts.maximumFractionDigits,
+      minimumFractionDigits: opts.minimumFractionDigits,
       maximumSignificantDigits: editing
         ? undefined
         : opts.maximumSignificantDigits,
@@ -70,8 +70,8 @@ export class DurationFormatter implements TextFormatter {
   parseInput (input: string) {
     let value = 0
     if (typeof input === 'string' && input.length !== 0) {
-      const hr = parseInt(input.split('hh ')[0], 10)
-      const min = parseInt(input.split('hh ')[1].substring(0, 1), 10)
+      const hr = parseInt(input.split('h ')[0], 10)
+      const min = parseInt(input.split('h ')[1].split('m')[0], 10)
       value = hr * 60 + min
     }
 
@@ -88,17 +88,17 @@ export class DurationFormatter implements TextFormatter {
     if (typeof modelValue === 'string') {
       modelValue = modelValue.trim()
       if (!modelValue.length) return null
-      return parseInt(modelValue, 10)
+      return parseFloat(modelValue)
     }
     throw new TypeError('Unsupported value')
   }
 
   format (modelValue: any): TextFormatResult {
-    const value = modelValue
+    let value = modelValue
     let textValue = ''
     let error
     try {
-      const value = this.loadValue(modelValue)
+      value = this.loadValue(modelValue)
       if (value != null) {
         textValue = this.minToDurationConvert(modelValue)
       }
@@ -112,57 +112,27 @@ export class DurationFormatter implements TextFormatter {
     }
   }
 
-  minToDurationConvert (value: string) {
-    let min = Math.round(parseInt(value, 10))
+  minToDurationConvert (value: string): string {
+    let valueNum = parseFloat(value)
+    if (valueNum < 10) {
+      valueNum *= 60
+    }
+    let min = Math.round(valueNum)
     const hr = Math.floor(min / 60)
     min = min % 60
-    return '' + hr + 'hh ' + (min < 10 ? '0' + min : min) + 'mm'
+    return '' + hr + 'h ' + (min < 10 ? '0' + min : min) + 'm'
   }
 
-  unformat (input: string): string | null {
-    if (typeof input === 'number') return input
+  unformat (input: any): number | null {
+    if (!isNaN(Number(input))) return input
     if (input === null || input === undefined) return null
     if (typeof input === 'string') {
       input = input.trim()
       if (!input.length) return null
-      return input
+      const parsed = this.parseInput(input)
+      return parsed.value
     }
     throw new TypeError('Unsupported value')
-  }
-
-  handleInput (evt: InputEvent): TextInputResult {
-    const input = evt.target as HTMLInputElement
-    let textValue = input.value
-    if (textValue.length) {
-      const fmtOpts = this.formatterOptions(true)
-      const formatter = Intl.NumberFormat(this.options.locale, fmtOpts)
-      textValue = formatter.format(parseFloat(textValue))
-      return {
-        textValue,
-        updated: input.value !== textValue,
-        value: input.value
-      }
-    }
-    return { updated: false }
-  }
-
-  handleFocus (evt: FocusEvent): void {
-    const input = evt.target as HTMLInputElement
-    input.value = ''
-  }
-
-  handleBlur (evt: FocusEvent): TextInputResult {
-    const input = evt.target as HTMLInputElement
-    let textValue = input.value
-    if (textValue.length) {
-      textValue = this.minToDurationConvert(textValue)
-      return {
-        textValue,
-        updated: input.value !== textValue,
-        value: input.value
-      }
-    }
-    return { updated: false }
   }
 
   handleKeyDown (evt: KeyboardEvent): void {
