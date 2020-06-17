@@ -2,9 +2,9 @@
   // box-shadow: none;
   // .text-emphasis-variant(@text);
   --color-badge: #{$color};
-  --color-input: #{$color};
+  --color-field: #{$color};
   --bg-badge: #{$bg};
-  --bg-input: #{$bg};
+  --of-bg-field: #{$bg};
   /*& when (@input-shadow-inner) {
 		& when (luminance(@bg) < 80) {
 			.grad-vertical(lighten(@bg, 5%), @bg);
@@ -17,7 +17,7 @@
 		}
     }*/
   --border-color-badge: #{$border};
-  --border-color-input: #{$border};
+  --border-color-field: #{$border};
   /*&.rbullet::after {
 		border-color: @border;		
 	}*/
@@ -87,9 +87,9 @@
 }*/
 .state-disabled {
   @include state-mixin(
-    $color-input-disabled,
-    $bg-input-disabled,
-    $border-color-input-disabled
+    $color-field-disabled,
+    $bg-field-disabled,
+    $border-color-field-disabled
   );
   text-shadow: $text-shadow-disabled;
 }

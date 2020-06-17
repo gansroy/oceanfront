@@ -299,7 +299,7 @@
       <div class="row demo-row">
         <div class="demo-inline">
           <of-text-field
-            class="input-sm"
+            class="of--small"
             value="Small text input"
             style="width: 10em"
           />
@@ -309,7 +309,7 @@
         </div>
         <div class="demo-inline">
           <of-text-field
-            class="input-lg"
+            class="of--large"
             value="Large text input"
             style="width: 10em"
           />
@@ -342,7 +342,7 @@
       <div class="row demo-row">
         <div class="demo-inline">
           <of-textarea
-            class="input-sm"
+            class="of--small"
             style="width: 10em"
             value="Small text area"
           />
@@ -352,7 +352,7 @@
         </div>
         <div class="demo-inline">
           <of-textarea
-            class="input-lg"
+            class="of--large"
             style="width: 10em"
             value="Large text area"
           />

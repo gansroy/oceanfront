@@ -1,5 +1,6 @@
 import { VNode } from 'vue'
 import { ItemList } from './items'
+import { extendReactive, extractRefs } from './util'
 
 export type Renderable = VNode | VNode[] | string
 
@@ -25,12 +26,11 @@ export interface BaseForm {
   // setValue(name: string, value: any)
 }
 
-// note: align, items, placeholder, size are redundant - will be removed
-// need to add a way to dynamically extend a format descriptor (fieldprops)
+// FIXME 'items' currently redundant
 export interface FieldContext {
-  align?: string
   container?: string
   // form?: BaseForm
+  fieldType?: string // the resolved field type name
   id?: string
   initialValue?: any // container normally loads from form
   items?: string | any[] | ItemList
@@ -39,13 +39,10 @@ export interface FieldContext {
   mode?: 'view' | 'edit' | 'readonly' // | 'disabled'
   muted?: boolean // if editable, reduce indicators
   name?: string
-  placeholder?: string
   // onFocus, onBlur
   onUpdate?: (value: any) => void
-  // onUpdate:value? - handled by field container
   // onInput? - watch inputValue
   required?: boolean
-  size?: number | string
   value?: any
 }
 
@@ -55,7 +52,7 @@ export interface FieldProps {
   items?: string | any[] | ItemList
   // label?: string  / defaultLabel?
   maxlength?: number | string // defaultMaxlength?
-  //name?: string
+  // name?: string
   placeholder?: string
   size?: number | string //  defaultSize?
   type?: string
@@ -83,6 +80,7 @@ export interface FieldRender {
   hovered?: boolean
   inputId?: string
   inputValue?: any
+  invalid?: boolean
   // labelPosition: 'content' | 'none' | undefined
   loading?: boolean
   // messages
@@ -103,4 +101,20 @@ export interface FieldPopup {
 // helper to infer type
 export function defineFieldType<T extends FieldType>(f: T): T {
   return f
+}
+
+export function extendFieldFormat(
+  format: any,
+  props: Record<string, any>,
+  restrict: string[]
+) {
+  if (typeof format === 'string' || typeof format === 'function') {
+    // text format name or constructor
+    format = { type: format }
+  }
+  format = typeof format === 'object' ? format : {}
+  if (restrict) {
+    props = extractRefs(props, restrict)
+  }
+  return extendReactive(format, props)
 }

@@ -1,9 +1,18 @@
 <template>
   <of-field-outer v-bind="fieldAttrs">
-    <of-icon :name="icon" class="of-toggle-icon" v-if="icon" />
-    <input ref="elt" :type="inputType" v-bind="attrs" />
-    <div class="of-field-input-label">
-      <label :for="id">{{ label }}</label>
+    <div class="of-toggle-outer">
+      <div class="of-toggle-input">
+        <of-icon :name="icon" class="of-toggle-icon" v-if="icon" />
+        <input
+          class="of-field-input"
+          ref="elt"
+          :type="inputType"
+          v-bind="attrs"
+        />
+      </div>
+      <div class="of-field-input-label">
+        <label :for="id">{{ label }}</label>
+      </div>
     </div>
   </of-field-outer>
 </template>

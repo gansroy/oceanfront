@@ -13,7 +13,7 @@ import {
 } from 'vue'
 import { FieldContext, FieldProps } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
-import { extractRefs } from '@/lib/util'
+import { extractRefs, extendReactive } from '@/lib/util'
 import OfOverlay from '../components/Overlay.vue'
 
 export const OfField = defineComponent({
@@ -22,7 +22,7 @@ export const OfField = defineComponent({
   props: {
     align: String,
     class: [String, Array, Object],
-    // density: Number
+    // density: {type: Number, default: undefined}
     // form
     format: [String, Function, Object],
     id: String,
@@ -37,7 +37,7 @@ export const OfField = defineComponent({
     placeholder: String,
     readonly: Boolean,
     required: Boolean,
-    size: Number,
+    size: { type: Number, default: undefined },
     // style
     type: String,
     value: { default: null },
@@ -46,6 +46,17 @@ export const OfField = defineComponent({
   setup(props, ctx: SetupContext) {
     const formats = useFormats()
 
+    const fieldType = computed(() => {
+      const fmt = props.format
+      return (
+        props.type ||
+        (fmt && typeof fmt === 'string'
+          ? fmt
+          : typeof fmt === 'object'
+          ? fmt.fieldType || fmt.type
+          : undefined)
+      )
+    })
     const mode = computed(
       () => props.mode || (props.readonly ? 'readonly' : 'edit')
     )
@@ -54,9 +65,9 @@ export const OfField = defineComponent({
 
     const fctx: FieldContext = readonly({
       container: 'of-field',
+      fieldType: fieldType as any,
       mode: mode as any, // FIXME ref type not unwrapped correctly
       ...(extractRefs(props, [
-        'align',
         'id',
         'items',
         'label',
@@ -64,9 +75,7 @@ export const OfField = defineComponent({
         'locked',
         'muted',
         'name',
-        'placeholder',
         'required',
-        'size',
         'value'
       ]) as any[]), // FIXME type issues
       // form
@@ -77,16 +86,31 @@ export const OfField = defineComponent({
     })
 
     const format = computed(() => {
+      const ftype = fieldType.value
       const fmt = props.format
-      const extfmt = fmt ? (typeof fmt === 'string' ? { type: fmt } : fmt) : {}
-      let ftype = props.type || extfmt.fieldType || extfmt.type
-      let found = formats.getFieldType(ftype, true)
+      const extfmt = fmt
+        ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
+          ? { type: fmt }
+          : fmt
+        : { type: ftype }
+      const found =
+        typeof ftype === 'object' && 'setup' in ftype // raw FieldType
+          ? ftype
+          : formats.getFieldType(ftype, true)
       if (!found) {
         // FIXME should always resolve something, but might
         // want a field type that just renders an error message
         throw new TypeError(`Unknown field type: ${ftype}`)
       }
-      return found.setup(extfmt, fctx)
+      return found.setup(
+        extendReactive(
+          extfmt,
+          props,
+          ['align', 'placeholder', 'maxlength', 'size'],
+          true
+        ),
+        fctx
+      )
     })
 
     const handlers = {
@@ -102,29 +126,9 @@ export const OfField = defineComponent({
 
     return () => {
       try {
-        let render = format.value
+        const render = format.value
         const outerId = render.inputId ? render.inputId + '-outer' : props.id
         const blank = render.blank && !(render.focused || render.popup)
-        const cls = [
-          'of-field-outer',
-          {
-            'of--active': !blank,
-            'of--blank': blank,
-            'of--focused': render.focused,
-            'of--muted': props.muted,
-            'of--loading': render.loading,
-            // 'of--locked': fmt.locked,
-            'of--updated': render.updated
-            // of--readonly: props.readonly,
-            // of--disabled: props.disabled,
-            // 'of--with-label': withLabel.value
-          },
-          'of--cursor-' + (render.cursor || 'default'),
-          'of--mode-' + mode.value,
-          'of--variant-' + variant.value,
-          render.class,
-          props.class
-        ]
         const label = ctx.slots.label
           ? ctx.slots.label()
           : props.label
@@ -132,6 +136,27 @@ export const OfField = defineComponent({
               props.label
             ])
           : undefined
+        const cls = [
+          'of-field-outer',
+          {
+            'of--active': !blank,
+            'of--blank': blank,
+            'of--focused': render.focused,
+            'of--invalid': render.invalid,
+            'of--muted': props.muted,
+            'of--loading': render.loading,
+            // 'of--locked': fmt.locked,
+            'of--updated': render.updated,
+            // of--readonly: props.readonly,
+            // of--disabled: props.disabled,
+            'of--with-label': !!label
+          },
+          'of--cursor-' + (render.cursor || 'default'),
+          'of--mode-' + mode.value,
+          'of--variant-' + variant.value,
+          render.class,
+          props.class
+        ]
         const inner = []
         const prepend = ctx.slots.prepend || render.prepend
         const defslot = ctx.slots.default || render.content

@@ -1,4 +1,4 @@
-import { Ref, toRef } from 'vue'
+import { Ref, toRef, isRef } from 'vue'
 
 export const hasOwnProperty = Object.prototype.hasOwnProperty
 export const hasOwn = (
@@ -36,29 +36,57 @@ export type Primitive = boolean | null | number | string | bigint | symbol
 
 export function extendReactive(
   base: Record<any, any>,
-  update: Record<any, any>
+  update: Record<any, any>,
+  restrict?: string[],
+  if_defined?: boolean
 ) {
+  let checkRestrict: (k: any) => boolean
+  if (restrict) {
+    const restrictSet = new Set(restrict)
+    checkRestrict = (k: any) => restrictSet.has(k)
+  } else {
+    checkRestrict = (k: any) => true
+  }
+  let checkDefined: (target: object, key: any) => boolean
+  if (if_defined) {
+    checkDefined = (target: object, key: any) =>
+      (target as any)[key] !== undefined
+  } else {
+    checkDefined = hasOwn
+  }
   return new Proxy(update, {
     get(target: object, key: string, receiver: object): any {
-      if (hasOwn(target, key)) return target[key]
+      if (checkRestrict(key) && hasOwn(target, key)) {
+        let result = (target as any)[key]
+        if (!if_defined || result !== undefined) {
+          if (isRef(result)) return (result as any).value
+          return result
+        }
+      }
       return base[key]
     },
     has(target: object, key: string): boolean {
-      return hasOwn(target, key) || hasOwn(base, key)
+      return (
+        (checkRestrict(key) && checkDefined(target, key)) || hasOwn(base, key)
+      )
     },
     ownKeys(target: object): (string | number | symbol)[] {
       const keys: Set<string | number | symbol> = new Set(Reflect.ownKeys(base))
-      for (const k of Reflect.ownKeys(base)) {
-        keys.add(k)
+      for (const k of Reflect.ownKeys(target)) {
+        if (
+          checkRestrict(k) &&
+          (!if_defined || (target as any)[k] !== undefined)
+        )
+          keys.add(k)
       }
       return [...keys]
     },
     set(target: object, key: string, value: any, receiver: object): boolean {
-      Reflect.set(target, key, value)
+      if (checkRestrict(key)) Reflect.set(target, key, value)
       return true
     },
     deleteProperty(target: object, key: string): boolean {
-      delete (target as any)[key]
+      if (checkRestrict(key)) delete (target as any)[key]
       return true
     }
   })
@@ -79,4 +107,14 @@ export function extractRefs<T extends object, K extends keyof T>(
     }
   }
   return ret
+}
+
+export function removeEmpty(obj: Record<string, any>): Record<string, any> {
+  if (obj) {
+    for (const k of Object.keys(obj)) {
+      const val = obj[k]
+      if (val === null || val === undefined) delete obj[k]
+    }
+  }
+  return obj
 }

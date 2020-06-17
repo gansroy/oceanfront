@@ -26,6 +26,7 @@ export interface TextFormatter {
   inputClass?: string | string[]
   inputMode?: string
   inputType?: string
+  multiline?: boolean
 }
 
 type TextFormatterCtor = { new (config?: Config, options?: any): TextFormatter }

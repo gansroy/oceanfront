@@ -6,6 +6,7 @@ import {
   newFieldId
 } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
+import { removeEmpty } from '@/lib/util'
 
 // editing a list field does not necessarily mean swapping input to edit mode
 // it may/should show a popup instead (this might be implied by 'muted' flag)
@@ -51,32 +52,34 @@ export const TextField = defineFieldType({
     const inputValue = ref('')
     const pendingValue = ref()
     const stateValue = ref()
-    watch(
-      () => ctx.value,
-      val => {
-        const fmt = formatter.value
-        if (fmt) {
-          const fval = fmt.format(val)
-          if (fval.error) {
-            console.error('Error loading field value:', fval.error, val)
-          } else {
-            lazyInputValue = fval.textValue ?? ''
-            val = fval.value
-          }
+    const invalid = ref(false)
+    const updateValue = (val: any) => {
+      const fmt = formatter.value
+      let updInvalid = false
+      if (fmt) {
+        const fval = fmt.format(val)
+        if (fval.error) {
+          // FIXME set messages
+          console.error('Error loading field value:', fval.error, val)
+          updInvalid = true
         } else {
-          if (val === null || val === undefined) lazyInputValue = ''
-          else lazyInputValue = ('' + val).trim()
-          val = lazyInputValue
+          lazyInputValue = fval.textValue ?? ''
+          val = fval.value
         }
-        if (val === undefined || val === '') val = null
-        inputValue.value = lazyInputValue
-        stateValue.value = val
-        pendingValue.value = undefined
-      },
-      {
-        immediate: true
+      } else {
+        if (val === null || val === undefined) lazyInputValue = ''
+        else lazyInputValue = ('' + val).trim()
+        val = lazyInputValue
       }
-    )
+      if (val === undefined || val === '') val = null
+      inputValue.value = lazyInputValue
+      stateValue.value = val
+      pendingValue.value = undefined
+      invalid.value = updInvalid
+    }
+    watch(() => ctx.value, updateValue, {
+      immediate: true
+    })
     const elt = ref<HTMLInputElement | undefined>()
     const focused = ref(false)
     let defaultFieldId: string
@@ -88,6 +91,9 @@ export const TextField = defineFieldType({
       }
       return id
     })
+    const multiline = computed(
+      () => ctx.fieldType === 'textarea' || formatter.value?.multiline
+    )
 
     const focus = (select?: boolean) => {
       if (elt.value) {
@@ -106,18 +112,32 @@ export const TextField = defineFieldType({
       },
       onFocus (evt: FocusEvent) {
         focused.value = true
-        const fmt = formatter.value
-        if (fmt?.handleFocus) {
-          fmt.handleFocus(evt)
-        }
       },
-      onChange (evt: Event) {
-        lazyInputValue = (evt.target as HTMLInputElement)?.value
-        const val = formatter.value
-          ? formatter.value.unformat(lazyInputValue)
-          : lazyInputValue
-        stateValue.value = val
-        inputValue.value = lazyInputValue
+      onChange(evt: Event) {
+        const target = evt.target as HTMLInputElement | null
+        if (!target) return
+        let val = target.value
+        const fmt = formatter.value
+        if (fmt) {
+          try {
+            // FIXME change text formatter to catch exception
+            val = fmt.unformat(val)
+          } catch (e) {
+            invalid.value = true
+            // FIXME support an onInvalidInput hook maybe?
+            pendingValue.value = undefined
+            return
+          }
+        }
+        if (val === stateValue.value) {
+          // if the value has changed then this will be called automatically
+          // when the new value is bound to the component, otherwise call
+          // it manually so that the input reflects the formatted result
+          updateValue(val)
+          target.value = lazyInputValue
+        } else {
+          pendingValue.value = undefined
+        }
         if (ctx.onUpdate) ctx.onUpdate(val)
       },
       onClick (evt: MouseEvent) {
@@ -161,21 +181,24 @@ export const TextField = defineFieldType({
       class: 'of-text-field',
       content: () => {
         const fmt = formatter.value
-        return h('input', {
+        return h(multiline.value ? 'textarea' : 'input', {
           type: fmt?.inputType || 'text',
           class: [
             'of-field-input',
             fmt?.inputClass,
-            'of--text-' + (ctx.align || props.align || fmt?.align || 'start')
+            'of--text-' + (props.align || fmt?.align || 'start')
           ],
-          inputmode: fmt?.inputMode,
-          id: inputId.value,
-          maxlength: props.maxlength,
-          name: ctx.name,
-          placeholder: ctx.placeholder ?? props.placeholder,
-          readonly: ctx.mode === 'readonly' || ctx.locked,
-          value: lazyInputValue,
-          ...hooks
+          ...removeEmpty({
+            inputmode: fmt?.inputMode,
+            id: inputId.value,
+            maxlength: props.maxlength,
+            name: ctx.name,
+            placeholder: props.placeholder,
+            readonly: ctx.mode === 'readonly' || ctx.locked || undefined,
+            // size: props.size,  - need to implement at field level?
+            value: lazyInputValue,
+            ...hooks
+          })
           // ctx.label as aria label
         })
       },
@@ -186,6 +209,7 @@ export const TextField = defineFieldType({
       // hovered,
       inputId,
       inputValue,
+      invalid,
       // loading
       // messages
       pendingValue,
