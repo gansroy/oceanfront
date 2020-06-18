@@ -1,5 +1,16 @@
 import { reactive } from 'vue'
-import { Config, ConfigManager, readonlyUnwrap } from '../lib/config'
+import { parseColor } from './color'
+import { Config, ConfigManager, readonlyUnwrap } from './config'
+import { hsluvToHex, hexToHsluv } from 'hsluv'
+
+export type ThemeConfig = {
+  primaryColor?: string
+  primaryHue?: number
+  secondaryHue?: number
+  backgroundHue?: number
+  dark?: boolean
+  saturation?: number
+}
 
 type WindowRect = {
   scrollX: number
@@ -30,8 +41,8 @@ function initEvents() {
 let inited = false
 
 export interface LayoutState {
-  readonly mobileBreakpoint: number
   readonly isMobile: boolean
+  readonly mobileBreakpoint: number
   readonly windowRect: WindowRect
 }
 
@@ -53,6 +64,89 @@ const configManager = new ConfigManager('oflay', LayoutManager)
 
 export function setMobileBreakpoint(bp: number) {
   configManager.extendingManager.mobileBreakpoint = bp
+}
+
+export function themeStyle(config?: ThemeConfig) {
+  if (!config) return {}
+  let primaryHue
+  let saturation
+  if (config.primaryColor) {
+    let primary
+    try {
+      primary = parseColor(config.primaryColor || '#000')!
+    } catch (e) {
+      console.error(`Error parsing primary color: ${e.toString()}`)
+      return {}
+    }
+    const huv = hexToHsluv(primary)
+    primaryHue = huv[0]
+    saturation = huv[1]
+  } else {
+    primaryHue = (config.primaryHue || 0) % 360
+    saturation = Math.min(100, config.saturation || 100) / 100
+  }
+  const secondHue = (config.secondaryHue || primaryHue + 90) % 360
+  const bgHue = (config.backgroundHue || primaryHue) % 360
+  const bg = config.dark
+    ? hsluvToHex([bgHue, 40 * saturation, 10])
+    : hsluvToHex([bgHue, 10 * saturation, 95])
+  const text = config.dark
+    ? hsluvToHex([primaryHue, 40 * saturation, 90])
+    : hsluvToHex([primaryHue, 30 * saturation, 20])
+  const label = config.dark
+    ? hsluvToHex([primaryHue, 40 * saturation, 90]) + 'aa'
+    : hsluvToHex([primaryHue, 20 * saturation, 20]) + 'bb'
+
+  const bg_field = config.dark
+    ? hsluvToHex([primaryHue, 40 * saturation, 80]) + '22'
+    : '#fff'
+  const bg_field_focus = config.dark
+    ? hsluvToHex([primaryHue, 30 * saturation, 90]) + '33'
+    : '#fff'
+  const bg_field_filled = config.dark
+    ? hsluvToHex([primaryHue, 80 * saturation, 50]) + '66'
+    : hsluvToHex([primaryHue, 80 * saturation, 60]) + '33'
+  const bg_field_filled_hover = config.dark
+    ? hsluvToHex([primaryHue, 90 * saturation, 40]) + '55'
+    : hsluvToHex([primaryHue, 80 * saturation, 60]) + '44'
+  const bg_field_filled_focus = config.dark
+    ? hsluvToHex([primaryHue, 90 * saturation, 60]) + '77'
+    : hsluvToHex([primaryHue, 90 * saturation, 60]) + '55'
+
+  const bc_field = config.dark
+    ? hsluvToHex([primaryHue, 50 * saturation, 80])
+    : hsluvToHex([primaryHue, 30 * saturation, 20]) + 'aa'
+  const bc_field_focus = config.dark
+    ? hsluvToHex([secondHue, 70 * saturation, 85])
+    : hsluvToHex([secondHue, Math.min(100, 80 * saturation + 10), 40])
+  const bc_field_hover = config.dark
+    ? hsluvToHex([primaryHue, 30 * saturation, 95])
+    : hsluvToHex([primaryHue, 60 * saturation, 10])
+
+  const filled_focus_label = config.dark
+    ? hsluvToHex([secondHue, 70 * saturation, 85]) + 'cc'
+    : hsluvToHex([secondHue, Math.min(100, 70 * saturation + 10), 20]) + 'cc'
+
+  const shadow_focus = `0 0 0 0.2rem ${bc_field_focus}44`
+  return {
+    '--of-bg-sheet': bg,
+    '--of-bg-field': bg_field,
+    '--of-bg-field-focus': bg_field_focus,
+    '--of-bg-field-filled': bg_field_filled,
+    '--of-bg-field-filled-hover': bg_field_filled_hover,
+    '--of-bg-field-filled-focus': bg_field_filled_focus,
+    '--of-border-color-field': bc_field,
+    '--of-border-color-field-focus': bc_field_focus,
+    '--of-border-color-field-hover': bc_field_hover,
+    '--of-box-shadow-field-basic-focus': shadow_focus,
+    '--of-color-field': text,
+    '--of-color-field-filled': text,
+    '--of-color-field-filled-label': label,
+    '--of-color-field-label': label,
+    '--of-color-field-focus-label': `${bc_field_focus}dd`,
+    '--of-color-field-filled-focus-label': filled_focus_label,
+    '--of-color-sheet': text
+  }
 }
 
 export function useLayout(config?: Config): LayoutState {

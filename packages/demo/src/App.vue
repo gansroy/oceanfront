@@ -34,6 +34,7 @@
         <of-nav-group>
           <of-list-item to="/">Overview</of-list-item>
           <of-list-item disabled>Buttons</of-list-item>
+          <of-list-item to="/colors">Colors &amp; Theming</of-list-item>
           <of-list-item to="/icons">Icons</of-list-item>
           <of-list-group value="1">
             <template #activator="{ state, toggle }">
@@ -204,5 +205,8 @@ export default defineComponent({
 }
 .of--overlay > .of-sidebar {
   margin-top: 48px;
+}
+.of-bezier {
+  font-size: 90%;
 }
 </style>

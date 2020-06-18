@@ -1,8 +1,8 @@
 import { defineComponent } from 'vue'
-import { extendConfig } from '../lib/config'
-import { setDefaultIconFont } from '../lib/icons'
-import { useLayout } from '../lib/layout'
-import { setLocale, useLocale } from '../lib/locale'
+import { extendConfig } from '@/lib/config'
+import { setDefaultIconFont } from '@/lib/icons'
+import { themeStyle, useLayout } from '@/lib/layout'
+import { setLocale, useLocale } from '@/lib/locale'
 
 export const OfConfig = defineComponent({
   name: 'of-config',
@@ -10,7 +10,7 @@ export const OfConfig = defineComponent({
   props: {
     iconFont: String,
     locale: String,
-    theme: String
+    theme: [String, Object]
   },
   setup(props, ctx) {
     extendConfig(() => {
@@ -19,10 +19,15 @@ export const OfConfig = defineComponent({
     })
     const layoutMgr = useLayout()
     const localeMgr = useLocale()
-    return () =>
-      ctx.slots.default!({
+    return () => {
+      const cfgProps: Record<string, any> = {
         locale: localeMgr.locale,
         isMobile: layoutMgr.isMobile
-      })
+      }
+      if (props.theme) {
+        cfgProps.themeStyle = themeStyle(props.theme)
+      }
+      return ctx.slots.default!(cfgProps)
+    }
   }
 })
