@@ -1,73 +1,19 @@
-import { Ref, computed } from 'vue'
-import { Config } from '@/lib/config'
-import { LocaleState, useLocale } from '@/lib/locale'
-import { TextFormatter, TextFormatResult, TextInputResult } from '@/lib/formats'
-import { isDigit } from '@/lib/util'
-
-export interface DurationFormatterOptions {
-  decimalSeparator?: string
-  groupSeparator?: string
-  locale?: string
-  minimumIntegerDigits?: number
-  maximumFractionDigits?: number
-  minimumFractionDigits?: number
-  maximumSignificantDigits?: number
-  minimumSignificantDigits?: number
-  restrictPositive?: boolean
-  signDisplay?: string // = 'exceptZero'
-  style?: string // = 'decimal' // currency, percent, unit
-  useGrouping?: boolean
-}
+import { TextFormatter, TextFormatResult } from '@/lib/formats'
 
 export class DurationFormatter implements TextFormatter {
-  private _locale: LocaleState
-  private _options: Ref<DurationFormatterOptions>
-
-  constructor (config?: Config, options?: DurationFormatterOptions) {
-    this._locale = useLocale(config)
-    this._options = computed(() => {
-      const opts: any = {}
-      opts.locale = this._locale.locale
-      Object.assign(opts, this._locale.numberFormat)
-      if (this._options) {
-        Object.assign(opts, this._options)
-      }
-      return opts
-    })
-  }
-
-  get align (): 'start' | 'center' | 'end' {
+  get align(): 'start' | 'center' | 'end' {
     return 'end'
   }
 
-  get inputClass () {
+  get inputClass() {
     return 'of--text-numeric'
   }
 
-  get inputMode () {
+  get inputMode() {
     return 'numeric'
   }
 
-  get options () {
-    return this._options.value
-  }
-
-  formatterOptions (editing?: boolean): Intl.NumberFormatOptions {
-    const opts = this.options
-    return {
-      maximumFractionDigits: opts.maximumFractionDigits || 3, // editing ? 5 : opts.maximumFractionDigits,
-      minimumFractionDigits: opts.minimumFractionDigits,
-      maximumSignificantDigits: editing
-        ? undefined
-        : opts.maximumSignificantDigits,
-      minimumSignificantDigits: opts.minimumSignificantDigits,
-      // signDisplay: this.signDisplay  // NYI in browsers
-      style: opts.style,
-      useGrouping: false
-    }
-  }
-
-  parseInput (input: string) {
+  parseInput(input: string) {
     let value = 0
     if (typeof input === 'string' && input.length !== 0) {
       const hr = parseInt(input.split('h ')[0], 10)
@@ -81,7 +27,7 @@ export class DurationFormatter implements TextFormatter {
     }
   }
 
-  loadValue (modelValue: any): number | null {
+  loadValue(modelValue: any): number | null {
     // bigint?
     if (typeof modelValue === 'number') return modelValue
     if (modelValue === null || modelValue === undefined) return null
@@ -93,7 +39,7 @@ export class DurationFormatter implements TextFormatter {
     throw new TypeError('Unsupported value')
   }
 
-  format (modelValue: any): TextFormatResult {
+  format(modelValue: any): TextFormatResult {
     let value = modelValue
     let textValue = ''
     let error
@@ -112,7 +58,7 @@ export class DurationFormatter implements TextFormatter {
     }
   }
 
-  minToDurationConvert (value: string): string {
+  minToDurationConvert(value: string): string {
     let valueNum = parseFloat(value)
     if (valueNum < 10 || valueNum % 1 !== 0) {
       valueNum *= 60
@@ -123,7 +69,7 @@ export class DurationFormatter implements TextFormatter {
     return '' + hr + 'h ' + (min < 10 ? '0' + min : min) + 'm'
   }
 
-  unformat (input: any): number | null {
+  unformat(input: any): number | null {
     if (!isNaN(Number(input))) return input
     if (input === null || input === undefined) return null
     if (typeof input === 'string') {
@@ -135,7 +81,7 @@ export class DurationFormatter implements TextFormatter {
     throw new TypeError('Unsupported value')
   }
 
-  handleKeyDown (evt: KeyboardEvent): void {
+  handleKeyDown(evt: KeyboardEvent): void {
     // FIXME handle compositionstart, compositionend?
     const input = evt.target as HTMLInputElement
     let selStart = input.selectionStart
@@ -163,9 +109,5 @@ export class DurationFormatter implements TextFormatter {
         evt.preventDefault()
       }
     }
-  }
-
-  validate (): boolean {
-    return true
   }
 }
