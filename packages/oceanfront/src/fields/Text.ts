@@ -31,7 +31,7 @@ const inputTypeFrom = (type?: string) => {
 
 export const TextField = defineFieldType({
   name: 'text',
-  setup(props: FieldProps, ctx: FieldContext) {
+  setup (props: FieldProps, ctx: FieldContext) {
     const formatMgr = useFormats()
     const formatter = computed(() =>
       formatMgr.getTextFormatter(props.type, props.formatOptions)
@@ -42,9 +42,7 @@ export const TextField = defineFieldType({
       const fmt = formatter.value
       if (fmt) {
         const fval = fmt.format(initial)
-        if (fval.error)
-          console.error('Error loading initial value:', fval.error)
-        else initial = fval.value
+        if (fval.error) { console.error('Error loading initial value:', fval.error) } else initial = fval.value
       }
       if (initial === undefined) initial = null
       return initial
@@ -105,13 +103,17 @@ export const TextField = defineFieldType({
       }
     }
     const hooks = {
-      onBlur(evt: FocusEvent) {
+      onBlur (evt: FocusEvent) {
         focused.value = false
+        const fmt = formatter.value
+        if (fmt?.handleBlur) {
+          fmt.handleBlur(evt)
+        }
       },
-      onFocus(evt: FocusEvent) {
+      onFocus (evt: FocusEvent) {
         focused.value = true
       },
-      onChange(evt: Event) {
+      onChange (evt: Event) {
         const target = evt.target as HTMLInputElement | null
         if (!target) return
         let val = target.value
@@ -138,11 +140,11 @@ export const TextField = defineFieldType({
         }
         if (ctx.onUpdate) ctx.onUpdate(val)
       },
-      onClick(evt: MouseEvent) {
+      onClick (evt: MouseEvent) {
         // avoid select() when clicking in unfocused field
         evt.stopPropagation()
       },
-      onInput(evt: InputEvent) {
+      onInput (evt: InputEvent) {
         const fmt = formatter.value
         if (fmt?.handleInput) {
           const upd = fmt.handleInput(evt)
@@ -159,13 +161,13 @@ export const TextField = defineFieldType({
           }
         }
       },
-      onKeydown(evt: KeyboardEvent) {
+      onKeydown (evt: KeyboardEvent) {
         const fmt = formatter.value
         if (fmt?.handleKeyDown) {
           fmt.handleKeyDown(evt)
         }
       },
-      onVnodeMounted(vnode: VNode) {
+      onVnodeMounted (vnode: VNode) {
         elt.value = vnode.el as HTMLInputElement
       }
     }
