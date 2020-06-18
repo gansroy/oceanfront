@@ -3,8 +3,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUpdated, ref, onMounted } from 'vue'
+import { defineComponent, onUpdated, ref, onMounted, computed } from 'vue'
 const hljs = require('highlight.js/lib/core')
+hljs.registerLanguage('css', require('highlight.js/lib/languages/css'))
 hljs.registerLanguage('json', require('highlight.js/lib/languages/json'))
 hljs.registerLanguage('xml', require('highlight.js/lib/languages/xml'))
 
@@ -29,13 +30,11 @@ export default defineComponent({
     value: String
   },
   setup(props, ctx) {
-    const result = ref<string>()
-    onMounted(() => {
-      result.value =
-        props.lang && props.value
-          ? formatLines(hljs.highlight(props.lang, props.value).value)
-          : undefined
-    })
+    const result = computed(() =>
+      props.lang && props.value
+        ? formatLines(hljs.highlight(props.lang, props.value).value)
+        : undefined
+    )
     return {
       result
     }
