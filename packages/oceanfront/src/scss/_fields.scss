@@ -262,7 +262,8 @@
   }
 
   &.of-field-textarea .of-field-input {
-    padding: $pad-v-input calc(#{$pad-h-field} - 2px) $pad-v-input;
+    margin: 0 1px 1px;
+    padding: $pad-v-input calc(#{$pad-h-field} - 1px) $pad-v-input;
     resize: vertical;
     vertical-align: bottom;
   }
