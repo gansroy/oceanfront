@@ -1,26 +1,26 @@
 <template>
   <table class="of-data-table">
     <colgroup>
-      <col v-for="col of columns" />
+      <col v-for="(col, idx) of columns" :key="idx" />
     </colgroup>
     <thead>
       <tr>
-        <th v-for="col of columns" :class="col.class">
+        <th v-for="(col, idx) of columns" :class="col.class" :key="idx">
           {{ col.text }}
         </th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="row of rows">
-        <td v-for="col of columns" :class="col.class">
+      <tr v-for="(row, rowidx) of rows" :key="rowidx">
+        <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
           <!-- of-format :type="col.format" :value="row[col.value]" / -->
           {{ row[col.value] }}
         </td>
       </tr>
     </tbody>
     <tfoot v-if="footerRows.length">
-      <tr v-for="row of footerRows">
-        <td v-for="col of columns" :class="col.class">
+      <tr v-for="(row, rowidx) of footerRows" :key="rowidx">
+        <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
           <of-format :type="col.format" :value="row[col.value]" />
         </td>
       </tr>
@@ -35,19 +35,19 @@ import { useFormats } from '../lib/formats'
 // import OfFormat from './Format'
 
 export default defineComponent({
-  name: 'of-data-table',
+  name: 'OfDataTable',
   // components: { OfFormat },
   props: {
-    footerItems: { type: Array, default: [] },
-    headers: { type: Array, default: [] } as object &
+    footerItems: { type: Array, default: () => [] },
+    headers: { type: Array, default: () => [] } as object &
       PropType<DataTableHeader[]>,
-    items: { type: Array, default: [] } as object &
+    items: { type: Array, default: () => [] } as object &
       PropType<Record<string, any>>,
     itemsCount: [String, Number],
     itemsPerPage: [String, Number],
-    page: [String, Number]
+    page: [String, Number],
   },
-  setup(props, ctx) {
+  setup(props, _ctx) {
     const fmtMgr = useFormats()
     const columns = computed(() => {
       const cols: any[] = []
@@ -69,7 +69,7 @@ export default defineComponent({
     })
     watch(
       () => props.page,
-      p => (page.value = parseInt(p as string, 10) || 1), // FIXME check in range
+      (p) => (page.value = parseInt(p as string, 10) || 1), // FIXME check in range
       { immediate: true }
     )
     const iterStart = computed(() => {
@@ -95,8 +95,8 @@ export default defineComponent({
     return {
       columns,
       footerRows,
-      rows
+      rows,
     }
-  }
+  },
 })
 </script>

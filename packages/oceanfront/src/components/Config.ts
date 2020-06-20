@@ -5,12 +5,12 @@ import { themeStyle, useLayout } from '@/lib/layout'
 import { setLocale, useLocale } from '@/lib/locale'
 
 export const OfConfig = defineComponent({
-  name: 'of-config',
+  name: 'OfConfig',
   inheritAttrs: false,
   props: {
     iconFont: String,
     locale: String,
-    theme: [String, Object]
+    theme: [String, Object],
   },
   setup(props, ctx) {
     extendConfig(() => {
@@ -22,12 +22,12 @@ export const OfConfig = defineComponent({
     return () => {
       const cfgProps: Record<string, any> = {
         locale: localeMgr.locale,
-        isMobile: layoutMgr.isMobile
+        isMobile: layoutMgr.isMobile,
       }
       if (props.theme) {
         cfgProps.themeStyle = themeStyle(props.theme)
       }
       return ctx.slots.default!(cfgProps)
     }
-  }
+  },
 })

@@ -13,22 +13,13 @@
 import { ref, defineComponent, SetupContext, computed, Ref, watch } from 'vue'
 import OfFieldOuter from './FieldOuter.vue'
 
-// const copyAttrs = new Set([
-//   'autocomplete',
-//   'placeholder',
-//   'cols',
-//   'rows',
-//   'tabIndex',
-//   'value'
-// ])
-
-const calcHeight = (input: Ref<HTMLTextAreaElement>) => {
+const _calcHeight = (input: Ref<HTMLTextAreaElement>) => {
   let ht = input.value && input.value.scrollHeight
   console.log('height', ht)
 }
 
 export default defineComponent({
-  name: 'of-textarea',
+  name: 'OfTextarea',
   components: { OfFieldOuter },
   inheritAttrs: false,
   props: {
@@ -42,7 +33,7 @@ export default defineComponent({
     readonly: Boolean,
     rows: Number,
     value: String,
-    variant: String
+    variant: String,
   },
   setup(props, ctx: SetupContext) {
     const elt = ref<HTMLInputElement | undefined>()
@@ -53,7 +44,7 @@ export default defineComponent({
     )
     watch(
       () => props.modelValue,
-      val => {
+      (val) => {
         inputValue.value = val
       }
     )
@@ -68,26 +59,26 @@ export default defineComponent({
       set: (val: any) => {
         // FIXME unformat value
         inputValue.value = val
-      }
+      },
     })
     const handlers = {
-      blur: (evt: FocusEvent) => {
+      blur: (_evt: FocusEvent) => {
         focused.value = false
         ctx.emit('blur')
       },
-      change: (evt: Event) => {
+      change: (_evt: Event) => {
         inputValue.value = elt.value?.value
         ctx.emit('change', inputValue.value)
       },
-      input: (evt: InputEvent) => {
+      input: (_evt: InputEvent) => {
         inputValue.value = elt.value?.value
         ctx.emit('input', inputValue.value)
         ctx.emit('update:modelValue', inputValue.value)
       },
-      focus: (evt: FocusEvent) => {
+      focus: (_evt: FocusEvent) => {
         focused.value = true
         ctx.emit('focus')
-      }
+      },
     }
     const blank = computed(() => {
       const val = inputValue.value
@@ -101,7 +92,7 @@ export default defineComponent({
       inputId: id,
       label: props.label,
       readonly: readonly.value,
-      variant: props.variant
+      variant: props.variant,
     }))
     return {
       attrs: computed(() => ({
@@ -111,13 +102,13 @@ export default defineComponent({
         name: props.name,
         placeholder: props.placeholder,
         readonly: readonly.value,
-        rows: props.rows
+        rows: props.rows,
       })),
       elt,
       fieldAttrs,
       handlers,
-      inputValue
+      inputValue,
     }
-  }
+  },
 })
 </script>

@@ -3,7 +3,7 @@ import {
   defineFieldType,
   FieldContext,
   FieldProps,
-  newFieldId
+  newFieldId,
 } from '@/lib/fields'
 import { useItems } from '@/lib/items'
 import OfNavGroup from '@/components/NavGroup.vue'
@@ -14,14 +14,14 @@ export const renderSelectPopup = (
   items: any,
   setValue: any,
   active: boolean
-) => {
+): VNode => {
   let content
   if (active) {
     let rowsOuter: VNode | undefined
     if (!items || !items.length) {
       rowsOuter = h('div', { style: 'padding: 0 0.5em' }, 'No items')
     } else {
-      let rows = []
+      const rows = []
       for (const item of items) {
         if (item.special === 'header') {
           rows.push(h('div', { class: 'of-list-header' }, item.text))
@@ -36,7 +36,7 @@ export const renderSelectPopup = (
                 disabled: item.disabled,
                 onClick: () => {
                   setValue(item.value)
-                }
+                },
               },
               () => item.text
             )
@@ -47,7 +47,7 @@ export const renderSelectPopup = (
     }
     content = () =>
       h('div', { role: 'menu', class: 'of-menu' }, [
-        h(OfNavGroup, () => rowsOuter)
+        h(OfNavGroup, () => rowsOuter),
       ])
   } else {
     content = undefined
@@ -70,14 +70,14 @@ export const SelectField = defineFieldType({
     const stateValue = ref()
     watch(
       () => ctx.value,
-      val => {
+      (val) => {
         if (val === undefined || val === '') val = null
         inputValue.value = val
         stateValue.value = val
         pendingValue.value = undefined
       },
       {
-        immediate: true
+        immediate: true,
       }
     )
 
@@ -113,7 +113,7 @@ export const SelectField = defineFieldType({
             disabled: false,
             text: item,
             selected: item === value,
-            value: item
+            value: item,
           })
         } else if (typeof item === 'object') {
           rows.push({
@@ -121,7 +121,7 @@ export const SelectField = defineFieldType({
             text: item[textKey],
             value: item[valueKey],
             selected: item[valueKey] === value,
-            special: item[specialKey]
+            special: item[specialKey],
           })
         }
       }
@@ -136,7 +136,7 @@ export const SelectField = defineFieldType({
       return def === undefined ? 'text' : def
     })
 
-    const clickOpen = (evt?: MouseEvent) => {
+    const clickOpen = (_evt?: MouseEvent) => {
       // FIXME - ignore if in the middle of closing (allow click to close)
       opened.value = true
       return false
@@ -145,7 +145,7 @@ export const SelectField = defineFieldType({
       opened.value = false
     }
     const focus = () => {
-      let curelt = elt.value
+      const curelt = elt.value
       if (curelt) curelt.focus()
     }
     const setValue = (val: any) => {
@@ -154,15 +154,15 @@ export const SelectField = defineFieldType({
       closePopup()
     }
     const hooks = {
-      onBlur(evt: FocusEvent) {
+      onBlur(_evt: FocusEvent) {
         focused.value = false
       },
-      onFocus(evt: FocusEvent) {
+      onFocus(_evt: FocusEvent) {
         focused.value = true
       },
       onVnodeMounted(vnode: VNode) {
         elt.value = vnode.el as HTMLElement
-      }
+      },
     }
 
     return readonly({
@@ -178,18 +178,18 @@ export const SelectField = defineFieldType({
             {
               class: [
                 'of-field-input-label',
-                'of--text-' + (props.align || 'start')
+                'of--text-' + (props.align || 'start'),
               ],
               id: inputId.value,
               tabindex: 0,
-              ...hooks
+              ...hooks,
             },
             [inputValue.value]
           ),
           h(OfIcon, {
             class: 'of-select-icon',
-            name: opened.value ? 'bullet-select-close' : 'bullet-select'
-          })
+            name: opened.value ? 'bullet-select-close' : 'bullet-select',
+          }),
         ]
       },
       click: clickOpen,
@@ -206,10 +206,10 @@ export const SelectField = defineFieldType({
         content: () =>
           renderSelectPopup(formatItems.value, setValue, opened.value),
         visible: opened,
-        onBlur: closePopup
+        onBlur: closePopup,
       },
       updated: computed(() => initialValue.value !== stateValue.value),
-      value: stateValue
+      value: stateValue,
     })
-  }
+  },
 })

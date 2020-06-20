@@ -1,6 +1,6 @@
 <template>
   <of-overlay :active="active" @blur="hide">
-    <template v-slot="{ state }">
+    <template #default="{ state }">
       <transition name="slide-down">
         <div
           role="dialog"
@@ -9,8 +9,8 @@
           :class="classAttr"
           v-if="state"
         >
-          <slot name="title"></slot>
-          <slot></slot>
+          <slot name="title" />
+          <slot />
         </div>
       </transition>
     </template>
@@ -22,21 +22,21 @@ import { ref, defineComponent, SetupContext, computed, watch } from 'vue'
 import OfOverlay from './Overlay.vue'
 
 export default defineComponent({
-  name: 'of-dialog',
+  name: 'OfDialog',
   components: { OfOverlay },
   inheritAttrs: false,
   props: {
     class: String,
     id: String,
-    loading: { default: false },
-    modelValue: Boolean
+    loading: Boolean,
+    modelValue: Boolean,
   },
   setup(props, ctx: SetupContext) {
     const active = ref(props.modelValue)
     watch(
       () => props.modelValue,
-      val => {
-        active.value = props.modelValue
+      (val) => {
+        active.value = val
       }
     )
     const loading = computed(() => props.loading)
@@ -52,8 +52,8 @@ export default defineComponent({
       classAttr,
       hide,
       loading,
-      show
+      show,
     }
-  }
+  },
 })
 </script>

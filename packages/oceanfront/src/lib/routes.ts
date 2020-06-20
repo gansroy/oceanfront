@@ -1,8 +1,4 @@
-import {
-  Router,
-  RouteLocationNormalizedLoaded,
-  RouteLocationNormalized
-} from 'vue-router'
+import { Router, RouteLocationNormalizedLoaded } from 'vue-router'
 
 let useRoute: any = null,
   useRouter: any = null

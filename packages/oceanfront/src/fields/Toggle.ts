@@ -1,9 +1,9 @@
-import { ref, computed, Ref, VNode, watch, h, readonly } from 'vue'
+import { ref, computed, VNode, watch, h, readonly } from 'vue'
 import {
   defineFieldType,
   FieldContext,
   FieldProps,
-  newFieldId
+  newFieldId,
 } from '@/lib/fields'
 import { OfIcon } from '@/components/Icon'
 
@@ -20,12 +20,12 @@ export const ToggleField = defineFieldType({
     const stateValue = ref()
     watch(
       () => ctx.value,
-      val => {
+      (val) => {
         if (val === undefined || val === '') val = null
         stateValue.value = val
       },
       {
-        immediate: true
+        immediate: true,
       }
     )
 
@@ -42,33 +42,33 @@ export const ToggleField = defineFieldType({
     })
     const label = computed(() => ctx.label)
     const inputType = computed(() => {
-      let pi = props.inputType
+      const pi = props.inputType
       return pi && supportedTypes.has(pi) ? pi : 'checkbox'
     })
     const icon = computed(() => {
-      let checked = !!stateValue.value
+      const checked = !!stateValue.value
       return 'checkbox' + (checked ? ' checked' : '')
     })
 
     const focus = () => {
-      let curelt = elt.value
+      const curelt = elt.value
       if (curelt) curelt.focus()
     }
-    const clickToggle = (evt?: MouseEvent) => {
+    const clickToggle = (_evt?: MouseEvent) => {
       stateValue.value = !stateValue.value
       focus()
       return false
     }
     const hooks = {
-      onBlur(evt: FocusEvent) {
+      onBlur(_evt: FocusEvent) {
         focused.value = false
       },
-      onFocus(evt: FocusEvent) {
+      onFocus(_evt: FocusEvent) {
         focused.value = true
       },
       onVnodeMounted(vnode: VNode) {
         elt.value = vnode.el as HTMLInputElement
-      }
+      },
     }
 
     return readonly({
@@ -82,8 +82,8 @@ export const ToggleField = defineFieldType({
               {
                 class: [
                   'of-field-input-label',
-                  'of--text-' + (props.align || 'start')
-                ]
+                  'of--text-' + (props.align || 'start'),
+                ],
                 // for: inputId.value (need to capture click to avoid double toggle)
               },
               [label.value]
@@ -97,14 +97,14 @@ export const ToggleField = defineFieldType({
                 name: ctx.name,
                 type: 'checkbox',
                 value: '1',
-                ...hooks
+                ...hooks,
               }),
               h(OfIcon, {
                 class: 'of-toggle-icon',
-                name: icon.value
-              })
-            ])
-          ])
+                name: icon.value,
+              }),
+            ]),
+          ]),
         ]
       },
       click: clickToggle,
@@ -117,7 +117,7 @@ export const ToggleField = defineFieldType({
       // loading
       // messages
       updated: computed(() => initialValue.value !== stateValue.value),
-      value: stateValue
+      value: stateValue,
     })
-  }
+  },
 })

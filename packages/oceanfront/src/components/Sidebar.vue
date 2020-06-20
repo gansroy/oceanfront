@@ -6,7 +6,7 @@
     :embed="embed"
     @blur="hide"
   >
-    <template v-slot="{ active }">
+    <template #default="{ active }">
       <transition name="slide-right">
         <nav
           class="of-sidebar"
@@ -23,19 +23,11 @@
 </template>
 
 <script lang="ts">
-import {
-  ref,
-  defineComponent,
-  SetupContext,
-  reactive,
-  computed,
-  Ref,
-  watch
-} from 'vue'
+import { ref, defineComponent, SetupContext, computed, watch } from 'vue'
 import OfOverlay from './Overlay.vue'
 
 export default defineComponent({
-  name: 'of-sidebar',
+  name: 'OfSidebar',
   components: { OfOverlay },
   inheritAttrs: false,
   props: {
@@ -43,14 +35,14 @@ export default defineComponent({
     embed: Boolean,
     id: String,
     loading: Boolean,
-    modelValue: Boolean
+    modelValue: Boolean,
   },
   setup(props, ctx: SetupContext) {
     const active = ref(props.modelValue)
     watch(
       () => props.modelValue,
-      val => {
-        active.value = props.modelValue
+      (val) => {
+        active.value = val
       }
     )
     const embed = computed(() => props.embed)
@@ -68,8 +60,8 @@ export default defineComponent({
       embed,
       hide,
       loading,
-      show
+      show,
     }
-  }
+  },
 })
 </script>

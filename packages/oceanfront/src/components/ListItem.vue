@@ -8,23 +8,23 @@ import {
   ref,
   Ref,
   SetupContext,
-  VNode
+  VNode,
 } from 'vue'
 import { INavGroup } from './NavGroup.vue'
 import { OfIcon } from './Icon'
 import { useRoutes } from '../lib/routes'
 
 export default defineComponent({
-  name: 'of-list-item',
-  emits: {
-    click: null
-  },
+  name: 'OfListItem',
   props: {
     active: { type: [Boolean, String], default: null },
     disabled: Boolean,
     expand: { type: [Boolean, String], default: null },
     href: String,
-    to: [String, Object]
+    to: [String, Object],
+  },
+  emits: {
+    click: null,
   },
   setup(props, ctx: SetupContext) {
     let unreg: (() => void) | undefined
@@ -71,10 +71,10 @@ export default defineComponent({
     }
     const handlers = {
       onClick: clicked,
-      onBlur(evt: FocusEvent) {
+      onBlur(_evt: FocusEvent) {
         focused.value = false
       },
-      onFocus(evt: FocusEvent) {
+      onFocus(_evt: FocusEvent) {
         focused.value = true
       },
       onKeydown(evt: KeyboardEvent) {
@@ -87,11 +87,11 @@ export default defineComponent({
         if (navGroup) {
           unreg = navGroup.navRegister(
             reactive({
-              disabled: disabled as Ref<boolean | undefined>, // FIXME cast should not be necessary
+              disabled: (disabled as any) as Ref<boolean | undefined>, // FIXME cast should not be necessary
               elt,
               focused,
               navActive: navActive as Ref<boolean>, // FIXME cast should not be necessary
-              navTo
+              navTo,
             })
           )
         }
@@ -100,17 +100,17 @@ export default defineComponent({
         elt.value = undefined
         if (unreg) unreg()
         unreg = undefined
-      }
+      },
     }
 
     const content = () => {
       const result = [
-        h('div', { class: 'of-list-item-content' }, ctx.slots.default!())
+        h('div', { class: 'of-list-item-content' }, ctx.slots.default!()),
       ]
       if (expand.value !== null) {
         result.push(
           h(OfIcon, {
-            name: expand.value ? 'expand-up' : 'expand-down'
+            name: expand.value ? 'expand-up' : 'expand-down',
           })
         )
       }
@@ -127,16 +127,16 @@ export default defineComponent({
             'of--active': active.value,
             'of--enabled': !disabled.value,
             'of--disabled': disabled.value,
-            'of--link': !!hrefVal
+            'of--link': !!hrefVal,
           },
           href: hrefVal,
           tabIndex: navActive.value ? 0 : -1,
           ref: 'elt',
-          ...handlers
+          ...handlers,
         },
         h('div', { class: 'of-list-item-inner' }, content())
       )
     }
-  }
+  },
 })
 </script>

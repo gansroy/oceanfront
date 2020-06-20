@@ -40,17 +40,18 @@ export const components: Record<string, Component> = {
   OfSidebar,
   OfTextarea,
   OfTextField,
-  OfToggle
+  OfToggle,
 } as any
 
 export const directives: Record<string, Directive> = {}
 
 export const Oceanfront: Plugin = {
-  install (vue: App, args: any) {
+  install(vue: App, args: any) {
     vue.config.devtools = true
     extendDefaultConfig(() => {
       registerFieldType('select', SelectField)
       registerFieldType('text', TextField)
+      registerFieldType('textarea', TextField)
       registerFieldType('toggle', ToggleField)
       registerTextFormatter('color', ColorFormatter)
       registerTextFormatter('number', NumberFormatter)
@@ -66,7 +67,7 @@ export const Oceanfront: Plugin = {
     for (const idx in directives) {
       vue.directive(idx, directives[idx])
     }
-  }
+  },
 }
 
 export { extendConfig, useConfig } from './lib/config'
@@ -74,7 +75,7 @@ export { showMissingIcons, useIcons } from './lib/icons'
 export {
   registerFieldType,
   registerTextFormatter,
-  useFormats
+  useFormats,
 } from './lib/formats'
 export { registerItemList, useItems } from './lib/items'
 export { setMobileBreakpoint, useLayout } from './lib/layout'

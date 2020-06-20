@@ -3,21 +3,16 @@ import {
   SetupContext,
   computed,
   h,
-  shallowRef,
-  shallowReadonly,
-  toRef,
-  reactive,
   readonly,
   PropType,
-  Ref
 } from 'vue'
-import { FieldContext, FieldProps } from '@/lib/fields'
+import { FieldContext } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
 import { extractRefs, extendReactive } from '@/lib/util'
 import OfOverlay from '../components/Overlay.vue'
 
 export const OfField = defineComponent({
-  name: 'of-field',
+  name: 'OfField',
   inheritAttrs: false,
   props: {
     align: String,
@@ -40,8 +35,8 @@ export const OfField = defineComponent({
     size: { type: Number, default: undefined },
     // style
     type: String,
-    value: { default: null },
-    variant: String
+    value: { type: [Boolean, Number, String, Array, Object], default: null },
+    variant: String,
   },
   setup(props, ctx: SetupContext) {
     const formats = useFormats()
@@ -76,13 +71,13 @@ export const OfField = defineComponent({
         'muted',
         'name',
         'required',
-        'value'
+        'value',
       ]) as any[]), // FIXME type issues
       // form
       // initialValue - defined by form?
       onUpdate(value: any) {
         ctx.emit('update:value', value)
-      }
+      },
     })
 
     const format = computed(() => {
@@ -119,9 +114,9 @@ export const OfField = defineComponent({
         const render = format.value
         if (render && render.click) return render.click(evt)
       },
-      onMousedown(evt: MouseEvent) {
+      onMousedown(_evt: MouseEvent) {
         // ctx.emit('mousedown', evt)
-      }
+      },
     }
 
     return () => {
@@ -133,7 +128,7 @@ export const OfField = defineComponent({
           ? ctx.slots.label()
           : props.label
           ? h('label', { class: 'of-field-label', for: render.inputId }, [
-              props.label
+              props.label,
             ])
           : undefined
         const cls = [
@@ -149,13 +144,13 @@ export const OfField = defineComponent({
             'of--updated': render.updated,
             // of--readonly: props.readonly,
             // of--disabled: props.disabled,
-            'of--with-label': !!label
+            'of--with-label': !!label,
           },
           'of--cursor-' + (render.cursor || 'default'),
           'of--mode-' + mode.value,
           'of--variant-' + variant.value,
           render.class,
-          props.class
+          props.class,
         ]
         const inner = []
         const prepend = ctx.slots.prepend || render.prepend
@@ -179,7 +174,7 @@ export const OfField = defineComponent({
               capture: false,
               shade: false,
               target: '#' + outerId,
-              onBlur: overlayBlur
+              onBlur: overlayBlur,
             },
             overlay
           )
@@ -189,7 +184,7 @@ export const OfField = defineComponent({
           {
             class: cls,
             id: outerId,
-            ...handlers
+            ...handlers,
           },
           [
             h(
@@ -201,7 +196,7 @@ export const OfField = defineComponent({
             ),
             h('div', { class: 'of-field-inner' }, inner),
             h('div', { class: 'of-field-below' }), // custom slots.below or messages
-            overlay
+            overlay,
           ]
         )
       } catch (e) {
@@ -209,5 +204,5 @@ export const OfField = defineComponent({
         return
       }
     }
-  }
+  },
 })

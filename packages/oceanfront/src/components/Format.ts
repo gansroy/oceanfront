@@ -2,13 +2,13 @@ import { computed, defineComponent, h } from 'vue'
 import { useFormats } from '../lib/formats'
 
 export const OfFormat = defineComponent({
-  name: 'of-format',
+  name: 'OfFormat',
   props: {
     type: [String, Function, Object],
     options: Object,
-    value: {}
+    value: [Boolean, Number, String, Array, Object],
   },
-  setup(props, ctx) {
+  setup(props, _ctx) {
     const formatMgr = useFormats()
     const formatter = computed(() =>
       props.type
@@ -25,5 +25,5 @@ export const OfFormat = defineComponent({
       }
       return props.value === undefined ? '' : '' + props.value
     }
-  }
+  },
 })

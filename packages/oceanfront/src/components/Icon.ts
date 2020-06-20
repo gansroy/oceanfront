@@ -2,10 +2,10 @@ import { useIcons } from '../lib/icons'
 import { computed, defineComponent, h } from 'vue'
 
 export const OfIcon = defineComponent({
-  name: 'of-icon',
+  name: 'OfIcon',
   props: {
     class: String,
-    name: String
+    name: String,
   },
   setup(props, ctx) {
     const mgr = useIcons()
@@ -18,7 +18,7 @@ export const OfIcon = defineComponent({
         {
           'aria-hidden': 'true',
           class: ['of-icon', props.class, iconVal.class],
-          ...ctx.attrs
+          ...ctx.attrs,
         },
         ctx.slots.default
           ? ctx.slots.default()
@@ -26,5 +26,5 @@ export const OfIcon = defineComponent({
             iconVal.text
       )
     }
-  }
+  },
 })

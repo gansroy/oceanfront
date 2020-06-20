@@ -18,22 +18,13 @@
 </template>
 
 <script lang="ts">
-import {
-  ref,
-  defineComponent,
-  SetupContext,
-  computed,
-  Ref,
-  watch,
-  onMounted,
-  onBeforeUnmount
-} from 'vue'
+import { ref, defineComponent, SetupContext, computed, Ref, watch } from 'vue'
 import OfFieldOuter from './FieldOuter.vue'
 
 export const supportedTypes = new Set(['checkbox', 'radio', 'switch'])
 
 export default defineComponent({
-  name: 'of-toggle',
+  name: 'OfToggle',
   components: { OfFieldOuter },
   inheritAttrs: false,
   props: {
@@ -47,7 +38,7 @@ export default defineComponent({
     name: String,
     type: String,
     value: String,
-    variant: String
+    variant: String,
   },
   setup(props, ctx: SetupContext) {
     const elt: Ref<HTMLInputElement | undefined> = ref()
@@ -70,7 +61,7 @@ export default defineComponent({
     )
     watch(
       () => props.modelValue,
-      val => {
+      (val) => {
         inputValue.value = val
       }
     )
@@ -99,7 +90,7 @@ export default defineComponent({
       label: props.label,
       labelPosition: props.labelPosition,
       showLabel: false,
-      variant: props.variant
+      variant: props.variant,
     }))
     // const formChanged = (evt: Event) => {
     //   if (inputType.value === 'radio' && elt.value && !elt.value.checked) {
@@ -122,10 +113,10 @@ export default defineComponent({
         disabled: disabled.value,
         name: props.name,
         value: props.value,
-        onBlur: (evt: FocusEvent) => {
+        onBlur: (_evt: FocusEvent) => {
           focused.value = false
         },
-        onClick: (evt: Event) => {
+        onClick: (_evt: Event) => {
           if (inputType.value === 'radio') {
             inputValue.value = props.value
           } else {
@@ -133,9 +124,9 @@ export default defineComponent({
           }
           ctx.emit('update:modelValue', inputValue.value)
         },
-        onFocus: (evt: FocusEvent) => {
+        onFocus: (_evt: FocusEvent) => {
           focused.value = true
-        }
+        },
       })),
       elt,
       fieldAttrs,
@@ -144,8 +135,8 @@ export default defineComponent({
       inputType,
       inputValue,
       label,
-      type
+      type,
     }
-  }
+  },
 })
 </script>

@@ -12,6 +12,6 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'of-spinner'
+  name: 'OfSpinner',
 })
 </script>

@@ -24,12 +24,10 @@ import {
   defineComponent,
   SetupContext,
   computed,
-  Ref,
   onMounted,
   watch,
   nextTick,
-  onUnmounted,
-  onBeforeUnmount
+  onBeforeUnmount,
 } from 'vue'
 import OfSpinner from './Spinner.vue'
 
@@ -50,7 +48,7 @@ const relativeParentRect = (elt: Element) => {
       -window.scrollX,
       -window.scrollY,
       window.innerWidth,
-      window.innerHeight
+      window.innerHeight,
     ]
     return { left: l, top: t, width: w, height: h, bottom: t + h, right: l + w }
   }
@@ -64,7 +62,7 @@ const checkFocused = (elt?: HTMLElement) => {
 }
 
 export default defineComponent({
-  name: 'of-overlay',
+  name: 'OfOverlay',
   components: { OfSpinner },
   inheritAttrs: false,
   props: {
@@ -77,7 +75,7 @@ export default defineComponent({
     loading: Boolean,
     pad: { type: Boolean, default: true }, // FIXME change to string enum
     shade: { type: Boolean, default: true },
-    target: {}
+    target: [Element, String],
   },
   setup(props, ctx: SetupContext) {
     const active = computed(() => props.active)
@@ -107,7 +105,7 @@ export default defineComponent({
             ctx.emit('blur')
           }
         }
-      }
+      },
     }
     const onFocusChange = () => {
       // FIXME debounce
@@ -165,8 +163,10 @@ export default defineComponent({
           newParent.appendChild(elt.value)
         }
       } else if (!swap && swapped) {
-        swapped.parentNode!.insertBefore(elt.value, swapped)
-        swapped.parentNode!.removeChild(swapped)
+        if (swapped.parentNode) {
+          swapped.parentNode.insertBefore(elt.value, swapped)
+          swapped.parentNode.removeChild(swapped)
+        }
         swapped = null
       }
     }
@@ -201,7 +201,7 @@ export default defineComponent({
     watch([active, state], updateState)
     watch(
       () => scrolled.value,
-      _ => {
+      (_) => {
         nextTick(reposition)
       }
     )
@@ -213,7 +213,7 @@ export default defineComponent({
         'of--loading': props.loading,
         'of--overlay': state.value === 'overlay',
         'of--pad': props.pad,
-        'of--shade': active.value && props.shade
+        'of--shade': active.value && props.shade,
       }
       if (state.value !== 'embed' && !target.value && align.value)
         (cls as any)['of--' + align.value] = true
@@ -234,8 +234,8 @@ export default defineComponent({
       focus,
       handlers,
       id: computed(() => props.id),
-      state
+      state,
     }
-  }
+  },
 })
 </script>

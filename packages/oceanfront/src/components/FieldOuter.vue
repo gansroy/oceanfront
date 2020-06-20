@@ -20,7 +20,7 @@
 import { defineComponent, SetupContext, computed } from 'vue'
 
 export default defineComponent({
-  name: 'of-field-outer',
+  name: 'OfFieldOuter',
   inheritAttrs: false,
   props: {
     blank: Boolean,
@@ -33,7 +33,7 @@ export default defineComponent({
     labelPosition: String,
     opened: Boolean,
     readonly: Boolean,
-    variant: String
+    variant: String,
   },
   setup(props, ctx: SetupContext) {
     const label = computed(() => props.label)
@@ -49,7 +49,7 @@ export default defineComponent({
         'of--focused': props.focused,
         'of--readonly': props.readonly,
         'of--disabled': props.disabled,
-        'of--with-label': withLabel.value
+        'of--with-label': withLabel.value,
       }
       const variant = props.variant || 'basic'
       return [cls, 'of--variant-' + variant, props.class]
@@ -60,7 +60,7 @@ export default defineComponent({
       },
       mousedown(evt: MouseEvent) {
         ctx.emit('mousedown', evt)
-      }
+      },
     }
     return {
       classAttrs,
@@ -68,8 +68,8 @@ export default defineComponent({
       id: computed(() => props.id),
       inputId: computed(() => props.inputId),
       label,
-      withLabel
+      withLabel,
     }
-  }
+  },
 })
 </script>

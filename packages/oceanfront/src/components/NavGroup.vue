@@ -7,12 +7,9 @@ import {
   defineComponent,
   SetupContext,
   provide,
-  ComponentPublicInstance,
-  watchEffect,
-  Ref,
   computed,
   reactive,
-  watch
+  watch,
 } from 'vue'
 
 export type NavTarget = {
@@ -30,8 +27,8 @@ export type INavGroup = {
 }
 
 export default defineComponent({
-  name: 'of-nav-group',
-  setup(props, ctx: SetupContext) {
+  name: 'OfNavGroup',
+  setup(_props, _ctx: SetupContext) {
     const items = reactive(new Set<NavTarget>())
     const orderedItems = computed(() =>
       [...items].sort((a, b) => {
@@ -66,7 +63,7 @@ export default defineComponent({
     })
     watch(
       () => scan.value,
-      scan => {
+      (scan) => {
         for (const [idx, item] of orderedItems.value.entries()) {
           const active = idx === scan.active
           if (item.navActive !== active) item.navActive = active
@@ -109,12 +106,12 @@ export default defineComponent({
           }
         }
         return false
-      }
+      },
     }
     provide('of_NavGroup', provided)
     return {
-      focused
+      focused,
     }
-  }
+  },
 })
 </script>

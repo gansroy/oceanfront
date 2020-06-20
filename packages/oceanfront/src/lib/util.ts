@@ -18,7 +18,7 @@ export function isPromise<T = any>(val: unknown): val is PromiseLike<T> {
   return isObject(val) && isFunction(val.then)
 }
 
-export const isDigit = (s: string) => s >= '0' && s <= '9'
+export const isDigit = (s: string): boolean => s >= '0' && s <= '9'
 
 export const isPrimitive = (val: unknown): val is Primitive => {
   const tval = typeof val
@@ -45,7 +45,7 @@ export function extendReactive(
     const restrictSet = new Set(restrict)
     checkRestrict = (k: any) => restrictSet.has(k)
   } else {
-    checkRestrict = (k: any) => true
+    checkRestrict = (_k: any) => true
   }
   let checkDefined: (target: object, key: any) => boolean
   if (if_defined) {
@@ -55,9 +55,9 @@ export function extendReactive(
     checkDefined = hasOwn
   }
   return new Proxy(update, {
-    get(target: object, key: string, receiver: object): any {
+    get(target: object, key: string, _receiver: object): any {
       if (checkRestrict(key) && hasOwn(target, key)) {
-        let result = (target as any)[key]
+        const result = (target as any)[key]
         if (!if_defined || result !== undefined) {
           if (isRef(result)) return (result as any).value
           return result
@@ -81,14 +81,14 @@ export function extendReactive(
       }
       return [...keys]
     },
-    set(target: object, key: string, value: any, receiver: object): boolean {
+    set(target: object, key: string, value: any, _receiver: object): boolean {
       if (checkRestrict(key)) Reflect.set(target, key, value)
       return true
     },
     deleteProperty(target: object, key: string): boolean {
       if (checkRestrict(key)) delete (target as any)[key]
       return true
-    }
+    },
   })
 }
 
