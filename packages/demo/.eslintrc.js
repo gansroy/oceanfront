@@ -7,11 +7,21 @@ module.exports = {
     'prettier',
     'prettier/vue',
     'prettier/@typescript-eslint',
+    'plugin:@typescript-eslint/recommended',
     'plugin:vue/vue3-recommended',
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    '@typescript-eslint/ban-types': 'off', // temporary - allow 'object'
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_.*$',
+        varsIgnorePattern: '^_.*$',
+      },
+    ],
     'vue/attributes-order': 'off',
     'vue/html-self-closing': 'off',
     'vue/max-attributes-per-line': 'off',
