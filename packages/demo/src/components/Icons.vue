@@ -11,11 +11,7 @@
     <of-config :icon-font="iconFont">
       <div class="row demo-row">
         <div class="demo-inline" v-for="(iconset, idx) of icons" :key="idx">
-          <div
-            class="demo-icon"
-            v-for="([desc, icon], iconidx) of iconset"
-            :key="iconidx"
-          >
+          <div class="demo-icon" v-for="(desc, icon) of iconset" :key="icon">
             <of-icon :name="icon" :title="desc" />
           </div>
         </div>
