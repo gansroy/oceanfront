@@ -23,10 +23,13 @@ module.exports = {
       },
     ],
     'vue/attributes-order': 'off',
+    'vue/html-closing-bracket-newline': 'off',
+    'vue/html-indent': 'off',
     'vue/html-self-closing': 'off',
     'vue/max-attributes-per-line': 'off',
     'vue/no-dupe-keys': 'off', // seems broken
     'vue/require-default-prop': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
   },
   parserOptions: {
     parser: '@typescript-eslint/parser',

@@ -78,11 +78,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, nextTick } from 'vue'
-
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
+import { ref, defineComponent } from 'vue'
 
 const testField = {
   description: 'Field description',
@@ -92,7 +88,7 @@ const testField = {
   placeholder: 'placeholder',
   readOnly: false,
   required: true,
-  type: 'float'
+  type: 'float',
 }
 
 const testCheckField = {
@@ -104,7 +100,7 @@ const testCheckField = {
   readOnly: false,
   required: true,
   type: 'float',
-  labelPosition: 'input'
+  labelPosition: 'input',
 }
 
 export default defineComponent({
@@ -117,8 +113,8 @@ export default defineComponent({
       change,
       testField,
       testCheckField,
-      textValue
+      textValue,
     }
-  }
+  },
 })
 </script>

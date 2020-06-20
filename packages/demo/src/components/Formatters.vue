@@ -6,9 +6,9 @@
       <div class="column sm-4">
         <h4>Number Input</h4>
         <of-config :locale="locale">
-          <template v-slot="{ locale }">
+          <template #default="{ locale }">
             <of-field
-              style="width: 10em"
+              style="width: 10em;"
               format="number"
               v-model:value="inputValue"
             />
@@ -22,16 +22,17 @@
       </div>
       <div class="column sm-4">
         <h4>Select Locale</h4>
-        <template v-for="opt of localeOpts">
+        <template v-for="(opt, idx) of localeOpts">
           <of-toggle
+            :key="idx"
             :label="opt.text"
-            labelPosition="none"
+            label-position="none"
             type="radio"
             variant="basic"
             v-model="locale"
             :value="opt.value"
           />
-          <br />
+          <br :key="idx" />
         </template>
       </div>
     </div>
@@ -39,9 +40,9 @@
       <div class="column sm-4">
         <h4>Duration Input</h4>
         <of-config :locale="locale">
-          <template v-slot="{ locale }">
+          <template #default="{ locale }">
             <of-field
-              style="width: 10em"
+              style="width: 10em;"
               format="duration"
               v-model:value="inputDurationValue"
             />
@@ -53,8 +54,7 @@
           </template>
         </of-config>
       </div>
-      <div class="column sm-4">
-      </div>
+      <div class="column sm-4"></div>
     </div>
   </div>
 </template>
@@ -63,7 +63,7 @@
 import { ref, defineComponent } from 'vue'
 
 export default defineComponent({
-  setup () {
+  setup() {
     const inputValue = ref(100125.99)
     const inputDurationValue = ref(100)
     const sampleCode = `
@@ -77,7 +77,7 @@ export default defineComponent({
       { text: 'en-CA', value: 'en-CA' },
       { text: 'de-CH', value: 'de-CH' },
       { text: 'de-DE', value: 'de-DE' },
-      { text: 'fr-FR', value: 'fr-FR' }
+      { text: 'fr-FR', value: 'fr-FR' },
     ]
     const locale = ref<string | undefined>()
     return {
@@ -85,8 +85,8 @@ export default defineComponent({
       localeOpts,
       sampleCode,
       inputValue,
-      inputDurationValue
+      inputDurationValue,
     }
-  }
+  },
 })
 </script>

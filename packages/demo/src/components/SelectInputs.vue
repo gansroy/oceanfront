@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {
@@ -50,7 +50,7 @@ export default defineComponent({
       { special: 'header', text: 'Test select items' },
       'Hello there',
       { special: 'divider' },
-      'Goodbye now'
+      'Goodbye now',
     ]
     const timezones = [
       'Africa/Algiers',
@@ -426,7 +426,7 @@ export default defineComponent({
       'America/Paramaribo',
       'America/Port_of_Spain',
       'America/Montevideo',
-      'America/Caracas'
+      'America/Caracas',
     ]
     timezones.sort()
     const tzOpts = { items: [] as Record<string, any>[] }
@@ -442,6 +442,6 @@ export default defineComponent({
       tzOpts.items.push({ text, value })
     }
     return { sampleCode, testItems, tzOpts }
-  }
+  },
 })
 </script>

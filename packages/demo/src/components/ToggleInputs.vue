@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 
 const testCheckField = {
   description: 'Field description',
@@ -54,7 +54,7 @@ const testCheckField = {
   placeholder: 'placeholder',
   readOnly: false,
   required: true,
-  labelPosition: 'input'
+  labelPosition: 'input',
 }
 
 export default defineComponent({
@@ -66,6 +66,6 @@ export default defineComponent({
   variant="filled"
 />`
     return { sampleCode, testCheckField }
-  }
+  },
 })
 </script>

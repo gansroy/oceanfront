@@ -15,26 +15,26 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, nextTick } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {
     const headers = [
       { text: 'Name', value: 'name', divider: true },
       { text: 'Category', value: 'category' },
-      { text: 'Size', value: 'size', format: 'number' }
+      { text: 'Size', value: 'size', format: 'number' },
     ]
     const items = [
       { name: 'First item', category: 'Category 1', size: 15.56 },
       { name: 'Second item', category: 'Category 2', size: -15.56 },
-      { name: 'Third item', category: 'Category 3', size: 15125.56 }
+      { name: 'Third item', category: 'Category 3', size: 15125.56 },
     ]
     const footerItems = [{ size: 100.5 }]
     return {
       headers,
       items,
-      footerItems
+      footerItems,
     }
-  }
+  },
 })
 </script>

@@ -10,8 +10,12 @@
 
     <of-config :icon-font="iconFont">
       <div class="row demo-row">
-        <div class="demo-inline" v-for="iconset of icons">
-          <div class="demo-icon" v-for="(desc, icon) of iconset">
+        <div class="demo-inline" v-for="(iconset, idx) of icons" :key="idx">
+          <div
+            class="demo-icon"
+            v-for="([desc, icon], iconidx) of iconset"
+            :key="iconidx"
+          >
             <of-icon :name="icon" :title="desc" />
           </div>
         </div>
@@ -41,13 +45,16 @@
       </div>
     </of-config>
 
+    <of-iconpreview />
+
     <div class="row">
       <div class="column">
         <h4>Select Icon Set</h4>
-        <template v-for="opt of fontOpts">
+        <template v-for="(opt, idx) of fontOpts">
           <of-toggle
+            :key="idx"
             :label="opt.text"
-            labelPosition="none"
+            label-position="none"
             type="radio"
             variant="basic"
             v-model="iconFont"
@@ -62,13 +69,16 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 
+import OfIconpreview from './iconedit/Preview.vue'
+
 export default defineComponent({
-  setup(props, ctx) {
+  components: { OfIconpreview },
+  setup(_props, _ctx) {
     const iconFont = ref('')
     const fontOpts = [
       { value: '', text: 'Default' },
       { value: 'uii', text: 'UIBasic' },
-      { value: 'mi', text: 'Material' }
+      { value: 'mi', text: 'Material' },
     ]
     return {
       iconFont,
@@ -86,7 +96,7 @@ export default defineComponent({
           cancel: 'cancel',
           gear: 'gear',
           print: 'print',
-          refresh: 'refresh'
+          refresh: 'refresh',
         },
         {
           required: 'required',
@@ -101,7 +111,7 @@ export default defineComponent({
           search: 'search',
           date: 'date',
           time: 'time',
-          hourglass: 'hourglass'
+          hourglass: 'hourglass',
         },
         {
           checkbox: 'check off',
@@ -109,7 +119,7 @@ export default defineComponent({
           radio: 'radio off',
           'radio checked': 'radio on',
           star: 'star off',
-          'star checked': 'star on'
+          'star checked': 'star on',
         },
         {
           'arrow-up': 'up arrow',
@@ -123,7 +133,7 @@ export default defineComponent({
           'triangle-up': 'triangle up',
           'triangle-down': 'triangle down',
           previous: 'previous',
-          next: 'next'
+          next: 'next',
         },
         {
           'circle-ellipsis': 'circle ellipsis',
@@ -134,13 +144,13 @@ export default defineComponent({
           'circle-error': 'circle error',
           'circle-plus': 'circle plus',
           'circle-minus': 'circle minus',
-          'circle-help': 'circle help'
+          'circle-help': 'circle help',
           // circle-split
           // circle-refresh
-        }
-      ]
+        },
+      ],
     }
-  }
+  },
 })
 </script>
 

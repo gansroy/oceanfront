@@ -57,36 +57,40 @@
         <of-text-field
           class="of--small"
           value="Small text input"
-          style="width: 10em"
+          style="width: 10em;"
         />
       </div>
       <div class="demo-inline">
-        <of-text-field value="Normal text input" style="width: 10em" />
+        <of-text-field value="Normal text input" style="width: 10em;" />
       </div>
       <div class="demo-inline">
         <of-text-field
           class="of--large"
           value="Large text input"
-          style="width: 10em"
+          style="width: 10em;"
         />
       </div>
       <div class="demo-inline">
         <of-text-field
           readonly="1"
           value="Read-only text"
-          style="width: 10em"
+          style="width: 10em;"
         />
       </div>
       <div class="demo-inline">
-        <of-text-field disabled="1" value="Disabled text" style="width: 10em" />
+        <of-text-field
+          disabled="1"
+          value="Disabled text"
+          style="width: 10em;"
+        />
       </div>
       <div class="demo-inline">
-        <of-text-field placeholder="Placeholder" style="width: 10em" />
+        <of-text-field placeholder="Placeholder" style="width: 10em;" />
       </div>
       <div class="demo-inline">
         <of-text-field
           class="of--density-0"
-          style="width: 10em"
+          style="width: 10em;"
           value="Compact"
         />
       </div>
@@ -95,31 +99,31 @@
       <div class="demo-inline">
         <of-textarea
           class="of--small"
-          style="width: 10em"
+          style="width: 10em;"
           value="Small text area"
         />
       </div>
       <div class="demo-inline">
-        <of-textarea style="width: 10em" value="Normal text area" />
+        <of-textarea style="width: 10em;" value="Normal text area" />
       </div>
       <div class="demo-inline">
         <of-textarea
           class="of--large"
-          style="width: 10em"
+          style="width: 10em;"
           value="Large text area"
         />
       </div>
       <div class="demo-inline">
         <of-textarea
           readonly="1"
-          style="width: 10em"
+          style="width: 10em;"
           value="Read-only text area"
         />
       </div>
       <div class="demo-inline">
         <of-textarea
           disabled="1"
-          style="width: 10em"
+          style="width: 10em;"
           value="Disabled text area"
         />
       </div>
@@ -128,11 +132,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, nextTick } from 'vue'
-
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
+import { ref, defineComponent } from 'vue'
 
 const testField = {
   description: 'Field description',
@@ -141,7 +141,7 @@ const testField = {
   label: 'Field Label',
   placeholder: 'placeholder',
   readOnly: false,
-  required: true
+  required: true,
 }
 
 export default defineComponent({
@@ -160,8 +160,8 @@ export default defineComponent({
       change,
       sampleCode,
       testField,
-      textValue
+      textValue,
     }
-  }
+  },
 })
 </script>

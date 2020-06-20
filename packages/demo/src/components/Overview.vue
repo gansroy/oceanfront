@@ -47,7 +47,6 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'demo-overview',
-  setup() {}
+  name: 'DemoOverview',
 })
 </script>

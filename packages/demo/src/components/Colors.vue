@@ -10,7 +10,7 @@
               <div class="column">
                 <h4>Settings</h4>
                 <!-- bezier-editor v-model="curve" / -->
-                <div style="padding: 0 .5em">
+                <div style="padding: 0 0.5em;">
                   Primary Hue<br />
                   <input type="range" min="0" max="359" v-model="hue" />
                   Secondary Hue Offset<br />
@@ -36,7 +36,7 @@
               </div>
               <div
                 class="column of-sheet"
-                style="padding: 0 2em 2em; flex-basis: 60%"
+                style="padding: 0 2em 2em; flex-basis: 60%;"
                 :style="themeStyle"
               >
                 <h4>Preview</h4>
@@ -68,7 +68,7 @@
                     </div>
                   </div>
                 </div>
-                <div style="margin-top: 1em">
+                <div style="margin-top: 1em;">
                   <div
                     class="of-field-outer of--active of--with-label of--variant-filled of-text-field"
                   >
@@ -110,7 +110,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="column" style="padding-right: 1em">
+          <div class="column" style="padding-right: 1em;">
             <h4>Theme style</h4>
             <of-highlight
               lang="css"
@@ -128,7 +128,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed, watch } from 'vue'
+import { ref, defineComponent, computed } from 'vue'
 // import BezierEditor from './bezier/Editor'
 
 export default defineComponent({
@@ -150,7 +150,7 @@ export default defineComponent({
         backgroundHue:
           (parseInt(hue.value, 10) + parseInt(bgOffset.value, 10)) % 360,
         dark: dark.value,
-        saturation: parseInt(saturation.value, 10)
+        saturation: parseInt(saturation.value, 10),
       }
     })
     const formatTheme = computed(() => JSON.stringify(theme.value, null, 2))
@@ -171,8 +171,8 @@ export default defineComponent({
       saturation,
       theme,
       formatTheme,
-      formatStyle
+      formatStyle,
     }
-  }
+  },
 })
 </script>
