@@ -3,10 +3,10 @@ import {
   defineFieldType,
   FieldContext,
   FieldProps,
-  newFieldId
+  newFieldId,
 } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
-import { removeEmpty } from '@/lib/util'
+import { removeEmpty, extendReactive, restrictProps } from '@/lib/util'
 
 // editing a list field does not necessarily mean swapping input to edit mode
 // it may/should show a popup instead (this might be implied by 'muted' flag)
@@ -21,7 +21,7 @@ const allowInputTypes = new Set([
   'tel',
   'time',
   'week',
-  'url'
+  'url',
 ])
 
 const inputTypeFrom = (type?: string) => {
@@ -31,7 +31,7 @@ const inputTypeFrom = (type?: string) => {
 
 export const TextField = defineFieldType({
   name: 'text',
-  setup (props: FieldProps, ctx: FieldContext) {
+  setup(props: FieldProps, ctx: FieldContext) {
     const formatMgr = useFormats()
     const formatter = computed(() =>
       formatMgr.getTextFormatter(props.type, props.formatOptions)
@@ -42,13 +42,15 @@ export const TextField = defineFieldType({
       const fmt = formatter.value
       if (fmt) {
         const fval = fmt.format(initial)
-        if (fval.error) { console.error('Error loading initial value:', fval.error) } else initial = fval.value
+        if (fval.error) {
+          console.error('Error loading initial value:', fval.error)
+        } else initial = fval.value
       }
       if (initial === undefined) initial = null
       return initial
     })
 
-    let lazyInputValue: string
+    let lazyInputValue = ''
     const inputValue = ref('')
     const pendingValue = ref()
     const stateValue = ref()
@@ -78,8 +80,9 @@ export const TextField = defineFieldType({
       invalid.value = updInvalid
     }
     watch(() => ctx.value, updateValue, {
-      immediate: true
+      immediate: true,
     })
+
     const elt = ref<HTMLInputElement | undefined>()
     const focused = ref(false)
     let defaultFieldId: string
@@ -103,17 +106,17 @@ export const TextField = defineFieldType({
       }
     }
     const hooks = {
-      onBlur (evt: FocusEvent) {
+      onBlur(evt: FocusEvent) {
         focused.value = false
         const fmt = formatter.value
         if (fmt?.handleBlur) {
           fmt.handleBlur(evt)
         }
       },
-      onFocus (evt: FocusEvent) {
+      onFocus(_evt: FocusEvent) {
         focused.value = true
       },
-      onChange (evt: Event) {
+      onChange(evt: Event) {
         const target = evt.target as HTMLInputElement | null
         if (!target) return
         let val = target.value
@@ -140,11 +143,11 @@ export const TextField = defineFieldType({
         }
         if (ctx.onUpdate) ctx.onUpdate(val)
       },
-      onClick (evt: MouseEvent) {
+      onClick(evt: MouseEvent) {
         // avoid select() when clicking in unfocused field
         evt.stopPropagation()
       },
-      onInput (evt: InputEvent) {
+      onInput(evt: InputEvent) {
         const fmt = formatter.value
         if (fmt?.handleInput) {
           const upd = fmt.handleInput(evt)
@@ -161,15 +164,15 @@ export const TextField = defineFieldType({
           }
         }
       },
-      onKeydown (evt: KeyboardEvent) {
+      onKeydown(evt: KeyboardEvent) {
         const fmt = formatter.value
         if (fmt?.handleKeyDown) {
           fmt.handleKeyDown(evt)
         }
       },
-      onVnodeMounted (vnode: VNode) {
+      onVnodeMounted(vnode: VNode) {
         elt.value = vnode.el as HTMLInputElement
-      }
+      },
     }
 
     return readonly({
@@ -186,7 +189,7 @@ export const TextField = defineFieldType({
           class: [
             'of-field-input',
             fmt?.inputClass,
-            'of--text-' + (props.align || fmt?.align || 'start')
+            'of--text-' + (props.align || fmt?.align || 'start'),
           ],
           ...removeEmpty({
             inputmode: fmt?.inputMode,
@@ -197,8 +200,8 @@ export const TextField = defineFieldType({
             readonly: ctx.mode === 'readonly' || ctx.locked || undefined,
             // size: props.size,  - need to implement at field level?
             value: lazyInputValue,
-            ...hooks
-          })
+            ...hooks,
+          }),
           // ctx.label as aria label
         })
       },
@@ -215,7 +218,7 @@ export const TextField = defineFieldType({
       pendingValue,
       // popup? - if autocomplete
       updated: computed(() => initialValue.value !== stateValue.value),
-      value: stateValue
+      value: stateValue,
     })
-  }
+  },
 })

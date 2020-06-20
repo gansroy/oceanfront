@@ -8,7 +8,7 @@ import {
 } from 'vue'
 import { FieldContext } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
-import { extractRefs, extendReactive } from '@/lib/util'
+import { extractRefs, extendReactive, restrictProps } from '@/lib/util'
 import OfOverlay from '../components/Overlay.vue'
 
 export const OfField = defineComponent({
@@ -26,6 +26,7 @@ export const OfField = defineComponent({
     loading: Boolean,
     locked: Boolean,
     // messages
+    maxlength: Number,
     mode: String as PropType<'edit' | 'readonly' | 'view'>,
     muted: Boolean,
     name: String,
@@ -35,7 +36,10 @@ export const OfField = defineComponent({
     size: { type: Number, default: undefined },
     // style
     type: String,
-    value: { type: [Boolean, Number, String, Array, Object], default: null },
+    value: {
+      type: [String, Boolean, Number, Array, Object],
+      default: undefined,
+    },
     variant: String,
   },
   setup(props, ctx: SetupContext) {
@@ -100,9 +104,11 @@ export const OfField = defineComponent({
       return found.setup(
         extendReactive(
           extfmt,
-          props,
-          ['align', 'placeholder', 'maxlength', 'size'],
-          true
+          restrictProps(
+            props,
+            ['align', 'placeholder', 'maxlength', 'size'],
+            true
+          )
         ),
         fctx
       )

@@ -1,12 +1,11 @@
 import { VNode } from 'vue'
 import { ItemList } from './items'
-import { extendReactive, extractRefs } from './util'
 
 export type Renderable = VNode | VNode[] | string
 
 let _fieldIndex = 0
 
-export const newFieldId = () => {
+export const newFieldId = (): string => {
   return 'of-field-' + _fieldIndex++
 }
 
@@ -103,18 +102,18 @@ export function defineFieldType<T extends FieldType>(f: T): T {
   return f
 }
 
-export function extendFieldFormat(
-  format: any,
-  props: Record<string, any>,
-  restrict: string[]
-) {
-  if (typeof format === 'string' || typeof format === 'function') {
-    // text format name or constructor
-    format = { type: format }
-  }
-  format = typeof format === 'object' ? format : {}
-  if (restrict) {
-    props = extractRefs(props, restrict)
-  }
-  return extendReactive(format, props)
-}
+// export function extendFieldFormat(
+//   format: any,
+//   props: Record<string, any>,
+//   restrict: string[]
+// ) {
+//   if (typeof format === 'string' || typeof format === 'function') {
+//     // text format name or constructor
+//     format = { type: format }
+//   }
+//   format = typeof format === 'object' ? format : {}
+//   if (restrict) {
+//     props = extractRefs(props, restrict)
+//   }
+//   return extendReactive(format, props)
+// }

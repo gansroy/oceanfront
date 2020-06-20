@@ -6,7 +6,10 @@ export const OfFormat = defineComponent({
   props: {
     type: [String, Function, Object],
     options: Object,
-    value: [Boolean, Number, String, Array, Object],
+    value: {
+      type: [String, Boolean, Number, Array, Object],
+      default: undefined,
+    },
   },
   setup(props, _ctx) {
     const formatMgr = useFormats()
