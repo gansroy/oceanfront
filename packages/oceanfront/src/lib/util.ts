@@ -141,6 +141,11 @@ export function restrictProps<T extends object, K extends keyof T>(
         return Reflect.get(target, key)
       }
     },
+    getOwnPropertyDescriptor(target: T, key: string) {
+      if (!limitProps || props.has(key)) {
+        return Reflect.getOwnPropertyDescriptor(target, key)
+      }
+    },
     has(target: T, key: string): boolean {
       let result = props.has(key) && hasOwn(target, key)
       if (ifDefined && (target as any)[key] === undefined) result = false
@@ -166,20 +171,25 @@ export function restrictProps<T extends object, K extends keyof T>(
   })
 }
 
-// export function definedProps<T extends object, K extends keyof T>(
-//   base: T
-// ): { [k2 in K]: T[K] } {
-//   return new Proxy(base, {
-//     has(target: T, key: string): boolean {
-//       return hasOwn(base, key) && target[key] !== undefined
-//     },
-//     ownKeys(target: T): (string | number | symbol)[] {
-//       return Reflect.ownKeys(target).filter(
-//         (k) => (target as any)[k] !== undefined
-//       )
-//     },
-//   })
-// }
+export function definedProps<T extends object, K extends keyof T>(
+  base: T
+): { [k2 in K]: T[K] } {
+  return new Proxy(base, {
+    getOwnPropertyDescriptor(target: T, key: string) {
+      let desc = Reflect.getOwnPropertyDescriptor(target, key)
+      if (desc && (target as any)[key] === undefined) desc = undefined
+      return desc
+    },
+    has(target: T, key: string): boolean {
+      return hasOwn(target, key) && target[key] !== undefined
+    },
+    ownKeys(target: T): (string | number | symbol)[] {
+      return Reflect.ownKeys(target).filter(
+        (k) => (target as any)[k] !== undefined
+      )
+    },
+  })
+}
 
 export function removeEmpty(obj: Record<string, any>): Record<string, any> {
   if (obj) {

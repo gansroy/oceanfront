@@ -28,11 +28,7 @@
                   <!-- of-field type="color" v-model:value="color" / -->
                 </div>
 
-                <of-toggle
-                  label="Dark mode"
-                  v-model="dark"
-                  label-position="none"
-                />
+                <of-toggle-field label="Dark mode" v-model:checked="dark" />
               </div>
               <div
                 class="column of-sheet"

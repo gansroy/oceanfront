@@ -40,7 +40,12 @@ export const ToggleField = defineFieldType({
       }
       return id
     })
-    const label = computed(() => ctx.label)
+    const labelPosition = computed(() => props.labelPosition || 'input') // FIXME fetch from config
+    const inputLabel = computed(() =>
+      labelPosition.value === 'field'
+        ? undefined
+        : props.inputLabel ?? ctx.label
+    )
     const inputType = computed(() => {
       const pi = props.inputType
       return pi && supportedTypes.has(pi) ? pi : 'checkbox'
@@ -56,6 +61,7 @@ export const ToggleField = defineFieldType({
     }
     const clickToggle = (_evt?: MouseEvent) => {
       stateValue.value = !stateValue.value
+      if (ctx.onUpdate) ctx.onUpdate(stateValue.value)
       focus()
       return false
     }
@@ -72,12 +78,12 @@ export const ToggleField = defineFieldType({
     }
 
     return readonly({
+      active: true, // always show content
       blank: computed(() => !stateValue.value),
       class: 'of-toggle-field',
       content: () => {
-        return [
-          h('div', { class: 'of-toggle-outer' }, [
-            h(
+        const label = inputLabel.value
+          ? h(
               'label',
               {
                 class: [
@@ -86,26 +92,29 @@ export const ToggleField = defineFieldType({
                 ],
                 // for: inputId.value (need to capture click to avoid double toggle)
               },
-              [label.value]
-            ),
-            h('div', { class: 'of-toggle-input' }, [
-              h('input', {
-                class: 'of-field-input',
-                checked: !!stateValue.value, // FIXME - make lazy
-                id: inputId.value,
-                // disabled: disabled.value,
-                name: ctx.name,
-                type: 'checkbox',
-                value: '1',
-                ...hooks,
-              }),
-              h(OfIcon, {
-                class: 'of-toggle-icon',
-                name: icon.value,
-              }),
-            ]),
+              [inputLabel.value]
+            )
+          : undefined
+        const inner = [
+          h('div', { class: 'of-toggle-input' }, [
+            h('input', {
+              class: 'of-field-input',
+              checked: !!stateValue.value, // FIXME - make lazy
+              id: inputId.value,
+              // disabled: disabled.value,
+              name: ctx.name,
+              type: 'checkbox',
+              value: '1',
+              ...hooks,
+            }),
+            h(OfIcon, {
+              class: 'of-toggle-icon',
+              name: icon.value,
+            }),
           ]),
         ]
+        if (label) inner.unshift(label)
+        return [h('div', { class: 'of-toggle-outer' }, inner)]
       },
       click: clickToggle,
       cursor: 'pointer', // FIXME depends if editable
@@ -114,6 +123,9 @@ export const ToggleField = defineFieldType({
       // hovered,
       inputId,
       // inputValue,
+      label: computed(() =>
+        labelPosition.value === 'input' ? '' : props.label
+      ),
       // loading
       // messages
       updated: computed(() => initialValue.value !== stateValue.value),

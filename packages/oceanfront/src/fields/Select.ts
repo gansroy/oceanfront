@@ -10,6 +10,8 @@ import OfNavGroup from '@/components/NavGroup.vue'
 import OfListItem from '@/components/ListItem.vue'
 import { OfIcon } from '@/components/Icon'
 
+type ActiveItem = { text?: string; [key: string]: any }
+
 export const renderSelectPopup = (
   items: any,
   setValue: any,
@@ -93,47 +95,74 @@ export const SelectField = defineFieldType({
       return id
     })
     const opened = ref(false)
-    const items = computed(
-      () => itemMgr.getItemList(ctx.items || props.items) || { items: [] }
-    )
-    const formatItems = computed(() => {
+    const items = computed(() => {
+      const result = {
+        disabledKey: 'disabled',
+        items: [],
+        specialKey: 'special',
+        textKey: 'text',
+        valueKey: 'value',
+      }
+      const list = itemMgr.getItemList(ctx.items || props.items)
+      if (list) {
+        Object.assign(result, list)
+      }
+      return result
+    })
+    const activeItem = computed(() => {
       const resolved = items.value
       const value = inputValue.value
-      const disabledKey =
-        resolved.disabledKey === undefined ? 'disabled' : resolved.disabledKey
-      const specialKey =
-        resolved.specialKey === undefined ? 'special' : resolved.specialKey
-      const textKey = resolved.textKey === undefined ? 'text' : resolved.textKey
-      const valueKey =
-        resolved.valueKey === undefined ? 'value' : resolved.valueKey
+      let cmpVal
+      let found: { idx?: number; item?: ActiveItem } = {}
+      let idx = 0
+      for (const item of resolved.items) {
+        if (typeof item === 'string') {
+          cmpVal = item
+        } else if (typeof item === 'object') {
+          if (item[resolved.specialKey]) {
+            idx++
+            continue
+          }
+          cmpVal = (item as any)[resolved.valueKey]
+        }
+        if (cmpVal === '') cmpVal = null
+        if (cmpVal === value) {
+          if (typeof item === 'string') {
+            found = { idx, item: { value: item, text: item } }
+          } else {
+            found = { idx, item }
+          }
+          break
+        }
+        idx++
+      }
+      return found
+    })
+    const formatItems = computed(() => {
+      const active = activeItem.value
+      const resolved = items.value
       const rows = []
+      let idx = 0
       for (const item of resolved.items) {
         if (typeof item === 'string') {
           rows.push({
             disabled: false,
             text: item,
-            selected: item === value,
+            selected: active.idx === idx,
             value: item,
           })
         } else if (typeof item === 'object') {
           rows.push({
-            disabled: item[disabledKey],
-            text: item[textKey],
-            value: item[valueKey],
-            selected: item[valueKey] === value,
-            special: item[specialKey],
+            disabled: item[resolved.disabledKey],
+            text: item[resolved.textKey],
+            value: item[resolved.valueKey],
+            selected: active.idx === idx,
+            special: item[resolved.specialKey],
           })
         }
+        idx++
       }
       return rows
-    })
-    const specialKey = computed(() => {
-      const def = items.value.specialKey
-      return def === undefined ? 'special' : def
-    })
-    const textKey = computed(() => {
-      const def = items.value.textKey
-      return def === undefined ? 'text' : def
     })
 
     const clickOpen = (_evt?: MouseEvent) => {
@@ -150,7 +179,7 @@ export const SelectField = defineFieldType({
     }
     const setValue = (val: any) => {
       inputValue.value = val
-      // ctx.emit('update:modelValue', val)
+      if (ctx.onUpdate) ctx.onUpdate(val)
       closePopup()
     }
     const hooks = {
@@ -167,11 +196,13 @@ export const SelectField = defineFieldType({
 
     return readonly({
       blank: computed(() => {
+        if (!activeItem.value.item) return true
         const val = inputValue.value
         return val === undefined || val === null || val === ''
       }),
       class: 'of-select-field',
       content: () => {
+        const label = activeItem.value.item?.text || ''
         return [
           h(
             'div',
@@ -184,7 +215,7 @@ export const SelectField = defineFieldType({
               tabindex: 0,
               ...hooks,
             },
-            [inputValue.value]
+            [label]
           ),
           h(OfIcon, {
             class: 'of-select-icon',

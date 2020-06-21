@@ -20,12 +20,12 @@ export interface ItemList {
 export function makeItemList(items?: any[] | ItemList): ItemList {
   if (Array.isArray(items)) {
     return {
-      items
+      items,
     }
   } else if (typeof items !== 'object' || !Array.isArray(items.items)) {
     return {
       error: 'Error loading items',
-      items: []
+      items: [],
     }
   }
   return items
@@ -37,7 +37,7 @@ export interface ItemsState {
 
 class ItemsManager implements ItemsState {
   readonly lists: Record<string, ItemList> = {}
-  constructor(_config: Config) {}
+  // constructor(_config: Config) {}
 
   getItemList(items?: string | any[] | ItemList): ItemList | undefined {
     // FIXME may also load from language manager
@@ -48,7 +48,7 @@ class ItemsManager implements ItemsState {
 
 const configManager = new ConfigManager('ofitm', ItemsManager)
 
-export function registerItemList(name: string, items: any[] | ItemList) {
+export function registerItemList(name: string, items: any[] | ItemList): void {
   configManager.extendingManager.lists[name] = makeItemList(items)
 }
 

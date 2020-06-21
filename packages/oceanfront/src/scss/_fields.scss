@@ -87,7 +87,7 @@
 .of-field-label {
   // cursor: inherit;
   text-overflow: ellipsis;
-  white-space: normal;
+  white-space: nowrap;
   word-wrap: break-word;
 }
 
@@ -126,10 +126,10 @@
   .of-toggle-input {
     align-self: center;
     flex: none;
-    font-size: 115%;
-    padding: 0.2em $pad-h-input;
+    padding: $pad-v-input $pad-h-input;
     justify-content: center;
     position: relative;
+    --of-icon-scale-indiv: 1.15;
   }
 
   .of-toggle-outer {
@@ -152,6 +152,11 @@
   vertical-align: $vertical-align-input;
 
   @include field-text-base;
+}
+
+.of-select-field .of-field-inner {
+  // FIXME temp override
+  min-width: 12ch;
 }
 
 .of--variant-basic {
@@ -244,7 +249,6 @@
     background: none;
     border: none;
     border-radius: 0;
-    // height: 100%;
     width: 100%;
     /*&:active {
       // highlight?
@@ -317,6 +321,9 @@
     --cur-border: 1px solid #{$border-color-field-invalid};
   }
 
+  .of-field-label-wrap {
+    max-width: calc(100% - 2 * #{$pad-h-field} + 8px);
+  }
   .of-field-label {
     display: block;
     font-size: 0.75em;
@@ -384,9 +391,14 @@
     transform: scaleX(1);
   }
 
+  .of-field-label-wrap {
+    max-width: calc(100% - 2 * #{$pad-h-field} - 1em);
+  }
   .of-field-label {
     color: $color-field-filled-label;
-    position: absolute;
+    display: block;
+    overflow: hidden;
+    position: relative;
     left: $pad-h-field;
     top: $pad-v-input;
     font-size: 0.75em;

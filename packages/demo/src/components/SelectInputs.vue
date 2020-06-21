@@ -8,13 +8,13 @@
         <of-select-field
           :items="testItems"
           label="Select input"
-          value="Selected"
+          value="Option 1"
           variant="basic"
         ></of-select-field>
         <of-field
           :format="{ items: testItems, type: 'select' }"
           label="Select input"
-          value="Selected"
+          value="Option 2"
           variant="basic"
         ></of-field>
         <br /><br />
@@ -48,9 +48,9 @@ export default defineComponent({
 />`
     const testItems = [
       { special: 'header', text: 'Test select items' },
-      'Hello there',
+      'Option 1',
       { special: 'divider' },
-      'Goodbye now',
+      'Option 2',
     ]
     const timezones = [
       'Africa/Algiers',

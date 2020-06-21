@@ -22,18 +22,7 @@
       </div>
       <div class="column sm-4">
         <h4>Select Locale</h4>
-        <template v-for="(opt, idx) of localeOpts">
-          <of-toggle
-            :key="idx"
-            :label="opt.text"
-            label-position="none"
-            type="radio"
-            variant="basic"
-            v-model="locale"
-            :value="opt.value"
-          />
-          <br :key="idx" />
-        </template>
+        <of-select-field :items="localeOpts" v-model:value="locale" />
       </div>
     </div>
     <div class="row">
@@ -66,24 +55,17 @@ export default defineComponent({
   setup() {
     const inputValue = ref(100125.99)
     const inputDurationValue = ref(100)
-    const sampleCode = `
-<of-text-field
-  label="Field Label"
-  v-model:value="fieldValue"
-  variant="filled"
-/>`
     const localeOpts = [
-      { text: '(browser default)' },
+      { text: '(browser default)', value: '' },
       { text: 'en-CA', value: 'en-CA' },
       { text: 'de-CH', value: 'de-CH' },
       { text: 'de-DE', value: 'de-DE' },
       { text: 'fr-FR', value: 'fr-FR' },
     ]
-    const locale = ref<string | undefined>()
+    const locale = ref<string | undefined>('')
     return {
       locale,
       localeOpts,
-      sampleCode,
       inputValue,
       inputDurationValue,
     }

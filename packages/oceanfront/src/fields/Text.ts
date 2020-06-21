@@ -6,7 +6,7 @@ import {
   newFieldId,
 } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
-import { removeEmpty, extendReactive, restrictProps } from '@/lib/util'
+import { removeEmpty } from '@/lib/util'
 
 // editing a list field does not necessarily mean swapping input to edit mode
 // it may/should show a popup instead (this might be implied by 'muted' flag)
@@ -24,7 +24,7 @@ const allowInputTypes = new Set([
   'url',
 ])
 
-const inputTypeFrom = (type?: string) => {
+const _inputTypeFrom = (type?: string) => {
   if (type && allowInputTypes.has(type)) return type
   return 'text'
 }

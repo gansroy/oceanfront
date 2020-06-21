@@ -4,17 +4,27 @@
     <of-highlight lang="html" :value="sampleCode" />
     <br />
     <div class="row">
-      <div class="column md-4">
-        <of-toggle v-bind="testCheckField" variant="basic" />
-        <of-field type="toggle" v-bind="testCheckField" variant="basic" />
+      <div class="column md-8">
+        <of-field type="toggle" :format="testCheckField" variant="basic" />
+        <of-toggle-field
+          v-bind="testCheckField"
+          label-position="field"
+          variant="basic"
+        />
+        <of-toggle-field
+          v-bind="testCheckField"
+          label-position="input"
+          variant="basic"
+        />
+
         <br /><br />
-        <of-toggle v-bind="testCheckField" variant="outlined" />
+        <of-toggle-field v-bind="testCheckField" variant="outlined" />
         <br /><br />
-        <of-toggle v-bind="testCheckField" variant="filled" />
+        <of-toggle-field v-bind="testCheckField" variant="filled" />
       </div>
-      <div class="column md-4">
+      <!-- div class="column md-4">
         <form>
-          <of-toggle
+          <of-toggle-field
             v-bind="testCheckField"
             name="testr"
             type="radio"
@@ -22,7 +32,7 @@
             value="1"
           />
           <br /><br />
-          <of-toggle
+          <of-toggle-field
             v-bind="testCheckField"
             name="testr"
             type="radio"
@@ -30,7 +40,7 @@
             value="2"
           />
           <br /><br />
-          <of-toggle
+          <of-toggle-field
             v-bind="testCheckField"
             name="testr"
             type="radio"
@@ -38,7 +48,7 @@
             value="3"
           />
         </form>
-      </div>
+      </div -->
     </div>
   </div>
 </template>
@@ -52,17 +62,18 @@ const testCheckField = {
   hidden: false,
   label: 'Field Label',
   placeholder: 'placeholder',
-  readOnly: false,
+  readonly: false,
   required: true,
-  labelPosition: 'input',
+  labelPosition: 'both',
+  inputLabel: 'Input Label',
 }
 
 export default defineComponent({
   setup() {
     const sampleCode = `
-<of-toggle
+<of-toggle-field
   label="Field Label"
-  v-model="fieldValue"
+  v-model:checked="fieldChecked"
   variant="filled"
 />`
     return { sampleCode, testCheckField }

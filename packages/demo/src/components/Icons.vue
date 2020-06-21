@@ -47,7 +47,7 @@
       <div class="column">
         <h4>Select Icon Set</h4>
         <template v-for="(opt, idx) of fontOpts">
-          <of-toggle
+          <of-toggle-field
             :key="idx"
             :label="opt.text"
             label-position="none"

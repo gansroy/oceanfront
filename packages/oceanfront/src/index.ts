@@ -14,7 +14,7 @@ import { OfSelectField } from './components/SelectField'
 import OfSidebar from './components/Sidebar.vue'
 import OfTextarea from './components/Textarea.vue'
 import { OfTextField } from './components/TextField'
-import OfToggle from './components/Toggle.vue'
+import { OfToggleField } from './components/ToggleField'
 
 import { registerFieldType, registerTextFormatter } from './lib/formats'
 import { ColorFormatter } from './formats/Color'
@@ -40,7 +40,7 @@ export const components: Record<string, Component> = {
   OfSidebar,
   OfTextarea,
   OfTextField,
-  OfToggle,
+  OfToggleField,
 } as any
 
 export const directives: Record<string, Directive> = {}

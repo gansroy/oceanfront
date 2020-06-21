@@ -1,5 +1,6 @@
 import { VNode } from 'vue'
 import { ItemList } from './items'
+import { extendReactive } from './util'
 
 export type Renderable = VNode | VNode[] | string
 
@@ -67,6 +68,7 @@ export interface FieldProps {
 // after timeout, change mode to readonly
 
 export interface FieldRender {
+  active?: boolean
   append?: () => Renderable | undefined
   // afterContent? (below)
   blank?: boolean
@@ -80,7 +82,7 @@ export interface FieldRender {
   inputId?: string
   inputValue?: any
   invalid?: boolean
-  // labelPosition: 'content' | 'none' | undefined
+  label?: string
   loading?: boolean
   // messages
   pendingValue?: any
@@ -102,18 +104,14 @@ export function defineFieldType<T extends FieldType>(f: T): T {
   return f
 }
 
-// export function extendFieldFormat(
-//   format: any,
-//   props: Record<string, any>,
-//   restrict: string[]
-// ) {
-//   if (typeof format === 'string' || typeof format === 'function') {
-//     // text format name or constructor
-//     format = { type: format }
-//   }
-//   format = typeof format === 'object' ? format : {}
-//   if (restrict) {
-//     props = extractRefs(props, restrict)
-//   }
-//   return extendReactive(format, props)
-// }
+export function extendFieldFormat(
+  format: string | Record<string, any>,
+  props: Record<string, any>
+): Record<string, any> {
+  if (typeof format === 'string' || typeof format === 'function') {
+    // text format name or constructor
+    format = { type: format }
+  }
+  format = typeof format === 'object' ? format : {}
+  return extendReactive(format, props)
+}

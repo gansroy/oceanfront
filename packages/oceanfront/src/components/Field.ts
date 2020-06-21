@@ -6,7 +6,7 @@ import {
   readonly,
   PropType,
 } from 'vue'
-import { FieldContext } from '@/lib/fields'
+import { FieldContext, FieldRender } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
 import { extractRefs, extendReactive, restrictProps } from '@/lib/util'
 import OfOverlay from '../components/Overlay.vue'
@@ -41,6 +41,9 @@ export const OfField = defineComponent({
       default: undefined,
     },
     variant: String,
+  },
+  emits: {
+    'update:value': null,
   },
   setup(props, ctx: SetupContext) {
     const formats = useFormats()
@@ -84,7 +87,7 @@ export const OfField = defineComponent({
       },
     })
 
-    const format = computed(() => {
+    const format = computed<FieldRender>(() => {
       const ftype = fieldType.value
       const fmt = props.format
       const extfmt = fmt
@@ -129,18 +132,26 @@ export const OfField = defineComponent({
       try {
         const render = format.value
         const outerId = render.inputId ? render.inputId + '-outer' : props.id
-        const blank = render.blank && !(render.focused || render.popup)
+        let overlay, overlayActive, overlayBlur
+        // if(ctx.slots.overlay) overlay = ctx.slots.overlay(); else
+        if (render.popup) {
+          overlay = render.popup.content
+          overlayActive = render.popup.visible ?? true
+          overlayBlur = render.popup.onBlur
+        }
+        const blank = render.blank && !(render.focused || overlayActive)
+        const labelText = render.label ?? props.label
         const label = ctx.slots.label
           ? ctx.slots.label()
-          : props.label
+          : labelText
           ? h('label', { class: 'of-field-label', for: render.inputId }, [
-              props.label,
+              labelText,
             ])
           : undefined
         const cls = [
           'of-field-outer',
           {
-            'of--active': !blank,
+            'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
             'of--blank': blank,
             'of--focused': render.focused,
             'of--invalid': render.invalid,
@@ -165,13 +176,6 @@ export const OfField = defineComponent({
         if (prepend) inner.push(prepend())
         if (defslot) inner.push(defslot())
         if (append) inner.push(append())
-        let overlay, overlayActive, overlayBlur
-        // if(ctx.slots.overlay) overlay = ctx.slots.overlay(); else
-        if (render.popup) {
-          overlay = render.popup.content
-          overlayActive = render.popup.visible ?? true
-          overlayBlur = render.popup.onBlur
-        }
         if (overlay) {
           overlay = h(
             OfOverlay,
