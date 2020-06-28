@@ -48,6 +48,7 @@ export const OfField = defineComponent({
   inheritAttrs: false,
   props: {
     align: String,
+    block: Boolean,
     class: [String, Array, Object],
     // density: {type: Number, default: undefined}
     // form
@@ -103,6 +104,7 @@ export const OfField = defineComponent({
       fieldType: fieldType as any,
       mode: mode as any, // FIXME ref type not unwrapped correctly
       ...(extractRefs(props, [
+        'block',
         'id',
         'items',
         'label',
@@ -193,6 +195,7 @@ export const OfField = defineComponent({
           'of-field-outer',
           {
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
+            'of--block': props.block,
             'of--blank': blank,
             'of--focused': focused.value || render.focused,
             'of--invalid': render.invalid,
@@ -210,6 +213,11 @@ export const OfField = defineComponent({
           render.class,
           props.class,
         ]
+        const size = render.size || props.size // FIXME fetch from config
+        const style: Record<string, string> = {}
+        if (size) {
+          style['--of-field-size'] = `${size}ch`
+        }
         const inner: VNode | VNode[] = []
         renderSlot(
           inner,
@@ -240,6 +248,7 @@ export const OfField = defineComponent({
           {
             class: cls,
             id: outerId,
+            style,
             tabindex: '-1',
             ...handlers,
           },

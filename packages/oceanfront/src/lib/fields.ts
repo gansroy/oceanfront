@@ -28,6 +28,7 @@ export interface BaseForm {
 
 // FIXME 'items' currently redundant
 export interface FieldContext {
+  block?: boolean
   container?: string
   // form?: BaseForm
   fieldType?: string // the resolved field type name
@@ -89,6 +90,7 @@ export interface FieldRender {
   popup?: FieldPopup
   // popupPosition
   prepend?: () => Renderable | undefined
+  size?: number
   updated?: boolean
   value?: any
 }

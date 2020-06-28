@@ -8,7 +8,8 @@
         <of-field type="toggle" :format="testCheckField" variant="basic" />
         <of-toggle-field
           v-bind="testCheckField"
-          label-position="field"
+          label-position="both"
+          input-label="Switch"
           variant="basic"
           input-type="switch"
         />

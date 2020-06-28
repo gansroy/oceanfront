@@ -64,6 +64,7 @@
   //   vertical-align: top;
   // }
 
+  box-sizing: border-box;
   color: $color-field;
   display: inline-flex;
   flex-flow: column nowrap;
@@ -109,7 +110,9 @@
   @include field-text-base;
 }
 
-.of-field-content {
+.of-field-content,
+.of-field-input-label {
+  cursor: inherit;
   flex: auto;
 }
 
@@ -124,9 +127,6 @@
   padding: $pad-v-input $pad-h-input;
   // letter-spacing
   // caret-color
-}
-.of-field-input-label {
-  cursor: inherit;
 }
 
 .of-toggle-field {
@@ -166,12 +166,12 @@
   height: calc(1em * #{$line-height-input});
   padding: 0.2em 0.1em;
   margin: $pad-v-input $pad-h-input;
-  // vertical-align: top;
   box-sizing: border-box;
   position: relative;
   display: inline-flex;
   // .input-bg-field;
   //transition: background 0.15s ease-in-out;
+
   .of-switch-thumb {
     background-color: #ccc;
     border: 1px solid #bbb;
@@ -224,13 +224,9 @@
   padding: $pad-v-input $pad-h-input;
 }
 
-.of-select-field .of-field-inner {
-  // FIXME temp override
-  min-width: 12ch;
-}
-
 .of--variant-basic {
   margin: 0 0.3em;
+  width: calc(var(--of-field-size) - 0.6em);
 
   .of-field-above,
   .of-field-below {
@@ -296,6 +292,8 @@
 
 .of--variant-outlined,
 .of--variant-filled {
+  width: var(--of-field-size);
+
   .of-field-inner {
     min-height: calc(3em + 2 * #{$pad-v-field});
     padding-top: calc(0.75em - 1px);
@@ -507,4 +505,9 @@
   &.of--invalid:not(.of--focused) .of-field-inner {
     border-bottom-color: $border-color-field-invalid;
   }
+}
+
+.of-field-outer.of--block {
+  display: flex;
+  width: auto;
 }
