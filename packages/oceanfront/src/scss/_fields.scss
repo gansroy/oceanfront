@@ -124,15 +124,15 @@
   font-family: inherit;
   font-size: inherit;
   font-weight: normal;
-  outline: none;
+  // caret-color
 }
 
 .of-field-input,
 .of-field-input-label {
   box-sizing: border-box;
   padding: $pad-v-input $pad-h-input;
+  outline: none;
   // letter-spacing
-  // caret-color
 }
 
 .of-field-prepend,
