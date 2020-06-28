@@ -188,9 +188,14 @@ export const OfField = defineComponent({
         const label = ctx.slots.label
           ? ctx.slots.label()
           : labelText
-          ? h('label', { class: 'of-field-label', for: render.inputId }, [
-              labelText,
-            ])
+          ? h(
+              'label',
+              {
+                class: 'of-field-label',
+                /*, for: render.inputId: triggering double click events */
+              },
+              [labelText]
+            )
           : undefined
         const cls = [
           'of-field-outer',

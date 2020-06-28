@@ -25,6 +25,9 @@
 .of--text-numeric {
   font-variant-numeric: lining-nums tabular-nums;
 }
+.of--text-placeholder {
+  color: $color-field-placeholder;
+}
 
 .of--align-left {
   text-align: left;
@@ -116,21 +119,31 @@
   flex: auto;
 }
 
-.of-field-input,
-.of-field-input-label {
-  box-sizing: border-box;
+.of-field-input {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
   font-weight: normal;
   outline: none;
+}
+
+.of-field-input,
+.of-field-input-label {
+  box-sizing: border-box;
   padding: $pad-v-input $pad-h-input;
   // letter-spacing
   // caret-color
 }
 
+.of-field-prepend,
 .of-field-append {
   align-self: center;
+}
+.of-field-prepend {
+  padding-left: $pad-h-input;
+}
+.of-field-append {
+  padding-right: $pad-h-input;
 }
 
 .of-toggle-field,
@@ -468,6 +481,7 @@
   }
 
   .of-field-label-wrap {
+    margin-left: var(--of-field-size-prepend);
     max-width: calc(
       100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend) - var(--of-field-size-append)
     );
@@ -511,7 +525,7 @@
     will-change: opacity;
   }
   &.of--with-label .of-field-content {
-    padding-top: 0.25em;
+    margin-top: 0.4em;
   }
   &:hover .of-field-inner {
     border-bottom-color: $border-color-field-hover;

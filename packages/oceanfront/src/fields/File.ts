@@ -42,17 +42,34 @@ export const FileField = defineFieldType({
     const focus = () => {
       elt.value?.focus()
     }
-    const clickOpen = (evt?: MouseEvent) => {
-      console.log('click open')
+    const clickOpen = (_evt?: MouseEvent) => {
       elt.value?.click()
       return false
+    }
+    const clickClear = (evt?: MouseEvent) => {
+      // FIXME shouldn't need to set stateValue here
+      if (evt) {
+        evt.stopPropagation()
+        evt.preventDefault()
+      }
+      stateValue.value = null
+      if (ctx.onUpdate) ctx.onUpdate(null)
     }
     const hooks = {
       onBlur(_evt: FocusEvent) {
         focused.value = false
       },
+      onChange(evt: InputEvent) {
+        const files = (evt.target as HTMLInputElement).files
+        let val = null
+        if (files && files.length) {
+          val = { name: files[0].name }
+        }
+        // FIXME shouldn't need to set stateValue here
+        stateValue.value = val
+        if (ctx.onUpdate) ctx.onUpdate(val)
+      },
       onClick(evt: MouseEvent) {
-        console.log('click a')
         evt.stopPropagation()
       },
       onFocus(_evt: FocusEvent) {
@@ -66,23 +83,21 @@ export const FileField = defineFieldType({
     return readonly({
       active: true, // always show content
       append() {
-        return h(OfIcon, { name: 'attach', size: 'input' })
+        if (stateValue.value)
+          return h(OfIcon, {
+            name: 'circle-cross',
+            size: 'input',
+            onClick: clickClear,
+          })
       },
       blank: computed(() => !stateValue.value),
       class: computed(() => {
         return { 'of-file-field': true }
       }),
-      content: () =>
-        h('div', { class: 'of-file-input' }, [
-          h('input', {
-            class: 'of-field-input',
-            id: inputId.value,
-            // disabled: disabled.value,
-            name: ctx.name,
-            type: 'file',
-            ...hooks,
-          }),
-          h(
+      content: () => {
+        let label
+        if (stateValue.value) {
+          label = h(
             'label',
             {
               class: [
@@ -92,9 +107,35 @@ export const FileField = defineFieldType({
               for: inputId.value,
               onClick: (evt: MouseEvent) => evt.stopPropagation(),
             },
-            [props.placeholder || 'Select File']
-          ),
-        ]),
+            stateValue.value.name
+          )
+        } else {
+          label = h(
+            'label',
+            {
+              class: [
+                'of-field-input-label',
+                'of--align-' + (props.align || 'start'),
+                'of--text-placeholder',
+              ],
+              for: inputId.value,
+              onClick: (evt: MouseEvent) => evt.stopPropagation(),
+            },
+            [props.placeholder || 'Attach a file']
+          )
+        }
+        return h('div', { class: 'of-file-input' }, [
+          h('input', {
+            class: 'of-field-input',
+            id: inputId.value,
+            // disabled: disabled.value,
+            name: ctx.name,
+            type: 'file',
+            ...hooks,
+          }),
+          label,
+        ])
+      },
       click: clickOpen,
       cursor: 'pointer', // FIXME depends if editable
       focus,
@@ -104,6 +145,9 @@ export const FileField = defineFieldType({
       // inputValue,
       // loading
       // messages
+      prepend() {
+        return h(OfIcon, { name: 'attach', size: 'input' })
+      },
       updated: computed(() => initialValue.value !== stateValue.value),
       value: stateValue,
     })
