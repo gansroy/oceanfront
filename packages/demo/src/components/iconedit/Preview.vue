@@ -85,11 +85,11 @@ const parseSvg = (svgData: string): { paths: string[] } => {
     throw new TypeError('Document not parsed as SVG')
   }
   const width = svgDom.documentElement.getAttribute('width')
-  if (!width || parseInt(width, 10) != 24) {
+  if (width !== '100%' && (!width || parseInt(width, 10) != 24)) {
     throw new TypeError('Expected width of 24px')
   }
   const height = svgDom.documentElement.getAttribute('height')
-  if (!height || parseInt(height, 10) != 24) {
+  if (width !== '100%' && (!height || parseInt(height, 10) != 24)) {
     throw new TypeError('Expected height of 24px')
   }
   const paths = []
