@@ -199,6 +199,7 @@ export const SelectField = defineFieldType({
         h(OfIcon, {
           class: 'of-select-icon',
           name: opened.value ? 'bullet-select-close' : 'bullet-select',
+          size: 'input',
         }),
       blank: computed(() => {
         if (!activeItem.value.item) return true

@@ -180,8 +180,8 @@ const materialIcons = {
   'nav-previous': 'navigate_before',
   'nav-next': 'navigate_next',
   'nav-last': 'last_page',
-  'bullet-select': 'triangle-down',
-  'bullet-select-close': 'triangle-up',
+  'bullet-select': 'arrow_drop_down',
+  'bullet-select-close': 'arrow_drop_up',
 }
 
 const materialIconFont: IconFont = {
@@ -210,7 +210,7 @@ class IconManager {
   showMissing = false
 
   constructor() {
-    this.defaultFont = 'uii'
+    this.defaultFont = 'mi'
     this.fonts = { uii: uiiIconFont, mi: materialIconFont }
     this.resolvers = [
       {

@@ -3,14 +3,28 @@
     <of-config :icons="icons">
       <div class="load-error">{{ loadError }}</div>
 
-      <of-icon name="preview-icon" size="sm" />
-      <of-icon name="preview-icon" size="md" />
-      <of-icon name="preview-icon" size="lg" />
-      <of-icon name="preview-icon" size="xl" />
+      <of-icon name="preview-icon" size="sm" title="20px size" />
+      <of-icon name="preview-icon" size="md" title="24px size (standard)" />
+      <of-icon name="preview-icon" size="lg" title="28px size" />
+      <of-icon name="preview-icon" size="xl" title="32px size" />
 
-      <of-icon name="preview-icon" class="style-no-alt" />
-      <of-icon name="preview-icon" class="style-blue" />
-      <of-icon name="preview-icon" class="style-contrast" />
+      <of-icon
+        name="preview-icon"
+        class="style-no-alt"
+        title="without alt layer"
+      />
+
+      <of-icon
+        name="preview-icon"
+        class="style-blue"
+        title="fill single colour"
+      />
+      <of-icon
+        name="preview-icon"
+        class="style-contrast"
+        title="fill two colours"
+      />
+
       <div class="round"><of-icon name="preview-icon" /></div>
       <div class="roundr"><of-icon name="preview-icon" /></div>
 
@@ -34,6 +48,7 @@
       <canvas
         width="100"
         height="100"
+        title="24px scaled"
         @vnodeMounted="draw"
         @vnodeUpdated="draw"
       ></canvas>
@@ -158,7 +173,8 @@ export default defineComponent({
 
 <style lang="scss">
 canvas {
-  margin: 5px;
+  border: 2px solid #ddd;
+  margin-left: 10px;
   width: 96px;
   height: 96px;
 }
@@ -181,6 +197,11 @@ canvas {
     border-style: dashed;
     box-shadow: inset 0 0 5px 5px rgba(0, 0, 0, 0.1);
   }
+
+  > .of-icon {
+    border: 2px solid #ddd;
+    margin-left: 10px;
+  }
 }
 .load-error {
   position: absolute;
@@ -198,7 +219,6 @@ canvas {
   font-size: 60pt;
 }
 .of-icon.style-contrast {
-  margin: 5px;
   color: rgb(39, 139, 170);
   font-size: 60pt;
   .alt {
@@ -209,6 +229,7 @@ canvas {
   background: darkblue;
   border-radius: 50%;
   display: inline-flex;
+  margin-left: 10px;
   padding: 20px;
   .of-icon {
     color: #def;

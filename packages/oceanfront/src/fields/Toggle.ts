@@ -99,7 +99,8 @@ export const ToggleField = defineFieldType({
                   'of-field-input-label',
                   'of--align-' + (props.align || 'start'),
                 ],
-                // for: inputId.value (need to capture click to avoid double toggle)
+                for: inputId.value,
+                onClick: (evt: MouseEvent) => evt.stopPropagation(),
               },
               [inputLabel.value]
             )
@@ -121,6 +122,7 @@ export const ToggleField = defineFieldType({
               : h(OfIcon, {
                   class: 'of-toggle-icon',
                   name: icon.value,
+                  size: 'input',
                 }),
           ]),
         ]

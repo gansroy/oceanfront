@@ -123,8 +123,8 @@ export default defineComponent({
           next: 'next',
         },
         {
-          'circle-ellipsis': 'circle ellipsis',
-          'circle-attach': 'circle attachment',
+          // 'circle-ellipsis': 'circle ellipsis',
+          // 'circle-attach': 'circle attachment',
           'circle-check': 'circle check',
           'circle-cross': 'circle cross',
           'circle-info': 'circle info',

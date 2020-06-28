@@ -17,6 +17,10 @@
   font-size: inherit;
 }
 
+.of--icon-input {
+  font-size: calc(#{$font-size-input} * 1.5);
+}
+
 .of--icon-sm {
   font-size: 20px;
 }
