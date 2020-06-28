@@ -43,8 +43,11 @@
 
     <div class="row">
       <div class="column">
-        <h4>Select Icon Set</h4>
-        <of-select-field :items="fontOpts" v-model:value="iconFont" />
+        <of-select-field
+          label="Select icon set"
+          :items="fontOpts"
+          v-model:value="iconFont"
+        />
       </div>
     </div>
 

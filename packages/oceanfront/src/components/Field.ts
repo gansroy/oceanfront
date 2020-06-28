@@ -183,7 +183,8 @@ export const OfField = defineComponent({
           overlayActive = render.popup.visible ?? true
           overlayBlur = render.popup.onBlur
         }
-        const blank = render.blank && !(render.focused || overlayActive)
+        const blank =
+          render.blank && !(focused.value || render.focused || overlayActive)
         const labelText = render.label ?? props.label
         const label = ctx.slots.label
           ? ctx.slots.label()

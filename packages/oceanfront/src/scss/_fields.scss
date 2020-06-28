@@ -108,11 +108,14 @@
   font-size: $font-size-input;
   position: relative;
   max-width: 100%; // don't extend past containing cell
-  vertical-align: $vertical-align-input;
+  // vertical-align: $vertical-align-input;
 
   @include field-text-base;
 }
 
+.of-field-content {
+  display: flex;
+}
 .of-field-content,
 .of-field-input-label {
   cursor: inherit;
@@ -138,6 +141,7 @@
 .of-field-prepend,
 .of-field-append {
   align-self: center;
+  display: flex;
 }
 .of-field-prepend {
   padding-left: $pad-h-input;
@@ -182,6 +186,7 @@
 
   .of-toggle-outer {
     display: flex;
+    flex: auto;
   }
 }
 
@@ -199,8 +204,8 @@
   //transition: background 0.15s ease-in-out;
 
   .of-switch-thumb {
-    background-color: #ccc;
-    border: 1px solid #bbb;
+    background-color: #555;
+    // border: 1px solid #bbb;
     box-sizing: border-box;
     box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
     content: ' ';
@@ -226,10 +231,11 @@
 
   width: calc(2em + 2px);
   .of-switch-track {
-    border: 1px solid #ccc;
+    border: 1px solid #777;
     flex: auto;
     height: 100%;
     border-radius: 1em;
+    transition: background 0.15s ease-in-out;
   }
   // &::before {
   //   // width: calc(#{$switch-size} - 8px);
@@ -239,6 +245,9 @@
   .of--checked & {
     .of-switch-thumb {
       left: calc(1em - 1px);
+    }
+    .of-switch-track {
+      background: #888;
     }
     // &::before {
     //   //left: calc(#{$switch-size} + 5px);
@@ -322,7 +331,7 @@
 
   .of-field-inner {
     min-height: calc(3em + 2 * #{$pad-v-field});
-    padding-top: calc(0.75em - 1px);
+    // padding-top: calc(0.75em - 1px);
   }
 
   .of-field-above {
@@ -380,7 +389,7 @@
       border-right: none;
       box-sizing: border-box;
       content: '';
-      flex: 0 0 calc(#{$pad-h-field} - 4px);
+      flex: 0 0 calc(#{$pad-h-field} - 4px + var(--of-field-size-prepend));
       transition: border-color 120ms;
     }
     .of-field-label-wrap {
@@ -417,7 +426,9 @@
   }
 
   .of-field-label-wrap {
-    max-width: calc(100% - 2 * #{$pad-h-field} + 8px);
+    max-width: calc(
+      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend) - var(--of-field-size-append)
+    );
   }
   .of-field-label {
     display: block;
@@ -439,6 +450,7 @@
   }
 
   .of-field-content {
+    margin-top: 0.75em;
     opacity: 0;
     transition: opacity 180ms;
     will-change: opacity;
@@ -525,7 +537,7 @@
     will-change: opacity;
   }
   &.of--with-label .of-field-content {
-    margin-top: 0.4em;
+    margin-top: 1.1em;
   }
   &:hover .of-field-inner {
     border-bottom-color: $border-color-field-hover;

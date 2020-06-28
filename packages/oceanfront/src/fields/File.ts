@@ -43,6 +43,7 @@ export const FileField = defineFieldType({
       elt.value?.focus()
     }
     const clickOpen = (_evt?: MouseEvent) => {
+      elt.value?.focus()
       elt.value?.click()
       return false
     }
@@ -81,7 +82,6 @@ export const FileField = defineFieldType({
     }
 
     return readonly({
-      active: true, // always show content
       append() {
         if (stateValue.value)
           return h(OfIcon, {

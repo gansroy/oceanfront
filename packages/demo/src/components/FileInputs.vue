@@ -14,6 +14,8 @@
           size="30"
           variant="basic"
         />
+        <br /><br />
+        <of-field type="file" label="Outlined" size="30" variant="outlined" />
       </div>
     </div>
   </div>
