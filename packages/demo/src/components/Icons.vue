@@ -17,58 +17,49 @@
         </div>
         <div class="demo-inline">
           <div class="demo-icon">
-            <div class="of-icon input-led led-grey" title="grey led"></div>
+            <of-icon name="led-grey" title="grey led" />
           </div>
           <div class="demo-icon">
-            <div class="of-icon input-led led-green" title="green led"></div>
+            <of-icon name="led-green" title="green led" />
           </div>
           <div class="demo-icon">
-            <div class="of-icon input-led led-red" title="red led"></div>
+            <of-icon name="led-red" title="red led" />
           </div>
           <div class="demo-icon">
-            <div class="of-icon input-led led-yellow" title="yellow led"></div>
+            <of-icon name="led-yellow" title="yellow led" />
           </div>
           <div class="demo-icon">
-            <div class="of-icon input-led led-violet" title="violet led"></div>
+            <of-icon name="led-violet" title="violet led" />
           </div>
           <div class="demo-icon">
-            <div class="of-icon input-led led-blue" title="blue led"></div>
+            <of-icon name="led-blue" title="blue led" />
           </div>
           <div class="demo-icon">
-            <div class="of-icon input-led led-orange" title="orange led"></div>
+            <of-icon name="led-orange" title="orange led" />
           </div>
         </div>
       </div>
     </of-config>
 
-    <of-iconpreview />
-
     <div class="row">
       <div class="column">
         <h4>Select Icon Set</h4>
-        <template v-for="(opt, idx) of fontOpts">
-          <of-toggle-field
-            :key="idx"
-            :label="opt.text"
-            label-position="none"
-            type="radio"
-            variant="basic"
-            v-model="iconFont"
-            :value="opt.value"
-          />
-        </template>
+        <of-select-field :items="fontOpts" v-model:value="iconFont" />
       </div>
     </div>
+
+    <h2>Two-color SVG icons</h2>
+    <of-icon-preview />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 
-import OfIconpreview from './iconedit/Preview.vue'
+import OfIconPreview from './iconedit/Preview.vue'
 
 export default defineComponent({
-  components: { OfIconpreview },
+  components: { OfIconPreview },
   setup(_props, _ctx) {
     const iconFont = ref('')
     const fontOpts = [

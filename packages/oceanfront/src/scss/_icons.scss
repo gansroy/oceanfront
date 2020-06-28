@@ -5,6 +5,32 @@
   &.left {
     margin-right: 0.25em;
   }
+
+  svg {
+    fill: currentColor;
+    width: 1em;
+    height: auto;
+  }
+}
+
+.of--icon-inherit {
+  font-size: inherit;
+}
+
+.of--icon-sm {
+  font-size: 20px;
+}
+
+.of--icon-md {
+  font-size: 24px;
+}
+
+.of--icon-lg {
+  font-size: 28px;
+}
+
+.of--icon-xl {
+  font-size: 32px;
 }
 
 .of-icon-scale-sm {
@@ -79,4 +105,26 @@
   background-color: #d80;
   box-shadow: 0 0 0.1em rgba(40, 40, 40, 0.9),
     0 0.1em 0.1em rgba(150, 150, 150, 0.4);
+}
+
+.of--led-grey {
+  color: #aaa;
+}
+.of--led-green {
+  color: #2c4;
+}
+.of--led-red {
+  color: #c43;
+}
+.of--led-yellow {
+  color: #dc4;
+}
+.of--led-violet {
+  color: #c5c;
+}
+.of--led-blue {
+  color: #36d;
+}
+.of--led-orange {
+  color: #d80;
 }

@@ -1,12 +1,16 @@
 import { Config, ConfigManager, readonlyUnwrap } from '../lib/config'
-import { Component } from 'vue'
 
 export interface Icon {
   class?: string
-  component?: Component | string
+  // component?: Component | string
+  // props?: VNodeProps
   name?: string
-  props?: object
+  svg?: SvgIcon
   text?: string
+}
+
+export interface SvgIcon {
+  paths: string[]
 }
 
 export interface IconMapping {
@@ -23,7 +27,7 @@ export interface IconFont {
 
 function makeResolver(mapping: IconMapping): IconResolver {
   return {
-    resolve: (name: string) => (mapping && mapping[name]) || null
+    resolve: (name: string) => (mapping && mapping[name]) || null,
   }
 }
 
@@ -86,12 +90,21 @@ const uiiIcons = [
   'nav-first',
   'nav-previous',
   'nav-next',
-  'nav-last'
+  'nav-last',
 ]
 
 const uiiAlias = {
   'bullet-select': 'triangle-down of-icon-scale-sm',
-  'bullet-select-close': 'triangle-up of-icon-scale-sm'
+  'bullet-select-close': 'triangle-up of-icon-scale-sm',
+}
+
+const ledIcon = {
+  svg: {
+    paths: [
+      'M 2 12 a 10,10 0 1,0 20,0 a 10,10 0 1,0 -20,0',
+      'M 4 12 a 8,8 0 1,0 16,0 a 8,8 0 1,0 -16,0',
+    ],
+  },
 }
 
 const uiiIconFont: IconFont = {
@@ -102,9 +115,9 @@ const uiiIconFont: IconFont = {
       return null
     }
     return {
-      class: 'uibasic-icon icon-' + name
+      class: 'uibasic-icon icon-' + name,
     }
-  }
+  },
 }
 
 const materialIcons = {
@@ -168,7 +181,7 @@ const materialIcons = {
   'nav-next': 'navigate_next',
   'nav-last': 'last_page',
   'bullet-select': 'triangle-down',
-  'bullet-select-close': 'triangle-up'
+  'bullet-select-close': 'triangle-up',
 }
 
 const materialIconFont: IconFont = {
@@ -183,28 +196,41 @@ const materialIconFont: IconFont = {
       }
       return {
         class: cls,
-        text: icon
+        text: icon,
       }
     }
     return null
-  }
+  },
 }
 
 class IconManager {
   defaultFont: string | undefined
   fonts: { [name: string]: IconFont }
   resolvers: IconResolver[]
-  showMissing: boolean = false
+  showMissing = false
 
   constructor() {
     this.defaultFont = 'uii'
     this.fonts = { uii: uiiIconFont, mi: materialIconFont }
-    this.resolvers = []
+    this.resolvers = [
+      {
+        resolve: (name: string) => {
+          let ret = null
+          if (this.defaultFont) {
+            ret = this.fonts[this.defaultFont].resolve(name)
+          }
+          if (!ret && name.startsWith('led-')) {
+            ret = { class: 'of--icon-led of--' + name, ...ledIcon }
+          }
+          return ret
+        },
+      },
+    ]
   }
 
   resolve(name?: string): Icon | null {
     if (!name) return null
-    let spp = name.indexOf(' ')
+    const spp = name.indexOf(' ')
     if (spp !== -1) {
       const font = name.substring(0, spp)
       if (font in this.fonts) {
@@ -216,25 +242,21 @@ class IconManager {
       if (typeof ret === 'string') return this.resolve(ret)
       else if (ret) return ret
     }
-    let ret = null
-    if (this.defaultFont) {
-      ret = this.fonts[this.defaultFont].resolve(name)
+    if (this.showMissing) {
+      return { text: 'xx' }
     }
-    if (!ret && this.showMissing) {
-      ret = { text: 'xx' }
-    }
-    return ret
+    return null
   }
 }
 
 const configManager = new ConfigManager('oficon', IconManager)
 
-export function registerIconFont(name: string, def: IconFont) {
+export function registerIconFont(name: string, def: IconFont): void {
   if (!def) return
   configManager.extendingManager.fonts[name] = def
 }
 
-export function registerIcons(icons: IconMapping | IconResolver) {
+export function registerIcons(icons: IconMapping | IconResolver): void {
   if (!icons) return
   if (typeof icons === 'object') {
     icons = makeResolver(icons as IconMapping)
@@ -242,16 +264,14 @@ export function registerIcons(icons: IconMapping | IconResolver) {
   configManager.extendingManager.resolvers.push(icons)
 }
 
-export function setDefaultIconFont(name: string) {
+export function setDefaultIconFont(name: string): void {
   configManager.extendingManager.defaultFont = name
 }
 
-export function showMissingIcons(flag?: boolean) {
+export function showMissingIcons(flag?: boolean): void {
   if (flag === undefined) flag = true
   configManager.extendingManager.showMissing = flag
 }
-
-export function iconConfig(cb: () => void) {}
 
 export function useIcons(config?: Config): IconManager {
   const mgr = configManager.inject(config)

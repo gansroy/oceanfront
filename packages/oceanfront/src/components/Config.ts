@@ -1,6 +1,6 @@
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { extendConfig } from '@/lib/config'
-import { setDefaultIconFont } from '@/lib/icons'
+import { registerIcons, setDefaultIconFont, IconMapping } from '@/lib/icons'
 import { themeStyle, useLayout } from '@/lib/layout'
 import { setLocale, useLocale } from '@/lib/locale'
 
@@ -9,12 +9,14 @@ export const OfConfig = defineComponent({
   inheritAttrs: false,
   props: {
     iconFont: String,
+    icons: Object as PropType<IconMapping>,
     locale: String,
     theme: [String, Object],
   },
   setup(props, ctx) {
     extendConfig(() => {
       if (props.iconFont) setDefaultIconFont(props.iconFont)
+      if (props.icons) registerIcons(props.icons)
       if (props.locale) setLocale(props.locale)
     })
     const layoutMgr = useLayout()
@@ -27,7 +29,7 @@ export const OfConfig = defineComponent({
       if (props.theme) {
         cfgProps.themeStyle = themeStyle(props.theme)
       }
-      return ctx.slots.default!(cfgProps)
+      return ctx.slots.default && ctx.slots.default(cfgProps)
     }
   },
 })
