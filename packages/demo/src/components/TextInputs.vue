@@ -36,15 +36,30 @@
       <div class="column md-4">
         <div class="form-outer">
           <div class="form-cell">
-            <of-textarea v-bind="testField" rows="3" variant="basic" />
+            <of-text-field
+              multiline
+              v-bind="testField"
+              rows="3"
+              variant="basic"
+            />
           </div>
           <br />
           <div class="form-cell">
-            <of-textarea v-bind="testField" rows="3" variant="outlined" />
+            <of-text-field
+              multiline
+              v-bind="testField"
+              rows="3"
+              variant="outlined"
+            />
           </div>
           <br />
           <div class="form-cell">
-            <of-textarea v-bind="testField" rows="3" variant="filled" />
+            <of-text-field
+              multiline
+              v-bind="testField"
+              rows="3"
+              variant="filled"
+            />
           </div>
         </div>
       </div>
@@ -71,18 +86,10 @@
         />
       </div>
       <div class="demo-inline">
-        <of-text-field
-          readonly="1"
-          value="Read-only text"
-          style="width: 10em;"
-        />
+        <of-text-field readonly value="Read-only text" style="width: 10em;" />
       </div>
       <div class="demo-inline">
-        <of-text-field
-          disabled="1"
-          value="Disabled text"
-          style="width: 10em;"
-        />
+        <of-text-field disabled value="Disabled text" style="width: 10em;" />
       </div>
       <div class="demo-inline">
         <of-text-field placeholder="Placeholder" style="width: 10em;" />
@@ -97,32 +104,40 @@
     </div>
     <div class="row demo-row">
       <div class="demo-inline">
-        <of-textarea
+        <of-text-field
+          multiline
           class="of--small"
           style="width: 10em;"
           value="Small text area"
         />
       </div>
       <div class="demo-inline">
-        <of-textarea style="width: 10em;" value="Normal text area" />
+        <of-text-field
+          multiline
+          style="width: 10em;"
+          value="Normal text area"
+        />
       </div>
       <div class="demo-inline">
-        <of-textarea
+        <of-text-field
+          multiline
           class="of--large"
           style="width: 10em;"
           value="Large text area"
         />
       </div>
       <div class="demo-inline">
-        <of-textarea
-          readonly="1"
+        <of-text-field
+          multiline
+          readonly
           style="width: 10em;"
           value="Read-only text area"
         />
       </div>
       <div class="demo-inline">
-        <of-textarea
-          disabled="1"
+        <of-text-field
+          multiline
+          disabled
           style="width: 10em;"
           value="Disabled text area"
         />

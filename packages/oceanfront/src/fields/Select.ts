@@ -214,7 +214,7 @@ export const SelectField = defineFieldType({
             {
               class: [
                 'of-field-input-label',
-                'of--text-' + (props.align || 'start'),
+                'of--align-' + (props.align || 'start'),
               ],
               id: inputId.value,
               tabindex: 0,

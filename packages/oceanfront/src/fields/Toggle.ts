@@ -88,7 +88,7 @@ export const ToggleField = defineFieldType({
               {
                 class: [
                   'of-field-input-label',
-                  'of--text-' + (props.align || 'start'),
+                  'of--align-' + (props.align || 'start'),
                 ],
                 // for: inputId.value (need to capture click to avoid double toggle)
               },

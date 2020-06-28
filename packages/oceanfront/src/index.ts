@@ -12,7 +12,6 @@ import OfListGroup from './components/ListGroup.vue'
 import OfNavGroup from './components/NavGroup.vue'
 import { OfSelectField } from './components/SelectField'
 import OfSidebar from './components/Sidebar.vue'
-import OfTextarea from './components/Textarea.vue'
 import { OfTextField } from './components/TextField'
 import { OfToggleField } from './components/ToggleField'
 
@@ -38,7 +37,6 @@ export const components: Record<string, Component> = {
   OfNavGroup,
   OfSelectField,
   OfSidebar,
-  OfTextarea,
   OfTextField,
   OfToggleField,
 } as any

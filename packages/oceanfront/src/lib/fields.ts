@@ -72,7 +72,7 @@ export interface FieldRender {
   append?: () => Renderable | undefined
   // afterContent? (below)
   blank?: boolean
-  class?: string | string[]
+  class?: string | string[] | Record<string, boolean>
   click?: (evt?: MouseEvent) => boolean | void
   content?: () => Renderable | undefined
   cursor?: string

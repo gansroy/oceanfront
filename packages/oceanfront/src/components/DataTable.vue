@@ -54,7 +54,7 @@ export default defineComponent({
       for (const hdr of props.headers as DataTableHeader[]) {
         const format = fmtMgr.getTextFormatter(hdr.format)
         const align = hdr.align || (format && format.align)
-        const cls = ['of--text-' + (align || 'start'), hdr.class]
+        const cls = ['of--align-' + (align || 'start'), hdr.class]
         cols.push(Object.assign({}, hdr, { format, align, class: cls }))
       }
       return cols

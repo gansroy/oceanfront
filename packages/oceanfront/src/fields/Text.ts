@@ -51,6 +51,7 @@ export const TextField = defineFieldType({
     })
 
     let lazyInputValue = ''
+    const blank = ref()
     const inputValue = ref('')
     const pendingValue = ref()
     const stateValue = ref()
@@ -74,6 +75,7 @@ export const TextField = defineFieldType({
         val = lazyInputValue
       }
       if (val === undefined || val === '') val = null
+      blank.value = val == null
       inputValue.value = lazyInputValue
       stateValue.value = val
       pendingValue.value = undefined
@@ -117,7 +119,9 @@ export const TextField = defineFieldType({
         focused.value = true
       },
       onChange(evt: Event) {
-        const target = evt.target as HTMLInputElement | null
+        const target = evt.target as
+          | (HTMLInputElement | HTMLTextAreaElement)
+          | null
         if (!target) return
         let val = target.value
         const fmt = formatter.value
@@ -139,6 +143,7 @@ export const TextField = defineFieldType({
           updateValue(val)
           target.value = lazyInputValue
         } else {
+          blank.value = val == null || val === ''
           pendingValue.value = undefined
         }
         if (ctx.onUpdate) ctx.onUpdate(val)
@@ -153,7 +158,9 @@ export const TextField = defineFieldType({
           const upd = fmt.handleInput(evt)
           if (upd) {
             if (!upd.updated) return
-            const inputElt = evt.target as HTMLInputElement
+            const inputElt = evt.target as
+              | HTMLInputElement
+              | HTMLTextAreaElement
             const iVal = upd.textValue ?? ''
             inputElt.value = iVal
             if (upd.selStart !== undefined) {
@@ -176,20 +183,18 @@ export const TextField = defineFieldType({
     }
 
     return readonly({
-      blank: computed(() => {
-        // FIXME ask formatter
-        const val = inputValue.value
-        return val === undefined || val === null || val === ''
-      }),
-      class: 'of-text-field',
+      blank,
+      class: {
+        'of-text-field': true,
+        'of--multiline': !!multiline.value,
+      },
       content: () => {
         const fmt = formatter.value
         return h(multiline.value ? 'textarea' : 'input', {
-          type: fmt?.inputType || 'text',
           class: [
             'of-field-input',
             fmt?.inputClass,
-            'of--text-' + (props.align || fmt?.align || 'start'),
+            'of--align-' + (props.align || fmt?.align || 'start'),
           ],
           ...removeEmpty({
             inputmode: fmt?.inputMode,
@@ -198,7 +203,9 @@ export const TextField = defineFieldType({
             name: ctx.name,
             placeholder: props.placeholder,
             readonly: ctx.mode === 'readonly' || ctx.locked || undefined,
+            rows: props.rows,
             // size: props.size,  - need to implement at field level?
+            type: multiline.value ? undefined : fmt?.inputType || 'text',
             value: lazyInputValue,
             ...hooks,
           }),

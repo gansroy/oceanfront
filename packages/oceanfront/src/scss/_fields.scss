@@ -25,21 +25,23 @@
 .of--text-numeric {
   font-variant-numeric: lining-nums tabular-nums;
 }
-.of--text-left {
+
+.of--align-left {
   text-align: left;
 }
-.of--text-right {
+.of--align-right {
   text-align: right;
 }
-.of--text-center {
+.of--align-center {
   text-align: center;
 }
-.of--text-start {
+.of--align-start {
   text-align: start;
 }
-.of--text-end {
+.of--align-end {
   text-align: end;
 }
+
 .of--cursor-default {
   cursor: default;
 }
@@ -223,7 +225,7 @@
       color: $color-field-placeholder;
     }
   }
-  &.of-field-textarea .of-field-input {
+  &.of-text-field textarea {
     padding: $pad-v-input $pad-h-input 0;
     resize: vertical;
   }
@@ -269,7 +271,7 @@
     padding: $pad-v-input $pad-h-field;
   }
 
-  &.of-field-textarea .of-field-input {
+  &.of-text-field textarea {
     margin: 0 1px 1px;
     padding: $pad-v-input calc(#{$pad-h-field} - 1px) $pad-v-input;
     resize: vertical;
