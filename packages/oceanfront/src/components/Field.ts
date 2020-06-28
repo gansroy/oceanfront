@@ -4,6 +4,7 @@ import {
   computed,
   h,
   readonly,
+  ref,
   PropType,
   VNode,
 } from 'vue'
@@ -90,6 +91,7 @@ export const OfField = defineComponent({
           : undefined)
       )
     })
+    const focused = ref(false)
     const mode = computed(
       () => props.mode || (props.readonly ? 'readonly' : 'edit')
     )
@@ -149,10 +151,16 @@ export const OfField = defineComponent({
     })
 
     const handlers = {
+      onBlur(_evt: FocusEvent) {
+        focused.value = false
+      },
       onClick(evt: MouseEvent) {
         // ctx.emit('click', evt)
         const render = format.value
         if (render && render.click) return render.click(evt)
+      },
+      onFocus(_evt: FocusEvent) {
+        focused.value = true
       },
       onMousedown(_evt: MouseEvent) {
         // ctx.emit('mousedown', evt)
@@ -186,7 +194,7 @@ export const OfField = defineComponent({
           {
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
             'of--blank': blank,
-            'of--focused': render.focused,
+            'of--focused': focused.value || render.focused,
             'of--invalid': render.invalid,
             'of--muted': props.muted,
             'of--loading': render.loading,
@@ -232,6 +240,7 @@ export const OfField = defineComponent({
           {
             class: cls,
             id: outerId,
+            tabindex: '-1',
             ...handlers,
           },
           [

@@ -10,6 +10,7 @@
           v-bind="testCheckField"
           label-position="field"
           variant="basic"
+          input-type="switch"
         />
         <of-toggle-field
           v-bind="testCheckField"

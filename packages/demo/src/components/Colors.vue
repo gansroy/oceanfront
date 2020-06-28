@@ -74,12 +74,14 @@
                       </div>
                     </div>
                     <div class="of-field-inner">
-                      <input
-                        type="text"
-                        class="of-field-input"
-                        readonly
-                        value="Filled field"
-                      />
+                      <div class="of-field-content">
+                        <input
+                          type="text"
+                          class="of-field-input"
+                          readonly
+                          value="Filled field"
+                        />
+                      </div>
                     </div>
                   </div>
                   &nbsp;
@@ -92,12 +94,14 @@
                       </div>
                     </div>
                     <div class="of-field-inner">
-                      <input
-                        type="text"
-                        class="of-field-input"
-                        readonly
-                        value="Focused"
-                      />
+                      <div class="of-field-content">
+                        <input
+                          type="text"
+                          class="of-field-input"
+                          readonly
+                          value="Focused"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

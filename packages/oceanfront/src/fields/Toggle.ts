@@ -79,8 +79,17 @@ export const ToggleField = defineFieldType({
 
     return readonly({
       active: true, // always show content
+      append() {
+        if (inputType.value === 'switch')
+          return h('div', { class: 'of-switch' }, [
+            h('div', { class: 'of-switch-thumb' }),
+            h('div', { class: 'of-switch-track' }),
+          ])
+      },
       blank: computed(() => !stateValue.value),
-      class: 'of-toggle-field',
+      class: computed(() => {
+        return { 'of-toggle-field': true, 'of--checked': !!stateValue.value }
+      }),
       content: () => {
         const label = inputLabel.value
           ? h(
@@ -107,10 +116,12 @@ export const ToggleField = defineFieldType({
               value: '1',
               ...hooks,
             }),
-            h(OfIcon, {
-              class: 'of-toggle-icon',
-              name: icon.value,
-            }),
+            inputType.value === 'switch'
+              ? undefined
+              : h(OfIcon, {
+                  class: 'of-toggle-icon',
+                  name: icon.value,
+                }),
           ]),
         ]
         if (label) inner.unshift(label)

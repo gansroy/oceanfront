@@ -53,19 +53,22 @@
 }
 
 .of-field-outer {
-  .input-icon {
-    color: $color-field-icon;
-  }
+  // .input-icon {
+  //   color: $color-field-icon;
+  // }
 
-  .wait-icon,
-  .wait-icon.dynamic {
-    height: 18px;
-    line-height: 18px;
-    vertical-align: top;
-  }
+  // .wait-icon,
+  // .wait-icon.dynamic {
+  //   height: 18px;
+  //   line-height: 18px;
+  //   vertical-align: top;
+  // }
 
   color: $color-field;
+  display: inline-flex;
+  flex-flow: column nowrap;
   font-size: $font-size-input;
+  outline: none;
   position: relative;
   text-align: left;
   @include no-select;
@@ -91,6 +94,19 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   word-wrap: break-word;
+}
+
+.of-field-inner {
+  align-items: flex-start;
+  box-sizing: border-box;
+  color: $color-field;
+  display: flex;
+  font-size: $font-size-input;
+  position: relative;
+  max-width: 100%; // don't extend past containing cell
+  vertical-align: $vertical-align-input;
+
+  @include field-text-base;
 }
 
 .of-field-content {
@@ -143,21 +159,69 @@
   }
 }
 
-.of-select-icon {
-  padding: $pad-v-input $pad-h-input;
+.of-switch {
+  align-items: center;
+  font-size: $font-size-input;
+  line-height: $line-height-input;
+  height: calc(1em * #{$line-height-input});
+  padding: 0.2em 0.1em;
+  margin: $pad-v-input $pad-h-input;
+  // vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  // .input-bg-field;
+  //transition: background 0.15s ease-in-out;
+  .of-switch-thumb {
+    background-color: #ccc;
+    border: 1px solid #bbb;
+    box-sizing: border-box;
+    box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 1px;
+    transition: left 0.15s ease-in-out;
+    width: calc(1em * #{$line-height-input});
+    height: calc(1em * #{$line-height-input});
+    border-radius: 1em;
+  }
+  // &::before {
+  //   // marker for switch
+  //   border: 1px solid #bbb;
+  //   box-sizing: border-box;
+  //   content: ' ';
+  //   position: absolute;
+  //   top: (-1px + 2);
+  //   left: 3px;
+  //   transition: left 0.15s ease-in-out;
+  //   z-index: 3;
+  // }
+
+  width: calc(2em + 2px);
+  .of-switch-track {
+    border: 1px solid #ccc;
+    flex: auto;
+    height: 100%;
+    border-radius: 1em;
+  }
+  // &::before {
+  //   // width: calc(#{$switch-size} - 8px);
+  //   // height: calc(#{$switch-size} - 8px);
+  //   // border-radius: $switch-size;
+  // }
+  .of--checked & {
+    .of-switch-thumb {
+      left: calc(1em - 1px);
+    }
+    // &::before {
+    //   //left: calc(#{$switch-size} + 5px);
+    // }
+  }
 }
 
-.of-field-inner {
-  align-items: flex-start;
-  box-sizing: border-box;
-  color: $color-field;
-  display: flex;
-  font-size: $font-size-input;
-  position: relative;
-  max-width: 100%; // don't extend past containing cell
-  vertical-align: $vertical-align-input;
-
-  @include field-text-base;
+.of-select-icon {
+  padding: $pad-v-input $pad-h-input;
 }
 
 .of-select-field .of-field-inner {
@@ -166,7 +230,6 @@
 }
 
 .of--variant-basic {
-  display: inline-block;
   margin: 0 0.3em;
 
   .of-field-above,
@@ -233,8 +296,6 @@
 
 .of--variant-outlined,
 .of--variant-filled {
-  display: inline-flex;
-
   .of-field-inner {
     min-height: calc(3em + 2 * #{$pad-v-field});
     padding-top: calc(0.75em - 1px);

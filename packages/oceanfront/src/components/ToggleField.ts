@@ -9,6 +9,7 @@ export const OfToggleField = defineComponent({
     checked: { type: Boolean, default: false },
     format: [String, Function, Object],
     inputLabel: String,
+    inputType: String,
     labelPosition: String,
     // FIXME add 'side'
     value: String,
@@ -19,7 +20,7 @@ export const OfToggleField = defineComponent({
   setup(props, ctx: SetupContext) {
     const format = extendFieldFormat(
       props.format,
-      restrictProps(props, ['inputLabel', 'labelPosition'], true)
+      restrictProps(props, ['inputLabel', 'inputType', 'labelPosition'], true)
     )
     return () =>
       h(OfField, {
