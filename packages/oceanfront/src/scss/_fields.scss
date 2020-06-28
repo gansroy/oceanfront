@@ -115,11 +115,14 @@
 
 .of-field-content {
   display: flex;
+  width: 0; // allow element to resize smaller in firefox when nowrap is used
 }
 .of-field-content,
 .of-field-input-label {
   cursor: inherit;
   flex: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .of-field-input {
@@ -127,7 +130,22 @@
   font-family: inherit;
   font-size: inherit;
   font-weight: normal;
+  line-height: inherit;
+  margin: 0;
   // caret-color
+
+  // may want to restrict to certain variants:
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  border: none;
+  border-radius: 0;
+  // height: 100%;
+  width: 100%;
+  &::placeholder {
+    color: $color-field-placeholder;
+    opacity: 1;
+  }
 }
 
 .of-field-input,
@@ -166,6 +184,9 @@
     margin: 0;
     opacity: 0;
     outline: none;
+    &::-webkit-file-upload-button {
+      cursor: inherit;
+    }
   }
 }
 
@@ -307,18 +328,6 @@
     border-color: $border-color-field-invalid;
   }
 
-  .of-field-input {
-    -webkit-appearance: none;
-    appearance: none;
-    background: none;
-    border: none;
-    border-radius: 0;
-    // height: 100%;
-    width: 100%;
-    &::placeholder {
-      color: $color-field-placeholder;
-    }
-  }
   &.of-text-field textarea {
     padding: $pad-v-input $pad-h-input 0;
     resize: vertical;
@@ -347,20 +356,6 @@
     // min-height: 0.25em;
   }
 
-  .of-field-input {
-    -webkit-appearance: none;
-    appearance: none;
-    background: none;
-    border: none;
-    border-radius: 0;
-    width: 100%;
-    /*&:active {
-      // highlight?
-    }*/
-    &::placeholder {
-      color: $color-field-label;
-    }
-  }
   .of-field-input-label {
     pointer-events: none;
   }
@@ -506,7 +501,7 @@
     left: $pad-h-field;
     top: $pad-v-input;
     font-size: 0.75em;
-    transform: translateY(0.75em) scale(1.3333);
+    transform: translateY(0.85em) scale(1.3333);
     transform-origin: left top;
     transition: transform 150ms;
     backface-visibility: hidden; // avoid some jumping?
