@@ -1,4 +1,5 @@
-$body-font-family: system-ui, sans-serif;
+// firefox does not yet support system-ui
+$body-font-family: system-ui, -apple-system, sans-serif;
 
 html,
 body {
