@@ -15,13 +15,15 @@ import OfSidebar from './components/Sidebar.vue'
 import { OfTextField } from './components/TextField'
 import { OfToggleField } from './components/ToggleField'
 
+import { FileField } from './fields/File'
+import { SelectField } from './fields/Select'
+import { TextField } from './fields/Text'
+import { ToggleField } from './fields/Toggle'
+
 import { registerFieldType, registerTextFormatter } from './lib/formats'
 import { ColorFormatter } from './formats/Color'
 import { NumberFormatter } from './formats/Number'
 import { DurationFormatter } from './formats/Duration'
-import { SelectField } from './fields/Select'
-import { TextField } from './fields/Text'
-import { ToggleField } from './fields/Toggle'
 
 import './scss/index.scss'
 
@@ -47,6 +49,7 @@ export const Oceanfront: Plugin = {
   install(vue: App, args: any) {
     vue.config.devtools = true
     extendDefaultConfig(() => {
+      registerFieldType('file', FileField)
       registerFieldType('select', SelectField)
       registerFieldType('text', TextField)
       registerFieldType('textarea', TextField)

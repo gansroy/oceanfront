@@ -159,6 +159,7 @@ export const OfField = defineComponent({
       onClick(evt: MouseEvent) {
         // ctx.emit('click', evt)
         const render = format.value
+        evt.stopPropagation()
         if (render && render.click) return render.click(evt)
       },
       onFocus(_evt: FocusEvent) {

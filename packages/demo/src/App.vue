@@ -38,14 +38,15 @@
           <of-list-item to="/icons">Icons</of-list-item>
           <of-list-group value="1">
             <template #activator="{ state, toggle }">
-              <of-list-item :expand="state" @click.prevent="toggle"
-                >Forms &amp; Inputs</of-list-item
-              >
+              <of-list-item :expand="state" @click.prevent="toggle">
+                Forms &amp; Inputs
+              </of-list-item>
             </template>
-            <of-list-item to="/select-inputs">Select Inputs</of-list-item>
-            <of-list-item to="/text-inputs">Text Inputs</of-list-item>
-            <of-list-item to="/toggle-inputs">Toggle Inputs</of-list-item>
-            <of-list-item disabled>Picker Inputs</of-list-item>
+            <of-list-item to="/file-inputs">File</of-list-item>
+            <of-list-item to="/select-inputs">Select</of-list-item>
+            <of-list-item to="/text-inputs">Text</of-list-item>
+            <of-list-item to="/toggle-inputs">Toggle</of-list-item>
+            <of-list-item disabled>Pickers</of-list-item>
             <of-list-item to="/formatters">Formatters</of-list-item>
           </of-list-group>
           <of-list-group value="1">
@@ -82,11 +83,9 @@ import {
   ref,
   defineComponent,
   SetupContext,
-  computed
+  computed,
 } from 'vue'
 import { useLayout } from 'oceanfront'
-import TestForm from './components/TestForm.vue'
-import TestInputs from './components/TestInputs.vue'
 
 function formatError(e: any) {
   return (e.stack || e).toString()
@@ -94,10 +93,9 @@ function formatError(e: any) {
 
 export default defineComponent({
   name: 'App',
-  components: { TestForm, TestInputs },
-  setup(props: {}, ctx: SetupContext) {
+  setup(_props: {}, _ctx: SetupContext) {
     const error = ref<any>(null)
-    onErrorCaptured(e => {
+    onErrorCaptured((e) => {
       error.value = formatError(e)
       return true
     })
@@ -118,9 +116,9 @@ export default defineComponent({
           ? sidebarMobileActive
           : sidebarDesktopActive
         ).value = val
-      }
+      },
     })
-    const updateFont = function(evt: Event) {
+    const updateFont = function (evt: Event) {
       const size = (evt.target as HTMLInputElement).value
       baseFontSize.value = size
       document.documentElement.style.fontSize = size + 'px'
@@ -140,9 +138,9 @@ export default defineComponent({
       showConfig,
       sidebarActive,
       toggleSidebar,
-      updateFont
+      updateFont,
     }
-  }
+  },
 })
 </script>
 
