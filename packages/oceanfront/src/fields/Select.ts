@@ -195,6 +195,11 @@ export const SelectField = defineFieldType({
     }
 
     return readonly({
+      append: () =>
+        h(OfIcon, {
+          class: 'of-select-icon',
+          name: opened.value ? 'bullet-select-close' : 'bullet-select',
+        }),
       blank: computed(() => {
         if (!activeItem.value.item) return true
         const val = inputValue.value
@@ -217,10 +222,6 @@ export const SelectField = defineFieldType({
             },
             [label]
           ),
-          h(OfIcon, {
-            class: 'of-select-icon',
-            name: opened.value ? 'bullet-select-close' : 'bullet-select',
-          }),
         ]
       },
       click: clickOpen,

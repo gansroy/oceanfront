@@ -5,11 +5,42 @@ import {
   h,
   readonly,
   PropType,
+  VNode,
 } from 'vue'
-import { FieldContext, FieldRender } from '@/lib/fields'
+import { FieldContext, FieldRender, Renderable } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
 import { extractRefs, extendReactive, restrictProps } from '@/lib/util'
 import OfOverlay from '../components/Overlay.vue'
+
+const renderSlot = (
+  container: Renderable[],
+  slot?: () => Renderable | undefined,
+  outer?: string
+): void => {
+  if (slot) {
+    let children = slot()
+    if (children) {
+      if (outer) children = h('div', { class: outer }, children)
+      container.push(children)
+    }
+  }
+}
+
+const calcPadding = (node: VNode) => {
+  if (!node.el) return
+  const prepend = (node.el as HTMLDivElement).querySelector('.of-field-prepend')
+  const append = (node.el as HTMLDivElement).querySelector('.of-field-append')
+  let wp = 0
+  if (prepend) {
+    wp = Math.ceil(prepend.getBoundingClientRect().width)
+  }
+  let wa = 0
+  if (append) {
+    wa = Math.ceil(append.getBoundingClientRect().width)
+  }
+  node.el.style.setProperty('--of-field-size-prepend', wp + 'px')
+  node.el.style.setProperty('--of-field-size-append', wa + 'px')
+}
 
 export const OfField = defineComponent({
   name: 'OfField',
@@ -126,6 +157,8 @@ export const OfField = defineComponent({
       onMousedown(_evt: MouseEvent) {
         // ctx.emit('mousedown', evt)
       },
+      onVnodeMounted: calcPadding,
+      onVnodeUpdated: calcPadding,
     }
 
     return () => {
@@ -169,13 +202,18 @@ export const OfField = defineComponent({
           render.class,
           props.class,
         ]
-        const inner = []
-        const prepend = ctx.slots.prepend || render.prepend
-        const defslot = ctx.slots.default || render.content
-        const append = ctx.slots.append || render.append
-        if (prepend) inner.push(prepend())
-        if (defslot) inner.push(defslot())
-        if (append) inner.push(append())
+        const inner: VNode | VNode[] = []
+        renderSlot(
+          inner,
+          ctx.slots.prepend || render.prepend,
+          'of-field-prepend'
+        )
+        renderSlot(
+          inner,
+          ctx.slots.default || render.content,
+          'of-field-content'
+        )
+        renderSlot(inner, ctx.slots.append || render.append, 'of-field-append')
         if (overlay) {
           overlay = h(
             OfOverlay,
@@ -199,7 +237,9 @@ export const OfField = defineComponent({
           [
             h(
               'div',
-              { class: 'of-field-above' },
+              {
+                class: 'of-field-above',
+              },
               label
                 ? h('div', { class: 'of-field-label-wrap' }, label)
                 : undefined

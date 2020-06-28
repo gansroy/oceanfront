@@ -91,6 +91,10 @@
   word-wrap: break-word;
 }
 
+.of-field-content {
+  flex: auto;
+}
+
 .of-field-input,
 .of-field-input-label {
   box-sizing: border-box;
@@ -343,17 +347,13 @@
     }
   }
 
-  .of-field-inner {
-    > * {
-      opacity: 0;
-      transition: opacity 180ms;
-      will-change: opacity;
-    }
+  .of-field-content {
+    opacity: 0;
+    transition: opacity 180ms;
+    will-change: opacity;
   }
-  &.of--active {
-    .of-field-inner > * {
-      opacity: 1;
-    }
+  &.of--active .of-field-content {
+    opacity: 1;
   }
 }
 
@@ -369,22 +369,20 @@
     background: $bg-field-filled-focus;
   }
 
-  .of-field-above {
-    &::after {
-      // ripple
-      background: $border-color-field-focus;
-      content: '';
-      height: 2px;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      opacity: 0;
-      transform: scaleX(0);
-      transform-origin: center;
-      transition: opacity 90ms, transform 150ms;
-      will-change: opacity, transform;
-    }
+  .of-field-above::after {
+    // ripple
+    background: $border-color-field-focus;
+    content: '';
+    height: 2px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: opacity 90ms, transform 150ms;
+    will-change: opacity, transform;
   }
   &.of--focused .of-field-above::after {
     opacity: 1;
@@ -392,7 +390,9 @@
   }
 
   .of-field-label-wrap {
-    max-width: calc(100% - 2 * #{$pad-h-field} - 1em);
+    max-width: calc(
+      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend) - var(--of-field-size-append)
+    );
   }
   .of-field-label {
     color: $color-field-filled-label;
@@ -414,10 +414,8 @@
   .static .of-field-label {
     color: $color-field-filled-label;
   }
-  &.of--focused {
-    .of-field-label {
-      color: $color-field-filled-focus-label;
-    }
+  &.of--focused .of-field-label {
+    color: $color-field-filled-focus-label;
   }
   &.of--focused,
   &.of--active {
@@ -428,22 +426,20 @@
 
   .of-field-inner {
     border-bottom: 1px solid $border-color-field;
-    > * {
-      opacity: 0;
-      transition: opacity 180ms;
-      will-change: opacity;
-    }
   }
-  &.of--with-label .of-field-inner {
-    padding-top: 1em;
+  .of-field-content {
+    opacity: 0;
+    transition: opacity 180ms;
+    will-change: opacity;
+  }
+  &.of--with-label .of-field-content {
+    padding-top: 0.25em;
   }
   &:hover .of-field-inner {
     border-bottom-color: $border-color-field-hover;
   }
-  &.of--active {
-    .of-field-inner > * {
-      opacity: 1;
-    }
+  &.of--active .of-field-content {
+    opacity: 1;
   }
   &.of--invalid:not(.of--focused) .of-field-inner {
     border-bottom-color: $border-color-field-invalid;
