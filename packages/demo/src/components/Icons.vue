@@ -12,30 +12,7 @@
       <div class="row demo-row">
         <div class="demo-inline" v-for="(iconset, idx) of icons" :key="idx">
           <div class="demo-icon" v-for="(desc, icon) of iconset" :key="icon">
-            <of-icon :name="icon" :title="desc" />
-          </div>
-        </div>
-        <div class="demo-inline">
-          <div class="demo-icon">
-            <of-icon name="led-grey" title="grey led" />
-          </div>
-          <div class="demo-icon">
-            <of-icon name="led-green" title="green led" />
-          </div>
-          <div class="demo-icon">
-            <of-icon name="led-red" title="red led" />
-          </div>
-          <div class="demo-icon">
-            <of-icon name="led-yellow" title="yellow led" />
-          </div>
-          <div class="demo-icon">
-            <of-icon name="led-violet" title="violet led" />
-          </div>
-          <div class="demo-icon">
-            <of-icon name="led-blue" title="blue led" />
-          </div>
-          <div class="demo-icon">
-            <of-icon name="led-orange" title="orange led" />
+            <of-icon :name="icon" :title="desc" size="input" />
           </div>
         </div>
       </div>
@@ -138,6 +115,15 @@ export default defineComponent({
           // circle-split
           // circle-refresh
         },
+        {
+          'led-grey': 'grey led',
+          'led-green': 'green led',
+          'led-red': 'red led',
+          'led-yellow': 'yellow led',
+          'led-violet': 'violet led',
+          'led-blue': 'blue led',
+          'led-orange': 'orange led',
+        },
       ],
     }
   },
@@ -145,17 +131,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.demo-inline {
+  display: flex;
+  flex-flow: row wrap;
+}
 .demo-icon {
-  box-sizing: content-box;
-  display: inline-block;
+  // box-sizing: content-box;
+  // display: inline-block;
   border-radius: 2px;
-  font-size: 1.75rem;
-  line-height: 1;
+  // font-size: 1.75rem;
+  // line-height: 1;
   border: 1px solid #eee;
   background: #fffefd;
   color: #444;
   box-shadow: 0 1px 0 #ccc;
   cursor: default;
+  margin: 2px;
   text-align: center;
   &:hover {
     color: #111;

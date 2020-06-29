@@ -20,6 +20,7 @@
 .of--icon-input {
   font-size: calc(#{$font-size-input} * 1.5);
   line-height: $line-height-input;
+  vertical-align: middle;
 }
 
 .of--icon-sm {
