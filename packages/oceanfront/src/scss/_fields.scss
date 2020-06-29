@@ -218,7 +218,7 @@
   font-size: $font-size-input;
   line-height: $line-height-input;
   height: calc(1em * #{$line-height-input});
-  padding: 0.2em 0.1em;
+  padding: 0.15em 0.1em;
   margin: $pad-v-input $pad-h-input;
   box-sizing: border-box;
   position: relative;
@@ -234,7 +234,7 @@
     content: ' ';
     position: absolute;
     top: 0;
-    left: 1px;
+    left: 0;
     transition: left 0.15s ease-in-out;
     width: calc(1em * #{$line-height-input});
     height: calc(1em * #{$line-height-input});
@@ -255,6 +255,7 @@
   width: calc(2em + 2px);
   .of-switch-track {
     border: 1px solid #777;
+    box-sizing: border-box;
     flex: auto;
     height: 100%;
     border-radius: 1em;
