@@ -159,7 +159,9 @@
 .of-field-prepend,
 .of-field-append {
   align-self: center;
+  box-sizing: border-box;
   display: flex;
+  flex: none;
 }
 .of-field-prepend {
   padding-left: $pad-h-input;

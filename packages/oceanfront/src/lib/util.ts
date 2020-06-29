@@ -200,3 +200,81 @@ export function removeEmpty(obj: Record<string, any>): Record<string, any> {
   }
   return obj
 }
+
+export interface CompatResizeObserver {
+  disconnect(): void
+}
+
+type EltSize = { width: number; height: number }
+
+const eltSize = (elt: Element): EltSize => {
+  const sz = elt.getBoundingClientRect()
+  return { width: sz.width, height: sz.height }
+}
+
+export const watchResize = (
+  cb: (elts: { target: Element; size: EltSize }[]) => void,
+  ...elts: (Element | null)[]
+): CompatResizeObserver | undefined => {
+  if (!elts.length) return
+
+  const checkElts: { target: Element; size: EltSize }[] = []
+  for (const target of elts) {
+    if (!target) continue
+    checkElts.push({ target, size: eltSize(target) })
+  }
+  cb(checkElts) // callback on initial state
+
+  if (typeof ResizeObserver !== 'undefined') {
+    const resizeObserver = new ResizeObserver((entries) => {
+      const result = []
+      for (const entry of entries) {
+        result.push({
+          target: entry.target,
+          size: {
+            width: entry.contentRect.left + entry.contentRect.width,
+            height: entry.contentRect.top + entry.contentRect.height,
+          },
+        })
+      }
+      cb(result)
+    })
+
+    for (const entry of checkElts) {
+      resizeObserver.observe(entry.target, { box: 'border-box' })
+    }
+    return resizeObserver
+  } else {
+    const evalElts = () => {
+      let changed = false
+      for (let idx = 0; idx < checkElts.length; ) {
+        const { target, size } = checkElts[idx]
+        if (!document.body.contains(target)) {
+          checkElts.splice(idx, 1)
+          changed = true
+          continue
+        }
+        const newSize = eltSize(target)
+        checkElts[idx].size = newSize
+        if (newSize.width != size.width || newSize.height != size.height) {
+          changed = true
+        }
+        idx++
+      }
+      return changed
+    }
+    let timeout = 50 // first timeout is short to handle initial re-layout
+    const runEval = () => {
+      if (!checkElts.length) return
+      if (evalElts()) cb(checkElts)
+      setTimeout(runEval, timeout)
+      timeout = 1500
+    }
+    runEval()
+    return {
+      disconnect() {
+        checkElts.splice(0, checkElts.length)
+      },
+    }
+  }
+}

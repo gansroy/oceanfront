@@ -10,7 +10,13 @@ import {
 } from 'vue'
 import { FieldContext, FieldRender, Renderable } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
-import { extractRefs, extendReactive, restrictProps } from '@/lib/util'
+import {
+  extractRefs,
+  extendReactive,
+  restrictProps,
+  watchResize,
+  CompatResizeObserver,
+} from '@/lib/util'
 import OfOverlay from '../components/Overlay.vue'
 
 const renderSlot = (
@@ -27,20 +33,36 @@ const renderSlot = (
   }
 }
 
-const calcPadding = (node: VNode) => {
-  if (!node.el) return
-  const prepend = (node.el as HTMLDivElement).querySelector('.of-field-prepend')
-  const append = (node.el as HTMLDivElement).querySelector('.of-field-append')
-  let wp = 0
-  if (prepend) {
-    wp = Math.ceil(prepend.getBoundingClientRect().width)
+type PadCalc = {
+  watch: CompatResizeObserver
+}
+
+const calcPadding = (node: VNode, state: { watch?: CompatResizeObserver }) => {
+  if (state.watch) {
+    state.watch.disconnect()
   }
-  let wa = 0
-  if (append) {
-    wa = Math.ceil(append.getBoundingClientRect().width)
-  }
-  node.el.style.setProperty('--of-field-size-prepend', wp + 'px')
-  node.el.style.setProperty('--of-field-size-append', wa + 'px')
+  const outer = node.el as HTMLElement | undefined
+  if (!outer || !document.body.contains(outer)) return
+  const prepend = outer.querySelector('.of-field-prepend') as HTMLElement | null
+  const append = outer.querySelector('.of-field-append') as HTMLElement | null
+  state.watch = watchResize(
+    (entries) => {
+      let presize = 0
+      let appsize = 0
+      for (const entry of entries) {
+        if (entry.target === prepend) {
+          presize = Math.ceil(entry.size.width)
+        } else if (entry.target === append) {
+          appsize = Math.ceil(entry.size.width)
+        }
+      }
+      console.log('resize!', presize, appsize)
+      outer.style.setProperty('--of-field-size-prepend', presize + 'px')
+      outer.style.setProperty('--of-field-size-append', appsize + 'px')
+    },
+    prepend,
+    append
+  )
 }
 
 export const OfField = defineComponent({
@@ -152,6 +174,8 @@ export const OfField = defineComponent({
       )
     })
 
+    const padState = {}
+    const checkPad = (node: VNode) => calcPadding(node, padState)
     const handlers = {
       onBlur(_evt: FocusEvent) {
         focused.value = false
@@ -168,8 +192,9 @@ export const OfField = defineComponent({
       onMousedown(_evt: MouseEvent) {
         // ctx.emit('mousedown', evt)
       },
-      onVnodeMounted: calcPadding,
-      onVnodeUpdated: calcPadding,
+      onVnodeMounted: checkPad,
+      onVnodeUpdated: checkPad,
+      onVnodeUnmounted: checkPad,
     }
 
     return () => {
