@@ -48,6 +48,10 @@ export const FileField = defineFieldType({
       return false
     }
     const clickClear = (evt?: MouseEvent) => {
+      if (!elt.value) {
+        return
+      }
+      elt.value.value = ''
       // FIXME shouldn't need to set stateValue here
       if (evt) {
         evt.stopPropagation()
