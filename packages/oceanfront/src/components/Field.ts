@@ -42,9 +42,14 @@ const calcPadding = (node: VNode, state: { watch?: CompatResizeObserver }) => {
     state.watch.disconnect()
   }
   const outer = node.el as HTMLElement | undefined
-  if (!outer || !document.body.contains(outer)) return
+  if (!outer || !document.body.contains(outer)) {
+    return
+  }
   const prepend = outer.querySelector('.of-field-prepend') as HTMLElement | null
   const append = outer.querySelector('.of-field-append') as HTMLElement | null
+  if (!prepend && !append) {
+    return
+  }
   state.watch = watchResize(
     (entries) => {
       let presize = 0
@@ -56,7 +61,6 @@ const calcPadding = (node: VNode, state: { watch?: CompatResizeObserver }) => {
           appsize = Math.ceil(entry.size.width)
         }
       }
-      console.log('resize!', presize, appsize)
       outer.style.setProperty('--of-field-size-prepend', presize + 'px')
       outer.style.setProperty('--of-field-size-append', appsize + 'px')
     },
