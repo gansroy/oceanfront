@@ -387,7 +387,7 @@
       border-right: none;
       box-sizing: border-box;
       content: '';
-      flex: 0 0 calc(#{$pad-h-field} - 4px + var(--of-field-size-prepend));
+      flex: 0 0 calc(#{$pad-h-field} - 4px + var(--of-field-size-prepend, 0px));
       transition: border-color 120ms;
     }
     .of-field-label-wrap {
@@ -425,7 +425,7 @@
 
   .of-field-label-wrap {
     max-width: calc(
-      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend) - var(--of-field-size-append)
+      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend, 0px) - var(--of-field-size-append, 0px)
     );
   }
   .of-field-label {
@@ -491,9 +491,9 @@
   }
 
   .of-field-label-wrap {
-    margin-left: var(--of-field-size-prepend);
+    margin-left: var(--of-field-size-prepend, 0px);
     max-width: calc(
-      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend) - var(--of-field-size-append)
+      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend, 0px) - var(--of-field-size-append, 0px)
     );
   }
   .of-field-label {
