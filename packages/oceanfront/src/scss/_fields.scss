@@ -55,7 +55,7 @@
   cursor: text;
 }
 
-.of-field-outer {
+.of-field {
   // .input-icon {
   //   color: $color-field-icon;
   // }
@@ -73,8 +73,7 @@
   flex-flow: column nowrap;
   font-size: $font-size-input;
   outline: none;
-  position: relative;
-  text-align: left;
+  text-align: start;
   @include no-select;
 
   .of-field-label {
@@ -91,6 +90,14 @@
       color: $color-field-focus-label;
     }
   }
+}
+
+.of-field-body {
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column nowrap;
+  outline: none;
+  position: relative;
 }
 
 .of-field-label {
@@ -215,57 +222,39 @@
 
 .of-switch {
   align-items: center;
-  font-size: $font-size-input;
-  line-height: $line-height-input;
-  height: calc(1em * #{$line-height-input});
-  padding: 0.15em 0.1em;
-  margin: $pad-v-input $pad-h-input;
   box-sizing: border-box;
-  position: relative;
   display: inline-flex;
-  // .input-bg-field;
-  //transition: background 0.15s ease-in-out;
+  font-size: $font-size-input;
+  height: calc(1em * #{$line-height-input});
+  line-height: $line-height-input;
+  margin: $pad-v-input $pad-h-input;
+  padding: 0.15em 0.1em;
+  position: relative;
+  width: calc(2em + 2px);
 
   .of-switch-thumb {
     background-color: #555;
     // border: 1px solid #bbb;
+    border-radius: 1em;
     box-sizing: border-box;
     box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
     content: ' ';
+    height: calc(1em * #{$line-height-input});
+    left: 0;
     position: absolute;
     top: 0;
-    left: 0;
     transition: left 0.15s ease-in-out;
     width: calc(1em * #{$line-height-input});
-    height: calc(1em * #{$line-height-input});
-    border-radius: 1em;
   }
-  // &::before {
-  //   // marker for switch
-  //   border: 1px solid #bbb;
-  //   box-sizing: border-box;
-  //   content: ' ';
-  //   position: absolute;
-  //   top: (-1px + 2);
-  //   left: 3px;
-  //   transition: left 0.15s ease-in-out;
-  //   z-index: 3;
-  // }
 
-  width: calc(2em + 2px);
   .of-switch-track {
     border: 1px solid #777;
+    border-radius: 1em;
     box-sizing: border-box;
     flex: auto;
     height: 100%;
-    border-radius: 1em;
     transition: background 0.15s ease-in-out;
   }
-  // &::before {
-  //   // width: calc(#{$switch-size} - 8px);
-  //   // height: calc(#{$switch-size} - 8px);
-  //   // border-radius: $switch-size;
-  // }
   .of--checked & {
     .of-switch-thumb {
       left: calc(1em - 1px);
@@ -273,22 +262,17 @@
     .of-switch-track {
       background: #888;
     }
-    // &::before {
-    //   //left: calc(#{$switch-size} + 5px);
-    // }
   }
 }
 
-// .of-select-icon {
-//   padding: $pad-v-input $pad-h-input;
-// }
-
 .of--variant-basic {
   margin: 0 0.3em;
-  width: calc(var(--of-field-size) - 0.6em);
+  .of-field-body {
+    width: calc(var(--of-field-size) - 0.6em);
+  }
 
-  .of-field-above,
-  .of-field-below {
+  .of-field-over,
+  .of-field-footer {
     min-height: 0.25em;
   }
 
@@ -337,8 +321,8 @@
   }
 }
 
-.of--variant-outlined,
-.of--variant-filled {
+.of--variant-outlined .of-field-body,
+.of--variant-filled .of-field-body {
   width: var(--of-field-size);
 
   .of-field-inner {
@@ -346,7 +330,7 @@
     // padding-top: calc(0.75em - 1px);
   }
 
-  .of-field-above {
+  .of-field-over {
     position: absolute;
     top: 0;
     left: 0;
@@ -355,9 +339,9 @@
     pointer-events: none;
   }
 
-  .of-field-below {
-    // min-height: 0.25em;
-  }
+  // .of-field-footer {
+  // min-height: 0.25em;
+  // }
 
   .of-field-input-label {
     pointer-events: none;
@@ -376,10 +360,9 @@
 }
 
 .of--variant-outlined {
-  color: $color-field;
-
   --cur-border: 1px solid #{$border-color-field};
-  .of-field-above {
+
+  .of-field-over {
     display: flex;
     &::before {
       border-radius: $border-radius-field 0 0 $border-radius-field;
@@ -459,18 +442,20 @@
 }
 
 .of--variant-filled {
-  background: $bg-field-filled;
-  border-radius: $border-radius-field $border-radius-field 0 0;
-  color: $color-field-filled;
+  .of-field-body {
+    background: $bg-field-filled;
+    border-radius: $border-radius-field $border-radius-field 0 0;
+    color: $color-field-filled;
+  }
 
-  &:hover {
+  &:hover .of-field-body {
     background: $bg-field-filled-hover;
   }
-  &.of--focused {
+  &.of--focused .of-field-body {
     background: $bg-field-filled-focus;
   }
 
-  .of-field-above::after {
+  .of-field-over::after {
     // ripple
     background: $border-color-field-focus;
     content: '';
@@ -485,7 +470,7 @@
     transition: opacity 90ms, transform 150ms;
     will-change: opacity, transform;
   }
-  &.of--focused .of-field-above::after {
+  &.of--focused .of-field-over::after {
     opacity: 1;
     transform: scaleX(1);
   }
@@ -548,7 +533,7 @@
   }
 }
 
-.of-field-outer.of--block {
+.of-field.of--block {
   display: flex;
   width: auto;
 }

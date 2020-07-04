@@ -78,6 +78,7 @@ export interface FieldRender {
   content?: () => Renderable | undefined
   cursor?: string
   focus?: () => void
+  // footer?: () => Renderable | undefined
   focused?: boolean
   hovered?: boolean
   inputId?: string

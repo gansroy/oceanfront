@@ -228,7 +228,7 @@ export const OfField = defineComponent({
             )
           : undefined
         const cls = [
-          'of-field-outer',
+          'of-field',
           {
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
             'of--block': props.block,
@@ -292,14 +292,22 @@ export const OfField = defineComponent({
             h(
               'div',
               {
-                class: 'of-field-above',
+                class: 'of-field-body',
               },
-              label
-                ? h('div', { class: 'of-field-label-wrap' }, label)
-                : undefined
+              [
+                h(
+                  'div',
+                  {
+                    class: 'of-field-over',
+                  },
+                  label
+                    ? h('div', { class: 'of-field-label-wrap' }, label)
+                    : undefined
+                ),
+                h('div', { class: 'of-field-inner' }, inner),
+              ]
             ),
-            h('div', { class: 'of-field-inner' }, inner),
-            h('div', { class: 'of-field-below' }), // custom slots.below or messages
+            h('div', { class: 'of-field-footer' }), // custom slots.below or messages
             overlay,
           ]
         )

@@ -37,70 +37,78 @@
               >
                 <h4>Preview</h4>
                 <div>
-                  <div class="of-field-outer of--variant-basic of-text-field">
-                    <div class="of-field-above">
-                      <div class="of-field-label-wrap">
-                        <label class="of-field-label">Field label</label>
+                  <div class="of-field of--variant-basic of-text-field">
+                    <div class="of-field-body">
+                      <div class="of-field-over">
+                        <div class="of-field-label-wrap">
+                          <label class="of-field-label">Field label</label>
+                        </div>
                       </div>
-                    </div>
-                    <div class="of-field-inner">
-                      <div class="of-field-input-label">
-                        <label>Basic field</label>
+                      <div class="of-field-inner">
+                        <div class="of-field-input-label">
+                          <label>Basic field</label>
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div
-                    class="of-field-outer of--variant-basic of-text-field of--focused"
+                    class="of-field of--variant-basic of-text-field of--focused"
                   >
-                    <div class="of-field-above">
-                      <div class="of-field-label-wrap">
-                        <label class="of-field-label">Field label</label>
+                    <div class="of-field-body">
+                      <div class="of-field-over">
+                        <div class="of-field-label-wrap">
+                          <label class="of-field-label">Field label</label>
+                        </div>
                       </div>
-                    </div>
-                    <div class="of-field-inner">
-                      <div class="of-field-input-label">
-                        <label>Focused</label>
+                      <div class="of-field-inner">
+                        <div class="of-field-input-label">
+                          <label>Focused</label>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div style="margin-top: 1em;">
                   <div
-                    class="of-field-outer of--active of--with-label of--variant-filled of-text-field"
+                    class="of-field of--active of--with-label of--variant-filled of-text-field"
                   >
-                    <div class="of-field-above">
-                      <div class="of-field-label-wrap">
-                        <label class="of-field-label">Field label</label>
+                    <div class="of-field-body">
+                      <div class="of-field-over">
+                        <div class="of-field-label-wrap">
+                          <label class="of-field-label">Field label</label>
+                        </div>
                       </div>
-                    </div>
-                    <div class="of-field-inner">
-                      <div class="of-field-content">
-                        <input
-                          type="text"
-                          class="of-field-input"
-                          readonly
-                          value="Filled field"
-                        />
+                      <div class="of-field-inner">
+                        <div class="of-field-content">
+                          <input
+                            type="text"
+                            class="of-field-input"
+                            readonly
+                            value="Filled field"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
                   &nbsp;
                   <div
-                    class="of-field-outer of--active of--with-label of--variant-filled of-text-field of--focused"
+                    class="of-field of--active of--with-label of--variant-filled of-text-field of--focused"
                   >
-                    <div class="of-field-above">
-                      <div class="of-field-label-wrap">
-                        <label class="of-field-label">Field label</label>
+                    <div class="of-field-body">
+                      <div class="of-field-over">
+                        <div class="of-field-label-wrap">
+                          <label class="of-field-label">Field label</label>
+                        </div>
                       </div>
-                    </div>
-                    <div class="of-field-inner">
-                      <div class="of-field-content">
-                        <input
-                          type="text"
-                          class="of-field-input"
-                          readonly
-                          value="Focused"
-                        />
+                      <div class="of-field-inner">
+                        <div class="of-field-content">
+                          <input
+                            type="text"
+                            class="of-field-input"
+                            readonly
+                            value="Focused"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
