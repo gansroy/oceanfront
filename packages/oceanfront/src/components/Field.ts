@@ -1,14 +1,20 @@
 import {
-  defineComponent,
-  SetupContext,
   computed,
+  defineComponent,
   h,
   readonly,
   ref,
   PropType,
+  Ref,
+  SetupContext,
   VNode,
 } from 'vue'
-import { FieldContext, FieldRender, Renderable } from '@/lib/fields'
+import {
+  FieldContext,
+  FieldDragIn,
+  FieldRender,
+  Renderable,
+} from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
 import {
   extractRefs,
@@ -69,6 +75,33 @@ const calcPadding = (node: VNode, state: { watch?: CompatResizeObserver }) => {
   )
 }
 
+const makeDragIn = (spec: FieldDragIn, flag: Ref<boolean>) => {
+  return {
+    handlers: {
+      onDragover: function (evt: DragEvent) {
+        evt.stopPropagation()
+        evt.preventDefault()
+        if (evt.dataTransfer) {
+          evt.dataTransfer.dropEffect = spec.dropEffect || 'copy'
+        }
+        flag.value = true
+        if (spec.onEnter) spec.onEnter(evt)
+      },
+      onDragleave: function (evt: DragEvent) {
+        flag.value = false
+        if (spec.onLeave) spec.onLeave(evt)
+      },
+      onDrop: function (evt: DragEvent) {
+        flag.value = false
+
+        evt.stopPropagation()
+        evt.preventDefault()
+        spec.onDrop(evt)
+      },
+    },
+  }
+}
+
 export const OfField = defineComponent({
   name: 'OfField',
   inheritAttrs: false,
@@ -118,6 +151,7 @@ export const OfField = defineComponent({
           : undefined)
       )
     })
+    const dragOver = ref(false)
     const focused = ref(false)
     const mode = computed(
       () => props.mode || (props.readonly ? 'readonly' : 'edit')
@@ -207,13 +241,14 @@ export const OfField = defineComponent({
         const outerId = render.inputId ? render.inputId + '-outer' : props.id
         let overlay, overlayActive, overlayBlur
         // if(ctx.slots.overlay) overlay = ctx.slots.overlay(); else
+        const dragIn = render.dragIn && makeDragIn(render.dragIn, dragOver)
         if (render.popup) {
           overlay = render.popup.content
           overlayActive = render.popup.visible ?? true
           overlayBlur = render.popup.onBlur
         }
-        const blank =
-          render.blank && !(focused.value || render.focused || overlayActive)
+        const showFocused = focused.value || dragOver.value || render.focused
+        const blank = render.blank && !(showFocused || overlayActive)
         const labelText = render.label ?? props.label
         const label = ctx.slots.label
           ? ctx.slots.label()
@@ -233,7 +268,8 @@ export const OfField = defineComponent({
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
             'of--block': props.block,
             'of--blank': blank,
-            'of--focused': focused.value || render.focused,
+            'of--dragover': dragOver.value,
+            'of--focused': showFocused,
             'of--invalid': render.invalid,
             'of--muted': props.muted,
             'of--loading': render.loading,
@@ -287,6 +323,7 @@ export const OfField = defineComponent({
             style,
             tabindex: '-1',
             ...handlers,
+            ...dragIn?.handlers,
           },
           [
             h(

@@ -137,7 +137,7 @@ export default defineComponent({
 
         evt.stopPropagation()
         evt.preventDefault()
-        const files = evt.dataTransfer!.files
+        const files = evt.dataTransfer?.files
         loadError.value = ''
 
         if (files && files.length) {

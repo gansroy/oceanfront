@@ -60,19 +60,21 @@ export const FileField = defineFieldType({
       stateValue.value = null
       if (ctx.onUpdate) ctx.onUpdate(null)
     }
+    const handleUpdate = (files: FileList | null) => {
+      let val = null
+      if (files && files.length) {
+        val = { name: files[0].name }
+      }
+      // FIXME shouldn't need to set stateValue here
+      stateValue.value = val
+      if (ctx.onUpdate) ctx.onUpdate(val)
+    }
     const hooks = {
       onBlur(_evt: FocusEvent) {
         focused.value = false
       },
       onChange(evt: InputEvent) {
-        const files = (evt.target as HTMLInputElement).files
-        let val = null
-        if (files && files.length) {
-          val = { name: files[0].name }
-        }
-        // FIXME shouldn't need to set stateValue here
-        stateValue.value = val
-        if (ctx.onUpdate) ctx.onUpdate(val)
+        handleUpdate((evt.target as HTMLInputElement).files)
       },
       onClick(evt: MouseEvent) {
         evt.stopPropagation()
@@ -82,6 +84,16 @@ export const FileField = defineFieldType({
       },
       onVnodeMounted(vnode: VNode) {
         elt.value = vnode.el as HTMLInputElement
+      },
+    }
+    const dragIn = {
+      onDrop(evt: DragEvent) {
+        const files = evt.dataTransfer?.files || null
+        // FIXME cannot assign multiple files unless input is multiple
+        if (files && elt.value) {
+          elt.value.files = files
+        }
+        handleUpdate(files)
       },
     }
 
@@ -142,6 +154,7 @@ export const FileField = defineFieldType({
       },
       click: clickOpen,
       cursor: 'pointer', // FIXME depends if editable
+      dragIn,
       focus,
       focused,
       // hovered,

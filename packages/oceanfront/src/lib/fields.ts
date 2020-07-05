@@ -77,6 +77,7 @@ export interface FieldRender {
   click?: (evt?: MouseEvent) => boolean | void
   content?: () => Renderable | undefined
   cursor?: string
+  dragIn?: FieldDragIn
   focus?: () => void
   // footer?: () => Renderable | undefined
   focused?: boolean
@@ -94,6 +95,13 @@ export interface FieldRender {
   size?: number
   updated?: boolean
   value?: any
+}
+
+export interface FieldDragIn {
+  dropEffect?: string
+  onDrop: (evt: DragEvent) => void
+  onEnter?: (evt: DragEvent) => void
+  onLeave?: (evt: DragEvent) => void
 }
 
 export interface FieldPopup {
