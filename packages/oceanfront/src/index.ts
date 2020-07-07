@@ -81,6 +81,7 @@ export {
 export { registerItemList, useItems } from './lib/items'
 export { setMobileBreakpoint, useLayout } from './lib/layout'
 export { useLocale } from './lib/locale'
+export { makeRecord, setCurrentRecord, useRecords } from './lib/records'
 export { useRoutes } from './lib/routes'
 
 export default Oceanfront

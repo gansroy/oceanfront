@@ -72,6 +72,7 @@
   display: inline-flex;
   flex-flow: column nowrap;
   font-size: $font-size-input;
+  max-width: 100%;
   outline: none;
   text-align: start;
   @include no-select;
@@ -158,8 +159,9 @@
 .of-field-input,
 .of-field-input-label {
   box-sizing: border-box;
-  padding: $pad-v-input $pad-h-input;
+  // min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
   outline: none;
+  padding: $pad-v-input $pad-h-input;
   // letter-spacing
 }
 
@@ -344,6 +346,7 @@
   // }
 
   .of-field-input-label {
+    // min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
     pointer-events: none;
   }
   .of-field-input,

@@ -1,6 +1,4 @@
-import { hsluvToRgb, rgbToHsluv, rgbToXyz } from 'hsluv'
-
-export const parseColor = function(color: string): string | null {
+export const parseColor = function (color: string): string | null {
   if (!color || typeof color !== 'string') {
     throw new TypeError('Invalid color value')
   }
@@ -45,7 +43,7 @@ export const parseColor = function(color: string): string | null {
 }
 
 let colorCtx: CanvasRenderingContext2D
-export const loadColor = function(color: string): string | null {
+export const loadColor = function (color: string): string | null {
   if (!color) return null
   let found = parseColor(color)
   if (found) {

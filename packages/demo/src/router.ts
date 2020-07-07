@@ -6,6 +6,7 @@ import Colors from './components/Colors.vue'
 import Icons from './components/Icons.vue'
 import Overview from './components/Overview.vue'
 import FileInputs from './components/FileInputs.vue'
+import Records from './components/Records.vue'
 import SelectInputs from './components/SelectInputs.vue'
 import TextInputs from './components/TextInputs.vue'
 import ToggleInputs from './components/ToggleInputs.vue'
@@ -17,6 +18,7 @@ export const router = createRouter({
     { path: '/', name: 'index', component: Overview },
     { path: '/colors', component: Colors },
     { path: '/icons', component: Icons },
+    { path: '/records', component: Records },
     { path: '/formatters', component: Formatters },
     { path: '/file-inputs', component: FileInputs },
     { path: '/select-inputs', component: SelectInputs },

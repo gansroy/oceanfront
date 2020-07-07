@@ -164,7 +164,7 @@ export const TextField = defineFieldType({
             const iVal = upd.textValue ?? ''
             inputElt.value = iVal
             if (upd.selStart !== undefined) {
-              inputElt.setSelectionRange(upd.selStart!, upd.selEnd!)
+              inputElt.setSelectionRange(upd.selStart, upd.selEnd!)
             }
             lazyInputValue = iVal
             pendingValue.value = upd.value

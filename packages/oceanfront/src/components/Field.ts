@@ -2,7 +2,6 @@ import {
   computed,
   defineComponent,
   h,
-  readonly,
   ref,
   PropType,
   Ref,
@@ -16,14 +15,16 @@ import {
   Renderable,
 } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
+import { FieldRecord, useRecords } from '@/lib/records'
 import {
   extractRefs,
   extendReactive,
+  readonlyUnrefs,
   restrictProps,
   watchResize,
   CompatResizeObserver,
 } from '@/lib/util'
-import OfOverlay from '../components/Overlay.vue'
+import OfOverlay from '@/components/Overlay.vue'
 
 const renderSlot = (
   container: Renderable[],
@@ -113,6 +114,10 @@ export const OfField = defineComponent({
     // form
     format: [String, Function, Object],
     id: String,
+    initialValue: {
+      type: [String, Boolean, Number, Array, Object],
+      default: undefined,
+    },
     items: [String, Array, Object],
     label: String,
     loading: Boolean,
@@ -124,6 +129,7 @@ export const OfField = defineComponent({
     name: String,
     placeholder: String,
     readonly: Boolean,
+    record: Object as PropType<FieldRecord>,
     required: Boolean,
     size: { type: Number, default: undefined },
     // style
@@ -138,9 +144,10 @@ export const OfField = defineComponent({
     'update:value': null,
   },
   setup(props, ctx: SetupContext) {
-    const formats = useFormats()
+    const formatMgr = useFormats()
+    const recordMgr = useRecords()
 
-    const fieldType = computed(() => {
+    const fieldType = computed<string | undefined>(() => {
       const fmt = props.format
       return (
         props.type ||
@@ -156,31 +163,44 @@ export const OfField = defineComponent({
     const mode = computed(
       () => props.mode || (props.readonly ? 'readonly' : 'edit')
     )
-    // FIXME derive from config
     const variant = computed(() => props.variant || 'basic')
 
-    const fctx: FieldContext = readonly({
+    const record = computed(() => {
+      return props.record || recordMgr.getCurrentRecord()
+    })
+    const initialValue = computed(() =>
+      props.name && record.value
+        ? (record.value.initialValue || {})[props.name]
+        : props.initialValue
+    )
+    const value = computed(() =>
+      props.name && record.value ? record.value.value[props.name] : props.value
+    )
+    const locked = computed(() => props.locked || record.value?.locked)
+
+    const fctx: FieldContext = readonlyUnrefs({
       container: 'of-field',
-      fieldType: fieldType as any,
-      mode: mode as any, // FIXME ref type not unwrapped correctly
-      ...(extractRefs(props, [
+      fieldType,
+      initialValue,
+      locked,
+      mode,
+      record,
+      value,
+      onUpdate(value: any) {
+        if (props.name && record.value) record.value.value[props.name] = value
+        else ctx.emit('update:value', value)
+      },
+      ...extractRefs(props, [
         'block',
         'id',
         'items',
         'label',
         'loading',
-        'locked',
         'muted',
         'name',
         'required',
-        'value',
-      ]) as any[]), // FIXME type issues
-      // form
-      // initialValue - defined by form?
-      onUpdate(value: any) {
-        ctx.emit('update:value', value)
-      },
-    })
+      ]),
+    } as Record<string, any>)
 
     const format = computed<FieldRender>(() => {
       const ftype = fieldType.value
@@ -193,7 +213,7 @@ export const OfField = defineComponent({
       const found =
         typeof ftype === 'object' && 'setup' in ftype // raw FieldType
           ? ftype
-          : formats.getFieldType(ftype, true)
+          : formatMgr.getFieldType(ftype, true)
       if (!found) {
         // FIXME should always resolve something, but might
         // want a field type that just renders an error message
@@ -273,7 +293,7 @@ export const OfField = defineComponent({
             'of--invalid': render.invalid,
             'of--muted': props.muted,
             'of--loading': render.loading,
-            // 'of--locked': fmt.locked,
+            'of--locked': locked.value,
             'of--updated': render.updated,
             // of--readonly: props.readonly,
             // of--disabled: props.disabled,
@@ -309,7 +329,7 @@ export const OfField = defineComponent({
               active: overlayActive,
               capture: false,
               shade: false,
-              target: '#' + outerId,
+              target: outerId ? '#' + outerId : '',
               onBlur: overlayBlur,
             },
             overlay

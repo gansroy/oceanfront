@@ -47,7 +47,8 @@
             <of-list-item to="/text-inputs">Text</of-list-item>
             <of-list-item to="/toggle-inputs">Toggle</of-list-item>
             <of-list-item disabled>Pickers</of-list-item>
-            <of-list-item to="/formatters">Formatters</of-list-item>
+            <of-list-item to="/records">Records</of-list-item>
+            <of-list-item to="/formatters">Value Formatters</of-list-item>
           </of-list-group>
           <of-list-group value="1">
             <template #activator="{ state, toggle }">

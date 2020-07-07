@@ -1,4 +1,6 @@
-import { Config, ConfigManager, readonlyUnwrap } from './config'
+import { markRaw } from 'vue'
+import { Config, ConfigManager } from './config'
+import { readonlyUnref } from './util'
 
 export interface ItemList {
   avatarKey?: string
@@ -28,7 +30,7 @@ export function makeItemList(items?: any[] | ItemList): ItemList {
       items: [],
     }
   }
-  return items
+  return markRaw(items)
 }
 
 export interface ItemsState {
@@ -54,5 +56,5 @@ export function registerItemList(name: string, items: any[] | ItemList): void {
 
 export function useItems(config?: Config): ItemsState {
   const mgr = configManager.inject(config)
-  return readonlyUnwrap(mgr)
+  return readonlyUnref(mgr)
 }

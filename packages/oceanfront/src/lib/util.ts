@@ -1,22 +1,14 @@
-import { Ref, toRef, isRef } from 'vue'
+import { Ref, toRef, computed, unref } from 'vue'
+import { hasOwn } from '@vue/shared'
 
-export const hasOwnProperty = Object.prototype.hasOwnProperty
-export const hasOwn = (
-  val: object,
-  key: string | symbol
-): key is keyof typeof val => hasOwnProperty.call(val, key)
-
-export const isObject = (val: unknown): val is Record<any, any> =>
-  val !== null && typeof val === 'object'
-
-export const isArray = Array.isArray
-
-export const isFunction = (val: unknown): val is (...args: any[]) => any =>
-  typeof val === 'function'
-
-export function isPromise<T = any>(val: unknown): val is PromiseLike<T> {
-  return isObject(val) && isFunction(val.then)
-}
+export {
+  hasOwn,
+  isArray,
+  isFunction,
+  isPromise,
+  isObject,
+  looseEqual,
+} from '@vue/shared'
 
 export const isDigit = (s: string): boolean => s >= '0' && s <= '9'
 
@@ -58,17 +50,12 @@ export function extendReactive<T extends object, U extends object>(
   updates.reverse()
   return new Proxy(base, {
     get(target: T, key: string, _receiver: object): any {
-      let result
       for (const upd of updates) {
         if (Reflect.has(upd, key)) {
-          result = (upd as any)[key]
-          if (isRef(result)) result = result.value
-          return result
+          return unref((upd as any)[key])
         }
       }
-      result = (target as any)[key]
-      if (isRef(result)) result = result.value
-      return result
+      return unref((target as any)[key])
     },
     getOwnPropertyDescriptor(target: T, key: string) {
       for (const upd of updates) {
@@ -200,6 +187,61 @@ export function removeEmpty(obj: Record<string, any>): Record<string, any> {
   }
   return obj
 }
+
+const readonlyUnrefHandlers = {
+  get(target: Ref, key: string, _receiver: object): any {
+    const result = Reflect.get(target.value, key)
+    return result
+  },
+  has(target: Ref, key: string | number | symbol): boolean {
+    return Reflect.has(target.value, key)
+  },
+  ownKeys(target: Ref): (string | number | symbol)[] {
+    return Reflect.ownKeys(target.value)
+  },
+  set(_target: Ref, _key: string, _value: any, _receiver: object): boolean {
+    if (__DEV__) {
+      console.warn('Cannot assign to readonly ref')
+    }
+    return true
+  },
+  deleteProperty(_target: Ref, _key: string): boolean {
+    if (__DEV__) {
+      console.warn('Cannot delete property of readonly ref')
+    }
+    return true
+  },
+}
+
+export function readonlyUnref<T>(val: Ref<T>): T {
+  return (new Proxy(val, readonlyUnrefHandlers) as any) as T
+}
+
+const readonlyUnrefsHandlers = {
+  get(target: object, key: string, _receiver: object): any {
+    return unref(Reflect.get(target, key))
+  },
+  set(_target: object, _key: string, _value: any, _receiver: object): boolean {
+    if (__DEV__) {
+      console.warn('Cannot assign to readonly ref')
+    }
+    return true
+  },
+  deleteProperty(_target: Ref, _key: string): boolean {
+    if (__DEV__) {
+      console.warn('Cannot delete property of readonly ref')
+    }
+    return true
+  },
+}
+
+export function readonlyUnrefs<T extends object>(
+  val: T
+): { [K in keyof T]: T[K] extends Ref<infer V> ? V : T[K] } {
+  return new Proxy(val, readonlyUnrefsHandlers) as any
+}
+
+const _s: { r: string } = readonlyUnrefs({ r: computed(() => 'hi') })
 
 export interface CompatResizeObserver {
   disconnect(): void

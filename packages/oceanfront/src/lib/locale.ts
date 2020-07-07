@@ -1,4 +1,5 @@
-import { Config, ConfigManager, readonlyUnwrap } from '../lib/config'
+import { Config, ConfigManager } from './config'
+import { readonlyUnref } from './util'
 
 export interface LocaleNumberFormat {
   readonly groupSeparator: string
@@ -28,5 +29,5 @@ export function setLocale(loc: string) {
 
 export function useLocale(config?: Config): LocaleState {
   const mgr = configManager.inject(config)
-  return readonlyUnwrap(mgr)
+  return readonlyUnref(mgr)
 }

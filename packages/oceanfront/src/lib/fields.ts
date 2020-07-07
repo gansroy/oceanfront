@@ -1,5 +1,6 @@
 import { VNode } from 'vue'
 import { ItemList } from './items'
+import { FieldRecord } from './records'
 import { extendReactive } from './util'
 
 export type Renderable = VNode | VNode[] | string
@@ -19,27 +20,20 @@ export interface FieldTypeConstructor {
 
 export type FieldSetup = (props: FieldProps, ctx: FieldContext) => FieldRender
 
-export interface BaseForm {
-  getInitialValue(name: string): any
-  getValue(name: string): any
-  locked?: boolean
-  // setValue(name: string, value: any)
-}
-
 // FIXME 'items' currently redundant
 export interface FieldContext {
   block?: boolean
   container?: string
-  // form?: BaseForm
   fieldType?: string // the resolved field type name
   id?: string
-  initialValue?: any // container normally loads from form
+  initialValue?: any // normally loaded from record
   items?: string | any[] | ItemList
   label?: string
   locked?: boolean // | Lock
   mode?: 'view' | 'edit' | 'readonly' // | 'disabled'
   muted?: boolean // if editable, reduce indicators
   name?: string
+  record?: FieldRecord
   // onFocus, onBlur
   onUpdate?: (value: any) => void
   // onInput? - watch inputValue

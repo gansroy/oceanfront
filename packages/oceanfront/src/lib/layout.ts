@@ -1,7 +1,8 @@
+import { hsluvToHex, hexToHsluv } from 'hsluv'
 import { reactive } from 'vue'
 import { parseColor } from './color'
-import { Config, ConfigManager, readonlyUnwrap } from './config'
-import { hsluvToHex, hexToHsluv } from 'hsluv'
+import { Config, ConfigManager } from './config'
+import { readonlyUnref } from './util'
 
 export type ThemeConfig = {
   primaryColor?: string
@@ -22,7 +23,7 @@ const windowRect = reactive<WindowRect>({
   scrollX: 0,
   scrollY: 0,
   width: 0,
-  height: 0
+  height: 0,
 })
 
 function initEvents() {
@@ -31,7 +32,7 @@ function initEvents() {
       scrollX: window.scrollX,
       scrollY: window.scrollY,
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     })
   }
   window.addEventListener('resize', onScroll, { passive: true })
@@ -47,9 +48,7 @@ export interface LayoutState {
 }
 
 class LayoutManager implements LayoutState {
-  mobileBreakpoint: number = 1024
-
-  constructor(_config: Config) {}
+  mobileBreakpoint = 1024
 
   get isMobile() {
     return windowRect.width < this.mobileBreakpoint
@@ -62,7 +61,7 @@ class LayoutManager implements LayoutState {
 
 const configManager = new ConfigManager('oflay', LayoutManager)
 
-export function setMobileBreakpoint(bp: number) {
+export function setMobileBreakpoint(bp: number): void {
   configManager.extendingManager.mobileBreakpoint = bp
 }
 
@@ -145,7 +144,7 @@ export function themeStyle(config?: ThemeConfig) {
     '--of-color-field-label': label,
     '--of-color-field-focus-label': `${bc_field_focus}dd`,
     '--of-color-field-filled-focus-label': filled_focus_label,
-    '--of-color-sheet': text
+    '--of-color-sheet': text,
   }
 }
 
@@ -155,5 +154,5 @@ export function useLayout(config?: Config): LayoutState {
     inited = true
   }
   const mgr = configManager.inject(config)
-  return readonlyUnwrap(mgr)
+  return readonlyUnref(mgr)
 }

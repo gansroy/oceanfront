@@ -1,5 +1,6 @@
-import { Config, ConfigManager, readonlyUnwrap } from './config'
+import { Config, ConfigManager } from './config'
 import { FieldType, FieldTypeConstructor } from './fields'
+import { readonlyUnref } from './util'
 
 export interface TextFormatResult {
   blank?: boolean
@@ -110,5 +111,5 @@ export function setDefaultFieldType(name: string): void {
 
 export function useFormats(config?: Config): FormatState {
   const mgr = configManager.inject(config)
-  return readonlyUnwrap(mgr)
+  return readonlyUnref(mgr)
 }

@@ -28,6 +28,7 @@ import {
   watch,
   nextTick,
   onBeforeUnmount,
+  PropType,
 } from 'vue'
 import OfSpinner from './Spinner.vue'
 
@@ -75,7 +76,7 @@ export default defineComponent({
     loading: Boolean,
     pad: { type: Boolean, default: true }, // FIXME change to string enum
     shade: { type: Boolean, default: true },
-    target: [Element, String],
+    target: ({ type: [Element, String] } as any) as PropType<Element | string>,
   },
   setup(props, ctx: SetupContext) {
     const active = computed(() => props.active)

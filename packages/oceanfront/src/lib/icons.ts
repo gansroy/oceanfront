@@ -1,4 +1,5 @@
-import { Config, ConfigManager, readonlyUnwrap } from '../lib/config'
+import { Config, ConfigManager } from './config'
+import { readonlyUnref } from './util'
 
 export interface Icon {
   class?: string
@@ -275,5 +276,5 @@ export function showMissingIcons(flag?: boolean): void {
 
 export function useIcons(config?: Config): IconManager {
   const mgr = configManager.inject(config)
-  return readonlyUnwrap(mgr)
+  return readonlyUnref(mgr)
 }
