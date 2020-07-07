@@ -39,9 +39,9 @@ export default defineComponent({
   // components: { OfFormat },
   props: {
     footerItems: { type: Array, default: () => [] },
-    headers: { type: Array, default: () => [] } as object &
+    headers: ({ type: Array, default: () => [] } as any) as object &
       PropType<DataTableHeader[]>,
-    items: { type: Array, default: () => [] } as object &
+    items: ({ type: Array, default: () => [] } as any) as object &
       PropType<Record<string, any>>,
     itemsCount: [String, Number],
     itemsPerPage: [String, Number],
