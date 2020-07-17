@@ -43,6 +43,18 @@
           </template>
         </of-config>
       </div>
+      <div class="column sm-4">
+        <h4>URL Input</h4>
+        <of-field
+          style="width: 10em;"
+          format="url"
+          v-model:value="inputUrlValue"
+        />
+        <br />
+        Original URL:
+        <br />
+        {{ inputUrlValue }}
+      </div>
       <div class="column sm-4"></div>
     </div>
   </div>
@@ -55,6 +67,7 @@ export default defineComponent({
   setup() {
     const inputValue = ref(100125.99)
     const inputDurationValue = ref(100)
+    const inputUrlValue = 'https://example.com/'
     const localeOpts = [
       { text: '(browser default)', value: '' },
       { text: 'en-CA', value: 'en-CA' },
@@ -68,6 +81,7 @@ export default defineComponent({
       localeOpts,
       inputValue,
       inputDurationValue,
+      inputUrlValue,
     }
   },
 })
