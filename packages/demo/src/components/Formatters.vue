@@ -43,6 +43,8 @@
           </template>
         </of-config>
       </div>
+    </div>
+    <div class="row">
       <div class="column sm-4">
         <h4>URL Input</h4>
         <of-field
@@ -67,7 +69,7 @@ export default defineComponent({
   setup() {
     const inputValue = ref(100125.99)
     const inputDurationValue = ref(100)
-    const inputUrlValue = 'https://example.com/'
+    const inputUrlValue = ref('https://example.com/')
     const localeOpts = [
       { text: '(browser default)', value: '' },
       { text: 'en-CA', value: 'en-CA' },
