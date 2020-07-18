@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/oceanfront.js",
-  "module": "dist/oceanfront.js",
+  "module": "dist/oceanfront.min.js",
   "types": "dist/oceanfront.d.ts",
   "files": [
     "dist",
@@ -11,6 +11,8 @@
   ],
   "scripts": {
     "build": "NODE_ENV=production webpack",
+    "build-dev": "TARGET=development webpack",
+    "clean": "rimraf dist",
     "watch": "TARGET=development webpack --watch"
   },
   "peerDependencies": {
@@ -44,6 +46,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "prettier": "^2.0.0",
     "resolve-url-loader": "^3.1.1",
+    "rimraf": "^3.0.0",
     "sass-loader": "^8.0.2",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.5",
