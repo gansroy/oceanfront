@@ -24,6 +24,7 @@ import { registerFieldType, registerTextFormatter } from './lib/formats'
 import { ColorFormatter } from './formats/Color'
 import { NumberFormatter } from './formats/Number'
 import { DurationFormatter } from './formats/Duration'
+import { UrlFormatter } from './formats/Url'
 
 import './scss/index.scss'
 
@@ -57,6 +58,7 @@ export const Oceanfront: Plugin = {
       registerTextFormatter('color', ColorFormatter)
       registerTextFormatter('number', NumberFormatter)
       registerTextFormatter('duration', DurationFormatter)
+      registerTextFormatter('url', UrlFormatter)
     })
     if (args && typeof args.config === 'function') {
       extendDefaultConfig(args.config)
