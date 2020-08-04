@@ -8,6 +8,7 @@ import Overview from './components/Overview.vue'
 import FileInputs from './components/FileInputs.vue'
 import Records from './components/Records.vue'
 import SelectInputs from './components/SelectInputs.vue'
+import SliderInputs from './components/SliderInputs.vue'
 import TextInputs from './components/TextInputs.vue'
 import ToggleInputs from './components/ToggleInputs.vue'
 import Tabs from './components/Tabs.vue'
@@ -23,6 +24,7 @@ export const router = createRouter({
     { path: '/formatters', component: Formatters },
     { path: '/file-inputs', component: FileInputs },
     { path: '/select-inputs', component: SelectInputs },
+    { path: '/slider-inputs', component: SliderInputs },
     { path: '/text-inputs', component: TextInputs },
     { path: '/toggle-inputs', component: ToggleInputs },
     { path: '/data-tables', component: DataTables },

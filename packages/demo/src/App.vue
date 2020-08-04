@@ -44,6 +44,7 @@
             </template>
             <of-list-item to="/file-inputs">File</of-list-item>
             <of-list-item to="/select-inputs">Select</of-list-item>
+            <of-list-item to="/slider-inputs">Slider</of-list-item>
             <of-list-item to="/text-inputs">Text</of-list-item>
             <of-list-item to="/toggle-inputs">Toggle</of-list-item>
             <of-list-item disabled>Pickers</of-list-item>
