@@ -105,7 +105,7 @@ export default defineComponent({
       handleOfTabsHeaderScrollIcons()
     })
 
-    let navigateHeader = function (value: string) {
+    const navigateHeader = function (value: string) {
       if (value == 'next') {
         ofTabsHeader.value.scrollTo({
           left: ofTabsHeader.value.scrollLeft + 150,
@@ -118,7 +118,7 @@ export default defineComponent({
         })
       }
     }
-    let repositionLine = function () {
+    const repositionLine = function () {
       let currenTabHeaderItem: any = tabs.value.querySelector(
         '.of-tab-header-item.is-active'
       )
@@ -127,7 +127,7 @@ export default defineComponent({
       tabLine.style.left = currenTabHeaderItem?.offsetLeft + 'px'
     }
 
-    let selectTab = function (newTab: any) {
+    const selectTab = function (newTab: any) {
       if (selectedTab.value !== newTab.props.name) {
         selectedTab.value = null
         selectedTabName.value = null
@@ -142,7 +142,7 @@ export default defineComponent({
       checkNavigation()
     }
 
-    let checkNavigation = function () {
+    const checkNavigation = function () {
       if (ofTabsHeader.value.clientWidth < ofTabsHeader.value.scrollWidth) {
         showNavigation.value = true
       } else {
