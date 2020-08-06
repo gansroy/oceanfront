@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/oceanfront.js",
-  "module": "dist/oceanfront.min.js",
   "types": "dist/oceanfront.d.ts",
   "files": [
     "dist",

@@ -8,7 +8,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
 const version = process.env.VERSION || require('./package.json').version
 
-module.exports = (env = {}) => {
+module.exports = (_env = {}) => {
   let config = {
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? 'source-map' : 'inline-source-map',
@@ -25,7 +25,8 @@ module.exports = (env = {}) => {
       library: 'Oceanfront',
       libraryTarget: 'umd',
       // libraryExport: 'default',
-      filename: isProd ? '[name].min.js' : '[name].js',
+      // filename: isProd ? '[name].min.js' : '[name].js',
+      filename: '[name].js',
     },
     resolve: {
       extensions: ['.js', '.ts', '.vue'],
@@ -90,7 +91,11 @@ module.exports = (env = {}) => {
       new MiniCssExtractPlugin({
         filename: '[name].css',
       }),
-      new CopyPlugin([{ from: 'src/global.d.ts', to: 'oceanfront.d.ts' }]),
+      new CopyPlugin([
+        { from: 'src/global.d.ts', to: 'oceanfront.d.ts' },
+        { from: 'fonts', to: 'fonts' },
+        { from: 'src/scss', to: 'scss' },
+      ]),
     ],
     devServer: {
       inline: true,

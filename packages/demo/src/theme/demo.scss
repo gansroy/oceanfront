@@ -5,10 +5,10 @@
   color: #334;
 }
 
-@import '../../../../node_modules/oceanfront/src/scss';
+@import '~oceanfront/dist/scss';
 
-@import '../../../../node_modules/oceanfront/fonts/uibasic.css';
-@import '../../../../node_modules/oceanfront/fonts/uibasic-icons.css';
+@import '~oceanfront/dist/fonts/uibasic.css';
+@import '~oceanfront/dist/fonts/uibasic-icons.css';
 
 .of-code {
   border-radius: 5px;
