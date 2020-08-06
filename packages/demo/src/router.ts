@@ -10,6 +10,7 @@ import Records from './components/Records.vue'
 import SelectInputs from './components/SelectInputs.vue'
 import TextInputs from './components/TextInputs.vue'
 import ToggleInputs from './components/ToggleInputs.vue'
+import Tabs from './components/Tabs.vue'
 
 export const routerHistory = createWebHashHistory('/ofdocs')
 export const router = createRouter({
@@ -25,5 +26,6 @@ export const router = createRouter({
     { path: '/text-inputs', component: TextInputs },
     { path: '/toggle-inputs', component: ToggleInputs },
     { path: '/data-tables', component: DataTables },
+    { path: '/tabs', component: Tabs },
   ],
 })

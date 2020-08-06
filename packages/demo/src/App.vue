@@ -53,13 +53,15 @@
           <of-list-group value="1">
             <template #activator="{ state, toggle }">
               <of-list-item :expand="state" @click.prevent="toggle"
-                >Lists</of-list-item
+                >
+Lists
+</of-list-item
               >
             </template>
             <of-list-item to="/data-tables">Data Tables</of-list-item>
             <of-list-item disabled>Menus</of-list-item>
           </of-list-group>
-          <of-list-item disabled>Tabs</of-list-item>
+          <of-list-item to="/tabs">Tabs</of-list-item>
           <of-list-item disabled>Pagers</of-list-item>
           <of-list-item disabled>Dialogs</of-list-item>
         </of-nav-group>
@@ -113,7 +115,7 @@ export default defineComponent({
           : sidebarDesktopActive.value
       },
       set(val: boolean) {
-        ;(isMobile.value
+        (isMobile.value
           ? sidebarMobileActive
           : sidebarDesktopActive
         ).value = val
