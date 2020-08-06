@@ -70,7 +70,7 @@
                 </div>
                 <div style="margin-top: 1em;">
                   <div
-                    class="of-field of--active of--with-label of--variant-filled of-text-field"
+                    class="of-field of--active of--label-visible of--variant-filled of-text-field"
                   >
                     <div class="of-field-body">
                       <div class="of-field-over">
@@ -92,7 +92,7 @@
                   </div>
                   &nbsp;
                   <div
-                    class="of-field of--active of--with-label of--variant-filled of-text-field of--focused"
+                    class="of-field of--active of--label-visible of--variant-filled of-text-field of--focused"
                   >
                     <div class="of-field-body">
                       <div class="of-field-over">
