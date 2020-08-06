@@ -7,6 +7,18 @@
           type="slider"
           :value="{ value: '80', min: '20', max: '300', step: '1' }"
         />
+        <br /><br />
+        <of-field
+          type="slider"
+          variant="outlined"
+          :value="{ value: '80', min: '20', max: '300', step: '1' }"
+        />
+        <br /><br />
+        <of-field
+          type="slider"
+          variant="filled"
+          :value="{ value: '80', min: '20', max: '300', step: '1' }"
+        />
       </div>
     </div>
   </div>
