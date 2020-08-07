@@ -14,6 +14,8 @@ import { OfSelectField } from './components/SelectField'
 import OfSidebar from './components/Sidebar.vue'
 import { OfTextField } from './components/TextField'
 import { OfToggleField } from './components/ToggleField'
+import OfTabs from './components/Tabs.vue'
+import OfTab from './components/Tab.vue'
 
 import { FileField } from './fields/File'
 import { SelectField } from './fields/Select'
@@ -38,6 +40,8 @@ export const components: Record<string, Component> = {
   OfListItem,
   OfListGroup,
   OfNavGroup,
+  OfTabs,
+  OfTab,
   OfSelectField,
   OfSidebar,
   OfTextField,
