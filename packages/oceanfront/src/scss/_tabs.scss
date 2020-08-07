@@ -1,29 +1,28 @@
 .of-tabs {
   .of-tabs-navigation-header {
     position: relative;
+    background: #eee;
+    padding: 0 3px;
     .of-tabs-navigation {
-      .of-icon {
-        opacity: 0;
-      }
+      opacity: 0;
+      visibility: hidden;
     }
     &.of-tabs-navigation-header-show-next-navigation {
       .of-tabs-navigation-next {
-        .of-icon {
-          opacity: 1;
-        }
+        opacity: 1;
+        visibility: visible;
+      }
+      .of-tabs-header {
+        margin-right: 45px;
       }
     }
     &.of-tabs-navigation-header-show-previous-navigation {
       .of-tabs-navigation-prev {
-        .of-icon {
-          opacity: 1;
-        }
+        opacity: 1;
+        visibility: visible;
       }
-    }
-    &.of-tabs-navigation-header-has-navigation {
       .of-tabs-header {
         padding-left: 43px;
-        margin-right: 45px;
       }
     }
   }
@@ -45,8 +44,6 @@
   }
   .of-tabs-header {
     display: flex;
-    background: #eee;
-    padding: 0px 7px;
     padding-top: 1px;
     position: relative;
     display: flex;
