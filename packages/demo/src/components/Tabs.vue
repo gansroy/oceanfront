@@ -3,109 +3,14 @@
     <h4>Tabs</h4>
     <of-highlight lang="html" :value="sampleCode" />
     <h2>Regular tabs</h2>
-    <of-tabs>
-      <of-tab name="Tab 1">
-        <h4>Tab 1 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 2">
-        <h4>Tab 2 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 3">
-        <h4>Tab 3 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 4">
-        <h4>Tab 4 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 5">
-        <h4>Tab 5 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 6">
-        <h4>Tab 6 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 7">
-        <h4>Tab 7 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-    </of-tabs>
+    <of-tabs
+      :items="testItems"
+    ></of-tabs>
     <h2>Scrolling tabs</h2>
-    <of-tabs style="width: 400px;">
-      <of-tab name="Tab 1">
-        <h4>Tab 1 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 2">
-        <h4>Tab 2 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 3">
-        <h4>Tab 3 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 4">
-        <h4>Tab 4 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 5">
-        <h4>Tab 5 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 6">
-        <h4>Tab 6 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 7">
-        <h4>Tab 7 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-    </of-tabs>
+    <of-tabs
+      :items="testItems2"
+      style="width: 400px;"
+    ></of-tabs>
   </div>
 </template>
 
@@ -114,24 +19,29 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {
-    const sampleCode = `<of-tabs>
-    <of-tab name="Tab 1">
-      <h4>Tab 1 content</h4>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-        consequuntur.
-      </p>
-    </of-tab>
-    <of-tab name="Tab 2">
-      <h4>Tab 1 content</h4>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-        consequuntur.
-      </p>
-    </of-tab>
-</of-tabs>
-`
-    return { sampleCode }
+    const sampleCode = `
+<of-tabs
+  :items="itemsList"
+/>`
+
+    const testItems = [
+      'Tab 1',
+      'Tab 2',
+      'Tab 3'
+    ]
+
+    const testItems2 = [
+      'Tab 1',
+      'Tab 2',
+      'Tab 3',
+      'Tab 4',
+      'Tab 5',
+      'Tab 6',
+      'Tab 7',
+      'Tab 8',
+    ]
+
+    return { sampleCode, testItems, testItems2 }
   },
 })
 </script>

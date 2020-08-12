@@ -26,11 +26,11 @@
             @click="selectTab(tab)"
             v-for="(tab, index) in tabsList"
             :class="{
-              'is-active': tab.props.name === selectedTabName,
+              'is-active': tab.value === selectedTabName,
               'of-tab-header-item': true,
             }"
           >
-            {{ tab.props.name }}
+            {{ tab.value }}
           </div>
           <div class="of-tabs-line" ref="tabLine"></div>
         </div>
@@ -56,14 +56,21 @@ import {
   ref,
   defineComponent,
   onMounted,
+  PropType,
   SetupContext,
+  computed,
 } from 'vue'
+
+import {ItemList, useItems} from '@/lib/items'
 
 export default defineComponent({
   name: 'OfTabs',
+  props: {
+    items: ({ type: [Object, Array] } as any) as PropType<ItemList>,
+  },
   setup(props, context: SetupContext) {
     let showNavigation = ref(false)
-    let tabs: any = ref()
+    let tabs: any = ref([])
     let tabsList: any = ref([])
     let selectedTab: any = ref()
     let selectedTabName: any = ref()
@@ -71,6 +78,21 @@ export default defineComponent({
 
     let ofTabsNavigationHeaderShowNextNavigation = ref(true)
     let ofTabsNavigationHeaderShowPreviousNavigation = ref(true)
+
+    const itemMgr = useItems()
+
+    const items = computed(() => {
+      const result = {
+        textKey: 'text',
+        items: [],
+      }
+      const list = itemMgr.getItemList(props.items)
+      if (list) {
+        Object.assign(result, list)
+      }
+
+      return result
+    })
 
     const handleOfTabsHeaderScrollIcons = () => {
       let maximumScrollLeft =
@@ -91,10 +113,27 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      let tabsListDefault: any = context.slots.default
-      tabsList.value = tabsListDefault()
-      selectedTab.value = tabsList.value[0]
-      selectedTabName.value = tabsList.value[0].props.name
+      const rows = []
+      const resolved = items.value
+
+      for (const item of resolved.items) {
+        if (typeof item === 'string') {
+          rows.push({
+            value: item
+          })
+        } else if (typeof item === 'object') {
+          rows.push({
+            value: item[resolved.textKey]
+          })
+        }
+      }
+
+      tabsList.value = rows
+      if (rows.length) {
+        selectedTab.value = rows[0]
+        selectedTabName.value = rows[0].value
+      }
+
       setTimeout(() => {
         repositionLine()
         checkNavigation()
@@ -106,6 +145,7 @@ export default defineComponent({
     })
 
     const navigateHeader = function (value: string) {
+
       if (value == 'next') {
         ofTabsHeader.value.scrollTo({
           left: ofTabsHeader.value.scrollLeft + 150,
@@ -128,11 +168,11 @@ export default defineComponent({
     }
 
     const selectTab = function (newTab: any) {
-      if (selectedTab.value !== newTab.props.name) {
+      if (selectedTab.value !== newTab.value) {
         selectedTab.value = null
         selectedTabName.value = null
         setTimeout(() => {
-          selectedTabName.value = newTab.props.name
+          selectedTabName.value = newTab.value
           selectedTab.value = newTab
           setTimeout(() => {
             repositionLine()
@@ -143,11 +183,7 @@ export default defineComponent({
     }
 
     const checkNavigation = function () {
-      if (ofTabsHeader.value.clientWidth < ofTabsHeader.value.scrollWidth) {
-        showNavigation.value = true
-      } else {
-        showNavigation.value = false
-      }
+      showNavigation.value = ofTabsHeader.value.clientWidth < ofTabsHeader.value.scrollWidth;
     }
 
     return {
