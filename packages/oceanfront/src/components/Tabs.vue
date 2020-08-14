@@ -23,14 +23,14 @@
         <div class="of-tabs-header" ref="ofTabsHeader">
           <div
             :key="index"
-            @click="selectTab(tab)"
+            @click="selectTab(index)"
             v-for="(tab, index) in tabsList"
             :class="{
-              'is-active': tab.value === selectedTabName,
+              'is-active': selectedTabIdx === index,
               'of-tab-header-item': true,
             }"
           >
-            {{ tab.value }}
+            {{ tab.text }}
           </div>
           <div class="of-tabs-line" ref="tabLine"></div>
         </div>
@@ -40,11 +40,6 @@
           @click="navigateHeader('next')"
         >
           <of-icon :name="'nav-next'" :title="'Next tab'" size="input" />
-        </div>
-      </div>
-      <div class="of-tab-content" ref="tabsContent">
-        <div v-if="selectedTab">
-          <component :is="selectedTab"></component>
         </div>
       </div>
     </div>
@@ -58,7 +53,7 @@ import {
   onMounted,
   PropType,
   SetupContext,
-  computed,
+  computed, watch,
 } from 'vue'
 
 import {ItemList, useItems} from '@/lib/items'
@@ -67,26 +62,45 @@ export default defineComponent({
   name: 'OfTabs',
   props: {
     items: ({ type: [Object, Array] } as any) as PropType<ItemList>,
+    value: Number,
+    scrolling: { type: Boolean, default: false },
   },
   setup(props, context: SetupContext) {
-    let showNavigation = ref(false)
     let tabs: any = ref([])
-    let tabsList: any = ref([])
-    let selectedTab: any = ref()
-    let selectedTabName: any = ref()
     let ofTabsHeader: any = ref()
 
-    let ofTabsNavigationHeaderShowNextNavigation = ref(true)
-    let ofTabsNavigationHeaderShowPreviousNavigation = ref(true)
+    let selectedTabIdx: any = ref(props.value)
+
+    watch(
+      () => props.value,
+      (val) => {
+        selectedTabIdx.value = val
+      }
+    )
+
+    const ofTabsNavigationHeaderShowNextNavigation = computed(() => {
+      return props.scrolling
+    })
+
+    const ofTabsNavigationHeaderShowPreviousNavigation = computed(() => {
+      return props.scrolling
+    })
+
+    const showNavigation = computed(() => {
+      return props.scrolling
+    })
 
     const itemMgr = useItems()
 
     const items = computed(() => {
       const result = {
+        disabledKey: 'disabled',
+        iconKey: 'icon',
         textKey: 'text',
         items: [],
       }
       const list = itemMgr.getItemList(props.items)
+
       if (list) {
         Object.assign(result, list)
       }
@@ -94,54 +108,47 @@ export default defineComponent({
       return result
     })
 
-    const handleOfTabsHeaderScrollIcons = () => {
-      let maximumScrollLeft =
-        ofTabsHeader.value.scrollWidth - ofTabsHeader.value.clientWidth
-
-      if (ofTabsHeader.value.scrollLeft === 0) {
-        ofTabsNavigationHeaderShowPreviousNavigation.value = false
-      } else {
-        ofTabsNavigationHeaderShowPreviousNavigation.value = true
-      }
-      if (ofTabsHeader.value.scrollLeft > 0) {
-        if (maximumScrollLeft === ~~ofTabsHeader.value.scrollLeft) {
-          ofTabsNavigationHeaderShowNextNavigation.value = false
-        } else {
-          ofTabsNavigationHeaderShowNextNavigation.value = true
-        }
-      }
-    }
-
-    onMounted(() => {
+    let tabsList = computed(() => {
       const rows = []
       const resolved = items.value
 
       for (const item of resolved.items) {
-        if (typeof item === 'string') {
+        let text = '';
+
+        if (typeof item === 'string' && item !== '') {
           rows.push({
-            value: item
+            disabled: false,
+            icon: null,
+            text: item,
           })
         } else if (typeof item === 'object') {
-          rows.push({
-            value: item[resolved.textKey]
-          })
+          text = item[resolved.textKey]? item[resolved.textKey] : ''
+          if (text !== '') {
+            rows.push({
+              disabled: item[resolved.disabledKey] ? item[resolved.disabledKey] : false,
+              icon: item[resolved.iconKey] ? item[resolved.iconKey] : null,
+              text: item[resolved.textKey],
+            })
+          }
         }
       }
 
-      tabsList.value = rows
-      if (rows.length) {
-        selectedTab.value = rows[0]
-        selectedTabName.value = rows[0].value
-      }
+      return rows
+    })
 
+    const selectedTab = computed(() => {
+      let idx = 0
+      for (const item of tabsList.value) {
+        if (idx === selectedTabIdx.value)
+          return item
+        idx++
+      }
+    })
+
+    onMounted(() => {
       setTimeout(() => {
         repositionLine()
-        checkNavigation()
       })
-      ofTabsHeader.value.onscroll = function () {
-        handleOfTabsHeaderScrollIcons()
-      }
-      handleOfTabsHeaderScrollIcons()
     })
 
     const navigateHeader = function (value: string) {
@@ -159,42 +166,38 @@ export default defineComponent({
       }
     }
     const repositionLine = function () {
-      let currenTabHeaderItem: any = tabs.value.querySelector(
+      const currentTabHeaderItem = tabs.value.querySelector(
         '.of-tab-header-item.is-active'
       )
+
       let tabLine: HTMLDivElement = tabs.value.querySelector('.of-tabs-line')
-      tabLine.style.width = currenTabHeaderItem?.clientWidth + 'px'
-      tabLine.style.left = currenTabHeaderItem?.offsetLeft + 'px'
+      tabLine.style.width = currentTabHeaderItem?.clientWidth + 'px'
+      tabLine.style.left = currentTabHeaderItem?.offsetLeft + 'px'
     }
 
-    const selectTab = function (newTab: any) {
-      if (selectedTab.value !== newTab.value) {
-        selectedTab.value = null
-        selectedTabName.value = null
+    const selectTab = function (index: Number) {
+
+      if (selectedTabIdx.value !== index) {
+
+        context.emit('update:value', index)
+
         setTimeout(() => {
-          selectedTabName.value = newTab.value
-          selectedTab.value = newTab
           setTimeout(() => {
             repositionLine()
           })
         })
-      }
-      checkNavigation()
-    }
 
-    const checkNavigation = function () {
-      showNavigation.value = ofTabsHeader.value.clientWidth < ofTabsHeader.value.scrollWidth;
+      }
     }
 
     return {
       tabsList,
       selectedTab,
-      selectedTabName,
+      selectedTabIdx,
       showNavigation,
       navigateHeader,
       repositionLine,
       selectTab,
-      checkNavigation,
       tabs,
       ofTabsHeader,
       ofTabsNavigationHeaderShowNextNavigation,
