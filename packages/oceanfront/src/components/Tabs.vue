@@ -1,45 +1,47 @@
 <template>
   <transition>
     <div class="of-tabs" ref="tabs">
-      <div
-        :class="{
-          'of-tabs-navigation-header': true,
-          'of-tabs-navigation-header-show-next-navigation': ofTabsNavigationHeaderShowNextNavigation,
-          'of-tabs-navigation-header-show-previous-navigation': ofTabsNavigationHeaderShowPreviousNavigation,
-          'of-tabs-navigation-header-has-navigation': showNavigation,
-        }"
-      >
+      <div :class="cls">
         <div
-          v-if="showNavigation"
-          class="of-tabs-navigation of-tabs-navigation-prev"
-          @click="navigateHeader('prev')"
+          :class="{
+            'of-tabs-navigation-header': true,
+            'of-tabs-navigation-header-show-next-navigation': ofTabsNavigationHeaderShowNextNavigation,
+            'of-tabs-navigation-header-show-previous-navigation': ofTabsNavigationHeaderShowPreviousNavigation,
+            'of-tabs-navigation-header-has-navigation': showNavigation,
+          }"
         >
-          <of-icon
-            :name="'nav-previous'"
-            :title="'Previous tab'"
-            size="input"
-          />
-        </div>
-        <div class="of-tabs-header" ref="ofTabsHeader">
           <div
-            :key="index"
-            @click="selectTab(index)"
-            v-for="(tab, index) in tabsList"
-            :class="{
-              'is-active': selectedTabIdx === index,
-              'of-tab-header-item': true,
-            }"
+            v-if="showNavigation"
+            class="of-tabs-navigation of-tabs-navigation-prev"
+            @click="navigateHeader('prev')"
           >
-            {{ tab.text }}
+            <of-icon
+              :name="'nav-previous'"
+              :title="'Previous tab'"
+              size="input"
+            />
           </div>
-          <div class="of-tabs-line" ref="tabLine"></div>
-        </div>
-        <div
-          v-if="showNavigation"
-          class="of-tabs-navigation of-tabs-navigation-next"
-          @click="navigateHeader('next')"
-        >
-          <of-icon :name="'nav-next'" :title="'Next tab'" size="input" />
+          <div class="of-tabs-header" ref="ofTabsHeader">
+            <div
+              :key="index"
+              @click="selectTab(index)"
+              v-for="(tab, index) in tabsList"
+              :class="{
+                'is-active': selectedTabIdx === index,
+                'of-tab-header-item': true,
+              }"
+            >
+              {{ tab.text }}
+            </div>
+            <div class="of-tabs-line" ref="tabLine"></div>
+          </div>
+          <div
+            v-if="showNavigation"
+            class="of-tabs-navigation of-tabs-navigation-next"
+            @click="navigateHeader('next')"
+          >
+            <of-icon :name="'nav-next'" :title="'Next tab'" size="input" />
+          </div>
         </div>
       </div>
     </div>
@@ -64,6 +66,7 @@ export default defineComponent({
     items: ({ type: [Object, Array] } as any) as PropType<ItemList>,
     value: Number,
     scrolling: { type: Boolean, default: false },
+    variant: String,
   },
   setup(props, context: SetupContext) {
     let tabs: any = ref([])
@@ -78,6 +81,9 @@ export default defineComponent({
       }
     )
 
+    const variant = computed(() => props.variant || 'standard')
+    const cls = 'of--variant-' + variant.value
+
     const ofTabsNavigationHeaderShowNextNavigation = computed(() => {
       return props.scrolling
     })
@@ -87,7 +93,7 @@ export default defineComponent({
     })
 
     const showNavigation = computed(() => {
-      return props.scrolling
+      return props.scrolling && variant.value !== 'osx'
     })
 
     const itemMgr = useItems()
@@ -166,13 +172,15 @@ export default defineComponent({
       }
     }
     const repositionLine = function () {
-      const currentTabHeaderItem = tabs.value.querySelector(
-        '.of-tab-header-item.is-active'
-      )
+      if (variant.value !== 'osx') {
+        const currentTabHeaderItem = tabs.value.querySelector(
+          '.of-tab-header-item.is-active'
+        )
 
-      let tabLine: HTMLDivElement = tabs.value.querySelector('.of-tabs-line')
-      tabLine.style.width = currentTabHeaderItem?.clientWidth + 'px'
-      tabLine.style.left = currentTabHeaderItem?.offsetLeft + 'px'
+        let tabLine: HTMLDivElement = tabs.value.querySelector('.of-tabs-line')
+        tabLine.style.width = currentTabHeaderItem?.clientWidth + 'px'
+        tabLine.style.left = currentTabHeaderItem?.offsetLeft + 'px'
+      }
     }
 
     const selectTab = function (index: Number) {
@@ -199,6 +207,7 @@ export default defineComponent({
       repositionLine,
       selectTab,
       tabs,
+      cls,
       ofTabsHeader,
       ofTabsNavigationHeaderShowNextNavigation,
       ofTabsNavigationHeaderShowPreviousNavigation,

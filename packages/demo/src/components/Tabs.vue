@@ -6,13 +6,21 @@
     <of-tabs
       :items="testItems"
       v-model:value="selected1"
+      variant="standard"
     />
     <h2>Scrolling tabs</h2>
     <of-tabs
       :items="testItems2"
       v-model:value="selected2"
       :scrolling="true"
+      variant="standard"
       style="width: 400px;"
+    />
+    <h2>OSX tabs</h2>
+    <of-tabs
+      :items="testItems"
+      v-model:value="selected3"
+      variant="osx"
     />
   </div>
 </template>
@@ -26,12 +34,18 @@ export default defineComponent({
 <of-tabs
   :items="itemsList"
   v-model:value="0"
+  variant="standard"
 />
 <of-tabs
   :items="itemsList2"
   v-model:value="1"
   :scrolling="true"
   style="width: 400px;"
+/>
+<of-tabs
+  :items="itemsList"
+  v-model:value="0"
+  variant="osx"
 />
 `
 
@@ -57,7 +71,9 @@ export default defineComponent({
 
     const selected2 = 1
 
-    return { sampleCode, testItems, selected1, testItems2, selected2 }
+    const selected3 = 0
+
+    return { sampleCode, testItems, selected1, testItems2, selected2, selected3 }
   },
 })
 </script>
