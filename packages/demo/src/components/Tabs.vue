@@ -3,109 +3,25 @@
     <h4>Tabs</h4>
     <of-highlight lang="html" :value="sampleCode" />
     <h2>Regular tabs</h2>
-    <of-tabs>
-      <of-tab name="Tab 1">
-        <h4>Tab 1 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 2">
-        <h4>Tab 2 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 3">
-        <h4>Tab 3 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 4">
-        <h4>Tab 4 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 5">
-        <h4>Tab 5 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 6">
-        <h4>Tab 6 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 7">
-        <h4>Tab 7 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-    </of-tabs>
+    <of-tabs
+      :items="testItems"
+      v-model:value="selected1"
+      variant="standard"
+    />
     <h2>Scrolling tabs</h2>
-    <of-tabs style="width: 400px;">
-      <of-tab name="Tab 1">
-        <h4>Tab 1 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 2">
-        <h4>Tab 2 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 3">
-        <h4>Tab 3 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 4">
-        <h4>Tab 4 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 5">
-        <h4>Tab 5 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 6">
-        <h4>Tab 6 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-      <of-tab name="Tab 7">
-        <h4>Tab 7 content</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-          consequuntur.
-        </p>
-      </of-tab>
-    </of-tabs>
+    <of-tabs
+      :items="testItems2"
+      v-model:value="selected2"
+      :scrolling="true"
+      variant="standard"
+      style="width: 400px;"
+    />
+    <h2>OSX tabs</h2>
+    <of-tabs
+      :items="testItems"
+      v-model:value="selected3"
+      variant="osx"
+    />
   </div>
 </template>
 
@@ -114,24 +30,50 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {
-    const sampleCode = `<of-tabs>
-    <of-tab name="Tab 1">
-      <h4>Tab 1 content</h4>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-        consequuntur.
-      </p>
-    </of-tab>
-    <of-tab name="Tab 2">
-      <h4>Tab 1 content</h4>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum
-        consequuntur.
-      </p>
-    </of-tab>
-</of-tabs>
+    const sampleCode = `
+<of-tabs
+  :items="itemsList"
+  v-model:value="0"
+  variant="standard"
+/>
+<of-tabs
+  :items="itemsList2"
+  v-model:value="1"
+  :scrolling="true"
+  style="width: 400px;"
+/>
+<of-tabs
+  :items="itemsList"
+  v-model:value="0"
+  variant="osx"
+/>
 `
-    return { sampleCode }
+
+    const testItems = [
+      'Tab 1',
+      'Tab 2',
+      'Tab 3',
+      {text: 'Tab 4'}
+    ]
+
+    const selected1 = 0
+
+    const testItems2 = [
+      'Tab 1',
+      'Tab 2',
+      'Tab 3',
+      'Tab 4',
+      'Tab 5',
+      {text: 'Tab 6'},
+      'Tab 7',
+      'Tab 8',
+    ]
+
+    const selected2 = 1
+
+    const selected3 = 0
+
+    return { sampleCode, testItems, selected1, testItems2, selected2, selected3 }
   },
 })
 </script>
