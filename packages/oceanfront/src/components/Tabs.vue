@@ -154,23 +154,24 @@ export default defineComponent({
     onMounted(() => {
       setTimeout(() => {
         repositionLine()
+        repositionTabs()
       })
     })
 
-    const navigateHeader = function (value: string) {
-
+    let navigateHeader = function (value: string, scrollNum = 150) {
       if (value == 'next') {
         ofTabsHeader.value.scrollTo({
-          left: ofTabsHeader.value.scrollLeft + 150,
+          left: ofTabsHeader.value.scrollLeft + scrollNum,
           behavior: 'smooth',
         })
       } else if (value == 'prev') {
         ofTabsHeader.value.scrollTo({
-          left: ofTabsHeader.value.scrollLeft - 150,
+          left: ofTabsHeader.value.scrollLeft - scrollNum,
           behavior: 'smooth',
         })
       }
     }
+
     const repositionLine = function () {
       if (variant.value !== 'osx') {
         const currentTabHeaderItem = tabs.value.querySelector(
@@ -183,6 +184,32 @@ export default defineComponent({
       }
     }
 
+    //If selected tab isn't visible make scrolling
+    let repositionTabs = function () {
+      if (showNavigation.value) {
+        const currentTabHeaderItem = tabs.value.querySelector(
+          '.of-tab-header-item.is-active'
+        )
+
+        const prevNavBounds = tabs.value.querySelector('.of-tabs-navigation.of-tabs-navigation-prev').getBoundingClientRect()
+        const nextNavBounds = tabs.value.querySelector('.of-tabs-navigation.of-tabs-navigation-next').getBoundingClientRect()
+        const currentItemBounds = currentTabHeaderItem.getBoundingClientRect()
+
+        let scroll = 0
+
+        //check right bound
+        if (currentItemBounds.right > nextNavBounds.left) {
+          scroll = Math.round(currentItemBounds.right - nextNavBounds.left) + 5
+          navigateHeader('next', scroll)
+        //check left bound
+        } else if (currentItemBounds.left < prevNavBounds.right) {
+          scroll =  Math.round(prevNavBounds.right - currentItemBounds.left) + 5
+          navigateHeader('prev', scroll)
+        }
+
+      }
+    }
+
     const selectTab = function (index: Number) {
 
       if (selectedTabIdx.value !== index) {
@@ -192,6 +219,7 @@ export default defineComponent({
         setTimeout(() => {
           setTimeout(() => {
             repositionLine()
+            repositionTabs()
           })
         })
 
