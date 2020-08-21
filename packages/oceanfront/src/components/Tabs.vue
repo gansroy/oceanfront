@@ -29,6 +29,7 @@
               :class="{
                 'is-active': selectedTabIdx === index,
                 'of-tab-header-item': true,
+                'overflow-button': tab.overflowButton
               }"
             >
               {{ tab.text }}
@@ -55,7 +56,7 @@ import {
   onMounted,
   PropType,
   SetupContext,
-  computed, watch,
+  computed, watch, onBeforeUnmount,
 } from 'vue'
 
 import {ItemList, useItems} from '@/lib/items'
@@ -66,13 +67,17 @@ export default defineComponent({
     items: ({ type: [Object, Array] } as any) as PropType<ItemList>,
     value: Number,
     scrolling: { type: Boolean, default: false },
+    overflowButton: { type: Boolean, default: false },
     variant: String,
+    tabsList: Array,
   },
   setup(props, context: SetupContext) {
     let tabs: any = ref([])
     let ofTabsHeader: any = ref()
-
     let selectedTabIdx: any = ref(props.value)
+    let invisibleItems: any[] = []
+    let rearrangedItems: any = ref([])
+    let itemsWidth: any = ref([])
 
     watch(
       () => props.value,
@@ -83,17 +88,18 @@ export default defineComponent({
 
     const variant = computed(() => props.variant || 'standard')
     const cls = 'of--variant-' + variant.value
+    const overflowButton = computed(() => props.overflowButton || false)
 
     const ofTabsNavigationHeaderShowNextNavigation = computed(() => {
-      return props.scrolling
+      return props.scrolling && (variant.value !== 'osx' && !overflowButton.value)
     })
 
     const ofTabsNavigationHeaderShowPreviousNavigation = computed(() => {
-      return props.scrolling
+      return props.scrolling && (variant.value !== 'osx' && !overflowButton.value)
     })
 
     const showNavigation = computed(() => {
-      return props.scrolling && variant.value !== 'osx'
+      return props.scrolling && (variant.value !== 'osx' && !overflowButton.value)
     })
 
     const itemMgr = useItems()
@@ -114,17 +120,25 @@ export default defineComponent({
       return result
     })
 
-    let tabsList = computed(() => {
+    const tabsList = computed(() => {
       const rows = []
       const resolved = items.value
+      let list: any = []
 
-      for (const item of resolved.items) {
+      if (rearrangedItems.value.length) {
+        list = rearrangedItems.value
+      } else {
+        list = resolved.items
+      }
+
+      for (const item of list) {
         let text = '';
 
         if (typeof item === 'string' && item !== '') {
           rows.push({
             disabled: false,
             icon: null,
+            overflowButton: false,
             text: item,
           })
         } else if (typeof item === 'object') {
@@ -133,6 +147,7 @@ export default defineComponent({
             rows.push({
               disabled: item[resolved.disabledKey] ? item[resolved.disabledKey] : false,
               icon: item[resolved.iconKey] ? item[resolved.iconKey] : null,
+              overflowButton: item['overflowButton'] ? item['overflowButton'] : false,
               text: item[resolved.textKey],
             })
           }
@@ -152,13 +167,21 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      window.addEventListener('resize', addOverflowButton)
+
       setTimeout(() => {
+        setTabsWidth()
+        addOverflowButton()
         repositionLine()
         repositionTabs()
       })
     })
 
-    let navigateHeader = function (value: string, scrollNum = 150) {
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', addOverflowButton)
+    })
+
+    const navigateHeader = function (value: string, scrollNum = 150) {
       if (value == 'next') {
         ofTabsHeader.value.scrollTo({
           left: ofTabsHeader.value.scrollLeft + scrollNum,
@@ -185,7 +208,7 @@ export default defineComponent({
     }
 
     //If selected tab isn't visible make scrolling
-    let repositionTabs = function () {
+    const repositionTabs = function () {
       if (showNavigation.value) {
         const currentTabHeaderItem = tabs.value.querySelector(
           '.of-tab-header-item.is-active'
@@ -207,6 +230,51 @@ export default defineComponent({
           navigateHeader('prev', scroll)
         }
 
+      }
+    }
+
+    const setTabsWidth = function () {
+      if (overflowButton.value && ! showNavigation.value) {
+        for (let item of ofTabsHeader.value.childNodes) {
+          if (!item.clientWidth)
+            continue
+
+          itemsWidth.value.push(item.clientWidth)
+        }
+      }
+    }
+
+    const addOverflowButton = function () {
+      if (overflowButton.value && ! showNavigation.value) {
+        const visibleItems: any[] = []
+        const outerWidth = ofTabsHeader.value.clientWidth
+        let itemsWidthSum = 0
+        let index = 0
+        invisibleItems = []
+
+        for (const item of items.value.items) {
+          itemsWidthSum += itemsWidth.value[index]
+
+          if (itemsWidthSum > outerWidth) {
+            //Add previous element to invisible list to free space for overflow button
+            if (invisibleItems.length === 0) {
+              invisibleItems.push(visibleItems.pop())
+            }
+
+            invisibleItems.push(item)
+          } else {
+            visibleItems.push(item)
+          }
+
+          index ++
+        }
+
+        if (invisibleItems.length) {
+          const overflowButton = {text: '...', overflowButton: true}
+          visibleItems.push(overflowButton)
+        }
+
+        rearrangedItems.value = visibleItems
       }
     }
 

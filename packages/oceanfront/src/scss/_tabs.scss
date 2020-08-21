@@ -57,9 +57,7 @@
       display: flex;
       padding-top: 1px;
       position: relative;
-      display: flex;
       flex: 1 0 auto;
-      position: relative;
       transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
       white-space: nowrap;
       scrollbar-width: none;
@@ -92,6 +90,11 @@
         &.is-active {
           background-color: white;
           transition: all 0.2s;
+        }
+
+        &.overflow-button {
+          margin-left: auto;
+          line-height: 100%;
         }
       }
     }
