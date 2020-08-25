@@ -23,11 +23,11 @@
           </div>
           <div class="of-tabs-header" ref="ofTabsHeader">
             <div
-              :key="index"
-              @click="selectTab(index)"
-              v-for="(tab, index) in tabsList"
+              :key="tab.key"
+              @click="selectTab(tab.key)"
+              v-for="tab in tabsList"
               :class="{
-                'is-active': selectedTabIdx === index,
+                'is-active': selectedTabKey === tab.key,
                 'of-tab-header-item': true,
                 'overflow-button': tab.overflowButton
               }"
@@ -45,6 +45,29 @@
           </div>
         </div>
       </div>
+
+      <div
+        role="menu"
+        class="of-menu of-invisible-tabs"
+        v-show="outsideTabsOpened"
+      >
+        <div class="of-list-outer">
+          <div
+            class="of-list-item of--enabled"
+            :key="tab.key"
+            v-for="tab in invisibleTabsList"
+            @click="selectInvisibleTab(tab.key)"
+          >
+            <div class="of-list-item-inner">
+              <div class="of-list-item-content">
+                {{ tab.text }}
+              </div>
+            </div>
+            <div class="of-list-divider"></div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </transition>
 </template>
@@ -61,6 +84,46 @@ import {
 
 import {ItemList, useItems} from '@/lib/items'
 
+const formatItems = (list: any, params: any, visible = true, addOverflowButton: Boolean = false): any => {
+  const rows = []
+
+  for (const item of list) {
+    let text = '';
+    text = item[params.textKey]? item[params.textKey] : ''
+
+    if (text === '')
+      continue
+
+    if (visible && ! item.visible) {
+      continue
+    } else if (! visible && item.visible) {
+      continue
+    }
+
+    rows.push({
+      disabled: item[params.disabledKey] ? item[params.disabledKey] : false,
+      icon: item[params.iconKey] ? item[params.iconKey] : null,
+      overflowButton: false,
+      text: item[params.textKey],
+      key: parseInt(item['key']),
+      visible: item.visible
+    })
+  }
+
+  if (visible && addOverflowButton) {
+    rows.push({
+      disabled: false,
+      icon: null,
+      overflowButton: true,
+      text: '...',
+      key: -1,
+    })
+  }
+
+  return rows
+}
+
+
 export default defineComponent({
   name: 'OfTabs',
   props: {
@@ -74,21 +137,21 @@ export default defineComponent({
   setup(props, context: SetupContext) {
     let tabs: any = ref([])
     let ofTabsHeader: any = ref()
-    let selectedTabIdx: any = ref(props.value)
-    let invisibleItems: any[] = []
-    let rearrangedItems: any = ref([])
-    let itemsWidth: any = ref([])
+    let selectedTabKey: any = ref(props.value)
+    let tabsWidth: any = ref([])
 
     watch(
       () => props.value,
       (val) => {
-        selectedTabIdx.value = val
+        selectedTabKey.value = val
       }
     )
 
     const variant = computed(() => props.variant || 'standard')
     const cls = 'of--variant-' + variant.value
+
     const overflowButton = computed(() => props.overflowButton || false)
+    let showOverflowButton: Boolean = false
 
     const ofTabsNavigationHeaderShowNextNavigation = computed(() => {
       return props.scrolling && (variant.value !== 'osx' && !overflowButton.value)
@@ -117,68 +180,44 @@ export default defineComponent({
         Object.assign(result, list)
       }
 
+      for (const index in result.items) {
+        let item: any = result.items[index]
+
+        if (typeof item === 'string' && item !== '') {
+          item = {text: item, key: parseInt(index), visible: true}
+        } else if (typeof item === 'object') {
+          item.key = parseInt(index)
+          item.visible = true
+        }
+
+        result.items[index] = item as never
+      }
+
       return result
     })
 
     const tabsList = computed(() => {
-      const rows = []
-      const resolved = items.value
-      let list: any = []
-
-      if (rearrangedItems.value.length) {
-        list = rearrangedItems.value
-      } else {
-        list = resolved.items
-      }
-
-      for (const item of list) {
-        let text = '';
-
-        if (typeof item === 'string' && item !== '') {
-          rows.push({
-            disabled: false,
-            icon: null,
-            overflowButton: false,
-            text: item,
-          })
-        } else if (typeof item === 'object') {
-          text = item[resolved.textKey]? item[resolved.textKey] : ''
-          if (text !== '') {
-            rows.push({
-              disabled: item[resolved.disabledKey] ? item[resolved.disabledKey] : false,
-              icon: item[resolved.iconKey] ? item[resolved.iconKey] : null,
-              overflowButton: item['overflowButton'] ? item['overflowButton'] : false,
-              text: item[resolved.textKey],
-            })
-          }
-        }
-      }
-
-      return rows
+      return formatItems(items.value.items, items.value, true, showOverflowButton)
     })
 
-    const selectedTab = computed(() => {
-      let idx = 0
-      for (const item of tabsList.value) {
-        if (idx === selectedTabIdx.value)
-          return item
-        idx++
-      }
+    const invisibleTabsList = computed(() => {
+      return formatItems(items.value.items, items.value, false)
     })
 
     onMounted(() => {
-      window.addEventListener('resize', addOverflowButton)
+      window.addEventListener('resize', hideOutsideTabs)
 
       setTimeout(() => {
         setTabsWidth()
-        addOverflowButton()
+        hideOutsideTabs()
         repositionLine()
         repositionTabs()
       })
+
     })
 
     onBeforeUnmount(() => {
-      window.removeEventListener('resize', addOverflowButton)
+      window.removeEventListener('resize', hideOutsideTabs)
     })
 
     const navigateHeader = function (value: string, scrollNum = 150) {
@@ -239,71 +278,162 @@ export default defineComponent({
           if (!item.clientWidth)
             continue
 
-          itemsWidth.value.push(item.clientWidth)
+          tabsWidth.value.push(item.clientWidth)
         }
       }
     }
 
-    const addOverflowButton = function () {
+    const hideOutsideTabs = function () {
       if (overflowButton.value && ! showNavigation.value) {
-        const visibleItems: any[] = []
+        closeOverflowPopup()
+
         const outerWidth = ofTabsHeader.value.clientWidth
-        let itemsWidthSum = 0
+        let tabsWidthSum = 0
         let index = 0
-        invisibleItems = []
+        let hasInvisibleTabs = false
 
         for (const item of items.value.items) {
-          itemsWidthSum += itemsWidth.value[index]
+          let visible = true
+          tabsWidthSum += tabsWidth.value[index]
 
-          if (itemsWidthSum > outerWidth) {
-            //Add previous element to invisible list to free space for overflow button
-            if (invisibleItems.length === 0) {
-              invisibleItems.push(visibleItems.pop())
+          if (tabsWidthSum > outerWidth) {
+
+            if (! hasInvisibleTabs) {
+              //Add previous element to invisible list to free space for overflow button
+              const prevItem = items.value.items[index - 1]
+              prevItem['visible'] = false as never
+              items.value.items[index - 1] = prevItem
+
+              hasInvisibleTabs = true
             }
 
-            invisibleItems.push(item)
-          } else {
-            visibleItems.push(item)
+            visible = false
           }
+
+          item['visible'] = visible as never
+          items.value.items[index] = item
 
           index ++
         }
 
-        if (invisibleItems.length) {
-          const overflowButton = {text: '...', overflowButton: true}
-          visibleItems.push(overflowButton)
-        }
-
-        rearrangedItems.value = visibleItems
+        showOverflowButton = hasInvisibleTabs
+        addSelectedTabToVisibleList()
       }
     }
 
-    const selectTab = function (index: Number) {
+    const addSelectedTabToVisibleList = function() {
+      const selectedTab: any = getTab(selectedTabKey.value, true)
 
-      if (selectedTabIdx.value !== index) {
+      if (selectedTab) {
+        let index = 0
+        let selectedIndex = -1
+        let selectedItem: any
+        let lastVisibleIndex = -1
 
-        context.emit('update:value', index)
+        for (const item of items.value.items) {
+          if (selectedTab['key'] === item['key']) {
+            selectedIndex = index
+            selectedItem = item
+          } else if (item['visible']) {
+            lastVisibleIndex = index
+          }
+
+          index++
+        }
+
+        if (lastVisibleIndex >= 0 && selectedIndex >= 0) {
+          //Hide last visible item to free space for selected item
+          const lastVisibleItem = items.value.items[lastVisibleIndex]
+          lastVisibleItem['visible'] = false as never
+          items.value.items[lastVisibleIndex] = lastVisibleItem
+
+          //Make selected item visible
+          selectedItem['visible'] = true as never
+          items.value.items[selectedIndex] = selectedItem as never
+        }
 
         setTimeout(() => {
+          repositionLine()
+        })
+      }
+    }
+
+    const getTab = function (key: Number, invisible = false): Object | undefined {
+      let list: any
+
+      if (! invisible) {
+        list = tabsList.value
+      } else {
+        list = invisibleTabsList.value
+      }
+
+      for (const tab of list) {
+        if (tab.key === key)
+          return tab
+      }
+    }
+
+    const selectTab = function (key: number) {
+
+      if (selectedTabKey.value !== key) {
+        const selectedTab: any = getTab(key)
+
+        if (selectedTab && selectedTab.overflowButton) {
+          switchOverflowPopupVisibility()
+        } else if (selectedTab) {
+          context.emit('update:value', key)
+
           setTimeout(() => {
+            closeOverflowPopup()
             repositionLine()
             repositionTabs()
           })
-        })
-
+        }
       }
+
+    }
+
+    const selectInvisibleTab = function (key: number) {
+      const selectedTab: any = getTab(key, true)
+
+      if (selectedTab) {
+        context.emit('update:value', key)
+
+        setTimeout(() => {
+          addSelectedTabToVisibleList()
+        })
+      }
+
+      closeOverflowPopup()
+    }
+
+    const outsideTabsOpened = ref(false)
+
+    const switchOverflowPopupVisibility = () => {
+      outsideTabsOpened.value = !outsideTabsOpened.value
+    }
+
+    const closeOverflowPopup = () => {
+      outsideTabsOpened.value = false
     }
 
     return {
       tabsList,
-      selectedTab,
-      selectedTabIdx,
+      selectedTabKey,
+
       showNavigation,
       navigateHeader,
       repositionLine,
       selectTab,
+
       tabs,
       cls,
+
+      invisibleTabsList,
+      outsideTabsOpened,
+      closeOverflowPopup,
+      selectInvisibleTab,
+
       ofTabsHeader,
       ofTabsNavigationHeaderShowNextNavigation,
       ofTabsNavigationHeaderShowPreviousNavigation,

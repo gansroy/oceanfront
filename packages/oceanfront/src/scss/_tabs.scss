@@ -1,5 +1,12 @@
 
 .of-tabs {
+  .of-invisible-tabs {
+    margin-left: auto;
+    float: right;
+    position: relative;
+    z-index: 9999;
+  }
+
   .of--variant-standard,
   .of--variant-osx {
     .of-tabs-navigation-header {
