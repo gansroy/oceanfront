@@ -557,6 +557,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  padding: 0 10px;
 
   &--label {
     position: absolute;
@@ -569,6 +570,7 @@
     position: relative;
     display: flex;
     align-items: center;
+    height: 36px;
   }
   &--track {
     width: 100%;
@@ -577,35 +579,17 @@
     height: 3px;
     background: $border-color-field;
   }
-  &--input {
+  &--thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    cursor: pointer;
     -webkit-appearance: none;
-    margin: 25px 0;
-    width: 100%;
-    background: none;
-    padding: 0;
-    z-index: 1;
-    position: relative;
-
-    &:focus {
-      outline: none;
-    }
-    &::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 10px;
-      cursor: pointer;
-      animate: 0.2s;
-      background: transparent;
-      border-radius: 0;
-      border: none;
-    }
-    &::-webkit-slider-thumb {
-      height: 20px;
-      width: 20px;
-      border-radius: 50%;
-      cursor: pointer;
-      -webkit-appearance: none;
-      margin-top: -5px;
-      background: $border-color-field;
-    }
+    z-index: 2;
+    position: absolute;
+    background: $border-color-field;
+  }
+  &--input {
+    display: none;
   }
 }
