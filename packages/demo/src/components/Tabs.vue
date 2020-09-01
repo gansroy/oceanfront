@@ -16,10 +16,18 @@
       variant="standard"
       style="width: 400px;"
     />
+    <h2>Tabs with overflow button</h2>
+    <of-tabs
+      :items="testItems3"
+      v-model:value="selected3"
+      overflow-button
+      variant="standard"
+      style="width: 400px;"
+    />
     <h2>OSX tabs</h2>
     <of-tabs
       :items="testItems"
-      v-model:value="selected3"
+      v-model:value="selected4"
       variant="osx"
     />
   </div>
@@ -40,6 +48,12 @@ export default defineComponent({
   :items="itemsList2"
   v-model:value="1"
   :scrolling="true"
+  style="width: 400px;"
+/>
+<of-tabs
+  :items="itemsList3"
+  v-model:value="0"
+  overflow-buttton
   style="width: 400px;"
 />
 <of-tabs
@@ -69,11 +83,24 @@ export default defineComponent({
       'Tab 8',
     ]
 
+    const testItems3 = [
+      'Tab 1',
+      'Tab 2',
+      'Tab 3',
+      'Tab 4',
+      'Tab 5',
+      {text: 'Tab 6'},
+      'Tab 7',
+      'Tab 8',
+      'Tab 9',
+      {text: 'Tab 10'},
+    ]
+
     const selected2 = 1
-
     const selected3 = 0
+    const selected4 = 0
 
-    return { sampleCode, testItems, selected1, testItems2, selected2, selected3 }
+    return { sampleCode, testItems, selected1, testItems2, selected2, testItems3, selected3, selected4 }
   },
 })
 </script>
