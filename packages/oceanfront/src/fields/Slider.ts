@@ -13,7 +13,7 @@ export const SliderField = defineFieldType({
   setup(props: FieldProps, ctx: FieldContext) {
     const initialValue = computed(() => {
       let initial = ctx.initialValue
-      if (initial === undefined) initial = props.defaultValue
+      if (initial === undefined) initial = props.value
       return initial ?? null
     })
     const stateValue = ref()
@@ -28,7 +28,6 @@ export const SliderField = defineFieldType({
       }
     )
 
-    let step: number;
     let startX: number;
     let x = 0;
     let sliderLineWidth: number;
@@ -46,65 +45,8 @@ export const SliderField = defineFieldType({
       }
       return id
     })
-
-    const hooks = {
-      onBlur(_evt: FocusEvent) {
-        focused.value = false;
-      },
-      onFocus(_evt: FocusEvent) {
-        focused.value = true
-      },
-      onVnodeMounted(vnode: VNode) {
-        elt.value = vnode.el as HTMLInputElement
-      },
-      onMousedown(_evt: MouseEvent) {
-        const focus = elt.value;
-        if (!focus) return;
-
-        startX = _evt.pageX - focus.offsetLeft;
-
-        document.addEventListener('mousemove', onMove)
-        document.addEventListener('mouseup', onStop)
-      },
-    }
-    function onStop () {
-      calcValue()
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onStop)
-    }
-
-    const onMove = (_evt: MouseEvent) => {
-      const focus = elt.value;
-      if (!focus) return;
-
-      const maxX = sliderLineWidth - thumbRadius;
-      x = _evt.pageX - startX
-
-      if (x < -thumbRadius) x = -thumbRadius
-      if (x > maxX) x = maxX
-
-      focus.style.left = x + 'px'
-    }
-
-    const calcValue = () => {
-      const val = Math.floor(((x + thumbRadius) / stepPx) * step) + props.min
-      const steps = Math.floor(val / step);
-      let stepVal = Math.floor(steps * step)
-
-      if(val == props.min || val == props.max) {
-        stepVal = val
-      }
-
-      stateValue.value = stepVal
-      console.log('value = ' + stepVal);
-    }
-
-    const onSliderLineMounted = (node: VNode) => {
-      const focus = node.el;
-      if (!focus) return;
-
-      sliderLineWidth = focus.clientWidth
-
+    const step = computed(() => {
+      let step: number
       if(props.step > delta) {
         step = delta
       } else if (sliderLineWidth > delta) {
@@ -112,12 +54,95 @@ export const SliderField = defineFieldType({
       } else {
         step = (delta / sliderLineWidth)
       }
-
       if(step < props.step) {
         step = props.step
       }
+      return step
+    })
+    const hooks = {
+      onBlur(_evt: FocusEvent) {
+        focused.value = false;
+      },
+      onFocus(_evt: FocusEvent) {
+        focused.value = true
+      },
+      onKeydown(_evt: KeyboardEvent) {
+        onKeydown(_evt)
+      },
+    }
+    const thumbHooks = {
+      onAfterLeave(_evt: FocusEvent) {
+      },
+      onVnodeMounted(vnode: VNode) {
+        elt.value = vnode.el as HTMLInputElement
+      },
+      onMousedown(_evt: MouseEvent) {
+        const focus = elt.value;
+        if (!focus) return;
+        startX = _evt.pageX - focus.offsetLeft;
+        document.addEventListener('mousemove', onMove)
+        document.addEventListener('mouseup', onStop)
+        document.addEventListener('keydown', onKeydown)
+      },
+    }
+    function onKeydown(_evt: KeyboardEvent) {
+      if(_evt.key == 'ArrowUp' || _evt.key == 'ArrowRight') {
+        x += stepPx
+      } else if(_evt.key == 'ArrowDown' || _evt.key == 'ArrowLeft') {
+        x -= stepPx
+      }
+      setX()
+      calcValue()
+    }
+    function onStop () {
+      calcValue()
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onStop)
+      //document.removeEventListener('keydown', onKeydown)
+    }
+    const onMove = (_evt: MouseEvent) => {
+      x = _evt.pageX - startX
+      setX()
+    }
+    function setX() {
+      const maxX = sliderLineWidth - thumbRadius;
+      const thumb = elt.value;
+      if (!thumb) return;
+      if (x < -thumbRadius) x = -thumbRadius
+      if (x > maxX) x = maxX
+      thumb.style.left = x + 'px'
+    }
+    const calcValue = () => {
+      const val = Math.floor(((x + thumbRadius) / stepPx) * step.value) + props.min
+      const steps = Math.floor(val / step.value);
+      let stepVal = Math.floor(steps * step.value)
 
-      stepPx = (sliderLineWidth / (delta / step))
+      if(val <= props.min || val >= props.max) {
+        stepVal = val
+      }
+      stateValue.value = stepVal
+      console.log('VAL: ' + stepVal)
+    }
+    const onSliderLineMounted = (node: VNode) => {
+      const focus = node.el;
+      const thumb = elt.value;
+      if (!focus || !thumb) return;
+      sliderLineWidth = focus.clientWidth
+      stepPx = (sliderLineWidth / (delta / step.value))
+      if(initialValue.value) {
+        if(initialValue.value < props.min) {
+          x = - thumbRadius
+        } else if(initialValue.value > props.max) {
+          x = sliderLineWidth - thumbRadius
+        } else {
+          x = initialValue.value / props.step
+          x = x < 1 ? stepPx : Math.round(x) * stepPx - thumbRadius
+        }
+      } else {
+        x = - thumbRadius
+      }
+      thumb.style.left = x + 'px'
+      calcValue()
     }
     const focus = () => {
       const curelt = elt.value
@@ -128,14 +153,15 @@ export const SliderField = defineFieldType({
         return h('div', { class: 'of-slider-field' }, [
           h('div', { class: 'of-slider-field--wrapper' }, [
             h('div', { class: 'of-slider-field--label' } ),
-            h('div', { class: 'of-slider-field--thumb', ...hooks }),
-            h('div', { class: 'of-slider-field--track', onVnodeMounted: onSliderLineMounted  }),
+            h('div', { class: 'of-slider-field--thumb', ...thumbHooks }),
+            h('div', { class: 'of-slider-field--track', onVnodeMounted: onSliderLineMounted }),
             h('input', {
               id: inputId.value,
               name: ctx.name,
-              type: 'hidden',
+              type: 'text',
               class: 'of-field-input',
-              value: stateValue.value
+              value: stateValue.value,
+              ...hooks
             }),
           ]),
         ]);
