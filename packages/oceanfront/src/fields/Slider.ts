@@ -32,6 +32,7 @@ export const SliderField = defineFieldType({
     let x = 0;
     let sliderLineWidth: number;
     let stepPx: number;
+    let pendingVal: number;
     let defaultFieldId: string
     const thumbRadius = 10;
     const elt = ref<HTMLInputElement | undefined>()
@@ -62,9 +63,11 @@ export const SliderField = defineFieldType({
     const hooks = {
       onBlur(_evt: FocusEvent) {
         focused.value = false;
+        document.removeEventListener('keydown', onKeydown)
       },
       onFocus(_evt: FocusEvent) {
         focused.value = true
+        document.addEventListener('keydown', onKeydown)
       },
       onKeydown(_evt: KeyboardEvent) {
         onKeydown(_evt)
@@ -82,7 +85,6 @@ export const SliderField = defineFieldType({
         startX = _evt.pageX - focus.offsetLeft;
         document.addEventListener('mousemove', onMove)
         document.addEventListener('mouseup', onStop)
-        document.addEventListener('keydown', onKeydown)
       },
     }
     function onKeydown(_evt: KeyboardEvent) {
@@ -95,14 +97,18 @@ export const SliderField = defineFieldType({
       calcValue()
     }
     function onStop () {
-      calcValue()
+      setValue()
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onStop)
-      //document.removeEventListener('keydown', onKeydown)
     }
     const onMove = (_evt: MouseEvent) => {
       x = _evt.pageX - startX
       setX()
+      calcValue()
+    }
+    function setValue() {
+      stateValue.value = pendingVal
+      console.log('val: ' + stateValue.value)
     }
     function setX() {
       const maxX = sliderLineWidth - thumbRadius;
@@ -115,13 +121,13 @@ export const SliderField = defineFieldType({
     const calcValue = () => {
       const val = Math.floor(((x + thumbRadius) / stepPx) * step.value) + props.min
       const steps = Math.floor(val / step.value);
-      let stepVal = Math.floor(steps * step.value)
+      pendingVal = Math.floor(steps * step.value)
 
       if(val <= props.min || val >= props.max) {
-        stepVal = val
+        pendingVal = val
       }
-      stateValue.value = stepVal
-      console.log('VAL: ' + stepVal)
+
+      console.log('pendingVal: ' + pendingVal)
     }
     const onSliderLineMounted = (node: VNode) => {
       const focus = node.el;
@@ -130,9 +136,9 @@ export const SliderField = defineFieldType({
       sliderLineWidth = focus.clientWidth
       stepPx = (sliderLineWidth / (delta / step.value))
       if(initialValue.value) {
-        if(initialValue.value < props.min) {
+        if(initialValue.value <= props.min) {
           x = - thumbRadius
-        } else if(initialValue.value > props.max) {
+        } else if(initialValue.value >= props.max) {
           x = sliderLineWidth - thumbRadius
         } else {
           x = initialValue.value / props.step
@@ -143,6 +149,7 @@ export const SliderField = defineFieldType({
       }
       thumb.style.left = x + 'px'
       calcValue()
+      setValue()
     }
     const focus = () => {
       const curelt = elt.value
@@ -152,7 +159,6 @@ export const SliderField = defineFieldType({
       content: () => {
         return h('div', { class: 'of-slider-field' }, [
           h('div', { class: 'of-slider-field--wrapper' }, [
-            h('div', { class: 'of-slider-field--label' } ),
             h('div', { class: 'of-slider-field--thumb', ...thumbHooks }),
             h('div', { class: 'of-slider-field--track', onVnodeMounted: onSliderLineMounted }),
             h('input', {
@@ -164,7 +170,7 @@ export const SliderField = defineFieldType({
               ...hooks
             }),
           ]),
-        ]);
+        ])
       },
       focus,
       focused,
