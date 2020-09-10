@@ -20,6 +20,7 @@ import { FileField } from './fields/File'
 import { SelectField } from './fields/Select'
 import { TextField } from './fields/Text'
 import { ToggleField } from './fields/Toggle'
+import { SliderField } from './fields/Slider'
 
 import { registerFieldType, registerTextFormatter } from './lib/formats'
 import { ColorFormatter } from './formats/Color'
@@ -57,6 +58,7 @@ export const Oceanfront: Plugin = {
       registerFieldType('text', TextField)
       registerFieldType('textarea', TextField)
       registerFieldType('toggle', ToggleField)
+      registerFieldType('slider', SliderField)
       registerTextFormatter('color', ColorFormatter)
       registerTextFormatter('number', NumberFormatter)
       registerTextFormatter('duration', DurationFormatter)

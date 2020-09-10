@@ -180,6 +180,7 @@
 }
 
 .of-toggle-field,
+.of-slider-field,
 .of-file-field {
   .of-field-input {
     // input is invisible and covers the entire container
@@ -367,15 +368,6 @@
 
   .of-field-over {
     display: flex;
-    &::before {
-      border-radius: $border-radius-field 0 0 $border-radius-field;
-      border: var(--cur-border);
-      border-right: none;
-      box-sizing: border-box;
-      content: '';
-      flex: 0 0 calc(#{$pad-h-field} - 4px + var(--of-field-size-prepend, 0px));
-      transition: border-color 120ms;
-    }
     .of-field-label-wrap {
       border-bottom: var(--cur-border);
       border-top: var(--cur-border);
@@ -387,6 +379,18 @@
         top: 0;
       }
     }
+  }
+
+  &.of--label-visible .of-field-over {
+    &::before {
+      border-radius: $border-radius-field 0 0 $border-radius-field;
+      border: var(--cur-border);
+      border-right: none;
+      box-sizing: border-box;
+      content: '';
+      flex: 0 0 calc(#{$pad-h-field} - 4px + var(--of-field-size-prepend, 0px));
+      transition: border-color 120ms;
+    }
     &::after {
       border-radius: 0 $border-radius-field $border-radius-field 0; // inherit?
       border: var(--cur-border);
@@ -396,6 +400,12 @@
       transition: border-color 120ms;
     }
   }
+  &.of--label-none .of-field-over {
+    border-radius: $border-radius-field;
+    border: var(--cur-border);
+    transition: border-color 120ms;
+  }
+
   &:hover {
     --cur-border: 1px solid #{$border-color-field-hover};
   }
@@ -434,10 +444,12 @@
   }
 
   .of-field-content {
-    margin-top: 0.75em;
     opacity: 0;
     transition: opacity 180ms;
     will-change: opacity;
+  }
+  &.of--label-visible .of-field-content {
+    margin-top: 0.75em;
   }
   &.of--active .of-field-content {
     opacity: 1;
@@ -522,7 +534,7 @@
     transition: opacity 180ms;
     will-change: opacity;
   }
-  &.of--with-label .of-field-content {
+  &.of--label-visible .of-field-content {
     margin-top: 1.1em;
   }
   &:hover .of-field-inner {
@@ -539,4 +551,46 @@
 .of-field.of--block {
   display: flex;
   width: auto;
+}
+
+.of-slider-field {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+
+  &--label {
+    position: absolute;
+    top: 0;
+    color: $color-label;
+    padding: 5px;
+    font-size: 12px;
+  }
+  &--wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 36px;
+  }
+  &--track {
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+    height: 3px;
+    background: $border-color-field;
+  }
+  &--thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-appearance: none;
+    z-index: 2;
+    position: absolute;
+    background: $border-color-field;
+  }
+  &--input {
+    display: none;
+  }
 }
