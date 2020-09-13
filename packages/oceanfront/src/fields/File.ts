@@ -1,9 +1,10 @@
-import { ref, computed, VNode, watch, h, readonly } from 'vue'
+import { ref, computed, VNode, watch, h } from 'vue'
 import {
   defineFieldType,
   FieldContext,
   FieldProps,
   newFieldId,
+  fieldRender,
 } from '@/lib/fields'
 import { OfIcon } from '@/components/Icon'
 
@@ -97,7 +98,7 @@ export const FileField = defineFieldType({
       },
     }
 
-    return readonly({
+    return fieldRender({
       append() {
         if (stateValue.value)
           return h(OfIcon, {

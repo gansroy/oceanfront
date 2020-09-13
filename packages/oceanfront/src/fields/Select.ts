@@ -1,9 +1,10 @@
-import { Transition, VNode, ref, computed, watch, h, readonly } from 'vue'
+import { Transition, VNode, ref, computed, watch, h } from 'vue'
 import {
   defineFieldType,
   FieldContext,
   FieldProps,
   newFieldId,
+  fieldRender,
 } from '@/lib/fields'
 import { useItems } from '@/lib/items'
 import OfNavGroup from '@/components/NavGroup.vue'
@@ -194,7 +195,7 @@ export const SelectField = defineFieldType({
       },
     }
 
-    return readonly({
+    return fieldRender({
       append: () =>
         h(OfIcon, {
           class: 'of-select-icon',

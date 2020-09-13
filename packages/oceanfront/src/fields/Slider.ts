@@ -1,26 +1,43 @@
-import { ref, computed, watch, h, readonly, VNode } from 'vue'
+import { ref, computed, watch, h, watchEffect } from 'vue'
 import {
   defineFieldType,
   FieldContext,
   FieldProps,
   newFieldId,
+  fieldRender,
 } from '@/lib/fields'
-
-export const supportedTypes = new Set(['range'])
+import { CompatResizeObserver, watchResize } from '@/lib/util'
 
 export const SliderField = defineFieldType({
   name: 'slider',
   setup(props: FieldProps, ctx: FieldContext) {
     const initialValue = computed(() => {
       let initial = ctx.initialValue
-      if (initial === undefined) initial = props.value
+      if (initial === undefined) initial = props.defaultValue
       return initial ?? null
     })
+    const pendingValue = ref<number>(0)
     const stateValue = ref()
+    const opts = computed(() => {
+      // FIXME parse floats
+      let min = props.min ?? 0
+      let max = props.max ?? 100
+      if (min > max) {
+        const m = max
+        max = min
+        min = m
+      }
+      const delta = max - min
+      const step = Math.max(0, Math.min(delta, props.step ?? 1))
+      return { min, max, delta, step }
+    })
     watch(
       () => ctx.value,
       (val) => {
-        if (val === undefined || val === '') val = null
+        if (val == null || val === '')
+          val = opts.value.min + (opts.value.max - opts.value.min) / 2
+        console.trace('nval', val, typeof val)
+        pendingValue.value = val
         stateValue.value = val
       },
       {
@@ -28,16 +45,28 @@ export const SliderField = defineFieldType({
       }
     )
 
-    let startX: number;
-    let x = 0;
-    let sliderLineWidth: number;
-    let stepPx: number;
-    let pendingVal: number;
+    const fixValue = (val: number) => {
+      const { delta, step, min, max } = opts.value
+      if (delta && step) {
+        val = Math.round((val - min) / step) * step + min
+      }
+      val = Math.max(min, Math.min(max, val))
+      return val
+    }
+
     let defaultFieldId: string
-    const thumbRadius = 10;
-    const elt = ref<HTMLInputElement | undefined>()
+    let lazyInputValue = pendingValue.value
+    let startX = 0
+    let startVal = 0
+    const inputElt = ref<HTMLInputElement | undefined>()
+    const thumbElt = ref<HTMLDivElement | undefined>()
+    const trackElt = ref<HTMLDivElement | undefined>()
+    let trackSize: CompatResizeObserver | undefined
+    const trackWidth = ref(0)
     const focused = ref(false)
-    const delta = props.max - props.min;
+    const focus = () => {
+      inputElt.value?.focus()
+    }
     const inputId = computed(() => {
       let id = ctx.id
       if (!id) {
@@ -46,135 +75,135 @@ export const SliderField = defineFieldType({
       }
       return id
     })
-    const step = computed(() => {
-      let step: number
-      if(props.step > delta) {
-        step = delta
-      } else if (sliderLineWidth > delta) {
-        step = (sliderLineWidth / delta)
-      } else {
-        step = (delta / sliderLineWidth)
-      }
-      if(step < props.step) {
-        step = props.step
-      }
-      return step
-    })
-    const hooks = {
+    const inputHooks = {
       onBlur(_evt: FocusEvent) {
-        focused.value = false;
-        document.removeEventListener('keydown', onKeydown)
+        focused.value = false
       },
       onFocus(_evt: FocusEvent) {
         focused.value = true
-        document.addEventListener('keydown', onKeydown)
       },
-      onKeydown(_evt: KeyboardEvent) {
-        onKeydown(_evt)
+      onKeydown(evt: KeyboardEvent) {
+        if (evt.key == 'ArrowUp' || evt.key == 'ArrowRight') {
+          setValue(fixValue(pendingValue.value + opts.value.step))
+        } else if (evt.key == 'ArrowDown' || evt.key == 'ArrowLeft') {
+          setValue(fixValue(pendingValue.value - opts.value.step))
+        } else if (evt.key == 'Esc') {
+          pendingValue.value = stateValue.value
+          cancelMove()
+        }
       },
     }
     const thumbHooks = {
-      onAfterLeave(_evt: FocusEvent) {
+      onMousedown(evt: MouseEvent) {
+        const elt = thumbElt.value
+        if (!elt) return
+        evt.stopPropagation()
+        evt.preventDefault()
+        focus()
+        startX = evt.pageX
+        startVal = pendingValue.value
+        document.addEventListener('mousemove', handleMove)
+        document.addEventListener('mouseup', stopMove)
       },
-      onVnodeMounted(vnode: VNode) {
-        elt.value = vnode.el as HTMLInputElement
+    }
+    const trackHooks = {
+      onMousedown(evt: MouseEvent) {
+        const tg = evt.target as HTMLDivElement | null
+        if (!tg) return
+        const dims = tg.getBoundingClientRect()
+        if (!dims.width) return
+        evt.stopPropagation()
+        evt.preventDefault()
+        focus()
+        startX = evt.pageX
+        startVal = pendingValue.value
+        pendingValue.value = fixValue(
+          ((startX - dims.left) * opts.value.delta) / dims.width
+        )
+        document.addEventListener('mousemove', handleMove)
+        document.addEventListener('mouseup', stopMove)
       },
-      onMousedown(_evt: MouseEvent) {
-        const focus = elt.value;
-        if (!focus) return;
-        startX = _evt.pageX - focus.offsetLeft;
-        document.addEventListener('mousemove', onMove)
-        document.addEventListener('mouseup', onStop)
-      },
     }
-    function onKeydown(_evt: KeyboardEvent) {
-      if(_evt.key == 'ArrowUp' || _evt.key == 'ArrowRight') {
-        x += stepPx
-      } else if(_evt.key == 'ArrowDown' || _evt.key == 'ArrowLeft') {
-        x -= stepPx
-      }
-      setX()
-      calcValue()
-    }
-    function onStop () {
-      setValue()
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onStop)
-    }
-    const onMove = (_evt: MouseEvent) => {
-      x = _evt.pageX - startX
-      setX()
-      calcValue()
-    }
-    function setValue() {
-      stateValue.value = pendingVal
-      console.log('val: ' + stateValue.value)
-    }
-    function setX() {
-      const maxX = sliderLineWidth - thumbRadius;
-      const thumb = elt.value;
-      if (!thumb) return;
-      if (x < -thumbRadius) x = -thumbRadius
-      if (x > maxX) x = maxX
-      thumb.style.left = x + 'px'
-    }
-    const calcValue = () => {
-      const val = Math.floor(((x + thumbRadius) / stepPx) * step.value) + props.min
-      const steps = Math.floor(val / step.value);
-      pendingVal = Math.floor(steps * step.value)
-
-      if(val <= props.min || val >= props.max) {
-        pendingVal = val
-      }
-
-      console.log('pendingVal: ' + pendingVal)
-    }
-    const onSliderLineMounted = (node: VNode) => {
-      const focus = node.el;
-      const thumb = elt.value;
-      if (!focus || !thumb) return;
-      sliderLineWidth = focus.clientWidth
-      stepPx = (sliderLineWidth / (delta / step.value))
-      if(initialValue.value) {
-        if(initialValue.value <= props.min) {
-          x = - thumbRadius
-        } else if(initialValue.value >= props.max) {
-          x = sliderLineWidth - thumbRadius
-        } else {
-          x = initialValue.value / props.step
-          x = x < 1 ? stepPx : Math.round(x) * stepPx - thumbRadius
+    watch(
+      () => trackElt.value,
+      (elt) => {
+        if (elt) {
+          trackSize = watchResize((entries) => {
+            trackWidth.value = Math.round(entries[0].size.width)
+          }, elt)
+        } else if (trackSize) {
+          trackSize.disconnect()
+          trackSize = undefined
         }
-      } else {
-        x = - thumbRadius
       }
-      thumb.style.left = x + 'px'
-      calcValue()
-      setValue()
+    )
+
+    const cancelMove = () => {
+      document.removeEventListener('mousemove', handleMove)
+      document.removeEventListener('mouseup', stopMove)
     }
-    const focus = () => {
-      const curelt = elt.value
-      if (curelt) curelt.focus()
+    const stopMove = () => {
+      cancelMove()
+      setValue(pendingValue.value)
     }
-    return readonly({
+    const handleMove = (evt: MouseEvent) => {
+      const tw = trackWidth.value
+      if (tw) {
+        pendingValue.value = fixValue(
+          startVal + ((evt.pageX - startX) * opts.value.delta) / tw
+        )
+      }
+    }
+    const setValue = (val: number) => {
+      lazyInputValue = val
+      pendingValue.value = val
+      stateValue.value = val
+      if (inputElt.value) inputElt.value.value = '' + val
+      if (ctx.onUpdate) ctx.onUpdate(val)
+      console.log('set: ' + val)
+    }
+
+    // position thumb
+    watchEffect(() => {
+      const { delta, min } = opts.value
+      const tw = trackWidth.value
+      if (delta && tw && thumbElt.value) {
+        thumbElt.value.style.left =
+          Math.round((((pendingValue.value - min) * tw) / delta) * 100) / 100 +
+          'px'
+      }
+    })
+
+    return fieldRender({
+      class: 'of-slider-field',
       content: () => {
-        return h('div', { class: 'of-slider-field' }, [
-          h('div', { class: 'of-slider-field--wrapper' }, [
-            h('div', { class: 'of-slider-field--thumb', ...thumbHooks }),
-            h('div', { class: 'of-slider-field--track', onVnodeMounted: onSliderLineMounted }),
-            h('input', {
-              id: inputId.value,
-              name: ctx.name,
-              type: 'text',
-              class: 'of-field-input',
-              value: stateValue.value,
-              ...hooks
-            }),
-          ]),
+        return h('div', { class: 'of-slider' }, [
+          h('input', {
+            id: inputId.value,
+            name: ctx.name,
+            ref: inputElt,
+            type: 'text',
+            class: 'of-field-input',
+            value: lazyInputValue,
+            ...inputHooks,
+          }),
+          h('div', {
+            class: 'of-slider-thumb',
+            ref: thumbElt,
+            ...thumbHooks,
+          }),
+          h('div', {
+            class: 'of-slider-track',
+            ref: trackElt,
+            ...trackHooks,
+          }),
         ])
       },
       focus,
       focused,
+      pendingValue,
       updated: computed(() => initialValue.value !== stateValue.value),
+      value: stateValue,
     })
   },
 })

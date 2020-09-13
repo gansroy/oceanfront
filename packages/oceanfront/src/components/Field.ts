@@ -3,6 +3,7 @@ import {
   defineComponent,
   h,
   ref,
+  watch,
   PropType,
   Ref,
   SetupContext,
@@ -13,6 +14,8 @@ import {
   FieldDragIn,
   FieldRender,
   Renderable,
+  FormatProp,
+  FieldTypeConstructor,
 } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
 import { FieldRecord, useRecords } from '@/lib/records'
@@ -112,7 +115,7 @@ export const OfField = defineComponent({
     class: [String, Array, Object],
     // density: {type: Number, default: undefined}
     // form
-    format: [String, Function, Object],
+    format: [String, Object] as PropType<FormatProp>,
     id: String,
     initialValue: {
       type: [String, Boolean, Number, Array, Object],
@@ -147,14 +150,15 @@ export const OfField = defineComponent({
     const formatMgr = useFormats()
     const recordMgr = useRecords()
 
-    const fieldType = computed<string | undefined>(() => {
+    const fieldType = computed<string | object | undefined>(() => {
       const fmt = props.format
+      console.log('upd fmt', fmt, props.type)
       return (
         props.type ||
         (fmt && typeof fmt === 'string'
           ? fmt
           : typeof fmt === 'object'
-          ? fmt.fieldType || fmt.type
+          ? (fmt as any).fieldType || (fmt as any).type
           : undefined)
       )
     })
@@ -202,35 +206,39 @@ export const OfField = defineComponent({
       ]),
     } as Record<string, any>)
 
-    const format = computed<FieldRender>(() => {
-      const ftype = fieldType.value
-      const fmt = props.format
-      const extfmt = fmt
-        ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
-          ? { type: fmt }
-          : fmt
-        : { type: ftype }
-      const found =
-        typeof ftype === 'object' && 'setup' in ftype // raw FieldType
-          ? ftype
-          : formatMgr.getFieldType(ftype, true)
-      if (!found) {
-        // FIXME should always resolve something, but might
-        // want a field type that just renders an error message
-        throw new TypeError(`Unknown field type: ${ftype}`)
-      }
-      return found.setup(
-        extendReactive(
-          extfmt,
-          restrictProps(
-            props,
-            ['align', 'placeholder', 'maxlength', 'size'],
-            true
-          )
-        ),
-        fctx
-      )
-    })
+    const rendered = ref<FieldRender>()
+    watch(
+      () => [fieldType.value, props.format],
+      ([ftype, fmt]) => {
+        console.log('reformat', ftype, fmt)
+        const extfmt = fmt
+          ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
+            ? { type: fmt }
+            : (fmt as object)
+          : { type: ftype }
+        const found =
+          typeof ftype === 'object' && 'setup' in ftype // raw FieldType
+            ? (ftype as FieldTypeConstructor)
+            : formatMgr.getFieldType(ftype as string, true)
+        if (!found) {
+          // FIXME should always resolve something, but might
+          // want a field type that just renders an error message
+          throw new TypeError(`Unknown field type: ${ftype}`)
+        }
+        rendered.value = found.setup(
+          extendReactive(
+            extfmt,
+            restrictProps(
+              props,
+              ['align', 'maxlength', 'placeholder', 'size'],
+              true
+            )
+          ),
+          fctx
+        )
+      },
+      { immediate: true }
+    )
 
     const padState = {}
     const checkPad = (node: VNode) => calcPadding(node, padState)
@@ -240,7 +248,7 @@ export const OfField = defineComponent({
       },
       onClick(evt: MouseEvent) {
         // ctx.emit('click', evt)
-        const render = format.value
+        const render = rendered.value
         evt.stopPropagation()
         if (render && render.click) return render.click(evt)
       },
@@ -257,7 +265,7 @@ export const OfField = defineComponent({
 
     return () => {
       try {
-        const render = format.value
+        const render = rendered.value!
         const outerId = render.inputId ? render.inputId + '-outer' : props.id
         let overlay, overlayActive, overlayBlur
         // if(ctx.slots.overlay) overlay = ctx.slots.overlay(); else

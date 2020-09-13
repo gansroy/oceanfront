@@ -1,9 +1,10 @@
-import { VNode, ref, computed, watch, h, readonly } from 'vue'
+import { VNode, ref, computed, watch, h } from 'vue'
 import {
   defineFieldType,
   FieldContext,
   FieldProps,
   newFieldId,
+  fieldRender,
 } from '@/lib/fields'
 import { useFormats } from '@/lib/formats'
 import { removeEmpty } from '@/lib/util'
@@ -182,7 +183,7 @@ export const TextField = defineFieldType({
       },
     }
 
-    return readonly({
+    return fieldRender({
       blank,
       class: {
         'of-text-field': true,

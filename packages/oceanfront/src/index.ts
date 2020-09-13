@@ -12,6 +12,7 @@ import OfListGroup from './components/ListGroup.vue'
 import OfNavGroup from './components/NavGroup.vue'
 import { OfSelectField } from './components/SelectField'
 import OfSidebar from './components/Sidebar.vue'
+import { OfSliderField } from './components/SliderField'
 import { OfTextField } from './components/TextField'
 import { OfToggleField } from './components/ToggleField'
 import OfTabs from './components/Tabs.vue'
@@ -40,9 +41,10 @@ export const components: Record<string, Component> = {
   OfListItem,
   OfListGroup,
   OfNavGroup,
-  OfTabs,
   OfSelectField,
   OfSidebar,
+  OfSliderField,
+  OfTabs,
   OfTextField,
   OfToggleField,
 } as any
@@ -51,7 +53,6 @@ export const directives: Record<string, Directive> = {}
 
 export const Oceanfront: Plugin = {
   install(vue: App, args: any) {
-    vue.config.devtools = true
     extendDefaultConfig(() => {
       registerFieldType('file', FileField)
       registerFieldType('select', SelectField)

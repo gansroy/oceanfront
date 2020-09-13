@@ -1,10 +1,10 @@
-import { computed, defineComponent, h } from 'vue'
-import { useFormats } from '../lib/formats'
+import { computed, defineComponent, h, PropType } from 'vue'
+import { useFormats, TextFormatterProp } from '../lib/formats'
 
 export const OfFormat = defineComponent({
   name: 'OfFormat',
   props: {
-    type: [String, Function, Object],
+    type: [String, Function, Object] as PropType<TextFormatterProp>,
     options: Object,
     value: {
       type: [String, Boolean, Number, Array, Object],

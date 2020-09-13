@@ -1,4 +1,4 @@
-import { VNode } from 'vue'
+import { VNode, Ref, DeepReadonly, UnwrapRef, readonly } from 'vue'
 import { ItemList } from './items'
 import { FieldRecord } from './records'
 import { extendReactive } from './util'
@@ -109,8 +109,10 @@ export function defineFieldType<T extends FieldType>(f: T): T {
   return f
 }
 
+export type FormatProp = string | Record<string, any>
+
 export function extendFieldFormat(
-  format: string | Record<string, any>,
+  format: FormatProp | undefined,
   props: Record<string, any>
 ): Record<string, any> {
   if (typeof format === 'string' || typeof format === 'function') {
@@ -119,4 +121,12 @@ export function extendFieldFormat(
   }
   format = typeof format === 'object' ? format : {}
   return extendReactive(format, props)
+}
+
+export type ExtFieldRender = {
+  [K in keyof FieldRender]: FieldRender[K] | Ref<FieldRender[K]>
+}
+export function fieldRender<T extends object>(props: T): FieldRender {
+  // FIXME lies
+  return (readonly(props) as any) as FieldRender
 }

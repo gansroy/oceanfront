@@ -1,4 +1,4 @@
-import { Ref, toRef, computed, unref } from 'vue'
+import { Ref, toRef, unref } from 'vue'
 import { hasOwn } from '@vue/shared'
 
 export {
@@ -240,8 +240,6 @@ export function readonlyUnrefs<T extends object>(
 ): { [K in keyof T]: T[K] extends Ref<infer V> ? V : T[K] } {
   return new Proxy(val, readonlyUnrefsHandlers) as any
 }
-
-const _s: { r: string } = readonlyUnrefs({ r: computed(() => 'hi') })
 
 export interface CompatResizeObserver {
   disconnect(): void

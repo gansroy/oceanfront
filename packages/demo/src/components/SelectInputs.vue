@@ -5,16 +5,10 @@
       <div class="column">
         <of-highlight lang="html" :value="sampleCode" />
         <br />
-        <of-select-field
-          :items="testItems"
-          label="Select input"
-          value="Option 1"
-          variant="basic"
-        ></of-select-field>
         <of-field
           :format="{ items: testItems, type: 'select' }"
           label="Select input"
-          value="Option 2"
+          value="Option 1"
           variant="basic"
         ></of-field>
         <br /><br />
@@ -43,6 +37,7 @@ export default defineComponent({
     const sampleCode = `
 <of-select-field
   label="Select input"
+  :items="['apple', 'orange']"
   v-model:value="fieldValue"
   variant="filled"
 />`

@@ -42,7 +42,7 @@ export default defineComponent({
     const router = routes?.router
     const resolveRoute = computed(() => {
       if (router && props.to) {
-        return router.resolve(props.to)
+        return router.resolve(props.to as any)
       }
     })
     const href = computed(() => {
@@ -62,7 +62,7 @@ export default defineComponent({
     const navActive = ref(active.value)
     const clicked = (evt: Event) => {
       if (href.value && router) {
-        router.push(props.to)
+        router.push(props.to as any)
         evt.preventDefault()
         return true
       } else {

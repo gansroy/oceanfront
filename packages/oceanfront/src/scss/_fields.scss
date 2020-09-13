@@ -217,7 +217,7 @@
     // --of-icon-scale-indiv: 1.15;
   }
 
-  .of-toggle-outer {
+  .of-toggle-wrapper {
     display: flex;
     flex: auto;
   }
@@ -235,7 +235,7 @@
   position: relative;
   width: calc(2em + 2px);
 
-  .of-switch-thumb {
+  &-thumb {
     background-color: #555;
     // border: 1px solid #bbb;
     border-radius: 1em;
@@ -250,7 +250,7 @@
     width: calc(1em * #{$line-height-input});
   }
 
-  .of-switch-track {
+  &-track {
     border: 1px solid #777;
     border-radius: 1em;
     box-sizing: border-box;
@@ -553,44 +553,31 @@
   width: auto;
 }
 
-.of-slider-field {
+.of-slider {
+  align-items: center;
+  display: flex;
+  height: 1.5em;
+  margin: 0.25em 0.9em;
   position: relative;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0 10px;
 
-  &--label {
-    position: absolute;
-    top: 0;
-    color: $color-label;
-    padding: 5px;
-    font-size: 12px;
-  }
-  &--wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    height: 36px;
-  }
-  &--track {
+  &-track {
+    border-radius: 0.25em;
     width: 100%;
-    position: absolute;
     z-index: 0;
-    height: 3px;
+    height: 0.5em;
     background: $border-color-field;
   }
-  &--thumb {
-    height: 20px;
-    width: 20px;
+  &-thumb {
+    background-color: #555;
     border-radius: 50%;
+    box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
+    box-sizing: border-box;
     cursor: pointer;
-    -webkit-appearance: none;
-    z-index: 2;
+    height: 1em;
+    width: 1em;
     position: absolute;
-    background: $border-color-field;
-  }
-  &--input {
-    display: none;
+    transform: translateX(-50%);
+    z-index: 2;
   }
 }

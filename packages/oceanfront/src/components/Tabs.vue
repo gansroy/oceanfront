@@ -29,7 +29,7 @@
               :class="{
                 'is-active': selectedTabKey === tab.key,
                 'of-tab-header-item': true,
-                'overflow-button': tab.overflowButton
+                'overflow-button': tab.overflowButton,
               }"
             >
               {{ tab.text }}
@@ -66,7 +66,6 @@
             <div class="of-list-divider"></div>
           </div>
         </div>
-
       </div>
     </div>
   </transition>
@@ -79,24 +78,30 @@ import {
   onMounted,
   PropType,
   SetupContext,
-  computed, watch, onBeforeUnmount,
+  computed,
+  watch,
+  onBeforeUnmount,
 } from 'vue'
 
-import {ItemList, useItems} from '@/lib/items'
+import { ItemList, useItems } from '../lib/items'
 
-const formatItems = (list: any, params: any, visible = true, addOverflowButton: Boolean = false): any => {
+const formatItems = (
+  list: any,
+  params: any,
+  visible = true,
+  addOverflowButton: Boolean = false
+): any => {
   const rows = []
 
   for (const item of list) {
-    let text = '';
-    text = item[params.textKey]? item[params.textKey] : ''
+    let text = ''
+    text = item[params.textKey] ? item[params.textKey] : ''
 
-    if (text === '')
-      continue
+    if (text === '') continue
 
-    if (visible && ! item.visible) {
+    if (visible && !item.visible) {
       continue
-    } else if (! visible && item.visible) {
+    } else if (!visible && item.visible) {
       continue
     }
 
@@ -106,7 +111,7 @@ const formatItems = (list: any, params: any, visible = true, addOverflowButton: 
       overflowButton: false,
       text: item[params.textKey],
       key: parseInt(item['key']),
-      visible: item.visible
+      visible: item.visible,
     })
   }
 
@@ -122,7 +127,6 @@ const formatItems = (list: any, params: any, visible = true, addOverflowButton: 
 
   return rows
 }
-
 
 export default defineComponent({
   name: 'OfTabs',
@@ -154,15 +158,15 @@ export default defineComponent({
     let showOverflowButton: Boolean = false
 
     const ofTabsNavigationHeaderShowNextNavigation = computed(() => {
-      return props.scrolling && (variant.value !== 'osx' && !overflowButton.value)
+      return props.scrolling && variant.value !== 'osx' && !overflowButton.value
     })
 
     const ofTabsNavigationHeaderShowPreviousNavigation = computed(() => {
-      return props.scrolling && (variant.value !== 'osx' && !overflowButton.value)
+      return props.scrolling && variant.value !== 'osx' && !overflowButton.value
     })
 
     const showNavigation = computed(() => {
-      return props.scrolling && (variant.value !== 'osx' && !overflowButton.value)
+      return props.scrolling && variant.value !== 'osx' && !overflowButton.value
     })
 
     const itemMgr = useItems()
@@ -184,7 +188,7 @@ export default defineComponent({
         let item: any = result.items[index]
 
         if (typeof item === 'string' && item !== '') {
-          item = {text: item, key: parseInt(index), visible: true}
+          item = { text: item, key: parseInt(index), visible: true }
         } else if (typeof item === 'object') {
           item.key = parseInt(index)
           item.visible = true
@@ -197,7 +201,12 @@ export default defineComponent({
     })
 
     const tabsList = computed(() => {
-      return formatItems(items.value.items, items.value, true, showOverflowButton)
+      return formatItems(
+        items.value.items,
+        items.value,
+        true,
+        showOverflowButton
+      )
     })
 
     const invisibleTabsList = computed(() => {
@@ -213,7 +222,6 @@ export default defineComponent({
         repositionLine()
         repositionTabs()
       })
-
     })
 
     onBeforeUnmount(() => {
@@ -253,8 +261,12 @@ export default defineComponent({
           '.of-tab-header-item.is-active'
         )
 
-        const prevNavBounds = tabs.value.querySelector('.of-tabs-navigation.of-tabs-navigation-prev').getBoundingClientRect()
-        const nextNavBounds = tabs.value.querySelector('.of-tabs-navigation.of-tabs-navigation-next').getBoundingClientRect()
+        const prevNavBounds = tabs.value
+          .querySelector('.of-tabs-navigation.of-tabs-navigation-prev')
+          .getBoundingClientRect()
+        const nextNavBounds = tabs.value
+          .querySelector('.of-tabs-navigation.of-tabs-navigation-next')
+          .getBoundingClientRect()
         const currentItemBounds = currentTabHeaderItem.getBoundingClientRect()
 
         let scroll = 0
@@ -263,20 +275,18 @@ export default defineComponent({
         if (currentItemBounds.right > nextNavBounds.left) {
           scroll = Math.round(currentItemBounds.right - nextNavBounds.left) + 5
           navigateHeader('next', scroll)
-        //check left bound
+          //check left bound
         } else if (currentItemBounds.left < prevNavBounds.right) {
-          scroll =  Math.round(prevNavBounds.right - currentItemBounds.left) + 5
+          scroll = Math.round(prevNavBounds.right - currentItemBounds.left) + 5
           navigateHeader('prev', scroll)
         }
-
       }
     }
 
     const setTabsWidth = function () {
-      if (overflowButton.value && ! showNavigation.value) {
+      if (overflowButton.value && !showNavigation.value) {
         for (let item of ofTabsHeader.value.childNodes) {
-          if (!item.clientWidth)
-            continue
+          if (!item.clientWidth) continue
 
           tabsWidth.value.push(item.clientWidth)
         }
@@ -284,7 +294,7 @@ export default defineComponent({
     }
 
     const hideOutsideTabs = function () {
-      if (overflowButton.value && ! showNavigation.value) {
+      if (overflowButton.value && !showNavigation.value) {
         closeOverflowPopup()
 
         const outerWidth = ofTabsHeader.value.clientWidth
@@ -297,8 +307,7 @@ export default defineComponent({
           tabsWidthSum += tabsWidth.value[index]
 
           if (tabsWidthSum > outerWidth) {
-
-            if (! hasInvisibleTabs) {
+            if (!hasInvisibleTabs) {
               //Add previous element to invisible list to free space for overflow button
               const prevItem = items.value.items[index - 1]
               prevItem['visible'] = false as never
@@ -313,7 +322,7 @@ export default defineComponent({
           item['visible'] = visible as never
           items.value.items[index] = item
 
-          index ++
+          index++
         }
 
         showOverflowButton = hasInvisibleTabs
@@ -321,7 +330,7 @@ export default defineComponent({
       }
     }
 
-    const addSelectedTabToVisibleList = function() {
+    const addSelectedTabToVisibleList = function () {
       const selectedTab: any = getTab(selectedTabKey.value, true)
 
       if (selectedTab) {
@@ -358,23 +367,24 @@ export default defineComponent({
       }
     }
 
-    const getTab = function (key: Number, invisible = false): Object | undefined {
+    const getTab = function (
+      key: Number,
+      invisible = false
+    ): Object | undefined {
       let list: any
 
-      if (! invisible) {
+      if (!invisible) {
         list = tabsList.value
       } else {
         list = invisibleTabsList.value
       }
 
       for (const tab of list) {
-        if (tab.key === key)
-          return tab
+        if (tab.key === key) return tab
       }
     }
 
     const selectTab = function (key: number) {
-
       if (selectedTabKey.value !== key) {
         const selectedTab: any = getTab(key)
 
@@ -390,7 +400,6 @@ export default defineComponent({
           })
         }
       }
-
     }
 
     const selectInvisibleTab = function (key: number) {

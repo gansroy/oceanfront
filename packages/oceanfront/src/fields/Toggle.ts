@@ -1,9 +1,10 @@
-import { ref, computed, VNode, watch, h, readonly } from 'vue'
+import { ref, computed, VNode, watch, h } from 'vue'
 import {
   defineFieldType,
   FieldContext,
   FieldProps,
   newFieldId,
+  fieldRender,
 } from '@/lib/fields'
 import { OfIcon } from '@/components/Icon'
 
@@ -77,7 +78,7 @@ export const ToggleField = defineFieldType({
       },
     }
 
-    return readonly({
+    return fieldRender({
       active: true, // always show content
       append() {
         if (inputType.value === 'switch')
@@ -127,7 +128,7 @@ export const ToggleField = defineFieldType({
           ]),
         ]
         if (label) inner.unshift(label)
-        return [h('div', { class: 'of-toggle-outer' }, inner)]
+        return [h('div', { class: 'of-toggle-wrapper' }, inner)]
       },
       click: clickToggle,
       cursor: 'pointer', // FIXME depends if editable
