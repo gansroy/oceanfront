@@ -5,20 +5,14 @@
       <div class="column md-8">
         <of-highlight lang="html" :value="sampleCode" />
         <br />
-        <of-field
-          :format="{ max: sliderMax, step: 10 }"
-          type="slider"
-          v-model:value="sliderValue"
-          label="Slider input"
-        ></of-field>
-        <!--of-slider-field
+        <of-slider-field
           :max="sliderMax"
           :step="5"
           v-model:value="sliderValue"
           label="Slider input"
         ></of-slider-field>
-        <br /><br / -->
-        <!-- of-slider-field
+        <br /><br />
+        <of-slider-field
           :max="sliderMax"
           :step="10"
           v-model:value="sliderValue"
@@ -28,11 +22,13 @@
         <br /><br />
         <of-slider-field
           :max="sliderMax"
-          :step="10"
+          :step="15"
           v-model:value="sliderValue"
           variant="filled"
           label="Slider input"
-        ></of-slider-field -->
+        ></of-slider-field>
+        <br /><br />
+        Output: <of-format type="number" :value="sliderValue"></of-format>
       </div>
     </div>
   </div>
@@ -50,6 +46,7 @@ export default defineComponent({
   label="Field Label"
   :min="0"
   :max="100"
+  :step="5"
   v-model:value="fieldValue"
   variant="filled"
 />`

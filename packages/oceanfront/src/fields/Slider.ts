@@ -104,6 +104,8 @@ export const SliderField = defineFieldType({
         startVal = pendingValue.value
         document.addEventListener('mousemove', handleMove)
         document.addEventListener('mouseup', stopMove)
+        // snap to current step in case value was manually assigned
+        handleMove(evt)
       },
     }
     const trackHooks = {
@@ -116,10 +118,10 @@ export const SliderField = defineFieldType({
         evt.preventDefault()
         focus()
         startX = evt.pageX
-        startVal = pendingValue.value
         pendingValue.value = fixValue(
           ((startX - dims.left) * opts.value.delta) / dims.width
         )
+        startVal = pendingValue.value
         document.addEventListener('mousemove', handleMove)
         document.addEventListener('mouseup', stopMove)
       },
