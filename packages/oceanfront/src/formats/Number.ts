@@ -53,7 +53,7 @@ export class NumberFormatter implements TextFormatter {
   }
 
   formatterOptions(editing?: boolean): Intl.NumberFormatOptions {
-    let opts = this.options
+    const opts = this.options
     return {
       // minimumIntegerDigits: this.minimumIntegerDigits, // requires extra leading zero handling
       maximumFractionDigits: opts.maximumFractionDigits || 3, // editing ? 5 : opts.maximumFractionDigits,
@@ -64,7 +64,7 @@ export class NumberFormatter implements TextFormatter {
       minimumSignificantDigits: opts.minimumSignificantDigits,
       // signDisplay: this.signDisplay  // NYI in browsers
       style: opts.style,
-      useGrouping: opts.useGrouping
+      useGrouping: opts.useGrouping,
     }
   }
 
@@ -89,7 +89,7 @@ export class NumberFormatter implements TextFormatter {
 
     let parsed = ''
     let parsedSelStart: number | null = null
-    let parsedAfterDigit =
+    const parsedAfterDigit =
       selStart && isDigit(input.substring(selStart - 1, selStart))
     let minDecs: number | null = decPos === null || decPos > selStart ? null : 0
     for (let idx = 0; idx < input.length; idx++) {
@@ -122,12 +122,12 @@ export class NumberFormatter implements TextFormatter {
       selAfterDigit: parsedAfterDigit,
       value,
       minDecs,
-      seps
+      seps,
     }
   }
 
   getSeparators() {
-    let opts = this.options
+    const opts = this.options
     let group = opts.groupSeparator
     let decimal = opts.decimalSeparator
     if (group === undefined || decimal === undefined) {
@@ -175,7 +175,8 @@ export class NumberFormatter implements TextFormatter {
     return {
       error,
       value,
-      textValue
+      textValue,
+      textClass: this.inputClass,
     }
   }
 
@@ -186,8 +187,7 @@ export class NumberFormatter implements TextFormatter {
     if (typeof input === 'string') {
       input = input.trim()
       if (!input.length) return null
-      let parsed = this.parseInput(input)
-      return parsed.value
+      return this.parseInput(input).value
     }
     throw new TypeError('Unsupported value')
   }
@@ -244,7 +244,7 @@ export class NumberFormatter implements TextFormatter {
         selStart,
         selEnd: selStart,
         updated: input.value !== textValue,
-        value: unformat.value
+        value: unformat.value,
       }
     }
     return { updated: false }

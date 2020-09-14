@@ -23,7 +23,7 @@ export const OfFormat = defineComponent({
       if (fmt) {
         const result = fmt.format(props.value)
         if (result) {
-          return h('div', { class: result.textClass }, result.textValue)
+          return h('span', { class: result.textClass }, result.textValue)
         }
       }
       return props.value === undefined ? '' : '' + props.value
