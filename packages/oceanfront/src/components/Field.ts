@@ -152,7 +152,6 @@ export const OfField = defineComponent({
 
     const fieldType = computed<string | object | undefined>(() => {
       const fmt = props.format
-      console.log('upd fmt', fmt, props.type)
       return (
         props.type ||
         (fmt && typeof fmt === 'string'
@@ -210,7 +209,6 @@ export const OfField = defineComponent({
     watch(
       () => [fieldType.value, props.format],
       ([ftype, fmt]) => {
-        console.log('reformat', ftype, fmt)
         const extfmt = fmt
           ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
             ? { type: fmt }

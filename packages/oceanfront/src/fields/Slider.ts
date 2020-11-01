@@ -1,4 +1,4 @@
-import { ref, computed, watch, h, watchEffect } from 'vue'
+import { ref, computed, watch, h, watchEffect, onActivated } from 'vue'
 import {
   defineFieldType,
   FieldContext,
@@ -36,7 +36,6 @@ export const SliderField = defineFieldType({
       (val) => {
         if (val == null || val === '')
           val = opts.value.min + (opts.value.max - opts.value.min) / 2
-        console.trace('nval', val, typeof val)
         pendingValue.value = val
         stateValue.value = val
       },
@@ -126,19 +125,6 @@ export const SliderField = defineFieldType({
         document.addEventListener('mouseup', stopMove)
       },
     }
-    watch(
-      () => trackElt.value,
-      (elt) => {
-        if (elt) {
-          trackSize = watchResize((entries) => {
-            trackWidth.value = Math.round(entries[0].size.width)
-          }, elt)
-        } else if (trackSize) {
-          trackSize.disconnect()
-          trackSize = undefined
-        }
-      }
-    )
 
     const cancelMove = () => {
       document.removeEventListener('mousemove', handleMove)
@@ -162,44 +148,67 @@ export const SliderField = defineFieldType({
       stateValue.value = val
       if (inputElt.value) inputElt.value.value = '' + val
       if (ctx.onUpdate) ctx.onUpdate(val)
-      console.log('set: ' + val)
     }
 
-    // position thumb
-    watchEffect(() => {
-      const { delta, min } = opts.value
-      const tw = trackWidth.value
-      if (delta && tw && thumbElt.value) {
-        thumbElt.value.style.left =
-          Math.round((((pendingValue.value - min) * tw) / delta) * 100) / 100 +
-          'px'
+    const initPosition = () => {
+      const track = trackElt.value
+      if (track) {
+        trackSize = watchResize((entries) => {
+          trackWidth.value = Math.round(entries[0].size.width)
+        }, track)
+
+        // position thumb
+        watchEffect(() => {
+          const { delta, min } = opts.value
+          const tw = trackWidth.value
+          const val = pendingValue.value
+          const thumb = thumbElt.value
+          if (thumb && delta && tw) {
+            thumb.style.left =
+              Math.round((((val - min) * tw) / delta) * 100) / 100 + 'px'
+          }
+        })
       }
-    })
+    }
+    const destroyPosition = () => {
+      if (trackSize) {
+        trackSize.disconnect()
+        trackSize = undefined
+      }
+    }
 
     return fieldRender({
       class: 'of-slider-field',
       content: () => {
-        return h('div', { class: 'of-slider' }, [
-          h('input', {
-            id: inputId.value,
-            name: ctx.name,
-            ref: inputElt,
-            type: 'text',
-            class: 'of-field-input',
-            value: lazyInputValue,
-            ...inputHooks,
-          }),
-          h('div', {
-            class: 'of-slider-thumb',
-            ref: thumbElt,
-            ...thumbHooks,
-          }),
-          h('div', {
-            class: 'of-slider-track',
-            ref: trackElt,
-            ...trackHooks,
-          }),
-        ])
+        return h(
+          'div',
+          {
+            class: 'of-slider',
+            onVnodeMounted: initPosition,
+            onVnodeBeforeUnmount: destroyPosition,
+          },
+          [
+            h('input', {
+              id: inputId.value,
+              name: ctx.name,
+              ref: inputElt,
+              type: 'text',
+              class: 'of-field-input',
+              value: lazyInputValue,
+              ...inputHooks,
+            }),
+            h('div', {
+              class: 'of-slider-thumb',
+              ref: thumbElt,
+              ...thumbHooks,
+            }),
+            h('div', {
+              class: 'of-slider-track',
+              ref: trackElt,
+              ...trackHooks,
+            }),
+          ]
+        )
       },
       focus,
       focused,
