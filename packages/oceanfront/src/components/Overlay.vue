@@ -80,18 +80,6 @@ export default defineComponent({
   },
   emits: ['blur'],
   setup(props, ctx: SetupContext) {
-    const active = computed(() => props.active)
-    const align = computed(() => props.align)
-    const state = computed(() => (props.embed ? 'embed' : 'overlay'))
-    const target = computed(() => {
-      active.value, state.value // trigger re-eval
-      const src = props.target
-      if (typeof src === 'string') {
-        return document.documentElement.querySelector(src)
-      } else if (src instanceof Element) {
-        return src
-      }
-    })
     let bound = false
     let focused = false
     let swapped: Comment | null = null
@@ -109,6 +97,8 @@ export default defineComponent({
         }
       },
     }
+    const state = computed(() => (props.embed ? 'embed' : 'overlay'))
+    const target = ref()
     const onFocusChange = () => {
       // FIXME debounce
       requestAnimationFrame(() => {
@@ -190,7 +180,7 @@ export default defineComponent({
       )
     }
     const updateState = () => {
-      const activeOverlay = active.value && state.value === 'overlay'
+      const activeOverlay = props.active && state.value === 'overlay'
       reparent()
       bind(activeOverlay)
       if (activeOverlay) {
@@ -200,25 +190,34 @@ export default defineComponent({
         })
       }
     }
-    watch([active, state], updateState)
     watch(
-      () => scrolled.value,
-      (_) => {
-        nextTick(reposition)
+      () => [props.target, props.active, state.value],
+      ([src, ..._]) => {
+        if (typeof src === 'string') {
+          target.value = document.documentElement.querySelector(src)
+        } else if (src instanceof Element) {
+          target.value = src
+        } else {
+          target.value = null
+        }
+        updateState()
       }
     )
+    watch(scrolled, (_) => {
+      nextTick(reposition)
+    })
     const classAttr = computed(() => {
       const cls = {
-        'of--active': active.value,
-        'of--capture': active.value && props.capture,
+        'of--active': props.active,
+        'of--capture': props.active && props.capture,
         'of--embed': state.value === 'embed',
         'of--loading': props.loading,
         'of--overlay': state.value === 'overlay',
         'of--pad': props.pad,
-        'of--shade': active.value && props.shade,
+        'of--shade': props.active && props.shade,
       }
-      if (state.value !== 'embed' && !target.value && align.value)
-        (cls as any)['of--' + align.value] = true
+      if (state.value !== 'embed' && !target.value && props.align)
+        (cls as any)['of--' + props.align] = true
       return [cls, props.class]
     })
     onMounted(updateState)
@@ -230,7 +229,7 @@ export default defineComponent({
       }
     })
     return {
-      active,
+      active: computed(() => props.active),
       classAttr,
       elt,
       focus,
