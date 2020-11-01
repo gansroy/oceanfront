@@ -11,7 +11,7 @@ createApp(App)
   .use(Oceanfront, {
     config: () => {
       showMissingIcons()
-    }
+    },
   })
   .use(demo)
   .use(router)

@@ -6,15 +6,13 @@
     // "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
     "esModuleInterop": true,
     // "allowSyntheticDefaultImports": true,
     // "skipLibCheck": true,
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "resize-observer-browser",
-      "webpack-env",
+      "resize-observer-browser"
     ],
     "paths": {
       "@/*": [
@@ -22,20 +20,14 @@
       ]
     },
     "lib": [
-      "es2015",
-      "es2016",
-      "es2017",
-      "es2018",
+      "esnext",
       "dom",
       "dom.iterable"
     ]
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "src/**/*.vue"
   ],
   "exclude": [
     "node_modules"

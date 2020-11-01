@@ -1,120 +1,190 @@
-import replace from '@rollup/plugin-replace'
-import resolve from '@rollup/plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
-import VuePlugin from 'rollup-plugin-vue'
-import ts from 'rollup-plugin-typescript2'
+import path from 'path'
 import alias from '@rollup/plugin-alias'
+import babel from '@rollup/plugin-babel'
+import commonjs from '@rollup/plugin-commonjs'
+import cssnano from 'cssnano'
+import dts from 'rollup-plugin-dts'
+import postcss from 'rollup-plugin-postcss'
+import postcssImport from 'postcss-import'
+import postcssUrl from 'postcss-url'
+import resolve from '@rollup/plugin-node-resolve'
+import replace from '@rollup/plugin-replace'
 import { terser } from 'rollup-plugin-terser'
-import pkg from './package.json'
+import typescript from 'rollup-plugin-typescript2'
+import url from '@rollup/plugin-url'
+import vue from 'rollup-plugin-vue'
+import minimist from 'minimist'
 
-const banner = `/*!
-  * ${pkg.name} v${pkg.version}
-  * (c) ${new Date().getFullYear()} 1CRM
-  * @license MIT
-  */`
+const argv = minimist(process.argv.slice(2))
+const projectRoot = path.resolve(__dirname, '.')
+const external = ['vue', 'vue-router']
+const globals = { vue: 'Vue' }
 
-const exportName = 'Oceanfront'
+const postcssPlugins = [
+  postcssImport({
+    resolve(id, basedir) {
+      // resolve alias @css, @import '@css/style.css'
+      // because @css/ has 5 chars
+      // if (id.startsWith("@css")) {
+      //   return path.resolve("./src/assets/styles/css", id.slice(5));
+      // }
 
-function createEntry(
-  {
-    format, // Rollup format (iife, umd, cjs, es)
-    external = ['vue', '@vue/reactivity', '@vue/runtime-core'], // Rollup external option
-    input = 'src/index.ts', // entry point
-    env = 'development', // NODE_ENV variable
-    minify = false,
-    isBrowser = false // produce a browser module version or not
-  } = {
-    input: 'src/index.ts',
-    env: 'development',
-    minify: false,
-    isBrowser: false
-  }
-) {
-  // force production mode when minifying
-  if (minify) env = 'production'
-  const isProductionBuild =
-    process.env.__DEV__ === 'false' || env === 'production'
+      // resolve node_modules, @import '~normalize.css/normalize.css'
+      // similar to how css-loader's handling of node_modules
+      if (id.startsWith('~')) {
+        return path.resolve('./node_modules', id.slice(1))
+      }
 
-  const config = {
-    input,
-    plugins: [
-      replace({
-        __VERSION__: JSON.stringify(pkg.version),
-        __DEV__:
-          (format === 'es' && !isBrowser) || format === 'cjs'
-            ? // preserve to be handled by bundlers
-              `process.env.NODE_ENV !== 'production'`
-            : // hard coded dev/prod builds
-              !isProductionBuild
+      // resolve relative path, @import './components/style.css'
+      return path.resolve(basedir, id)
+    },
+  }),
+  postcssUrl({ url: 'inline' }),
+]
+
+function pluginConfig(compact, extractCss) {
+  const ret = [
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      __VUE_OPTIONS_API__: JSON.stringify(true),
+      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+    }),
+    alias({
+      entries: [
+        {
+          find: '@',
+          replacement: path.resolve(projectRoot, 'src'),
+        },
+      ],
+      customResolver: resolve({
+        extensions: ['.js', '.jsx', '.vue'],
       }),
-      alias({
-        resolve: ['ts']
-      })
-    ],
-    output: {
-      banner,
-      file: 'dist/oceanfront.other.js',
-      format,
-      globals: {
-        '@vue/reactivity': 'Vue',
-        '@vue/runtime-core': 'Vue',
-        vue: 'Vue'
-      }
-    }
-  }
-
-  if (format === 'iife') {
-    // config.input = 'src/entries/iife.ts'
-    config.output.file = pkg.unpkg
-    config.output.name = exportName
-  } else if (format === 'es') {
-    config.output.file = isBrowser ? pkg.browser : pkg.module
-  } else if (format === 'cjs') {
-    config.output.file = 'dist/oceanfront.cjs.js'
-  }
-
-  if (!external) {
-    config.plugins.push(resolve(), commonjs(), VuePlugin())
-  } else {
-    config.external = external
-  }
-
-  config.plugins.push(
-    ts({
-      // only check once, during the es version with browser (it includes external libs)
-      check: format === 'es' && isBrowser && !minify,
+    }),
+    resolve({
+      extensions: ['.js', '.jsx', '.vue'],
+    }),
+    typescript({
+      clean: true,
       tsconfigOverride: {
-        compilerOptions: {
-          // same for d.ts files
-          declaration: format === 'es' && isBrowser && !minify,
-          module: 'esnext', // we need to override it because mocha requires this value to be commonjs
-          target: format === 'iife' || format === 'cjs' ? 'es5' : 'esnext'
-        }
-      }
-    })
-  )
+        declaration: false,
+        declarationDir: null,
+        declarationMap: false,
+      },
+    }),
+    commonjs(),
+    vue({
+      target: 'browser',
+      preprocessStyles: true,
+      postcssPlugins: [...postcssPlugins],
+    }),
+    postcss({
+      extract: extractCss ? 'oceanfront.css' : false,
+      inject: false,
+      plugins: [...postcssPlugins, cssnano()],
+      sourceMap: true,
+    }),
+    url({
+      include: ['**/*.svg', '**/*.png', '**/*.gif', '**/*.jpg', '**/*.jpeg'],
+    }),
+  ]
 
-  if (minify) {
-    config.plugins.push(
+  const babelCfg = {
+    babelrc: false,
+    exclude: 'node_modules/**',
+    extensions: ['.js', '.ts', '.vue'],
+    babelHelpers: 'bundled',
+    presets: ['@babel/preset-env'],
+  }
+  ret.push(babel(babelCfg))
+
+  if (compact) {
+    ret.push(
       terser({
-        module: format === 'es'
-        // output: {
-        //   preamble: banner,
-        // },
+        output: {
+          ecma: 5,
+        },
       })
     )
-    config.output.file = config.output.file.replace(/\.js$/i, '.min.js')
   }
-
-  return config
+  return ret
 }
 
-export default [
-  // browser-friendly UMD build
-  createEntry({ format: 'iife' }),
-  createEntry({ format: 'iife', minify: true }),
-  createEntry({ format: 'cjs' }),
-  // TODO: prod vs env
-  createEntry({ format: 'es' }),
-  createEntry({ format: 'es', isBrowser: true })
-]
+// Customize configs for individual targets
+let buildFormats = []
+let targetFormats = {
+  dts: !argv.format || argv.format == 'dts' || argv.format == 'es',
+  es: !argv.format || argv.format == 'es',
+  iife: !argv.format || argv.format == 'iife',
+  cjs: !argv.format || argv.format == 'cjs',
+}
+
+if (targetFormats.dts) {
+  buildFormats.push({
+    input: `src/index.ts`,
+    output: {
+      file: `dist/index.d.ts`,
+      format: 'es',
+    },
+    external: [/\.scss$/],
+    plugins: [dts()],
+  })
+}
+
+if (targetFormats.es) {
+  /*
+  buildFormats.push({
+    input: {
+      index: './src/index.ts',
+    },
+    external,
+    output: {
+      format: 'esm',
+      dir: 'dist/esm',
+    },
+    plugins: pluginConfig(),
+  })
+  */
+
+  buildFormats.push({
+    input: 'src/index.ts',
+    external,
+    output: {
+      format: 'esm',
+      file: 'dist/oceanfront.esm.js',
+    },
+    plugins: pluginConfig(false, true),
+  })
+}
+
+if (targetFormats.iife) {
+  buildFormats.push({
+    input: './src/index.ts',
+    external,
+    output: {
+      compact: true,
+      file: 'dist/oceanfront-browser.min.js',
+      format: 'iife',
+      name: 'oceanfront',
+      exports: 'named',
+      globals,
+    },
+    plugins: pluginConfig(true),
+  })
+}
+
+if (targetFormats.cjs) {
+  buildFormats.push({
+    input: './src/index.ts',
+    external,
+    output: {
+      compact: true,
+      format: 'cjs',
+      file: 'dist/oceanfront.cjs.js',
+      exports: 'named',
+      globals,
+    },
+    plugins: pluginConfig(),
+  })
+}
+
+export default buildFormats

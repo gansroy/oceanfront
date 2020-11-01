@@ -10,7 +10,7 @@ import {
   SetupContext,
   VNode,
 } from 'vue'
-import { INavGroup } from './NavGroup.vue'
+import { INavGroup } from '../lib/nav'
 import { OfIcon } from './Icon'
 import { useRoutes } from '../lib/routes'
 
