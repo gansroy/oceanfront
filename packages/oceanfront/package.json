@@ -12,10 +12,9 @@
   ],
   "scripts": {
     "build": "rimraf dist && cross-env NODE_ENV=production rollup --config rollup.config.js",
-    "build-dev": "rimraf dist && cross-env NODE_ENV=production rollup --config rollup.config.js --format es",
-    "typings": "tsc --emitDeclarationOnly",
+    "build-dev": "rimraf dist && rollup --config rollup.config.js --format es",
     "clean": "rimraf dist",
-    "watch": "cross-env NODE_ENV=production rollup --config rollup.config.js --format es -w"
+    "watch": "rollup --config rollup.config.js --format es -w"
   },
   "peerDependencies": {
     "vue": "=3.0.2"

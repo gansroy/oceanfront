@@ -1,15 +1,9 @@
-import { Router, RouteLocationNormalizedLoaded } from 'vue-router'
-
-/*let useRoute: any = null,
-  useRouter: any = null
-try {
-  const { useRoute: _useRoute, useRouter: _useRouter } = require('vue-router')
-  useRoute = _useRoute
-  useRouter = _useRouter
-} catch (er) {
-  console.log('vue-router not found')
-}*/
-import { useRoute, useRouter } from 'vue-router';
+import {
+  Router,
+  RouteLocationNormalizedLoaded,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 
 class RouteAccessor {
   protected _router: Router

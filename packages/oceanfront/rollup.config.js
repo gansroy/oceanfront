@@ -18,7 +18,17 @@ import minimist from 'minimist'
 const argv = minimist(process.argv.slice(2))
 const projectRoot = path.resolve(__dirname, '.')
 const external = ['vue', 'vue-router']
-const globals = { vue: 'Vue' }
+const globals = { vue: 'Vue', 'vue-router': 'VueRouter' }
+const node_env = process.env.NODE_ENV || 'development'
+
+// Customize configs for individual targets
+const buildFormats = []
+const targetFormats = {
+  dts: !argv.format || argv.format == 'dts' || argv.format == 'es',
+  es: !argv.format || argv.format == 'es',
+  iife: !argv.format || argv.format == 'iife',
+  cjs: !argv.format || argv.format == 'cjs',
+}
 
 const postcssPlugins = [
   postcssImport({
@@ -45,7 +55,8 @@ const postcssPlugins = [
 function pluginConfig(compact, extractCss) {
   const ret = [
     replace({
-      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.NODE_ENV': JSON.stringify(node_env),
+      __DEV__: JSON.stringify(node_env === 'development'),
       __VUE_OPTIONS_API__: JSON.stringify(true),
       __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
     }),
@@ -107,15 +118,6 @@ function pluginConfig(compact, extractCss) {
     )
   }
   return ret
-}
-
-// Customize configs for individual targets
-let buildFormats = []
-let targetFormats = {
-  dts: !argv.format || argv.format == 'dts' || argv.format == 'es',
-  es: !argv.format || argv.format == 'es',
-  iife: !argv.format || argv.format == 'iife',
-  cjs: !argv.format || argv.format == 'cjs',
 }
 
 if (targetFormats.dts) {
