@@ -31,6 +31,7 @@ export default defineComponent({
     loading: Boolean,
     modelValue: Boolean,
   },
+  emits: ['update:modelValue'],
   setup(props, ctx: SetupContext) {
     const active = ref(props.modelValue)
     watch(

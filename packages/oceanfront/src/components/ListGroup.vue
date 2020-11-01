@@ -17,6 +17,7 @@ export default defineComponent({
     transition: String,
     value: [Boolean, String],
   },
+  emits: ['update:modelValue'],
   setup(props, ctx) {
     const state = ref(!!props.modelValue || props.value)
     const toggle = (_args?: any) => {

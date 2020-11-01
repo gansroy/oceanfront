@@ -138,6 +138,7 @@ export default defineComponent({
     variant: String,
     tabsList: Array,
   },
+  emits: ['update:value'],
   setup(props, context: SetupContext) {
     let tabs: any = ref([])
     let ofTabsHeader: any = ref()
