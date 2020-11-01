@@ -78,6 +78,7 @@ export default defineComponent({
     shade: { type: Boolean, default: true },
     target: ({ type: [Element, String] } as any) as PropType<Element | string>,
   },
+  emits: ['blur'],
   setup(props, ctx: SetupContext) {
     const active = computed(() => props.active)
     const align = computed(() => props.align)
