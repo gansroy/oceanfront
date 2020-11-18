@@ -31,9 +31,8 @@
                 'of-tab-header-item': true,
                 'overflow-button': tab.overflowButton,
               }"
-            >
-              {{ tab.text }}
-            </div>
+              v-html="tab.text"
+            ></div>
             <div class="of-tabs-line" ref="tabLine"></div>
           </div>
           <div
@@ -59,9 +58,10 @@
             @click="selectInvisibleTab(tab.key)"
           >
             <div class="of-list-item-inner">
-              <div class="of-list-item-content">
-                {{ tab.text }}
-              </div>
+              <div
+                class="of-list-item-content"
+                v-html="tab.text"
+              ></div>
             </div>
             <div class="of-list-divider"></div>
           </div>
@@ -76,6 +76,7 @@ import {
   ref,
   defineComponent,
   onMounted,
+  onBeforeMount,
   PropType,
   SetupContext,
   computed,
@@ -99,9 +100,9 @@ const formatItems = (
 
     if (text === '') continue
 
-    if (visible && !item.visible) {
+    if (visible && item.visible === false) {
       continue
-    } else if (!visible && item.visible) {
+    } else if (!visible && item.visible === true) {
       continue
     }
 
@@ -156,7 +157,7 @@ export default defineComponent({
     const cls = 'of--variant-' + variant.value
 
     const overflowButton = computed(() => props.overflowButton || false)
-    let showOverflowButton: Boolean = false
+    let showOverflowButton = ref(false)
 
     const ofTabsNavigationHeaderShowNextNavigation = computed(() => {
       return props.scrolling && variant.value !== 'osx' && !overflowButton.value
@@ -172,7 +173,9 @@ export default defineComponent({
 
     const itemMgr = useItems()
 
-    const items = computed(() => {
+    const items: any = ref({})
+
+    const fillItems = function () {
       const result = {
         disabledKey: 'disabled',
         iconKey: 'icon',
@@ -198,20 +201,24 @@ export default defineComponent({
         result.items[index] = item as never
       }
 
-      return result
-    })
+      items.value = result
+    }
 
     const tabsList = computed(() => {
       return formatItems(
         items.value.items,
         items.value,
         true,
-        showOverflowButton
+        showOverflowButton.value
       )
     })
 
     const invisibleTabsList = computed(() => {
       return formatItems(items.value.items, items.value, false)
+    })
+
+    onBeforeMount(() => {
+      fillItems()
     })
 
     onMounted(() => {
@@ -326,7 +333,7 @@ export default defineComponent({
           index++
         }
 
-        showOverflowButton = hasInvisibleTabs
+        showOverflowButton.value = hasInvisibleTabs
         addSelectedTabToVisibleList()
       }
     }

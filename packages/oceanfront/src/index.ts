@@ -14,6 +14,7 @@ import { OfSelectField } from './components/SelectField'
 import OfSidebar from './components/Sidebar.vue'
 import { OfSliderField } from './components/SliderField'
 import { OfTextField } from './components/TextField'
+import { OfPasswordField } from './components/PasswordField'
 import { OfToggleField } from './components/ToggleField'
 import OfTabs from './components/Tabs.vue'
 
@@ -46,6 +47,7 @@ export const components: Record<string, Component> = {
   OfSliderField,
   OfTabs,
   OfTextField,
+  OfPasswordField,
   OfToggleField,
 } as any
 
@@ -58,6 +60,7 @@ export const Oceanfront: Plugin = {
       registerFieldType('select', SelectField)
       registerFieldType('text', TextField)
       registerFieldType('textarea', TextField)
+      registerFieldType('password', TextField)
       registerFieldType('toggle', ToggleField)
       registerFieldType('slider', SliderField)
       registerTextFormatter('color', ColorFormatter)

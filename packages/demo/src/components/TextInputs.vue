@@ -101,6 +101,12 @@
           value="Compact"
         />
       </div>
+      <div class="demo-inline">
+        <of-password-field
+          placeholder="Password"
+          variant="basic"
+        />
+      </div>
     </div>
     <div class="row demo-row">
       <div class="demo-inline">
@@ -170,6 +176,10 @@ export default defineComponent({
   label="Field Label"
   v-model:value="fieldValue"
   variant="filled"
+/>
+<of-password-field
+  placeholder="Password"
+  variant="basic"
 />`
     return {
       change,

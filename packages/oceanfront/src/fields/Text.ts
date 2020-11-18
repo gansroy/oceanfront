@@ -206,7 +206,7 @@ export const TextField = defineFieldType({
             readonly: ctx.mode === 'readonly' || ctx.locked || undefined,
             rows: props.rows,
             // size: props.size,  - need to implement at field level?
-            type: multiline.value ? undefined : fmt?.inputType || 'text',
+            type: multiline.value ? undefined : fmt?.inputType || _inputTypeFrom(props.type),
             value: lazyInputValue,
             ...hooks,
           }),
