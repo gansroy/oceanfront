@@ -344,29 +344,58 @@ export default defineComponent({
       if (selectedTab) {
         let index = 0
         let selectedIndex = -1
-        let lastVisibleIndex = -1
+        let tabsIndexes = []
 
+        //Make all tabs invisible exclude selected
         for (const item of items.value.items) {
           if (selectedTab['key'] === item['key']) {
+            updateTabVisibility(index, true)
             selectedIndex = index
-          } else if (item['visible']) {
-            lastVisibleIndex = index
+          } else if (item['visible'] && item['key'] !== -1) {
+            updateTabVisibility(index, false)
           }
+
+          if (index !== selectedIndex)
+            tabsIndexes.push(index)
 
           index++
         }
 
-        if (lastVisibleIndex >= 0 && selectedIndex >= 0) {
-          //Hide last visible item to free space for selected item
-          updateTabVisibility(lastVisibleIndex, false)
-          //Make selected item visible
-          updateTabVisibility(selectedIndex, true)
+        const outerWidth = ofTabsHeader.value.clientWidth
+        let tabsWidth = 0
+
+        //Make tabs visible until widths sum < main container's width
+        for (const index of tabsIndexes) {
+          updateTabVisibility(index, true)
+          tabsWidth = calcVisibleTabsWidth()
+
+          if (tabsWidth > outerWidth) {
+            updateTabVisibility(index, false)
+            break
+          }
         }
 
         setTimeout(() => {
           repositionLine()
         })
       }
+    }
+
+    const calcVisibleTabsWidth = function (): number {
+      let width = 0
+
+      const overflowButton = tabs.value.querySelector(
+        '.of-tab-header-item.overflow-button'
+      )
+
+      width += overflowButton?.clientWidth
+
+      for (const item of tabsList.value) {
+          if (item['visible'])
+            width += tabsWidth.value[item['key']]
+      }
+
+      return width
     }
 
     const updateTabVisibility = function (index: number, visible: boolean) {
