@@ -102,8 +102,9 @@
         />
       </div>
       <div class="demo-inline">
-        <of-password-field
+        <of-text-field
           placeholder="Password"
+          input-type="password"
           variant="basic"
         />
       </div>
@@ -176,10 +177,6 @@ export default defineComponent({
   label="Field Label"
   v-model:value="fieldValue"
   variant="filled"
-/>
-<of-password-field
-  placeholder="Password"
-  variant="basic"
 />`
     return {
       change,

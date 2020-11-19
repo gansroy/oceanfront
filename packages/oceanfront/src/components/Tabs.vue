@@ -344,13 +344,11 @@ export default defineComponent({
       if (selectedTab) {
         let index = 0
         let selectedIndex = -1
-        let selectedItem: any
         let lastVisibleIndex = -1
 
         for (const item of items.value.items) {
           if (selectedTab['key'] === item['key']) {
             selectedIndex = index
-            selectedItem = item
           } else if (item['visible']) {
             lastVisibleIndex = index
           }
@@ -360,18 +358,23 @@ export default defineComponent({
 
         if (lastVisibleIndex >= 0 && selectedIndex >= 0) {
           //Hide last visible item to free space for selected item
-          const lastVisibleItem = items.value.items[lastVisibleIndex]
-          lastVisibleItem['visible'] = false as never
-          items.value.items[lastVisibleIndex] = lastVisibleItem
-
+          updateTabVisibility(lastVisibleIndex, false)
           //Make selected item visible
-          selectedItem['visible'] = true as never
-          items.value.items[selectedIndex] = selectedItem as never
+          updateTabVisibility(selectedIndex, true)
         }
 
         setTimeout(() => {
           repositionLine()
         })
+      }
+    }
+
+    const updateTabVisibility = function (index: number, visible: boolean) {
+      const item = items.value.items[index]
+
+      if (typeof item !== 'undefined') {
+        item['visible'] = visible
+        items.value.items[index] = item
       }
     }
 
