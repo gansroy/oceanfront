@@ -31,8 +31,9 @@
                 'of-tab-header-item': true,
                 'overflow-button': tab.overflowButton,
               }"
-              v-html="tab.text"
-            ></div>
+            >
+              {{ tab.text }}
+            </div>
             <div class="of-tabs-line" ref="tabLine"></div>
           </div>
           <div
@@ -58,10 +59,9 @@
             @click="selectInvisibleTab(tab.key)"
           >
             <div class="of-list-item-inner">
-              <div
-                class="of-list-item-content"
-                v-html="tab.text"
-              ></div>
+              <div class="of-list-item-content">
+                {{ tab.text }}
+              </div>
             </div>
             <div class="of-list-divider"></div>
           </div>
@@ -355,8 +355,7 @@ export default defineComponent({
             updateTabVisibility(index, false)
           }
 
-          if (index !== selectedIndex)
-            tabsIndexes.push(index)
+          if (index !== selectedIndex) tabsIndexes.push(index)
 
           index++
         }
@@ -391,8 +390,7 @@ export default defineComponent({
       width += overflowButton?.clientWidth
 
       for (const item of tabsList.value) {
-          if (item['visible'])
-            width += tabsWidth.value[item['key']]
+        if (item['visible']) width += tabsWidth.value[item['key']]
       }
 
       return width
