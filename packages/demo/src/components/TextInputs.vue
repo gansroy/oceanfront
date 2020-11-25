@@ -101,6 +101,13 @@
           value="Compact"
         />
       </div>
+      <div class="demo-inline">
+        <of-text-field
+          placeholder="Password"
+          input-type="password"
+          variant="basic"
+        />
+      </div>
     </div>
     <div class="row demo-row">
       <div class="demo-inline">

@@ -100,7 +100,10 @@ export const TextField = defineFieldType({
     const multiline = computed(
       () => ctx.fieldType === 'textarea' || formatter.value?.multiline
     )
-
+    const inputType = computed(() => {
+      const fmt = formatter.value
+      return multiline.value ? undefined : fmt?.inputType || _inputTypeFrom(props.inputType)
+    })
     const focus = (select?: boolean) => {
       if (elt.value) {
         elt.value.focus()
@@ -206,7 +209,7 @@ export const TextField = defineFieldType({
             readonly: ctx.mode === 'readonly' || ctx.locked || undefined,
             rows: props.rows,
             // size: props.size,  - need to implement at field level?
-            type: multiline.value ? undefined : fmt?.inputType || 'text',
+            type: inputType.value,
             value: lazyInputValue,
             ...hooks,
           }),

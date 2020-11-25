@@ -76,6 +76,7 @@ import {
   ref,
   defineComponent,
   onMounted,
+  onBeforeMount,
   PropType,
   SetupContext,
   computed,
@@ -99,9 +100,9 @@ const formatItems = (
 
     if (text === '') continue
 
-    if (visible && !item.visible) {
+    if (visible && item.visible === false) {
       continue
-    } else if (!visible && item.visible) {
+    } else if (!visible && item.visible === true) {
       continue
     }
 
@@ -156,7 +157,7 @@ export default defineComponent({
     const cls = 'of--variant-' + variant.value
 
     const overflowButton = computed(() => props.overflowButton || false)
-    let showOverflowButton: Boolean = false
+    let showOverflowButton = ref(false)
 
     const ofTabsNavigationHeaderShowNextNavigation = computed(() => {
       return props.scrolling && variant.value !== 'osx' && !overflowButton.value
@@ -172,7 +173,9 @@ export default defineComponent({
 
     const itemMgr = useItems()
 
-    const items = computed(() => {
+    const items: any = ref({})
+
+    const fillItems = function () {
       const result = {
         disabledKey: 'disabled',
         iconKey: 'icon',
@@ -198,20 +201,24 @@ export default defineComponent({
         result.items[index] = item as never
       }
 
-      return result
-    })
+      items.value = result
+    }
 
     const tabsList = computed(() => {
       return formatItems(
         items.value.items,
         items.value,
         true,
-        showOverflowButton
+        showOverflowButton.value
       )
     })
 
     const invisibleTabsList = computed(() => {
       return formatItems(items.value.items, items.value, false)
+    })
+
+    onBeforeMount(() => {
+      fillItems()
     })
 
     onMounted(() => {
@@ -326,7 +333,7 @@ export default defineComponent({
           index++
         }
 
-        showOverflowButton = hasInvisibleTabs
+        showOverflowButton.value = hasInvisibleTabs
         addSelectedTabToVisibleList()
       }
     }
@@ -337,34 +344,64 @@ export default defineComponent({
       if (selectedTab) {
         let index = 0
         let selectedIndex = -1
-        let selectedItem: any
-        let lastVisibleIndex = -1
+        let tabsIndexes = []
 
+        //Make all tabs invisible exclude selected
         for (const item of items.value.items) {
           if (selectedTab['key'] === item['key']) {
+            updateTabVisibility(index, true)
             selectedIndex = index
-            selectedItem = item
-          } else if (item['visible']) {
-            lastVisibleIndex = index
+          } else if (item['visible'] && item['key'] !== -1) {
+            updateTabVisibility(index, false)
           }
+
+          if (index !== selectedIndex) tabsIndexes.push(index)
 
           index++
         }
 
-        if (lastVisibleIndex >= 0 && selectedIndex >= 0) {
-          //Hide last visible item to free space for selected item
-          const lastVisibleItem = items.value.items[lastVisibleIndex]
-          lastVisibleItem['visible'] = false as never
-          items.value.items[lastVisibleIndex] = lastVisibleItem
+        const outerWidth = ofTabsHeader.value.clientWidth
+        let tabsWidth = 0
 
-          //Make selected item visible
-          selectedItem['visible'] = true as never
-          items.value.items[selectedIndex] = selectedItem as never
+        //Make tabs visible until widths sum < main container's width
+        for (const index of tabsIndexes) {
+          updateTabVisibility(index, true)
+          tabsWidth = calcVisibleTabsWidth()
+
+          if (tabsWidth > outerWidth) {
+            updateTabVisibility(index, false)
+            break
+          }
         }
 
         setTimeout(() => {
           repositionLine()
         })
+      }
+    }
+
+    const calcVisibleTabsWidth = function (): number {
+      let width = 0
+
+      const overflowButton = tabs.value.querySelector(
+        '.of-tab-header-item.overflow-button'
+      )
+
+      width += overflowButton?.clientWidth
+
+      for (const item of tabsList.value) {
+        if (item['visible']) width += tabsWidth.value[item['key']]
+      }
+
+      return width
+    }
+
+    const updateTabVisibility = function (index: number, visible: boolean) {
+      const item = items.value.items[index]
+
+      if (typeof item !== 'undefined') {
+        item['visible'] = visible
+        items.value.items[index] = item
       }
     }
 

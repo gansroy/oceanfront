@@ -58,6 +58,7 @@ export const Oceanfront: Plugin = {
       registerFieldType('select', SelectField)
       registerFieldType('text', TextField)
       registerFieldType('textarea', TextField)
+      registerFieldType('password', TextField)
       registerFieldType('toggle', ToggleField)
       registerFieldType('slider', SliderField)
       registerTextFormatter('color', ColorFormatter)
