@@ -86,12 +86,23 @@ import {
 
 import { ItemList, useItems } from '../lib/items'
 
+export interface Tab {
+  key: number,
+  text: string,
+  visible: boolean,
+  overflowButton: boolean,
+  params?: Object|undefined,
+  icon?: string,
+  disabled?: boolean,
+  subMenuItems?: Array<Tab>|undefined
+}
+
 const formatItems = (
   list: any,
   params: any,
   visible = true,
   addOverflowButton: Boolean = false
-): any => {
+): Array<Tab> => {
   const rows = []
 
   for (const item of list) {
@@ -108,22 +119,24 @@ const formatItems = (
 
     rows.push({
       disabled: item[params.disabledKey] ? item[params.disabledKey] : false,
-      icon: item[params.iconKey] ? item[params.iconKey] : null,
+      icon: item[params.iconKey] ? item[params.iconKey] : '',
       overflowButton: false,
       text: item[params.textKey],
       key: parseInt(item['key']),
       visible: item.visible,
-    })
+      params: item.params ?? undefined,
+      subMenuItems: item.subMenuItems ?? undefined
+    } as Tab)
   }
 
   if (visible && addOverflowButton) {
     rows.push({
       disabled: false,
-      icon: null,
+      icon: '',
       overflowButton: true,
       text: '...',
       key: -1,
-    })
+    } as Tab)
   }
 
   return rows
@@ -139,7 +152,7 @@ export default defineComponent({
     variant: String,
     tabsList: Array,
   },
-  emits: ['update:value'],
+  emits: ['update:value', 'select-tab'],
   setup(props, context: SetupContext) {
     let tabs: any = ref([])
     let ofTabsHeader: any = ref()
@@ -223,6 +236,10 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('resize', hideOutsideTabs)
+      
+      const selectedTab: Tab | undefined = getTab(selectedTabKey.value)
+      if (selectedTab)
+        context.emit('select-tab', selectedTab)
 
       setTimeout(() => {
         setTabsWidth()
@@ -339,7 +356,7 @@ export default defineComponent({
     }
 
     const addSelectedTabToVisibleList = function () {
-      const selectedTab: any = getTab(selectedTabKey.value, true)
+      const selectedTab: Tab | undefined = getTab(selectedTabKey.value, true)
 
       if (selectedTab) {
         let index = 0
@@ -408,7 +425,7 @@ export default defineComponent({
     const getTab = function (
       key: Number,
       invisible = false
-    ): Object | undefined {
+    ): Tab | undefined {
       let list: any
 
       if (!invisible) {
@@ -424,12 +441,13 @@ export default defineComponent({
 
     const selectTab = function (key: number) {
       if (selectedTabKey.value !== key) {
-        const selectedTab: any = getTab(key)
+        const selectedTab: Tab | undefined = getTab(key)
 
         if (selectedTab && selectedTab.overflowButton) {
           switchOverflowPopupVisibility()
         } else if (selectedTab) {
           context.emit('update:value', key)
+          context.emit('select-tab', selectedTab)
 
           setTimeout(() => {
             closeOverflowPopup()
@@ -441,10 +459,11 @@ export default defineComponent({
     }
 
     const selectInvisibleTab = function (key: number) {
-      const selectedTab: any = getTab(key, true)
+      const selectedTab: Tab | undefined = getTab(key, true)
 
       if (selectedTab) {
         context.emit('update:value', key)
+        context.emit('select-tab', selectedTab)
 
         setTimeout(() => {
           addSelectedTabToVisibleList()

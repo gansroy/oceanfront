@@ -7,6 +7,7 @@
       :items="testItems"
       v-model:value="selected1"
       variant="standard"
+      @select-tab="selectTab"
     />
     <h2>Scrolling tabs</h2>
     <of-tabs
@@ -23,6 +24,7 @@
       overflow-button
       variant="standard"
       style="width: 400px;"
+      @select-tab="selectTab"
     />
     <h2>OSX tabs</h2>
     <of-tabs
@@ -35,6 +37,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { Tab } from '../../../oceanfront/src/components/Tabs.vue'
 
 export default defineComponent({
   setup() {
@@ -43,6 +46,7 @@ export default defineComponent({
   :items="itemsList"
   v-model:value="0"
   variant="standard"
+  @select-tab="selectTab"
 />
 <of-tabs
   :items="itemsList2"
@@ -67,7 +71,7 @@ export default defineComponent({
       'Tab 1',
       'Tab 2',
       'Tab 3',
-      {text: 'Tab 4'}
+      {text: 'Tab 4', params: {module: 'Test', layout: 'Standard'}}
     ]
 
     const testItems2 = [
@@ -91,9 +95,7 @@ export default defineComponent({
       'Tab 7',
       'Tab 8',
       'Tab 9',
-      {text: 'Tab 10'},
-      'Today&#039;s Activities'
-
+      {text: 'Tab 10'}
     ]
 
     const testItems4 = [
@@ -109,7 +111,26 @@ export default defineComponent({
     const selected3 = ref(0)
     const selected4 = ref(0)
 
-    return { sampleCode, testItems, selected1, testItems2, selected2, testItems3, selected3, testItems4, selected4 }
+    const selectTab = function(tab: Tab) {
+      console.log(tab)
+    }
+
+    return { 
+      sampleCode, 
+      selectTab, 
+
+      testItems, 
+      selected1, 
+      
+      testItems2, 
+      selected2, 
+      
+      testItems3, 
+      selected3, 
+      
+      testItems4, 
+      selected4
+    }
   },
 })
 </script>
