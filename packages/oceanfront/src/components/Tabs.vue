@@ -57,7 +57,7 @@
           :target="subMenuOuter"
           @blur="closeSubMenu()"
         >
-          <slot name="sub-menu">
+          <slot name="sub-menu" v-if="showSubMenu">
             <div role="menu" class="of-menu of-invisible-tabs">
               <div class="of-list-outer">
                 <div
@@ -129,18 +129,7 @@ import {
 
 import { ItemList, useItems } from '../lib/items'
 import OfOverlay from './Overlay.vue'
-
-export interface Tab {
-  key: number
-  text: string
-  visible: boolean
-  overflowButton: boolean
-  params?: Object | undefined
-  icon?: string
-  disabled?: boolean
-  subMenuItems?: Array<Tab> | undefined
-  parentKey?: number | undefined
-}
+import { Tab } from '../lib/tab'
 
 const formatItems = (
   list: any,
@@ -205,6 +194,7 @@ export default defineComponent({
     overflowButton: { type: Boolean, default: false },
     variant: String,
     tabsList: Array,
+    submenu: Boolean
   },
   emits: ['update:value', 'select-tab'],
   setup(props, context: SetupContext) {
@@ -543,11 +533,18 @@ export default defineComponent({
     }
 
     //SubMenu
+    const showSubMenu = computed(() => {
+      return props.submenu
+    })
+
     const subMenuOpened = ref(false)
     const subMenuOuter = ref()
     const subMenuTabsList = ref()
 
     const openSubMenu = (key: number, _evt?: MouseEvent) => {
+      if (! showSubMenu.value)
+        return false
+
       if (key !== -1 && variant.value !== 'osx') {
         closeOverflowPopup()
         const tab: Tab | undefined = getTab(key)
@@ -598,6 +595,7 @@ export default defineComponent({
       ofTabsNavigationHeaderShowNextNavigation,
       ofTabsNavigationHeaderShowPreviousNavigation,
 
+      showSubMenu,
       subMenuTabsList,
       subMenuOpened,
       subMenuOuter,
