@@ -487,23 +487,21 @@ export default defineComponent({
     }
 
     const selectTab = function (key: number, emitSelectEvent = true) {
-      if (selectedTabKey.value !== key) {
-        const selectedTab: Tab | undefined = getTab(key)
+      const selectedTab: Tab | undefined = getTab(key)
 
-        if (selectedTab && selectedTab.overflowButton) {
+      if (selectedTab && selectedTab.overflowButton) {
+        closeSubMenu()
+        switchOverflowPopupVisibility()
+      } else if (selectedTab) {
+        context.emit('update:value', key)
+        if (emitSelectEvent) context.emit('select-tab', selectedTab)
+
+        setTimeout(() => {
           closeSubMenu()
-          switchOverflowPopupVisibility()
-        } else if (selectedTab) {
-          context.emit('update:value', key)
-          if (emitSelectEvent) context.emit('select-tab', selectedTab)
-
-          setTimeout(() => {
-            closeSubMenu()
-            closeOverflowPopup()
-            repositionLine()
-            repositionTabs()
-          })
-        }
+          closeOverflowPopup()
+          repositionLine()
+          repositionTabs()
+        })
       }
     }
 
