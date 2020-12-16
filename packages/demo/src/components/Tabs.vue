@@ -12,6 +12,7 @@
     <h2>Tabs with submenu</h2>
     <of-tabs
       :items="testItems5"
+      submenu
       v-model:value="selected5"
       variant="standard"
       @select-tab="selectTab"
@@ -44,7 +45,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { Tab } from '../../../oceanfront/src/components/Tabs.vue'
+import { Tab } from 'oceanfront/src/lib/tab'
+//import { Tab } from '../../../oceanfront/src/lib/tab'
 
 export default defineComponent({
   setup() {
@@ -54,6 +56,12 @@ export default defineComponent({
   v-model:value="0"
   variant="standard"
   @select-tab="selectTab"
+/>
+<of-tabs
+  :items="itemsList"
+  v-model:value="0"
+  variant="standard"
+  submenu
 />
 <of-tabs
   :items="itemsList2"
