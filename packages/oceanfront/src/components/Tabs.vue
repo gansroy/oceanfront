@@ -287,10 +287,7 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('resize', hideOutsideTabs)
-
-      const selectedTab: Tab | undefined = getTab(selectedTabKey.value)
-      if (selectedTab) context.emit('select-tab', selectedTab)
-
+      
       setTimeout(() => {
         setTabsWidth()
         hideOutsideTabs()
