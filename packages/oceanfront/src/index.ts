@@ -17,6 +17,7 @@ import { OfTextField } from './components/TextField'
 import { OfToggleField } from './components/ToggleField'
 import OfTabs from './components/Tabs.vue'
 import OfSpinner from './components/Spinner.vue'
+import OfPagination from './components/Pagination.vue'
 
 import { FileField } from './fields/File'
 import { SelectField } from './fields/Select'
@@ -48,7 +49,8 @@ export const components: Record<string, Component> = {
   OfTabs,
   OfTextField,
   OfToggleField,
-  OfSpinner
+  OfSpinner,
+  OfPagination
 } as any
 
 export const directives: Record<string, Directive> = {}

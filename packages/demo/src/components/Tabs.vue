@@ -46,7 +46,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { Tab } from 'oceanfront/src/lib/tab'
-//import { Tab } from '../../../oceanfront/src/lib/tab'
 
 export default defineComponent({
   setup() {
