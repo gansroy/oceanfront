@@ -96,5 +96,6 @@ export { useLocale } from './lib/locale'
 export { makeRecord, setCurrentRecord, useRecords } from './lib/records'
 export { useRoutes } from './lib/routes'
 export { Tab } from './lib/tab'
+export { Paginator } from './lib/paginator'
 
 export default Oceanfront
