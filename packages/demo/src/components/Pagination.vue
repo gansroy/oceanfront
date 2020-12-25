@@ -6,8 +6,11 @@
     <of-pagination
       v-model:value="page"
       variant="standard"
+      :per-page="perPage"
       :total-pages="total"    
+      :start-record="startRecord"
       @select-page="selectPage" 
+      @update-offset="updateOffset" 
       custom-offset-popup 
     />
   </div>
@@ -28,17 +31,31 @@ export default defineComponent({
 />
 `
     const total = 20;
+    const perPage = 20;
     const page = ref(1)
+    const startRecord = ref(1)
 
     const selectPage = function(paginator: Paginator) {
+      console.log("Page selected")
+      console.log(paginator)    
+      startRecord.value = ((paginator.perPage * paginator.page) - paginator.perPage) + 1
+    }
+
+    const updateOffset = function(paginator: Paginator) {
+      console.log("Offset Params updated")
       console.log(paginator)
-    }    
+      startRecord.value = paginator.startRecord
+      page.value = Math.floor(( (startRecord.value - 1) + paginator.perPage ) / paginator.perPage)
+    }   
 
     return { 
       sampleCode,
       total,
       page,
-      selectPage
+      perPage,
+      startRecord,
+      selectPage,
+      updateOffset
     }
   },
 })

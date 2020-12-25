@@ -87,7 +87,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, computed, ref, Ref, watchEffect } from 'vue'
+import {
+  defineComponent,
+  SetupContext,
+  computed,
+  ref,
+  Ref,
+  watchEffect,
+  watch,
+} from 'vue'
 import OfOverlay from './Overlay.vue'
 import { Paginator } from '../lib/paginator'
 
@@ -103,7 +111,7 @@ export default defineComponent({
     startRecord: Number,
     perPage: Number,
   },
-  emits: ['update:value', 'select-page'],
+  emits: ['update:value', 'select-page', 'update-offset'],
   setup(props, context: SetupContext) {
     let page: Ref<number> = computed(() => props.value || 1)
     const totalVisible: Ref<number> = computed(() => props.totalVisible || 5)
@@ -166,8 +174,9 @@ export default defineComponent({
     })
 
     const onSelectPage = function (page: number) {
+      closeOffsetPopup()
       context.emit('update:value', page)
-      
+
       const paginator: Paginator = {
         page: page,
         startRecord: startAt.value,
@@ -188,11 +197,16 @@ export default defineComponent({
     const startAt: Ref<number> = ref(props.startRecord || 1)
     const perPage: Ref<number> = ref(props.perPage || 20)
     watchEffect(() => {
-      if (startAt.value <= 0)
-        startAt.value = 1
-      if (perPage.value <= 0)
-        perPage.value = 1
-    })
+      if (startAt.value <= 0) startAt.value = 1
+      if (perPage.value <= 0) perPage.value = 1
+    })    
+
+    watch(
+      () => props.startRecord,
+      (val) => {
+        startAt.value = val as number
+      }
+    )
 
     const showCustomOffsetPopup = computed(
       () => props.customOffsetPopup || false
@@ -242,10 +256,15 @@ export default defineComponent({
     })
 
     const updateOffsetParams = function () {
-      onSelectPage(1)
       closeOffsetPopup()
+      const paginator: Paginator = {
+        page: page.value,
+        startRecord: startAt.value,
+        perPage: perPage.value,
+      }
+      context.emit('update-offset', paginator)
     }
-
+  
     return {
       cls,
       page,
