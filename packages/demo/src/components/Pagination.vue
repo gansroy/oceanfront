@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { Paginator } from 'oceanfront/src/lib/paginator'
+import { Paginator, calcStartRecord, calcPageValue } from 'oceanfront/src/lib/paginator'
 
 export default defineComponent({
   setup() {
@@ -31,21 +31,21 @@ export default defineComponent({
 />
 `
     const total = 20;
-    const perPage = 20;
+    const perPage = ref(20);
     const page = ref(1)
     const startRecord = ref(1)
 
     const selectPage = function(paginator: Paginator) {
       console.log("Page selected")
       console.log(paginator)    
-      startRecord.value = ((paginator.perPage * paginator.page) - paginator.perPage) + 1
+      startRecord.value = calcStartRecord(paginator.page, paginator.perPage)
     }
 
     const updateOffset = function(paginator: Paginator) {
       console.log("Offset Params updated")
       console.log(paginator)
       startRecord.value = paginator.startRecord
-      page.value = Math.floor(( (startRecord.value - 1) + paginator.perPage ) / paginator.perPage)
+      page.value = calcPageValue(startRecord.value, paginator.perPage)
     }   
 
     return { 
