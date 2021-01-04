@@ -206,6 +206,7 @@ export default defineComponent({
       () => props.items,
       () => {
         fillItems()
+        init()
       }
     )
 
@@ -286,18 +287,21 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('resize', hideOutsideTabs)
-
-      setTimeout(() => {
-        setTabsWidth()
-        hideOutsideTabs()
-        repositionLine()
-        repositionTabs()
-      })
+      init()
     })
 
     onBeforeUnmount(() => {
       window.removeEventListener('resize', hideOutsideTabs)
     })
+
+    const init = function() {
+      setTimeout(() => {
+        setTabsWidth()
+        hideOutsideTabs()
+        repositionLine()
+        repositionTabs()
+      })      
+    }
 
     const navigateHeader = function (value: string, scrollNum = 150) {
       if (value == 'next') {
