@@ -33,11 +33,7 @@
                 'overflow-button': tab.overflowButton,
               }"
             >
-              <of-icon 
-                v-if="tab.icon" 
-                :name="tab.icon" 
-                size="input" 
-              />
+              <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
               {{ tab.text }}
             </div>
             <div class="of-tabs-line" ref="tabLine"></div>
@@ -97,11 +93,7 @@
             @click="selectInvisibleTab(tab.key)"
           >
             <div class="of-list-item-inner">
-              <of-icon 
-                v-if="tab.icon" 
-                :name="tab.icon" 
-                size="input" 
-              />
+              <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
               <div class="of-list-item-content">
                 {{ tab.text }}
               </div>
@@ -194,7 +186,7 @@ export default defineComponent({
     overflowButton: { type: Boolean, default: false },
     variant: String,
     tabsList: Array,
-    submenu: Boolean
+    submenu: Boolean,
   },
   emits: ['update:value', 'select-tab'],
   setup(props, context: SetupContext) {
@@ -207,6 +199,13 @@ export default defineComponent({
       () => props.value,
       (val) => {
         selectedTabKey.value = val
+      }
+    )
+
+    watch(
+      () => props.items,
+      () => {
+        fillItems()
       }
     )
 
@@ -287,7 +286,7 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('resize', hideOutsideTabs)
-      
+
       setTimeout(() => {
         setTabsWidth()
         hideOutsideTabs()
@@ -537,8 +536,7 @@ export default defineComponent({
     const subMenuTabsList = ref()
 
     const openSubMenu = (key: number, _evt?: MouseEvent) => {
-      if (! showSubMenu.value)
-        return false
+      if (!showSubMenu.value) return false
 
       if (key !== -1 && variant.value !== 'osx') {
         closeOverflowPopup()
