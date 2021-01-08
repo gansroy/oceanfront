@@ -50,7 +50,7 @@ export const components: Record<string, Component> = {
   OfTextField,
   OfToggleField,
   OfSpinner,
-  OfPagination
+  OfPagination,
 } as any
 
 export const directives: Record<string, Directive> = {}
@@ -96,6 +96,12 @@ export { useLocale } from './lib/locale'
 export { makeRecord, setCurrentRecord, useRecords } from './lib/records'
 export { useRoutes } from './lib/routes'
 export { Tab } from './lib/tab'
-export { Paginator } from './lib/paginator'
+export {
+  Paginator,
+  calcOffset,
+  calcTotalPages,
+  calcPageValue,
+  calcStartRecord,
+} from './lib/paginator'
 
 export default Oceanfront

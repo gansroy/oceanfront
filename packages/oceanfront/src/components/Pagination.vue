@@ -195,11 +195,6 @@ export default defineComponent({
 
     //Custom Offset Popup
     const startAt: Ref<number> = ref(props.startRecord || 1)
-    const perPage: Ref<number> = ref(props.perPage || 20)
-    watchEffect(() => {
-      if (startAt.value <= 0) startAt.value = 1
-      if (perPage.value <= 0) perPage.value = 1
-    })    
 
     watch(
       () => props.startRecord,
@@ -207,6 +202,20 @@ export default defineComponent({
         startAt.value = val as number
       }
     )
+
+    const perPage: Ref<number> = ref(props.perPage || 20)
+    
+    watch(
+      () => props.perPage,
+      (val) => {
+        perPage.value = val as number
+      }
+    )
+
+    watchEffect(() => {
+      if (startAt.value <= 0) startAt.value = 1
+      if (perPage.value <= 0) perPage.value = 1
+    })    
 
     const showCustomOffsetPopup = computed(
       () => props.customOffsetPopup || false
