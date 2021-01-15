@@ -13,6 +13,8 @@ import TextInputs from './components/TextInputs.vue'
 import ToggleInputs from './components/ToggleInputs.vue'
 import PickerInputs from './components/PickerInputs.vue'
 import Tabs from './components/Tabs.vue'
+import Pagination from './components/Pagination.vue'
+
 
 export const routerHistory = createWebHashHistory('/ofdocs')
 export const router = createRouter({
@@ -31,5 +33,6 @@ export const router = createRouter({
     { path: '/picker-inputs', component: PickerInputs },
     { path: '/data-tables', component: DataTables },
     { path: '/tabs', component: Tabs },
+    { path: '/pagination', component: Pagination },
   ],
 })

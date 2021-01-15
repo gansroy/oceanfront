@@ -33,11 +33,7 @@
                 'overflow-button': tab.overflowButton,
               }"
             >
-              <of-icon 
-                v-if="tab.icon" 
-                :name="tab.icon" 
-                size="input" 
-              />
+              <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
               {{ tab.text }}
             </div>
             <div class="of-tabs-line" ref="tabLine"></div>
@@ -57,7 +53,7 @@
           :target="subMenuOuter"
           @blur="closeSubMenu()"
         >
-          <slot name="sub-menu">
+          <slot name="sub-menu" v-if="showSubMenu">
             <div role="menu" class="of-menu of-invisible-tabs">
               <div class="of-list-outer">
                 <div
@@ -97,11 +93,7 @@
             @click="selectInvisibleTab(tab.key)"
           >
             <div class="of-list-item-inner">
-              <of-icon 
-                v-if="tab.icon" 
-                :name="tab.icon" 
-                size="input" 
-              />
+              <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
               <div class="of-list-item-content">
                 {{ tab.text }}
               </div>
@@ -129,18 +121,7 @@ import {
 
 import { ItemList, useItems } from '../lib/items'
 import OfOverlay from './Overlay.vue'
-
-export interface Tab {
-  key: number
-  text: string
-  visible: boolean
-  overflowButton: boolean
-  params?: Object | undefined
-  icon?: string
-  disabled?: boolean
-  subMenuItems?: Array<Tab> | undefined
-  parentKey?: number | undefined
-}
+import { Tab } from '../lib/tab'
 
 const formatItems = (
   list: any,
@@ -205,6 +186,7 @@ export default defineComponent({
     overflowButton: { type: Boolean, default: false },
     variant: String,
     tabsList: Array,
+    submenu: Boolean,
   },
   emits: ['update:value', 'select-tab'],
   setup(props, context: SetupContext) {
@@ -217,6 +199,14 @@ export default defineComponent({
       () => props.value,
       (val) => {
         selectedTabKey.value = val
+      }
+    )
+
+    watch(
+      () => props.items,
+      () => {
+        fillItems()
+        init()
       }
     )
 
@@ -297,21 +287,21 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('resize', hideOutsideTabs)
+      init()
+    })
 
-      const selectedTab: Tab | undefined = getTab(selectedTabKey.value)
-      if (selectedTab) context.emit('select-tab', selectedTab)
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', hideOutsideTabs)
+    })
 
+    const init = function () {
       setTimeout(() => {
         setTabsWidth()
         hideOutsideTabs()
         repositionLine()
         repositionTabs()
       })
-    })
-
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', hideOutsideTabs)
-    })
+    }
 
     const navigateHeader = function (value: string, scrollNum = 150) {
       if (value == 'next') {
@@ -370,6 +360,8 @@ export default defineComponent({
 
     const setTabsWidth = function () {
       if (overflowButton.value && !showNavigation.value) {
+        tabsWidth.value = [];
+
         for (let item of ofTabsHeader.value.childNodes) {
           if (!item.clientWidth) continue
 
@@ -382,79 +374,57 @@ export default defineComponent({
       if (overflowButton.value && !showNavigation.value) {
         closeOverflowPopup()
 
-        const outerWidth = ofTabsHeader.value.clientWidth
-        let tabsWidthSum = 0
-        let index = 0
-        let hasInvisibleTabs = false
-
-        for (const item of items.value.items) {
-          let visible = true
-          tabsWidthSum += tabsWidth.value[index]
-
-          if (tabsWidthSum > outerWidth) {
-            if (!hasInvisibleTabs) {
-              //Add previous element to invisible list to free space for overflow button
-              const prevItem = items.value.items[index - 1]
-              prevItem['visible'] = false as never
-              items.value.items[index - 1] = prevItem
-
-              hasInvisibleTabs = true
-            }
-
-            visible = false
-          }
-
-          item['visible'] = visible as never
-          items.value.items[index] = item
-
-          index++
-        }
-
-        showOverflowButton.value = hasInvisibleTabs
-        addSelectedTabToVisibleList()
-      }
-    }
-
-    const addSelectedTabToVisibleList = function () {
-      const selectedTab: Tab | undefined = getTab(selectedTabKey.value, true)
-
-      if (selectedTab) {
+        const selectedTab: Tab | undefined = getTab(selectedTabKey.value)
         let index = 0
         let selectedIndex = -1
-        let tabsIndexes = []
+        let tabsIndexes: Array<number> = []
+        showOverflowButton.value = true
 
         //Make all tabs invisible exclude selected
         for (const item of items.value.items) {
-          if (selectedTab['key'] === item['key']) {
+          if (selectedTab?.key === item['key']) {
             updateTabVisibility(index, true)
             selectedIndex = index
-          } else if (item['visible'] && item['key'] !== -1) {
+            //don't make sense to update overflow button (key == -1)
+          } else if (item['key'] !== -1) {
             updateTabVisibility(index, false)
           }
 
-          if (index !== selectedIndex) tabsIndexes.push(index)
+          if (index !== selectedIndex && item['key'] !== -1) {
+            tabsIndexes.push(index)
+          }
 
           index++
         }
 
-        const outerWidth = ofTabsHeader.value.clientWidth
-        let tabsWidth = 0
-
-        //Make tabs visible until widths sum < main container's width
-        for (const index of tabsIndexes) {
-          updateTabVisibility(index, true)
-          tabsWidth = calcVisibleTabsWidth()
-
-          if (tabsWidth > outerWidth) {
-            updateTabVisibility(index, false)
-            break
-          }
-        }
-
         setTimeout(() => {
-          repositionLine()
+          adjustTabsVisibility(tabsIndexes)
         })
       }
+    }
+
+    const adjustTabsVisibility = function (tabsIndexes: Array<number>) {
+      const outerWidth = ofTabsHeader.value.clientWidth
+      let tabsWidth = 0
+      let hasInvisibleTabs = false
+
+      //Make tabs visible until widths sum < main container's width
+      for (const index of tabsIndexes) {
+        updateTabVisibility(index, true)
+        tabsWidth = calcVisibleTabsWidth()
+
+        if (tabsWidth > outerWidth) {
+          hasInvisibleTabs = true
+          updateTabVisibility(index, false)
+          break
+        }
+      }
+
+      showOverflowButton.value = hasInvisibleTabs
+
+      setTimeout(() => {
+        repositionLine()
+      })
     }
 
     const calcVisibleTabsWidth = function (): number {
@@ -464,7 +434,7 @@ export default defineComponent({
         '.of-tab-header-item.overflow-button'
       )
 
-      width += overflowButton?.clientWidth
+      width += overflowButton?.clientWidth ?? 0
 
       for (const item of tabsList.value) {
         if (item['visible']) width += tabsWidth.value[item['key']]
@@ -482,50 +452,46 @@ export default defineComponent({
       }
     }
 
-    const getTab = function (key: Number, invisible = false): Tab | undefined {
-      let list: any
-
-      if (!invisible) {
-        list = tabsList.value
-      } else {
-        list = invisibleTabsList.value
-      }
-
-      for (const tab of list) {
+    const getTab = function (key: Number): Tab | undefined {
+      for (const tab of tabsList.value) {
         if (tab.key === key) return tab
       }
+
+      for (const tab of invisibleTabsList.value) {
+        if (tab.key === key) return tab
+      }
+
+      return undefined
     }
 
     const selectTab = function (key: number, emitSelectEvent = true) {
-      if (selectedTabKey.value !== key) {
-        const selectedTab: Tab | undefined = getTab(key)
+      const selectedTab: Tab | undefined = getTab(key)
 
-        if (selectedTab && selectedTab.overflowButton) {
+      if (selectedTab && selectedTab.overflowButton) {
+        closeSubMenu()
+        switchOverflowPopupVisibility()
+      } else if (selectedTab) {
+        context.emit('update:value', key)
+        if (emitSelectEvent) context.emit('select-tab', selectedTab)
+
+        setTimeout(() => {
           closeSubMenu()
-          switchOverflowPopupVisibility()
-        } else if (selectedTab) {
-          context.emit('update:value', key)
-          if (emitSelectEvent) context.emit('select-tab', selectedTab)
-
-          setTimeout(() => {
-            closeSubMenu()
-            closeOverflowPopup()
-            repositionLine()
-            repositionTabs()
-          })
-        }
+          closeOverflowPopup()
+          repositionLine()
+          repositionTabs()
+        })
       }
     }
 
     const selectInvisibleTab = function (key: number) {
-      const selectedTab: Tab | undefined = getTab(key, true)
+      const selectedTab: Tab | undefined = getTab(key)
 
       if (selectedTab) {
         context.emit('update:value', key)
         context.emit('select-tab', selectedTab)
 
         setTimeout(() => {
-          addSelectedTabToVisibleList()
+          hideOutsideTabs()
         })
       }
 
@@ -543,11 +509,17 @@ export default defineComponent({
     }
 
     //SubMenu
+    const showSubMenu = computed(() => {
+      return props.submenu
+    })
+
     const subMenuOpened = ref(false)
     const subMenuOuter = ref()
     const subMenuTabsList = ref()
 
     const openSubMenu = (key: number, _evt?: MouseEvent) => {
+      if (!showSubMenu.value) return false
+
       if (key !== -1 && variant.value !== 'osx') {
         closeOverflowPopup()
         const tab: Tab | undefined = getTab(key)
@@ -598,6 +570,7 @@ export default defineComponent({
       ofTabsNavigationHeaderShowNextNavigation,
       ofTabsNavigationHeaderShowPreviousNavigation,
 
+      showSubMenu,
       subMenuTabsList,
       subMenuOpened,
       subMenuOuter,

@@ -58,6 +58,7 @@
               </of-list-item>
             </template>
             <of-list-item to="/data-tables">Data Tables</of-list-item>
+            <of-list-item to="/pagination">Pagination</of-list-item>
             <of-list-item disabled>Menus</of-list-item>
           </of-list-group>
           <of-list-item to="/tabs">Tabs</of-list-item>

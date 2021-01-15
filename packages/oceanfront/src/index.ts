@@ -16,6 +16,8 @@ import { OfSliderField } from './components/SliderField'
 import { OfTextField } from './components/TextField'
 import { OfToggleField } from './components/ToggleField'
 import OfTabs from './components/Tabs.vue'
+import OfSpinner from './components/Spinner.vue'
+import OfPagination from './components/Pagination.vue'
 
 import { FileField } from './fields/File'
 import { SelectField } from './fields/Select'
@@ -47,6 +49,8 @@ export const components: Record<string, Component> = {
   OfTabs,
   OfTextField,
   OfToggleField,
+  OfSpinner,
+  OfPagination,
 } as any
 
 export const directives: Record<string, Directive> = {}
@@ -91,5 +95,13 @@ export { setMobileBreakpoint, useLayout } from './lib/layout'
 export { useLocale } from './lib/locale'
 export { makeRecord, setCurrentRecord, useRecords } from './lib/records'
 export { useRoutes } from './lib/routes'
+export { Tab } from './lib/tab'
+export {
+  Paginator,
+  calcOffset,
+  calcTotalPages,
+  calcPageValue,
+  calcStartRecord,
+} from './lib/paginator'
 
 export default Oceanfront
