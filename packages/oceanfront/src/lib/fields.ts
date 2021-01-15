@@ -92,7 +92,7 @@ export interface FieldRender {
 }
 
 export interface FieldDragIn {
-  dropEffect?: string
+  dropEffect?: "none" | "copy" | "link" | "move"
   onDrop: (evt: DragEvent) => void
   onEnter?: (evt: DragEvent) => void
   onLeave?: (evt: DragEvent) => void
