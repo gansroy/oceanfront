@@ -47,17 +47,15 @@
             <of-list-item to="/slider-inputs">Slider</of-list-item>
             <of-list-item to="/text-inputs">Text</of-list-item>
             <of-list-item to="/toggle-inputs">Toggle</of-list-item>
-            <of-list-item disabled>Pickers</of-list-item>
+            <of-list-item to="/picker-inputs">Pickers</of-list-item>
             <of-list-item to="/records">Records</of-list-item>
             <of-list-item to="/formatters">Value Formatters</of-list-item>
           </of-list-group>
           <of-list-group value="1">
             <template #activator="{ state, toggle }">
-              <of-list-item :expand="state" @click.prevent="toggle"
-                >
-Lists
-</of-list-item
-              >
+              <of-list-item :expand="state" @click.prevent="toggle">
+                Lists
+              </of-list-item>
             </template>
             <of-list-item to="/data-tables">Data Tables</of-list-item>
             <of-list-item disabled>Menus</of-list-item>
@@ -72,9 +70,7 @@ Lists
           <template #default>
             <router-view></router-view>
           </template>
-          <template #fallback>
-            Loading...
-          </template>
+          <template #fallback> Loading... </template>
         </Suspense>
       </main>
     </div>
@@ -116,7 +112,7 @@ export default defineComponent({
           : sidebarDesktopActive.value
       },
       set(val: boolean) {
-        (isMobile.value
+        ;(isMobile.value
           ? sidebarMobileActive
           : sidebarDesktopActive
         ).value = val

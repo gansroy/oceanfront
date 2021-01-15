@@ -11,6 +11,7 @@ import SelectInputs from './components/SelectInputs.vue'
 import SliderInputs from './components/SliderInputs.vue'
 import TextInputs from './components/TextInputs.vue'
 import ToggleInputs from './components/ToggleInputs.vue'
+import PickerInputs from './components/PickerInputs.vue'
 import Tabs from './components/Tabs.vue'
 
 export const routerHistory = createWebHashHistory('/ofdocs')
@@ -27,6 +28,7 @@ export const router = createRouter({
     { path: '/slider-inputs', component: SliderInputs },
     { path: '/text-inputs', component: TextInputs },
     { path: '/toggle-inputs', component: ToggleInputs },
+    { path: '/picker-inputs', component: PickerInputs },
     { path: '/data-tables', component: DataTables },
     { path: '/tabs', component: Tabs },
   ],
