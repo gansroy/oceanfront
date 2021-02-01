@@ -102,10 +102,13 @@ export const TextField = defineFieldType({
     )
     const inputType = computed(() => {
       const fmt = formatter.value
-      return multiline.value ? undefined : fmt?.inputType || _inputTypeFrom(props.inputType)
+      return multiline.value
+        ? undefined
+        : fmt?.inputType || _inputTypeFrom(props.inputType)
     })
     const focus = (select?: boolean) => {
       if (elt.value) {
+        console.log(select)
         elt.value.focus()
         if (select) elt.value.select()
         return true
@@ -216,7 +219,7 @@ export const TextField = defineFieldType({
           // ctx.label as aria label
         })
       },
-      click: () => focus(true),
+      click: () => focus(ctx.mode !== 'readonly' && !ctx.locked),
       cursor: 'text', // FIXME depends if editable
       focus,
       focused,

@@ -42,7 +42,7 @@ class BasicRecord<T extends object = Record<string, any>>
     this._initial = ref(readonly(init)) as Ref<Readonly<T>>
     this._required = ref({})
     this._rules = ref([])
-    this._state = ref({ locked: true })
+    this._state = ref({ locked: false })
     this._value = ref(Object.assign({}, init)) as Ref<T>
     watch(
       () => [this._initial.value, this._value.value],
@@ -92,6 +92,11 @@ class BasicRecord<T extends object = Record<string, any>>
 
   get locked(): boolean {
     return this._state.value.locked || false
+  }
+
+  set locked(flag: boolean) {
+    console.log(`lock! {flag}`, flag)
+    this._state.value.locked = flag
   }
 
   get pending(): boolean {

@@ -31,7 +31,21 @@
       </div>
       <div class="column">
         <h4>Record state</h4>
-        Updated: {{ testRecord.updated || false }} <br />
+        <div class="row">
+          <div class="column">Locked:</div>
+          <div class="column">
+            <of-toggle-field
+              v-model:checked="testRecord.locked"
+              style="vertical-align: top"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="column">Updated:</div>
+          <div class="column">
+            {{ testRecord.updated || false }}
+          </div>
+        </div>
         <of-highlight lang="json" :value="formatValue" />
       </div>
     </div>

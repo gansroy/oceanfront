@@ -61,8 +61,10 @@ export const ToggleField = defineFieldType({
       if (curelt) curelt.focus()
     }
     const clickToggle = (_evt?: MouseEvent) => {
-      stateValue.value = !stateValue.value
-      if (ctx.onUpdate) ctx.onUpdate(stateValue.value)
+      if (ctx.mode !== 'readonly' && !ctx.locked) {
+        stateValue.value = !stateValue.value
+        if (ctx.onUpdate) ctx.onUpdate(stateValue.value)
+      }
       focus()
       return false
     }
