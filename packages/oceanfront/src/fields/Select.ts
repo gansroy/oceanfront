@@ -166,10 +166,11 @@ export const SelectField = defineFieldType({
       return rows
     })
 
+    const canOpen = computed(() => ctx.mode !== 'readonly' && !ctx.locked)
     const clickOpen = (_evt?: MouseEvent) => {
       if (opened.value) {
         opened.value = false
-      } else if (ctx.mode !== 'readonly' && !ctx.locked) {
+      } else if (canOpen.value) {
         opened.value = true
       }
       return false
@@ -230,7 +231,7 @@ export const SelectField = defineFieldType({
         ]
       },
       click: clickOpen,
-      cursor: 'pointer', // FIXME depends if editable
+      cursor: computed(() => (canOpen.value ? 'pointer' : null)),
       focus,
       focused: computed(() => focused.value || opened.value),
       // hovered,
