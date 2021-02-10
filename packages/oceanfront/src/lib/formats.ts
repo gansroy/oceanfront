@@ -30,10 +30,15 @@ export interface TextFormatter {
   multiline?: boolean
 }
 
-type TextFormatterCtor = { new (config?: Config, options?: any): TextFormatter }
+export type TextFormatterConstructor = {
+  new (config?: Config, options?: any): TextFormatter
+}
 type TextFormatterFn = { (config?: Config, options?: any): TextFormatter }
 
-type TextFormatterDef = TextFormatter | TextFormatterCtor | TextFormatterFn
+type TextFormatterDef =
+  | TextFormatter
+  | TextFormatterConstructor
+  | TextFormatterFn
 export type TextFormatterProp = TextFormatterDef | string
 
 export interface FormatState {
@@ -83,7 +88,7 @@ class FormatManager implements FormatState {
     if (def) {
       if (typeof def === 'function') {
         if ('format' in def.prototype) {
-          return new (def as TextFormatterCtor)(this.config, options)
+          return new (def as TextFormatterConstructor)(this.config, options)
         }
         return (def as TextFormatterFn)(this.config, options)
       }

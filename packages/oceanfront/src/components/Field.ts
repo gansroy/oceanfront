@@ -268,7 +268,8 @@ export const OfField = defineComponent({
 
     return () => {
       try {
-        const render = rendered.value!
+        const render = rendered.value
+        if (!render) return
         const outerId = render.inputId ? render.inputId + '-outer' : props.id
         let overlay, overlayActive, overlayBlur
         // if(ctx.slots.overlay) overlay = ctx.slots.overlay(); else

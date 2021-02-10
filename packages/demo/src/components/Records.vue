@@ -37,7 +37,12 @@
             />
           </div>
           <div class="row form-row">
-            <button :onclick="() => testRecord.reset()">Reset</button>
+            <button
+              :onclick="() => testRecord.reset()"
+              :disabled="testRecord.locked"
+            >
+              Reset
+            </button>
           </div>
         </div>
       </div>
@@ -47,9 +52,10 @@
           <div class="row">
             <div class="column sm-4">Locked:</div>
             <div class="column sm-8">
-              <of-toggle-field
+              <of-toggle
                 v-model:checked="testRecord.locked"
                 style="vertical-align: top"
+                switch
               />
             </div>
           </div>
