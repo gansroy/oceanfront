@@ -6,7 +6,7 @@ import {
   newFieldId,
   fieldRender,
 } from '@/lib/fields'
-import { useFormats } from '@/lib/formats'
+import { TextFormatter, useFormats } from '@/lib/formats'
 import { removeEmpty } from '@/lib/util'
 
 // editing a list field does not necessarily mean swapping input to edit mode
@@ -57,8 +57,7 @@ export const TextField = defineFieldType({
     const pendingValue = ref()
     const stateValue = ref()
     const invalid = ref(false)
-    const updateValue = (val: any) => {
-      const fmt = formatter.value
+    const updateValue = (val: any, fmt?: TextFormatter) => {
       let updInvalid = false
       if (fmt) {
         const fval = fmt.format(val)
@@ -82,9 +81,13 @@ export const TextField = defineFieldType({
       pendingValue.value = undefined
       invalid.value = updInvalid
     }
-    watch(() => ctx.value, updateValue, {
-      immediate: true,
-    })
+    watch(
+      () => [ctx.value, formatter.value],
+      ([val, fmt], _) => updateValue(val, fmt),
+      {
+        immediate: true,
+      }
+    )
 
     const elt = ref<HTMLInputElement | undefined>()
     const focused = ref(false)
@@ -102,7 +105,9 @@ export const TextField = defineFieldType({
     )
     const inputType = computed(() => {
       const fmt = formatter.value
-      return multiline.value ? undefined : fmt?.inputType || _inputTypeFrom(props.inputType)
+      return multiline.value
+        ? undefined
+        : fmt?.inputType || _inputTypeFrom(props.inputType)
     })
     const focus = (select?: boolean) => {
       if (elt.value) {
@@ -144,7 +149,7 @@ export const TextField = defineFieldType({
           // if the value has changed then this will be called automatically
           // when the new value is bound to the component, otherwise call
           // it manually so that the input reflects the formatted result
-          updateValue(val)
+          updateValue(val, fmt)
           target.value = lazyInputValue
         } else {
           blank.value = val == null || val === ''
@@ -216,7 +221,7 @@ export const TextField = defineFieldType({
           // ctx.label as aria label
         })
       },
-      click: () => focus(true),
+      click: () => focus(ctx.mode !== 'readonly' && !ctx.locked),
       cursor: 'text', // FIXME depends if editable
       focus,
       focused,

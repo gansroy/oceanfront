@@ -1,4 +1,4 @@
-import { Ref, readonly, ref, toRaw, watch, markRaw } from 'vue'
+import { Ref, reactive, ref, toRaw, markRaw, watchEffect } from 'vue'
 import { ConfigManager, Config } from './config'
 import { looseEqual, readonlyUnref } from './util'
 
@@ -35,25 +35,21 @@ class BasicRecord<T extends object = Record<string, any>>
   _required: Ref<Record<string, boolean>>
   _rules: Ref<((value: T) => boolean)[]>
   _state: Ref<FieldRecordState>
-  _value: Ref<T>
+  _value: T
 
   constructor(initial?: T) {
     const init = toRaw(initial || {}) as T
-    this._initial = ref(readonly(init)) as Ref<Readonly<T>>
+    this._initial = ref(Object.assign({}, init)) as Ref<T>
     this._required = ref({})
     this._rules = ref([])
-    this._state = ref({ locked: true })
-    this._value = ref(Object.assign({}, init)) as Ref<T>
-    watch(
-      () => [this._initial.value, this._value.value],
-      ([init, vals]) => {
-        this._checkUpdated(init, vals)
-      },
-      { deep: true, immediate: true }
-    )
+    this._state = ref({ locked: false })
+    this._value = reactive(init) as T
+    watchEffect(this._checkUpdated.bind(this))
   }
 
-  _checkUpdated(init: T, vals: T) {
+  _checkUpdated() {
+    const init = this._initial.value
+    const vals = this._value
     let invalid = false
     this._state.value.updated = !looseEqual(init, vals)
     for (const rule of this._rules.value) {
@@ -94,12 +90,16 @@ class BasicRecord<T extends object = Record<string, any>>
     return this._state.value.locked || false
   }
 
+  set locked(flag: boolean) {
+    this._state.value.locked = flag
+  }
+
   get pending(): boolean {
     return this._state.value.pending || false
   }
 
   reset() {
-    this._value.value = this._initial.value
+    this.value = this._initial.value
   }
 
   get updated(): boolean {
@@ -107,7 +107,14 @@ class BasicRecord<T extends object = Record<string, any>>
   }
 
   get value(): T {
-    return this._value.value
+    return this._value
+  }
+
+  set value(val: T) {
+    for (const k in this._value) {
+      if (!val || !(k in val)) delete this._value[k]
+    }
+    Object.assign(this._value, val)
   }
 }
 

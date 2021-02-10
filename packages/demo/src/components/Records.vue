@@ -11,28 +11,56 @@
     </p>
     <of-highlight lang="html" :value="sampleBinding" />
 
-    <hr />
-
-    <div class="row">
+    <div class="row content">
       <div class="column">
-        <of-select-field
-          label="One"
-          :items="[
-            { value: 'optionA', text: 'A' },
-            { value: 'optionB', text: 'B' },
-          ]"
-          :record="testRecord"
-          name="one"
-        ></of-select-field>
-        <br />
-        <of-text-field label="Two" name="two" :record="testRecord" />
-        <br />
-        <of-toggle-field name="three" label="Three" :record="testRecord" />
+        <div class="demo-form">
+          <div class="row form-row">
+            <of-select-field
+              label="One"
+              :items="[
+                { value: 'optionA', text: 'A' },
+                { value: 'optionB', text: 'B' },
+              ]"
+              :record="testRecord"
+              name="one"
+            ></of-select-field>
+          </div>
+          <div class="row form-row">
+            <of-text-field label="Two" name="two" :record="testRecord" />
+          </div>
+          <div class="row form-row">
+            <of-toggle-field
+              name="three"
+              label="Three"
+              label-position="field"
+              :record="testRecord"
+            />
+          </div>
+          <div class="row form-row">
+            <button :onclick="() => testRecord.reset()">Reset</button>
+          </div>
+        </div>
       </div>
       <div class="column">
-        <h4>Record state</h4>
-        Updated: {{ testRecord.updated || false }} <br />
-        <of-highlight lang="json" :value="formatValue" />
+        <div class="record-info">
+          <h4>Record state</h4>
+          <div class="row">
+            <div class="column sm-4">Locked:</div>
+            <div class="column sm-8">
+              <of-toggle-field
+                v-model:checked="testRecord.locked"
+                style="vertical-align: top"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="column sm-4">Updated:</div>
+            <div class="column sm-8">
+              {{ testRecord.updated || false }}
+            </div>
+          </div>
+          <of-highlight lang="json" :value="formatValue" />
+        </div>
       </div>
     </div>
   </div>
@@ -72,3 +100,12 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+.content {
+  margin-top: 1.5rem;
+}
+.record-info {
+  padding-left: 1em;
+}
+</style>

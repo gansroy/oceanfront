@@ -60,9 +60,12 @@ export const ToggleField = defineFieldType({
       const curelt = elt.value
       if (curelt) curelt.focus()
     }
+    const canToggle = computed(() => ctx.mode !== 'readonly' && !ctx.locked)
     const clickToggle = (_evt?: MouseEvent) => {
-      stateValue.value = !stateValue.value
-      if (ctx.onUpdate) ctx.onUpdate(stateValue.value)
+      if (canToggle.value) {
+        stateValue.value = !stateValue.value
+        if (ctx.onUpdate) ctx.onUpdate(stateValue.value)
+      }
       focus()
       return false
     }
@@ -131,7 +134,7 @@ export const ToggleField = defineFieldType({
         return [h('div', { class: 'of-toggle-wrapper' }, inner)]
       },
       click: clickToggle,
-      cursor: 'pointer', // FIXME depends if editable
+      cursor: computed(() => (canToggle.value ? 'pointer' : null)),
       focus,
       focused,
       // hovered,

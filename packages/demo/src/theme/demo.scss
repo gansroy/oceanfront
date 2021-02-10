@@ -18,6 +18,34 @@
   padding: 1ch;
 }
 
+h2 {
+  color: #335588;
+  margin: 0.4em 0;
+}
+
 h4 {
   margin-bottom: 0.25em;
+}
+
+.form-row + .form-row {
+  margin-top: 0.8rem;
+}
+
+.demo-fields {
+  border: 1px solid #aaa;
+  border-radius: 0.25rem;
+  margin-top: 2rem;
+  padding: 1rem;
+
+  .form-row + .form-row {
+    margin-top: 1.25rem;
+  }
+}
+
+.demo-form {
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 0.25rem;
+  margin: 0.5rem;
+  padding: 1rem;
 }

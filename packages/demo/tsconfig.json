@@ -5,7 +5,7 @@
     "strict": true,
     // "jsx": "preserve",
     "importHelpers": true,
-    "isolatedModules": true,
+    "isolatedModules": true, // required for vite
     "moduleResolution": "node",
     "esModuleInterop": true,
     // "allowSyntheticDefaultImports": true,

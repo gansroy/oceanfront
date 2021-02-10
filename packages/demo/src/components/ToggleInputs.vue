@@ -2,29 +2,33 @@
   <div class="container">
     <h1>Toggle Inputs</h1>
     <of-highlight lang="html" :value="sampleCode" />
-    <br />
-    <div class="row">
-      <div class="column md-8">
-        <of-field type="toggle" :format="testCheckField" variant="basic" />
-        <of-toggle-field
-          v-bind="testCheckField"
-          label-position="both"
-          input-label="Switch"
-          variant="basic"
-          input-type="switch"
-        />
-        <of-toggle-field
-          v-bind="testCheckField"
-          label-position="input"
-          variant="basic"
-        />
-
-        <br /><br />
-        <of-toggle-field v-bind="testCheckField" variant="outlined" />
-        <br /><br />
-        <of-toggle-field v-bind="testCheckField" variant="filled" />
+    <div class="demo-fields">
+      <div class="row form-row">
+        <div class="column">
+          <of-field type="toggle" :format="testCheckField" variant="basic" />
+        </div>
+        <div class="column">
+          <of-toggle-field v-bind="testSwitchField" variant="basic" />
+        </div>
       </div>
-      <!-- div class="column md-4">
+      <div class="row form-row">
+        <div class="column">
+          <of-toggle-field v-bind="testCheckField" variant="outlined" />
+        </div>
+        <div class="column">
+          <of-toggle-field v-bind="testSwitchField" variant="outlined" />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
+          <of-toggle-field v-bind="testCheckField" variant="filled" />
+        </div>
+        <div class="column">
+          <of-toggle-field v-bind="testSwitchField" variant="filled" />
+        </div>
+      </div>
+    </div>
+    <!-- div class="column md-4">
         <form>
           <of-toggle-field
             v-bind="testCheckField"
@@ -51,7 +55,6 @@
           />
         </form>
       </div -->
-    </div>
   </div>
 </template>
 
@@ -62,12 +65,25 @@ const testCheckField = {
   description: 'Field description',
   help: 'field help',
   hidden: false,
-  label: 'Field Label',
+  label: 'Checkbox Field',
   placeholder: 'placeholder',
   readonly: false,
   required: true,
   labelPosition: 'both',
   inputLabel: 'Input Label',
+}
+
+const testSwitchField = {
+  description: 'Field description',
+  help: 'field help',
+  hidden: false,
+  label: 'Switch field',
+  placeholder: 'placeholder',
+  readonly: false,
+  required: true,
+  labelPosition: 'both',
+  inputLabel: 'Input Label',
+  inputType: 'switch',
 }
 
 export default defineComponent({
@@ -78,7 +94,7 @@ export default defineComponent({
   v-model:checked="fieldChecked"
   variant="filled"
 />`
-    return { sampleCode, testCheckField }
+    return { sampleCode, testCheckField, testSwitchField }
   },
 })
 </script>

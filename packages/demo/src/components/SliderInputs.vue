@@ -1,17 +1,17 @@
 <template>
   <div class="container">
     <h1>Slider Inputs</h1>
-    <div class="row">
-      <div class="column md-8">
-        <of-highlight lang="html" :value="sampleCode" />
-        <br />
+    <of-highlight lang="html" :value="sampleCode" />
+    <div class="demo-fields">
+      <div class="row form-row">
         <of-slider-field
           :max="sliderMax"
           :step="5"
           v-model:value="sliderValue"
           label="Slider input"
         ></of-slider-field>
-        <br /><br />
+      </div>
+      <div class="row form-row">
         <of-slider-field
           :max="sliderMax"
           :step="10"
@@ -19,7 +19,8 @@
           variant="outlined"
           label="Slider input"
         ></of-slider-field>
-        <br /><br />
+      </div>
+      <div class="row form-row">
         <of-slider-field
           :max="sliderMax"
           :step="15"
@@ -27,7 +28,8 @@
           variant="filled"
           label="Slider input"
         ></of-slider-field>
-        <br /><br />
+      </div>
+      <div class="row form-row">
         Output: <of-format type="number" :value="sliderValue"></of-format>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Ref, toRef, unref } from 'vue'
+import { Ref, ToRefs, toRef, unref } from 'vue'
 import { hasOwn } from '@vue/shared'
 
 export {
@@ -101,18 +101,14 @@ export function extendReactive<T extends object, U extends object>(
 export function extractRefs<T extends object, K extends keyof T>(
   props: T,
   names: K[]
-): {
-  [K in keyof T]?: Ref<T[K]>
-} {
-  const ret: {
-    [K in keyof T]?: Ref<T[K]>
-  } = {}
+): ToRefs<T[K]> {
+  const ret: { [k in K]?: any } = {}
   if (names) {
     for (const k of names) {
       ret[k] = toRef(props, k)
     }
   }
-  return ret
+  return (ret as unknown) as ToRefs<T[K]>
 }
 
 export function restrictProps<T extends object, K extends keyof T>(

@@ -54,12 +54,6 @@ const postcssPlugins = [
 
 function pluginConfig(compact, extractCss) {
   const ret = [
-    replace({
-      'process.env.NODE_ENV': JSON.stringify(node_env),
-      __DEV__: JSON.stringify(node_env === 'development'),
-      __VUE_OPTIONS_API__: JSON.stringify(true),
-      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
-    }),
     alias({
       entries: [
         {
@@ -74,6 +68,11 @@ function pluginConfig(compact, extractCss) {
     resolve({
       extensions: ['.js', '.jsx', '.vue'],
     }),
+    vue({
+      target: 'browser',
+      preprocessStyles: true,
+      postcssPlugins: [...postcssPlugins],
+    }),
     typescript({
       clean: true,
       tsconfigOverride: {
@@ -83,10 +82,11 @@ function pluginConfig(compact, extractCss) {
       },
     }),
     commonjs(),
-    vue({
-      target: 'browser',
-      preprocessStyles: true,
-      postcssPlugins: [...postcssPlugins],
+    replace({
+      'process.env.NODE_ENV': JSON.stringify(node_env),
+      __DEV__: JSON.stringify(node_env === 'development'),
+      __VUE_OPTIONS_API__: JSON.stringify(true),
+      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
     }),
     postcss({
       extract: extractCss ? 'oceanfront.css' : false,

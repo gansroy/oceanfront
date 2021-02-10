@@ -75,6 +75,7 @@
   max-width: 100%;
   outline: none;
   text-align: start;
+  vertical-align: top;
   @include no-select;
 
   .of-field-label {
@@ -233,6 +234,7 @@
   margin: $pad-v-input $pad-h-input;
   padding: 0.15em 0.1em;
   position: relative;
+  vertical-align: top;
   width: calc(2em + 2px);
 
   &-thumb {

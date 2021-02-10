@@ -86,7 +86,12 @@ const makeDragIn = (spec: FieldDragIn, flag: Ref<boolean>) => {
         evt.stopPropagation()
         evt.preventDefault()
         if (evt.dataTransfer) {
-          evt.dataTransfer.dropEffect = spec.dropEffect || 'copy'
+          evt.dataTransfer.dropEffect =
+            spec.dropEffect === 'none' ||
+            spec.dropEffect === 'link' ||
+            spec.dropEffect === 'move'
+              ? spec.dropEffect
+              : 'copy'
         }
         flag.value = true
         if (spec.onEnter) spec.onEnter(evt)

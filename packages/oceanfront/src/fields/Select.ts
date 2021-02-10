@@ -166,9 +166,13 @@ export const SelectField = defineFieldType({
       return rows
     })
 
+    const canOpen = computed(() => ctx.mode !== 'readonly' && !ctx.locked)
     const clickOpen = (_evt?: MouseEvent) => {
-      // FIXME - ignore if in the middle of closing (allow click to close)
-      opened.value = true
+      if (opened.value) {
+        opened.value = false
+      } else if (canOpen.value) {
+        opened.value = true
+      }
       return false
     }
     const closePopup = () => {
@@ -227,7 +231,7 @@ export const SelectField = defineFieldType({
         ]
       },
       click: clickOpen,
-      cursor: 'pointer', // FIXME depends if editable
+      cursor: computed(() => (canOpen.value ? 'pointer' : null)),
       focus,
       focused: computed(() => focused.value || opened.value),
       // hovered,
