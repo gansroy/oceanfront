@@ -3,7 +3,7 @@
     "target": "es2018",
     "module": "esnext",
     "strict": true,
-    // "jsx": "preserve",
+    "outDir": "dist",
     "importHelpers": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -14,16 +14,16 @@
     "types": [
       "resize-observer-browser"
     ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
     "lib": [
       "esnext",
       "dom",
       "dom.iterable"
-    ]
+    ],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
   },
   "include": [
     "src/**/*.ts",

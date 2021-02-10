@@ -8,7 +8,7 @@
   "scripts": {
     "build": "lerna run build",
     "clean": "lerna run clean",
-    "watch": "yarn workspace oceanfront run build-dev && lerna run --parallel watch"
+    "demo": "yarn workspace oceanfront run build-dev && lerna run --parallel demo"
   },
   "devDependencies": {
     "lerna": "^3.16.4"

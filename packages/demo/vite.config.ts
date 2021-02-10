@@ -10,8 +10,6 @@ const config: UserConfig = {
       'highlight.js/lib/languages/json',
       'highlight.js/lib/languages/xml',
     ],
-    // link: ['oceanfront'],
-    // plugins: [vue()],
   },
   plugins: [vue()],
 }
