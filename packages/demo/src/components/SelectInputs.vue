@@ -1,24 +1,25 @@
 <template>
   <div class="container">
     <h1>Select Inputs</h1>
-    <div class="row">
-      <div class="column">
-        <of-highlight lang="html" :value="sampleCode" />
-        <br />
+    <of-highlight lang="html" :value="sampleCode" />
+    <div class="demo-fields">
+      <div class="row form-row">
         <of-field
           :format="{ items: testItems, type: 'select' }"
           label="Select input"
           value="Option 1"
           variant="basic"
         ></of-field>
-        <br /><br />
+      </div>
+      <div class="row form-row">
         <of-select-field
           :items="tzOpts"
           label="Select timezone"
           value="America/Vancouver"
           variant="outlined"
         ></of-select-field>
-        <br /><br />
+      </div>
+      <div class="row form-row">
         <of-select-field
           label="Select input"
           value="Selected"

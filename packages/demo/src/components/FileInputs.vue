@@ -1,10 +1,9 @@
 <template>
   <div class="container">
     <h1>File Inputs</h1>
-    <div class="row">
-      <div class="column">
-        <of-highlight lang="html" :value="sampleCode" />
-        <br />
+    <of-highlight lang="html" :value="sampleCode" />
+    <div class="demo-fields">
+      <div class="row form-row">
         <of-field
           type="file"
           label="Uploaded file"
@@ -12,9 +11,11 @@
           size="30"
           variant="basic"
         />
-        <br /><br />
+      </div>
+      <div class="row form-row">
         <of-field type="file" label="Outlined" size="30" variant="outlined" />
-        <br /><br />
+      </div>
+      <div class="row form-row">
         <of-field type="file" label="New file" variant="filled" size="30" />
       </div>
     </div>
