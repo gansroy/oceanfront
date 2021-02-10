@@ -1,4 +1,7 @@
-export default {
+import { UserConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+const config: UserConfig = {
   base: '/ofdocs/',
   optimizeDeps: {
     include: [
@@ -7,6 +10,10 @@ export default {
       'highlight.js/lib/languages/json',
       'highlight.js/lib/languages/xml',
     ],
-    link: ['oceanfront'],
+    // link: ['oceanfront'],
+    // plugins: [vue()],
   },
+  plugins: [vue()],
 }
+
+export default config
