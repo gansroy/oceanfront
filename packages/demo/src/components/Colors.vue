@@ -3,40 +3,61 @@
     <h1>Colors</h1>
 
     <of-config :theme="theme">
-      <template #default="{themeStyle}">
+      <template #default="{ themeStyle }">
         <div class="row">
           <div class="column">
             <div class="row">
               <div class="column">
                 <h4>Settings</h4>
                 <!-- bezier-editor v-model="curve" / -->
-                <div style="padding: 0 0.5em;">
-                  Primary Hue<br />
-                  <input type="range" min="0" max="359" v-model="hue" />
-                  Secondary Hue Offset<br />
-                  <input
-                    type="range"
-                    min="0"
-                    max="359"
-                    v-model="secondOffset"
-                  />
-                  Background Hue Offset<br />
-                  <input type="range" min="0" max="359" v-model="bgOffset" />
-                  Saturation<br />
-                  <input type="range" min="0" max="100" v-model="saturation" />
+                <div>
+                  <div class="row form-row">
+                    <of-slider-field
+                      label="Primary Hue"
+                      min="0"
+                      max="359"
+                      v-model:value="hue"
+                    />
+                  </div>
+                  <div class="row form-row">
+                    <of-slider-field
+                      label="Secondary Hue Offset"
+                      min="0"
+                      max="359"
+                      v-model:value="secondOffset"
+                    />
+                  </div>
+                  <div class="row form-row">
+                    <of-slider-field
+                      label="Background Hue Offset"
+                      min="0"
+                      max="359"
+                      v-model:value="bgOffset"
+                    />
+                  </div>
+                  <div class="row form-row">
+                    <of-slider-field
+                      label="Saturation"
+                      min="0"
+                      max="100"
+                      v-model:value="saturation"
+                    />
+                  </div>
                   <!-- of-field type="color" v-model:value="color" variant="filled" / -->
                   <!-- of-field type="color" v-model:value="color" / -->
-                </div>
 
-                <of-toggle-field label="Dark mode" v-model:checked="dark" />
+                  <div class="row form-row">
+                    <of-toggle-field label="Dark mode" v-model:checked="dark" />
+                  </div>
+                </div>
               </div>
               <div
                 class="column of-sheet"
-                style="padding: 0 2em 2em; flex-basis: 60%;"
+                style="padding: 0 2em 2em; flex-basis: 60%"
                 :style="themeStyle"
               >
                 <h4>Preview</h4>
-                <div>
+                <div class="row form-row">
                   <div class="of-field of--variant-basic of-text-field">
                     <div class="of-field-body">
                       <div class="of-field-over">
@@ -68,7 +89,7 @@
                     </div>
                   </div>
                 </div>
-                <div style="margin-top: 1em;">
+                <div class="row form-row">
                   <div
                     class="of-field of--active of--label-visible of--variant-filled of-text-field"
                   >
@@ -118,7 +139,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="column" style="padding-right: 1em;">
+          <div class="column" style="padding-right: 1em">
             <h4>Theme style</h4>
             <of-highlight
               lang="css"

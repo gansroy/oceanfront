@@ -1,4 +1,4 @@
-import { ref, computed, watch, h, watchEffect, onActivated } from 'vue'
+import { ref, computed, watch, h, watchEffect } from 'vue'
 import {
   defineFieldType,
   FieldContext,
@@ -7,6 +7,13 @@ import {
   fieldRender,
 } from '@/lib/fields'
 import { CompatResizeObserver, watchResize } from '@/lib/util'
+
+function intoInt(val?: string | number): number | undefined {
+  if (typeof val === 'number') {
+    return Math.round(val)
+  }
+  if (val != null) return parseInt(val, 10)
+}
 
 export const SliderField = defineFieldType({
   name: 'slider',
@@ -19,16 +26,17 @@ export const SliderField = defineFieldType({
     const pendingValue = ref<number>(0)
     const stateValue = ref()
     const opts = computed(() => {
+      console.log(props.max, typeof props.max)
       // FIXME parse floats
-      let min = props.min ?? 0
-      let max = props.max ?? 100
+      let min = intoInt(props.min) ?? 0
+      let max = intoInt(props.max) ?? 100
       if (min > max) {
         const m = max
         max = min
         min = m
       }
       const delta = max - min
-      const step = Math.max(0, Math.min(delta, props.step ?? 1))
+      const step = Math.max(0, Math.min(delta, intoInt(props.step) ?? 1))
       return { min, max, delta, step }
     })
     watch(
