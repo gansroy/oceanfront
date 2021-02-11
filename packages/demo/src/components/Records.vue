@@ -37,10 +37,7 @@
             />
           </div>
           <div class="row form-row">
-            <button
-              :onclick="() => testRecord.reset()"
-              :disabled="testRecord.locked"
-            >
+            <button @click="testRecord.reset()" :disabled="testRecord.locked">
               Reset
             </button>
           </div>
