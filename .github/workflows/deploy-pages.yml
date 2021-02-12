@@ -22,7 +22,7 @@ jobs:
 
       - name: Build
         env:
-          OF_DEMO_ROOT_PATH: "/"
+          OF_DEMO_ROOT_PATH: "/oceanfront/"
         run: yarn run build
 
       - name: Deploy
