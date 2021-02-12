@@ -1,8 +1,9 @@
 name: Github Pages
 
 on:
-  # manual for now
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
