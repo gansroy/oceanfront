@@ -5,8 +5,8 @@ import {
   FieldProps,
   newFieldId,
   fieldRender,
-} from '@/lib/fields'
-import { CompatResizeObserver, watchResize } from '@/lib/util'
+} from '../lib/fields'
+import { CompatResizeObserver, watchResize } from '../lib/util'
 
 function intoInt(val?: string | number): number | undefined {
   if (typeof val === 'number') {

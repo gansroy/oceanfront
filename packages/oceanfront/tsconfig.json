@@ -19,12 +19,7 @@
       "esnext",
       "dom",
       "dom.iterable"
-    ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    }
+    ]
   },
   "include": [
     "src/**/*.ts",

@@ -1,4 +1,4 @@
-import { TextFormatter, TextFormatResult } from '@/lib/formats'
+import { TextFormatter, TextFormatResult } from '../lib/formats'
 
 export class DurationFormatter implements TextFormatter {
   get align(): 'start' | 'center' | 'end' {
@@ -23,7 +23,7 @@ export class DurationFormatter implements TextFormatter {
 
     return {
       input,
-      value
+      value,
     }
   }
 
@@ -54,7 +54,7 @@ export class DurationFormatter implements TextFormatter {
     return {
       error,
       value,
-      textValue
+      textValue,
     }
   }
 

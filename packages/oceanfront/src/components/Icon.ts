@@ -1,5 +1,5 @@
 import { computed, defineComponent, h, VNode, VNodeProps } from 'vue'
-import { useIcons } from '@/lib/icons'
+import { useIcons } from '../lib/icons'
 
 const svgAttrs = {
   xmlns: 'http://www.w3.org/2000/svg',

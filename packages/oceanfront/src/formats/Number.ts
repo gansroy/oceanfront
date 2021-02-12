@@ -1,8 +1,12 @@
 import { Ref, computed } from 'vue'
-import { Config } from '@/lib/config'
-import { LocaleState, useLocale } from '@/lib/locale'
-import { TextFormatter, TextFormatResult, TextInputResult } from '@/lib/formats'
-import { isDigit } from '@/lib/util'
+import { Config } from '../lib/config'
+import { LocaleState, useLocale } from '../lib/locale'
+import {
+  TextFormatter,
+  TextFormatResult,
+  TextInputResult,
+} from '../lib/formats'
+import { isDigit } from '../lib/util'
 
 export interface NumberFormatterOptions {
   decimalSeparator?: string
