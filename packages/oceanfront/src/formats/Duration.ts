@@ -5,11 +5,11 @@ export class DurationFormatter implements TextFormatter {
     return 'end'
   }
 
-  get inputClass() {
+  get inputClass(): string {
     return 'of--text-numeric'
   }
 
-  get inputMode() {
+  get inputMode(): string {
     return 'numeric'
   }
 
