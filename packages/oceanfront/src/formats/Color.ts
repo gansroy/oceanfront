@@ -1,5 +1,5 @@
-import { loadColor } from '@/lib/color'
-import { TextFormatter, TextFormatResult } from '@/lib/formats'
+import { loadColor } from '../lib/color'
+import { TextFormatter, TextFormatResult } from '../lib/formats'
 
 export class ColorFormatter implements TextFormatter {
   format(modelValue: any): TextFormatResult {
@@ -16,7 +16,7 @@ export class ColorFormatter implements TextFormatter {
     return {
       error,
       value,
-      textValue
+      textValue,
     }
   }
 

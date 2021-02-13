@@ -5,9 +5,9 @@ import {
   FieldProps,
   newFieldId,
   fieldRender,
-} from '@/lib/fields'
-import { TextFormatter, useFormats } from '@/lib/formats'
-import { removeEmpty } from '@/lib/util'
+} from '../lib/fields'
+import { TextFormatter, useFormats } from '../lib/formats'
+import { removeEmpty } from '../lib/util'
 
 // editing a list field does not necessarily mean swapping input to edit mode
 // it may/should show a popup instead (this might be implied by 'muted' flag)

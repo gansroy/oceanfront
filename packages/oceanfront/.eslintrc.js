@@ -9,6 +9,7 @@ module.exports = {
     'prettier/@typescript-eslint',
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/vue3-recommended',
+    'plugin:jest/recommended',
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',

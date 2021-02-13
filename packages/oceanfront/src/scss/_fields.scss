@@ -180,7 +180,7 @@
   padding-right: $pad-h-input;
 }
 
-.of-toggle-field,
+.of-toggle-input,
 .of-slider-field,
 .of-file-field {
   .of-field-input {
@@ -208,7 +208,10 @@
   position: relative;
 }
 
-.of-toggle-field {
+.of-toggle-wrapper {
+  display: flex;
+  flex: auto;
+
   .of-toggle-input {
     align-self: center;
     flex: none;
@@ -217,11 +220,12 @@
     position: relative;
     // --of-icon-scale-indiv: 1.15;
   }
+}
 
-  .of-toggle-wrapper {
-    display: flex;
-    flex: auto;
-  }
+// container around inline toggle field (checkbox or switch)
+.of-toggle {
+  display: inline-flex;
+  outline: none;
 }
 
 .of-switch {
@@ -231,7 +235,7 @@
   font-size: $font-size-input;
   height: calc(1em * #{$line-height-input});
   line-height: $line-height-input;
-  margin: $pad-v-input $pad-h-input;
+  margin: $pad-v-input 0; // $pad-h-input;
   padding: 0.15em 0.1em;
   position: relative;
   vertical-align: top;

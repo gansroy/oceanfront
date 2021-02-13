@@ -5,8 +5,8 @@ import {
   FieldProps,
   newFieldId,
   fieldRender,
-} from '@/lib/fields'
-import { OfIcon } from '@/components/Icon'
+} from '../lib/fields'
+import { OfIcon } from '../components/Icon'
 
 export const supportedTypes = new Set(['checkbox', 'switch'])
 
@@ -83,13 +83,6 @@ export const ToggleField = defineFieldType({
 
     return fieldRender({
       active: true, // always show content
-      append() {
-        if (inputType.value === 'switch')
-          return h('div', { class: 'of-switch' }, [
-            h('div', { class: 'of-switch-thumb' }),
-            h('div', { class: 'of-switch-track' }),
-          ])
-      },
       blank: computed(() => !stateValue.value),
       class: computed(() => {
         return { 'of-toggle-field': true, 'of--checked': !!stateValue.value }
@@ -122,7 +115,10 @@ export const ToggleField = defineFieldType({
               ...hooks,
             }),
             inputType.value === 'switch'
-              ? undefined
+              ? h('div', { class: 'of-switch' }, [
+                  h('div', { class: 'of-switch-thumb' }),
+                  h('div', { class: 'of-switch-track' }),
+                ])
               : h(OfIcon, {
                   class: 'of-toggle-icon',
                   name: icon.value,

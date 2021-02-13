@@ -2,7 +2,7 @@ import { UserConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 const config: UserConfig = {
-  base: '/ofdocs/',
+  base: process.env.OF_DEMO_ROOT_PATH || '/ofdocs/',
   optimizeDeps: {
     include: [
       'highlight.js/lib/core',
@@ -10,8 +10,6 @@ const config: UserConfig = {
       'highlight.js/lib/languages/json',
       'highlight.js/lib/languages/xml',
     ],
-    // link: ['oceanfront'],
-    // plugins: [vue()],
   },
   plugins: [vue()],
 }

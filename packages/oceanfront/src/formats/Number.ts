@@ -1,8 +1,12 @@
 import { Ref, computed } from 'vue'
-import { Config } from '@/lib/config'
-import { LocaleState, useLocale } from '@/lib/locale'
-import { TextFormatter, TextFormatResult, TextInputResult } from '@/lib/formats'
-import { isDigit } from '@/lib/util'
+import { Config } from '../lib/config'
+import { LocaleState, useLocale } from '../lib/locale'
+import {
+  TextFormatter,
+  TextFormatResult,
+  TextInputResult,
+} from '../lib/formats'
+import { isDigit } from '../lib/util'
 
 export interface NumberFormatterOptions {
   decimalSeparator?: string
@@ -19,6 +23,8 @@ export interface NumberFormatterOptions {
   useGrouping?: boolean
 }
 
+export type NumberSeparators = { decimal: string; group: string }
+
 export class NumberFormatter implements TextFormatter {
   private _locale: LocaleState
   private _options: Ref<NumberFormatterOptions>
@@ -29,8 +35,8 @@ export class NumberFormatter implements TextFormatter {
       const opts: any = {}
       opts.locale = this._locale.locale
       Object.assign(opts, this._locale.numberFormat)
-      if (this._options) {
-        Object.assign(opts, this._options)
+      if (options) {
+        Object.assign(opts, options)
       }
       return opts
     })
@@ -40,11 +46,11 @@ export class NumberFormatter implements TextFormatter {
     return 'end'
   }
 
-  get inputClass() {
+  get inputClass(): string {
     return 'of--text-numeric'
   }
 
-  get inputMode() {
+  get inputMode(): string {
     return 'numeric'
   }
 
@@ -126,7 +132,7 @@ export class NumberFormatter implements TextFormatter {
     }
   }
 
-  getSeparators() {
+  getSeparators(): NumberSeparators {
     const opts = this.options
     let group = opts.groupSeparator
     let decimal = opts.decimalSeparator
@@ -199,9 +205,10 @@ export class NumberFormatter implements TextFormatter {
     if (textValue.length) {
       const fmtOpts = this.formatterOptions(true)
       const unformat = this.parseInput(textValue, selStart)
-      let { minDecs, seps } = unformat
+      const { seps } = unformat
+      let { minDecs } = unformat
       if (minDecs !== null)
-        minDecs = Math.min(minDecs, fmtOpts.maximumFractionDigits!)
+        minDecs = Math.min(minDecs, fmtOpts.maximumFractionDigits || 0)
       const formatter = Intl.NumberFormat(this.options.locale, fmtOpts)
       const parts: any[] =
         unformat.value === null

@@ -1,19 +1,16 @@
-name: Lints
+name: Github Pages
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout sources
+      - name: Checkout repo
         uses: actions/checkout@v2
 
       - name: Setup Node
@@ -24,11 +21,13 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Run ESLint
-        run: yarn run lint
-
-      - name: Run unit tests
-        run: yarn run test
-
-      - name: Run build
+      - name: Build
+        env:
+          OF_DEMO_ROOT_PATH: "/oceanfront/"
         run: yarn run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./packages/demo/dist

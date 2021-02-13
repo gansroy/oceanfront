@@ -16,9 +16,9 @@ import {
   Renderable,
   FormatProp,
   FieldTypeConstructor,
-} from '@/lib/fields'
-import { useFormats } from '@/lib/formats'
-import { FieldRecord, useRecords } from '@/lib/records'
+} from '../lib/fields'
+import { useFormats } from '../lib/formats'
+import { FieldRecord, useRecords } from '../lib/records'
 import {
   extractRefs,
   extendReactive,
@@ -26,8 +26,8 @@ import {
   restrictProps,
   watchResize,
   CompatResizeObserver,
-} from '@/lib/util'
-import OfOverlay from '@/components/Overlay.vue'
+} from '../lib/util'
+import OfOverlay from '../components/Overlay.vue'
 
 const renderSlot = (
   container: Renderable[],
@@ -268,7 +268,8 @@ export const OfField = defineComponent({
 
     return () => {
       try {
-        const render = rendered.value!
+        const render = rendered.value
+        if (!render) return
         const outerId = render.inputId ? render.inputId + '-outer' : props.id
         let overlay, overlayActive, overlayBlur
         // if(ctx.slots.overlay) overlay = ctx.slots.overlay(); else

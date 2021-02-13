@@ -1,4 +1,4 @@
-import { TextFormatter, TextFormatResult } from '@/lib/formats'
+import { TextFormatter, TextFormatResult } from '../lib/formats'
 
 export class UrlFormatter implements TextFormatter {
   loadValue(modelValue: any): string | null {

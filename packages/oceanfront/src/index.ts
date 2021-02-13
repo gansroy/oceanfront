@@ -14,6 +14,7 @@ import { OfSelectField } from './components/SelectField'
 import OfSidebar from './components/Sidebar.vue'
 import { OfSliderField } from './components/SliderField'
 import { OfTextField } from './components/TextField'
+import { OfToggle } from './components/Toggle'
 import { OfToggleField } from './components/ToggleField'
 import OfTabs from './components/Tabs.vue'
 import OfSpinner from './components/Spinner.vue'
@@ -25,13 +26,18 @@ import { TextField } from './fields/Text'
 import { ToggleField } from './fields/Toggle'
 import { SliderField } from './fields/Slider'
 
-import { registerFieldType, registerTextFormatter } from './lib/formats'
+import {
+  registerFieldType,
+  registerTextFormatter,
+  TextFormatterConstructor,
+} from './lib/formats'
 import { ColorFormatter } from './formats/Color'
 import { NumberFormatter } from './formats/Number'
 import { DurationFormatter } from './formats/Duration'
 import { UrlFormatter } from './formats/Url'
 
 import './scss/index.scss'
+import { FieldTypeConstructor } from './lib/fields'
 
 export const components: Record<string, Component> = {
   OfConfig,
@@ -48,27 +54,40 @@ export const components: Record<string, Component> = {
   OfSliderField,
   OfTabs,
   OfTextField,
+  OfToggle,
   OfToggleField,
   OfSpinner,
   OfPagination,
-} as any
+}
+
+export const fieldTypes: Record<string, FieldTypeConstructor> = {
+  file: FileField,
+  select: SelectField,
+  text: TextField,
+  textarea: TextField,
+  password: TextField,
+  slider: SliderField,
+  toggle: ToggleField,
+}
+
+export const textFormatters: Record<string, TextFormatterConstructor> = {
+  color: ColorFormatter,
+  duration: DurationFormatter,
+  number: NumberFormatter,
+  url: UrlFormatter,
+}
 
 export const directives: Record<string, Directive> = {}
 
 export const Oceanfront: Plugin = {
   install(vue: App, args: any) {
     extendDefaultConfig(() => {
-      registerFieldType('file', FileField)
-      registerFieldType('select', SelectField)
-      registerFieldType('text', TextField)
-      registerFieldType('textarea', TextField)
-      registerFieldType('password', TextField)
-      registerFieldType('toggle', ToggleField)
-      registerFieldType('slider', SliderField)
-      registerTextFormatter('color', ColorFormatter)
-      registerTextFormatter('number', NumberFormatter)
-      registerTextFormatter('duration', DurationFormatter)
-      registerTextFormatter('url', UrlFormatter)
+      for (const idx in fieldTypes) {
+        registerFieldType(idx, fieldTypes[idx])
+      }
+      for (const idx in textFormatters) {
+        registerTextFormatter(idx, textFormatters[idx])
+      }
     })
     if (args && typeof args.config === 'function') {
       extendDefaultConfig(args.config)

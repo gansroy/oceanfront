@@ -11,7 +11,7 @@ yarn install
 ### Live Development Server
 
 ```sh
-yarn watch
+yarn demo
 ```
 
 ### Build Packages

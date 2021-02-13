@@ -5,8 +5,8 @@ import {
   FieldProps,
   newFieldId,
   fieldRender,
-} from '@/lib/fields'
-import { OfIcon } from '@/components/Icon'
+} from '../lib/fields'
+import { OfIcon } from '../components/Icon'
 
 export const FileField = defineFieldType({
   name: 'file',
