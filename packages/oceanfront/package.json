@@ -61,7 +61,7 @@
     "postcss-url": "^10.1.0",
     "prettier": "^2.2.0",
     "rimraf": "^3.0.0",
-    "rollup": "^2.32.1",
+    "rollup": "^2.39.0",
     "rollup-plugin-dts": "^2.0.1",
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-terser": "^7.0.2",

@@ -1,4 +1,4 @@
-import { isDigit } from './util'
+import { isDigit } from '../util'
 
 test('isDigit validate', async () => {
   expect(isDigit('0')).toEqual(true)

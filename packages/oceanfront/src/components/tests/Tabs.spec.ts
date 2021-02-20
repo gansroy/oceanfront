@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
-import { OfIcon } from './Icon'
-import OfTabs from './Tabs.vue'
+import { OfIcon } from '../Icon'
+import OfTabs from '../Tabs.vue'
 
 test('displays message', () => {
   const wrapper = mount(OfTabs, {
