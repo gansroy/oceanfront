@@ -579,11 +579,13 @@
     border-radius: 50%;
     box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
     box-sizing: border-box;
-    cursor: pointer;
     height: 1em;
     width: 1em;
     position: absolute;
     transform: translateX(-50%);
     z-index: 2;
+  }
+  &:not(.of--readonly) .of-slider-thumb {
+    cursor: pointer;
   }
 }

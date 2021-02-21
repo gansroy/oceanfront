@@ -16,7 +16,7 @@
         <div class="demo-form">
           <div class="row form-row">
             <of-select-field
-              label="One"
+              label="Select"
               :items="[
                 { value: 'optionA', text: 'A' },
                 { value: 'optionB', text: 'B' },
@@ -26,12 +26,20 @@
             ></of-select-field>
           </div>
           <div class="row form-row">
-            <of-text-field label="Two" name="two" :record="testRecord" />
+            <of-text-field label="Text" name="two" :record="testRecord" />
           </div>
           <div class="row form-row">
             <of-toggle-field
               name="three"
-              label="Three"
+              label="Toggle"
+              label-position="field"
+              :record="testRecord"
+            />
+          </div>
+          <div class="row form-row">
+            <of-slider-field
+              name="four"
+              label="Slider"
               label-position="field"
               :record="testRecord"
             />
@@ -77,6 +85,7 @@ const testRecord = makeRecord({
   one: 'optionA',
   two: 'text',
   three: true,
+  four: 25,
 })
 
 export default defineComponent({
