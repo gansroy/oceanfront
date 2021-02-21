@@ -108,8 +108,8 @@ export const OfListItem = defineComponent({
           class: {
             'of-list-item': true,
             'of--active': active.value,
-            'of--enabled': !disabled.value,
             'of--disabled': disabled.value,
+            'of--focused': focused.value,
             'of--link': !!hrefVal,
           },
           href: hrefVal,
