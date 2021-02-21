@@ -1,4 +1,4 @@
-import { Transition, VNode, ref, computed, watch, h, VNodeTypes } from 'vue'
+import { ref, computed, watch, h, VNode, VNodeTypes } from 'vue'
 import { OfNavGroup } from '../components/NavGroup'
 import { OfListItem } from '../components/ListItem'
 import { OfIcon } from '../components/Icon'

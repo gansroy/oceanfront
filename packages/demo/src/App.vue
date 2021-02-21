@@ -27,7 +27,7 @@
     </header>
     <div class="app-body">
       <of-sidebar v-model="sidebarActive" :embed="!isMobile">
-        <of-nav-group>
+        <of-nav-group @navigate="afterNav">
           <of-list-item to="/">Overview</of-list-item>
           <of-list-item disabled>Buttons</of-list-item>
           <of-list-item to="/colors">Colors &amp; Theming</of-list-item>
@@ -130,6 +130,11 @@ export default defineComponent({
       else sidebarDesktopActive.value = !sidebarDesktopActive.value
     }
     return {
+      afterNav: () => {
+        if (isMobile.value) {
+          sidebarMobileActive.value = false
+        }
+      },
       baseFontSize,
       configActive,
       error,

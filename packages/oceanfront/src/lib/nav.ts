@@ -45,52 +45,66 @@ export interface NavState extends NavRouter, NavGroup {
 }
 
 export class NavManager implements NavState {
-  group?: NavGroup
-  router?: NavRouter
+  _afterRouteNavigate?: () => void
+  _group?: NavGroup
+  _router?: NavRouter
 
   get haveGroup(): boolean {
-    return !!this.group
+    return !!this._group
   }
 
   get haveRouter(): boolean {
-    return !!this.router
+    return !!this._router
   }
 
   get groupFocused(): ComputedRef<boolean> {
-    return computed(() => (this.group ? this.group.groupFocused.value : false))
+    return computed(() =>
+      this._group ? this._group.groupFocused.value : false
+    )
   }
 
   groupRegister(target: NavGroupTarget): NavGroupUnregister | null {
-    return (this.group && this.group.groupRegister(target)) || null
+    return (this._group && this._group.groupRegister(target)) || null
   }
 
   groupNavigate(
     target: string | { event: KeyboardEvent } | { id: string }
   ): boolean {
-    return (this.group && this.group.groupNavigate(target)) || false
+    return (this._group && this._group.groupNavigate(target)) || false
   }
 
   routeActive(target: NavTo): boolean {
-    return (this.router && this.router.routeActive(target)) || false
+    return (this._router && this._router.routeActive(target)) || false
   }
 
   routeNavigate(target: NavTo): Promise<void | string> | null {
-    return (this.router && this.router.routeNavigate(target)) || null
+    const result = (this._router && this._router.routeNavigate(target)) || null
+    const after = this._afterRouteNavigate
+    if (result && after)
+      return result.then((r) => {
+        after()
+        return r
+      })
+    return result
   }
 
   routeResolve(target: NavTo): string | null {
-    return (this.router && this.router.routeResolve(target)) || null
+    return (this._router && this._router.routeResolve(target)) || null
   }
 }
 
 const configManager = new ConfigManager('ofnav', NavManager)
 
 export function setNavGroup(group: NavGroup | null): void {
-  configManager.extendingManager.group = group || undefined
+  configManager.extendingManager._group = group || undefined
+}
+
+export function setAfterRouteNavigate(cb: () => void): void {
+  configManager.extendingManager._afterRouteNavigate = cb
 }
 
 export function setRouter(router: NavRouter | null): void {
-  configManager.extendingManager.router = router || undefined
+  configManager.extendingManager._router = router || undefined
 }
 
 export function useNav(config?: Config): NavState {
