@@ -38,13 +38,13 @@ export const OfListItem = defineComponent({
       if (props.href) return props.href
       return nav.routeResolve(props.to || props.href)
     })
-    const active = computed(() => {
+    const routeActive = computed(() => {
       if (props.active === null) {
         return nav.routeActive(props.to || props.href)
       }
       return props.active
     })
-    const navActive = ref(active.value)
+    const navActive = ref(routeActive.value)
     const clicked = (evt: Event) => {
       const target = props.to || props.href
       if (target && nav.routeNavigate(target)) {
@@ -67,8 +67,7 @@ export const OfListItem = defineComponent({
         const result = nav.groupNavigate({ event: evt })
         if (result) return false
       },
-      onVnodeMounted(vnode: VNode) {
-        elt.value = (vnode as VNode<HTMLElement>).el || undefined
+      onVnodeMounted(_vnode: VNode) {
         unreg = nav.groupRegister(
           reactive({
             disabled: (disabled as any) as Ref<boolean | undefined>, // FIXME cast should not be necessary
@@ -105,16 +104,17 @@ export const OfListItem = defineComponent({
       return h(
         (hrefVal ? 'a' : 'div') as any,
         {
+          'aria-current': routeActive.value ? 'page' : undefined,
           class: {
             'of-list-item': true,
-            'of--active': active.value,
+            'of--active': routeActive.value,
             'of--disabled': disabled.value,
             'of--focused': focused.value,
             'of--link': !!hrefVal,
           },
           href: hrefVal,
           tabIndex: navActive.value ? 0 : -1,
-          ref: 'elt',
+          ref: elt,
           ...handlers,
         },
         h('div', { class: 'of-list-item-inner' }, content())
