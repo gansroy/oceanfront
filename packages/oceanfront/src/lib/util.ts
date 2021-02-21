@@ -1,4 +1,4 @@
-import { Ref, ToRefs, toRef, unref } from 'vue'
+import { Ref, ToRefs, toRef, ref, unref, watch, reactive } from 'vue'
 import { hasOwn } from '@vue/shared'
 
 export {
@@ -237,80 +237,112 @@ export function readonlyUnrefs<T extends object>(
   return new Proxy(val, readonlyUnrefsHandlers) as any
 }
 
-export interface CompatResizeObserver {
+export interface PositionObserver {
   disconnect(): void
 }
 
-type EltSize = { width: number; height: number }
+type EltPos = { x: number; y: number; width: number; height: number }
 
-const eltSize = (elt: Element): EltSize => {
+const eltPos = (elt: Element): EltPos => {
   const sz = elt.getBoundingClientRect()
-  return { width: sz.width, height: sz.height }
+  return { x: sz.x, y: sz.y, width: sz.width, height: sz.height }
 }
 
-export const watchResize = (
-  cb: (elts: { target: Element; size: EltSize }[]) => void,
-  ...elts: (Element | null)[]
-): CompatResizeObserver | undefined => {
+export type WatchPositionOpts = {
+  immediate?: boolean
+  scroll?: boolean
+}
+
+const scrollWatch: WeakMap<HTMLElement, Set<HTMLElement>> = new WeakMap()
+
+export const watchPosition = (
+  cb: (elts: Map<Element, EltPos>) => void,
+  target: Element | (Element | null)[] | null,
+  options?: WatchPositionOpts
+): PositionObserver | undefined => {
+  const elts = Array.isArray(target) ? target : [target]
+  const updated = reactive<Map<Element, EltPos>>(new Map())
+  const stop = watch(updated, (upd) => {
+    if (upd.size > 0) {
+      cb(upd)
+      upd.clear()
+    }
+  })
   if (!elts.length) return
 
-  const checkElts: { target: Element; size: EltSize }[] = []
+  const checkElts: { target: Element; pos: EltPos }[] = []
   for (const target of elts) {
     if (!target) continue
-    checkElts.push({ target, size: eltSize(target) })
+    checkElts.push({ target, pos: eltPos(target) })
   }
-  cb(checkElts) // callback on initial state
+  if (options && options.immediate) {
+    for (const row of checkElts) {
+      updated.set(row.target, row.pos)
+    }
+  }
 
+  let dcon: PositionObserver
   if (typeof ResizeObserver !== 'undefined') {
     const resizeObserver = new ResizeObserver((entries) => {
-      const result = []
       for (const entry of entries) {
-        result.push({
-          target: entry.target,
-          size: {
-            width: entry.contentRect.left + entry.contentRect.width,
-            height: entry.contentRect.top + entry.contentRect.height,
-          },
+        updated.set(entry.target, {
+          x: entry.contentRect.x,
+          y: entry.contentRect.y,
+          width: entry.contentRect.left + entry.contentRect.width,
+          height: entry.contentRect.top + entry.contentRect.height,
         })
       }
-      cb(result)
     })
 
     for (const entry of checkElts) {
       resizeObserver.observe(entry.target, { box: 'border-box' })
     }
-    return resizeObserver
+    dcon = resizeObserver
   } else {
     const evalElts = () => {
-      let changed = false
       for (let idx = 0; idx < checkElts.length; ) {
-        const { target, size } = checkElts[idx]
+        const { pos, target } = checkElts[idx]
         if (!document.body.contains(target)) {
           checkElts.splice(idx, 1)
-          changed = true
           continue
         }
-        const newSize = eltSize(target)
-        checkElts[idx].size = newSize
-        if (newSize.width != size.width || newSize.height != size.height) {
-          changed = true
-        }
+        const newSize = eltPos(target)
+        checkElts[idx].pos = newSize
         idx++
       }
-      return changed
     }
     let timeout = 50 // first timeout is short to handle initial re-layout
     const runEval = () => {
       if (!checkElts.length) return
-      if (evalElts()) cb(checkElts)
+      evalElts()
       setTimeout(runEval, timeout)
       timeout = 1500
     }
     runEval()
-    return {
+    dcon = {
       disconnect() {
         checkElts.splice(0, checkElts.length)
       },
     }
+  }
+
+  if (options && options.scroll) {
+    for (const entry of checkElts) {
+      let parent = entry.target.parentElement
+      const onScroll = function (evt: Event) {
+        updated.set(entry.target, eltPos(entry.target))
+      }
+      while (parent && parent instanceof HTMLElement) {
+        parent.addEventListener('scroll', onScroll, { passive: true })
+        parent = parent.parentElement
+      }
+    }
+  }
+
+  return {
+    disconnect() {
+      dcon.disconnect()
+      stop()
+    },
   }
 }

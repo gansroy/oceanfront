@@ -96,7 +96,7 @@ import {
   watchEffect,
   watch,
 } from 'vue'
-import OfOverlay from './Overlay.vue'
+import { OfOverlay } from './Overlay'
 import { Paginator } from '../lib/paginator'
 
 export default defineComponent({
@@ -204,7 +204,7 @@ export default defineComponent({
     )
 
     const perPage: Ref<number> = ref(props.perPage || 20)
-    
+
     watch(
       () => props.perPage,
       (val) => {
@@ -215,7 +215,7 @@ export default defineComponent({
     watchEffect(() => {
       if (startAt.value <= 0) startAt.value = 1
       if (perPage.value <= 0) perPage.value = 1
-    })    
+    })
 
     const showCustomOffsetPopup = computed(
       () => props.customOffsetPopup || false
@@ -273,7 +273,7 @@ export default defineComponent({
       }
       context.emit('update-offset', paginator)
     }
-  
+
     return {
       cls,
       page,

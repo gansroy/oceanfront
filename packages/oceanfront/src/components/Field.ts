@@ -24,10 +24,10 @@ import {
   extendReactive,
   readonlyUnrefs,
   restrictProps,
-  watchResize,
-  CompatResizeObserver,
+  watchPosition,
+  PositionObserver,
 } from '../lib/util'
-import OfOverlay from '../components/Overlay.vue'
+import { OfOverlay } from '../components/Overlay'
 
 const renderSlot = (
   container: Renderable[],
@@ -43,7 +43,7 @@ const renderSlot = (
   }
 }
 
-const calcPadding = (node: VNode, state: { watch?: CompatResizeObserver }) => {
+const calcPadding = (node: VNode, state: { watch?: PositionObserver }) => {
   if (state.watch) {
     state.watch.disconnect()
   }
@@ -56,22 +56,21 @@ const calcPadding = (node: VNode, state: { watch?: CompatResizeObserver }) => {
   if (!prepend && !append) {
     return
   }
-  state.watch = watchResize(
+  state.watch = watchPosition(
     (entries) => {
       let presize = 0
       let appsize = 0
-      for (const entry of entries) {
-        if (entry.target === prepend) {
-          presize = Math.ceil(entry.size.width)
-        } else if (entry.target === append) {
-          appsize = Math.ceil(entry.size.width)
+      for (const [target, pos] of entries) {
+        if (target === prepend) {
+          presize = Math.ceil(pos.width)
+        } else if (target === append) {
+          appsize = Math.ceil(pos.width)
         }
       }
       outer.style.setProperty('--of-field-size-prepend', presize + 'px')
       outer.style.setProperty('--of-field-size-append', appsize + 'px')
     },
-    prepend,
-    append
+    [prepend, append]
   )
 }
 

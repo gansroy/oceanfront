@@ -1,35 +1,17 @@
-<template>
-  <transition>
-    <div
-      :id="id"
-      class="of-overlay"
-      :class="classAttr"
-      role="document"
-      ref="elt"
-      :tabindex="active && state === 'overlay' ? '-1' : null"
-      v-on="handlers"
-      v-show="active"
-    >
-      <slot name="loading" v-if="loading">
-        <of-spinner />
-      </slot>
-      <slot :active="active" :state="state"></slot>
-    </div>
-  </transition>
-</template>
-
-<script lang="ts">
 import {
-  ref,
   defineComponent,
-  SetupContext,
   computed,
-  onMounted,
-  watch,
+  h,
   nextTick,
-  onBeforeUnmount,
+  ref,
+  watch,
   PropType,
+  SetupContext,
+  Teleport,
+  Transition,
 } from 'vue'
+import { useLayout } from '../lib/layout'
+import { PositionObserver, watchPosition } from '../lib/util'
 import OfSpinner from './Spinner.vue'
 
 const relativeParentRect = (elt: Element) => {
@@ -62,9 +44,8 @@ const checkFocused = (elt?: HTMLElement) => {
   return (active && elt.contains(active)) || false
 }
 
-export default defineComponent({
+export const OfOverlay = defineComponent({
   name: 'OfOverlay',
-  components: { OfSpinner },
   inheritAttrs: false,
   props: {
     active: { type: Boolean, default: false },
@@ -80,13 +61,14 @@ export default defineComponent({
   },
   emits: ['blur'],
   setup(props, ctx: SetupContext) {
-    let bound = false
+    let bound: PositionObserver | undefined
     let focused = false
-    let swapped: Comment | null = null
+    const layout = useLayout()
     const elt = ref<HTMLElement | undefined>()
-    const scrolled = ref<number>()
+    const portal = ref<HTMLElement | undefined>()
+    const portalTo = ref<HTMLElement | undefined>()
     const handlers = {
-      click(evt: MouseEvent) {
+      onClick(evt: MouseEvent) {
         const outer = elt.value
         if (!outer) return
         if (evt.target === outer) {
@@ -96,38 +78,29 @@ export default defineComponent({
           }
         }
       },
+      onFocusOut(evt: Event) {
+        requestAnimationFrame(() => {
+          if (focused && !checkFocused(elt.value)) {
+            focused = false
+            ctx.emit('blur')
+          }
+        })
+      },
     }
     const state = computed(() => (props.embed ? 'embed' : 'overlay'))
     const target = ref()
-    const onFocusChange = () => {
-      // FIXME debounce
-      requestAnimationFrame(() => {
-        if (focused && !checkFocused(elt.value)) {
-          focused = false
-          ctx.emit('blur')
-        }
-      })
-    }
-    const onScroll = () => {
-      // FIXME use normal debounce
-      if (target.value) scrolled.value = new Date().getTime()
-    }
     const bind = (flag: boolean) => {
-      if (typeof window === 'undefined') return
-      if (flag) {
-        if (!bound) {
-          window.addEventListener('focusout', onFocusChange, { passive: true })
-          window.addEventListener('resize', onScroll, { passive: true })
-          window.addEventListener('scroll', onScroll, { passive: true })
-          bound = true
-        }
-      } else {
-        if (bound) {
-          window.removeEventListener('focusout', onFocusChange)
-          window.removeEventListener('resize', onScroll)
-          window.removeEventListener('scroll', onScroll)
-          bound = false
-        }
+      if (bound) {
+        bound.disconnect()
+      }
+      if (target.value) {
+        bound = watchPosition(
+          (_entries) => {
+            reposition()
+          },
+          target.value,
+          { scroll: true }
+        )
       }
     }
     const focus = () => {
@@ -142,25 +115,14 @@ export default defineComponent({
       focused = true
     }
     const reparent = () => {
-      if (!elt.value) return
-      let eltParent = elt.value.parentNode as HTMLElement
-      if (!parent) return
+      if (!portal.value) return
+      const eltParent = portal.value.parentNode as HTMLElement
+      if (!eltParent) return
       const swap = state.value !== 'embed'
-      if (swap && !swapped) {
-        let newParent =
-          eltParent.closest('[data-overlay-parent]') ?? document.body
-        if (newParent !== eltParent) {
-          swapped = document.createComment('')
-          eltParent.insertBefore(swapped, elt.value)
-          newParent.appendChild(elt.value)
-        }
-      } else if (!swap && swapped) {
-        if (swapped.parentNode) {
-          swapped.parentNode.insertBefore(elt.value, swapped)
-          swapped.parentNode.removeChild(swapped)
-        }
-        swapped = null
-      }
+      portalTo.value = swap
+        ? ((eltParent.closest('[data-overlay-parent]') ??
+            document.body) as HTMLElement)
+        : undefined
     }
     const reposition = () => {
       const targetElt = target.value
@@ -203,10 +165,14 @@ export default defineComponent({
         updateState()
       }
     )
-    watch(scrolled, (_) => {
-      nextTick(reposition)
-    })
-    const classAttr = computed(() => {
+    watch(
+      () => layout.windowRect,
+      (_) => {
+        nextTick(reposition)
+      }
+    )
+
+    return () => {
       const cls = {
         'of--active': props.active,
         'of--capture': props.active && props.capture,
@@ -218,25 +184,45 @@ export default defineComponent({
       }
       if (state.value !== 'embed' && !target.value && props.align)
         (cls as any)['of--' + props.align] = true
-      return [cls, props.class]
-    })
-    onMounted(updateState)
-    onBeforeUnmount(() => {
-      bind(false)
-      if (swapped && elt.value && elt.value.parentNode) {
-        elt.value.parentNode.removeChild(elt.value)
-        swapped = null
-      }
-    })
-    return {
-      active: computed(() => props.active),
-      classAttr,
-      elt,
-      focus,
-      handlers,
-      id: computed(() => props.id),
-      state,
+
+      return h(
+        Teleport,
+        {
+          disabled: !portalTo.value,
+          to: portalTo.value,
+          ref: portal,
+          onVnodeMounted: updateState,
+          onVnodeBeforeUnmount: () => {
+            bind(false)
+          },
+        },
+        [
+          h(Transition, null, {
+            default: () =>
+              props.active
+                ? h(
+                    'div',
+                    {
+                      class: ['of-overlay', cls, props.class],
+                      id: props.id,
+                      role: 'document',
+                      ref: elt,
+                      tabIndex:
+                        props.active && state.value === 'overlay' ? '-1' : null,
+                      ...handlers,
+                    },
+                    [
+                      // props.loading ? () => ctx.slots.loading?.() // of-spinner
+                      ctx.slots.default?.({
+                        active: props.active,
+                        state: state.value,
+                      }),
+                    ]
+                  )
+                : undefined,
+          }),
+        ]
+      )
     }
   },
 })
-</script>

@@ -10,6 +10,7 @@ import { OfFormat } from './components/Format'
 import { OfListItem } from './components/ListItem'
 import OfListGroup from './components/ListGroup.vue'
 import { OfNavGroup } from './components/NavGroup'
+import { OfOverlay } from './components/Overlay'
 import { OfSelectField } from './components/SelectField'
 import OfSidebar from './components/Sidebar.vue'
 import { OfSliderField } from './components/SliderField'
@@ -49,6 +50,8 @@ export const components: Record<string, Component> = {
   OfListItem,
   OfListGroup,
   OfNavGroup,
+  OfOverlay,
+  OfPagination,
   OfSelectField,
   OfSidebar,
   OfSliderField,
@@ -57,7 +60,6 @@ export const components: Record<string, Component> = {
   OfToggle,
   OfToggleField,
   OfSpinner,
-  OfPagination,
 }
 
 export const fieldTypes: Record<string, FieldTypeConstructor> = {

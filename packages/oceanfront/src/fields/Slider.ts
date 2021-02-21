@@ -6,7 +6,7 @@ import {
   newFieldId,
   fieldRender,
 } from '../lib/fields'
-import { CompatResizeObserver, watchResize } from '../lib/util'
+import { PositionObserver, watchPosition } from '../lib/util'
 
 function intoInt(val?: string | number): number | undefined {
   if (typeof val === 'number') {
@@ -66,7 +66,7 @@ export const SliderField = defineFieldType({
     const inputElt = ref<HTMLInputElement | undefined>()
     const thumbElt = ref<HTMLDivElement | undefined>()
     const trackElt = ref<HTMLDivElement | undefined>()
-    let trackSize: CompatResizeObserver | undefined
+    let trackSize: PositionObserver | undefined
     const trackWidth = ref(0)
     const focused = ref(false)
     const focus = () => {
@@ -159,8 +159,8 @@ export const SliderField = defineFieldType({
     const initPosition = () => {
       const track = trackElt.value
       if (track) {
-        trackSize = watchResize((entries) => {
-          trackWidth.value = Math.round(entries[0].size.width)
+        trackSize = watchPosition((entries) => {
+          trackWidth.value = Math.round(entries.get(track)?.width || 0)
         }, track)
 
         // position thumb

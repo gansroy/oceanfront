@@ -1,5 +1,5 @@
 import { hsluvToHex, hexToHsluv } from 'hsluv'
-import { reactive } from 'vue'
+import { reactive, readonly, ref } from 'vue'
 import { parseColor } from './color'
 import { Config, ConfigManager } from './config'
 import { readonlyUnref } from './util'
@@ -13,13 +13,15 @@ export type ThemeConfig = {
   saturation?: number
 }
 
+const lastScroll = ref(new Date())
+
 type WindowRect = {
   scrollX: number
   scrollY: number
   width: number
   height: number
 }
-const windowRect = reactive<WindowRect>({
+const windowRect = ref<WindowRect>({
   scrollX: 0,
   scrollY: 0,
   width: 0,
@@ -28,12 +30,12 @@ const windowRect = reactive<WindowRect>({
 
 function initEvents() {
   function onScroll() {
-    Object.assign(windowRect, {
+    windowRect.value = {
       scrollX: window.scrollX,
       scrollY: window.scrollY,
       width: window.innerWidth,
       height: window.innerHeight,
-    })
+    }
   }
   window.addEventListener('resize', onScroll, { passive: true })
   window.addEventListener('scroll', onScroll, { passive: true })
@@ -44,6 +46,7 @@ let inited = false
 export interface LayoutState {
   readonly isMobile: boolean
   readonly mobileBreakpoint: number
+  readonly lastScroll: Date
   readonly windowRect: WindowRect
 }
 
@@ -51,11 +54,15 @@ class LayoutManager implements LayoutState {
   mobileBreakpoint = 1024
 
   get isMobile() {
-    return windowRect.width < this.mobileBreakpoint
+    return windowRect.value.width < this.mobileBreakpoint
+  }
+
+  get lastScroll(): Date {
+    return lastScroll.value
   }
 
   get windowRect(): WindowRect {
-    return windowRect
+    return readonly(windowRect.value)
   }
 }
 

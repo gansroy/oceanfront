@@ -120,7 +120,7 @@ import {
 } from 'vue'
 
 import { ItemList, useItems } from '../lib/items'
-import OfOverlay from './Overlay.vue'
+import { OfOverlay } from './Overlay'
 import { Tab } from '../lib/tab'
 
 const formatItems = (
@@ -360,7 +360,7 @@ export default defineComponent({
 
     const setTabsWidth = function () {
       if (overflowButton.value && !showNavigation.value) {
-        tabsWidth.value = [];
+        tabsWidth.value = []
 
         for (let item of ofTabsHeader.value.childNodes) {
           if (!item.clientWidth) continue

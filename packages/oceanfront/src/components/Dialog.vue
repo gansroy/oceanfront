@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { ref, defineComponent, SetupContext, computed, watch } from 'vue'
-import OfOverlay from './Overlay.vue'
+import { OfOverlay } from './Overlay'
 
 export default defineComponent({
   name: 'OfDialog',
