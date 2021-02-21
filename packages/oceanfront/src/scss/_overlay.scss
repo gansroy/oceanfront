@@ -36,8 +36,8 @@
 }
 .of-overlay.of--right {
   align-items: flex-end;
-  flex-flow: column nowrap;
   justify-content: center;
+  flex-flow: column nowrap;
 }
 .of-overlay.of--shade {
   background-color: rgba(0, 0, 0, 0.4);
@@ -58,12 +58,26 @@
   opacity: 0;
 }
 
+.of-dialog-outer {
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
 .of-dialog {
   border-radius: 5px;
   background: #fff;
   min-height: 200px;
-  min-width: 200px;
+  min-width: 100%;
   box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+}
+
+@media (min-width: 800px) {
+  .of-dialog {
+    max-width: 80%;
+    min-width: 45%;
+  }
 }
 
 .slide-right-enter-active {

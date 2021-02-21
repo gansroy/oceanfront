@@ -2,15 +2,17 @@
   <of-overlay :active="active" @blur="hide">
     <template #default="{ active }">
       <transition :name="transition">
-        <div
-          role="dialog"
-          :id="id"
-          class="of-dialog"
-          :class="classAttr"
-          v-if="active"
-        >
-          <slot name="title" />
-          <slot />
+        <div class="of-dialog-outer">
+          <div
+            role="dialog"
+            :id="id"
+            class="of-dialog"
+            :class="classAttr"
+            v-if="active"
+          >
+            <slot name="title" />
+            <slot />
+          </div>
         </div>
       </transition>
     </template>
