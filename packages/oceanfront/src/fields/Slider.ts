@@ -132,10 +132,11 @@ export const SliderField = defineFieldType({
         evt.preventDefault()
         focus()
         startX = evt.pageX
-        pendingValue.value = fixValue(
-          ((startX - dims.left) * opts.value.delta) / dims.width
+        startVal = fixValue(
+          ((startX - dims.left) * opts.value.delta) / dims.width +
+            opts.value.min
         )
-        startVal = pendingValue.value
+        pendingValue.value = startVal
         document.addEventListener('mousemove', handleMove)
         document.addEventListener('mouseup', stopMove)
       },

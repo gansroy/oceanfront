@@ -13,17 +13,13 @@
         <of-dialog v-model="configActive">
           <div class="container">
             <h4>Theme Config</h4>
-            <label for="baseFontSize"
-              >Base font size ({{ baseFontSize }}px)</label
-            >
-            <input
+            <of-slider-field
               id="baseFontSize"
-              type="range"
+              label="Base font size"
               min="10"
               max="30"
               step="2"
-              :value="baseFontSize"
-              @change="updateFont"
+              v-model:value="baseFontSize"
             />
           </div>
         </of-dialog>
@@ -85,6 +81,8 @@ import {
   defineComponent,
   SetupContext,
   computed,
+  watch,
+  nextTick,
 } from 'vue'
 import { useLayout } from 'oceanfront'
 
@@ -119,11 +117,11 @@ export default defineComponent({
         ).value = val
       },
     })
-    const updateFont = function (evt: Event) {
-      const size = (evt.target as HTMLInputElement).value
-      baseFontSize.value = size
-      document.documentElement.style.fontSize = size + 'px'
-    }
+    watch(baseFontSize, (size) => {
+      nextTick(() => {
+        document.documentElement.style.fontSize = size + 'px'
+      })
+    })
     const showConfig = () => {
       configActive.value = true
     }
@@ -139,7 +137,6 @@ export default defineComponent({
       showConfig,
       sidebarActive,
       toggleSidebar,
-      updateFont,
     }
   },
 })

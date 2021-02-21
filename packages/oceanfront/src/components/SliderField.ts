@@ -8,9 +8,9 @@ export const OfSliderField = defineComponent({
   name: 'OfSliderField',
   props: {
     format: [String, Object] as PropType<FormatProp>,
-    max: Number,
-    min: Number,
-    step: Number,
+    max: [Number, String],
+    min: [Number, String],
+    step: [Number, String],
   },
   setup(props, _ctx: SetupContext) {
     const format = extendFieldFormat(

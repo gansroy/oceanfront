@@ -86,13 +86,13 @@ export interface FieldRender {
   popup?: FieldPopup
   // popupPosition
   prepend?: () => Renderable | undefined
-  size?: number
+  size?: number | string
   updated?: boolean
   value?: any
 }
 
 export interface FieldDragIn {
-  dropEffect?: "none" | "copy" | "link" | "move"
+  dropEffect?: 'none' | 'copy' | 'link' | 'move'
   onDrop: (evt: DragEvent) => void
   onEnter?: (evt: DragEvent) => void
   onLeave?: (evt: DragEvent) => void
