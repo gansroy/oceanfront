@@ -7,6 +7,7 @@ import OfDialog from './components/Dialog.vue'
 import { OfIcon } from './components/Icon'
 import { OfField } from './components/Field'
 import { OfFormat } from './components/Format'
+import { OfLink } from './components/Link'
 import { OfListItem } from './components/ListItem'
 import OfListGroup from './components/ListGroup.vue'
 import { OfNavGroup } from './components/NavGroup'
@@ -47,6 +48,7 @@ export const components: Record<string, Component> = {
   OfField,
   OfIcon,
   OfFormat,
+  OfLink,
   OfListItem,
   OfListGroup,
   OfNavGroup,
