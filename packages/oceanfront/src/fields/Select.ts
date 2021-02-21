@@ -167,16 +167,21 @@ export const SelectField = defineFieldType({
     })
 
     const canOpen = computed(() => ctx.mode !== 'readonly' && !ctx.locked)
+    let closing: number | null = null
     const clickOpen = (_evt?: MouseEvent) => {
       if (opened.value) {
-        opened.value = false
-      } else if (canOpen.value) {
+        closePopup()
+      } else if (canOpen.value && !closing) {
         opened.value = true
       }
       return false
     }
     const closePopup = () => {
       opened.value = false
+      if (closing) clearTimeout(closing)
+      closing = setTimeout(() => {
+        closing = null
+      }, 150)
     }
     const focus = () => {
       const curelt = elt.value
