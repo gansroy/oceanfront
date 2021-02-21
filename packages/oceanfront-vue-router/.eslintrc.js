@@ -33,12 +33,4 @@ module.exports = {
     parser: "@typescript-eslint/parser",
     extraFileExtensions: [".vue"],
   },
-  overrides: [
-    {
-      files: ["**/__tests__/*.{j,t}s?(x)"],
-      env: {
-        mocha: true,
-      },
-    },
-  ],
 };

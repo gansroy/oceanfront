@@ -24,7 +24,7 @@ const targetFormats = {
   cjs: !argv.format || argv.format == "cjs",
 };
 
-function pluginConfig(compact, extractCss) {
+function pluginConfig(compact) {
   const ret = [
     alias({
       entries: [
@@ -112,7 +112,7 @@ if (targetFormats.es) {
       format: "esm",
       file: "dist/oceanfront-vue-router.esm.js",
     },
-    plugins: pluginConfig(false, true),
+    plugins: pluginConfig(false),
   });
 }
 
