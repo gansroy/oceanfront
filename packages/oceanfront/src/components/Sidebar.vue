@@ -6,8 +6,8 @@
     :embed="embed"
     @blur="hide"
   >
-    <template #default="{ active }">
-      <transition name="slide-right">
+    <template #default="{ active, state }">
+      <transition :name="state === 'overlay' && 'slide-right'">
         <nav
           class="of-sidebar"
           :class="classAttr"

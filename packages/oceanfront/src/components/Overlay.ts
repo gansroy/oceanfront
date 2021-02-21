@@ -4,6 +4,8 @@ import {
   h,
   nextTick,
   ref,
+  vShow,
+  withDirectives,
   watch,
   PropType,
   SetupContext,
@@ -180,7 +182,7 @@ export const OfOverlay = defineComponent({
         'of--loading': props.loading,
         'of--overlay': state.value === 'overlay',
         'of--pad': props.pad,
-        'of--shade': props.active && props.shade,
+        'of--shade': props.shade,
       }
       if (state.value !== 'embed' && !target.value && props.align)
         (cls as any)['of--' + props.align] = true
@@ -201,32 +203,30 @@ export const OfOverlay = defineComponent({
             Transition,
             { name: props.transition },
             {
-              default: () =>
-                props.active
-                  ? h(
-                      'div',
-                      {
-                        class: ['of-overlay', cls, props.class],
-                        id: props.id,
-                        role: 'document',
-                        ref: elt,
-                        tabIndex:
-                          props.active && state.value === 'overlay'
-                            ? '-1'
-                            : null,
-                        ...handlers,
-                      },
-                      props.loading
-                        ? () =>
-                            ctx.slots.loading
-                              ? ctx.slots.loading()
-                              : h(OfSpinner)
-                        : ctx.slots.default?.({
-                            active: props.active,
-                            state: state.value,
-                          })
-                    )
-                  : undefined,
+              default: () => [
+                withDirectives(
+                  h(
+                    'div',
+                    {
+                      class: ['of-overlay', cls, props.class],
+                      id: props.id,
+                      role: 'document',
+                      ref: elt,
+                      tabIndex:
+                        props.active && state.value === 'overlay' ? '-1' : null,
+                      ...handlers,
+                    },
+                    props.loading
+                      ? () =>
+                          ctx.slots.loading ? ctx.slots.loading() : h(OfSpinner)
+                      : ctx.slots.default?.({
+                          active: props.active,
+                          state: state.value,
+                        })
+                  ),
+                  [[vShow, props.active]]
+                ),
+              ],
             }
           ),
         ]

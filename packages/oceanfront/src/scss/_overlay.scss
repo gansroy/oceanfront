@@ -46,11 +46,12 @@
   --overlay-pad: 24px;
 }
 
+// default overlay transition
 .of--overlay.v-enter-active {
   transition: opacity 400ms ease;
 }
 .of--overlay.v-leave-active {
-  transition: opacity 200ms cubic-bezier(1, 0.5, 0.8, 1);
+  transition: opacity 250ms cubic-bezier(1, 0.5, 0.8, 1);
 }
 .of--overlay.v-enter-from,
 .of--overlay.v-leave-to {
@@ -65,11 +66,24 @@
   box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.2);
 }
 
+.slide-right-enter-active {
+  transition: all 400ms ease;
+}
+.slide-right-leave-active {
+  transition: all 250ms cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-right-enter-from {
+  transform: translateX(-50%);
+}
+.slide-right-leave-to {
+  transform: translateX(-50%);
+}
+
 .slide-down-enter-active {
   transition: all 400ms ease;
 }
 .slide-down-leave-active {
-  transition: all 200ms cubic-bezier(1, 0.5, 0.8, 1);
+  transition: all 250ms cubic-bezier(1, 0.5, 0.8, 1);
 }
 .slide-down-enter-from {
   transform: translateY(-10px);
@@ -88,19 +102,6 @@
 }
 .of--overlay > .of-sidebar {
   border-radius: 0 5px 5px 0;
-}
-
-.of--overlay {
-  .slide-right-enter-active {
-    transition: all 400ms ease;
-  }
-  .slide-right-leave-active {
-    transition: all 200ms cubic-bezier(1, 0.5, 0.8, 1);
-  }
-  .slide-right-enter-from,
-  .slide-right-leave-to {
-    transform: translateX(-100%);
-  }
 }
 
 .of-menu {

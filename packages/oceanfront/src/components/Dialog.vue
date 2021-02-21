@@ -1,13 +1,13 @@
 <template>
   <of-overlay :active="active" @blur="hide">
-    <template #default="{ state }">
-      <transition name="slide-down">
+    <template #default="{ active }">
+      <transition :name="transition">
         <div
           role="dialog"
           :id="id"
           class="of-dialog"
           :class="classAttr"
-          v-if="state"
+          v-if="active"
         >
           <slot name="title" />
           <slot />
@@ -30,6 +30,7 @@ export default defineComponent({
     id: String,
     loading: Boolean,
     modelValue: Boolean,
+    transition: String,
   },
   emits: ['update:modelValue'],
   setup(props, ctx: SetupContext) {
@@ -54,6 +55,7 @@ export default defineComponent({
       hide,
       loading,
       show,
+      transition: computed(() => props.transition ?? 'slide-down'),
     }
   },
 })

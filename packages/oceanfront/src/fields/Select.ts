@@ -1,4 +1,4 @@
-import { Transition, VNode, ref, computed, watch, h } from 'vue'
+import { Transition, VNode, ref, computed, watch, h, VNodeTypes } from 'vue'
 import { OfNavGroup } from '../components/NavGroup'
 import { OfListItem } from '../components/ListItem'
 import { OfIcon } from '../components/Icon'
@@ -17,7 +17,7 @@ export const renderSelectPopup = (
   items: any,
   setValue: any,
   active: boolean
-): VNode => {
+): VNodeTypes | undefined => {
   let content
   if (active) {
     let rowsOuter: VNode | undefined
@@ -48,14 +48,13 @@ export const renderSelectPopup = (
       }
       rowsOuter = h('div', { class: 'of-list-outer' }, rows)
     }
-    content = () =>
-      h('div', { role: 'menu', class: 'of-menu' }, [
-        h(OfNavGroup, () => rowsOuter),
-      ])
+    content = h('div', { role: 'menu', class: 'of-menu' }, [
+      h(OfNavGroup, () => rowsOuter),
+    ])
   } else {
     content = undefined
   }
-  return h(Transition, { name: 'slide-down' }, content)
+  return content
 }
 
 export const SelectField = defineFieldType({
