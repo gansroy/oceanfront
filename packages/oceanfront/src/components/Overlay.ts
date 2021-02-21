@@ -58,6 +58,7 @@ export const OfOverlay = defineComponent({
     pad: { type: Boolean, default: true }, // FIXME change to string enum
     shade: { type: Boolean, default: true },
     target: ({ type: [Element, String] } as any) as PropType<Element | string>,
+    transition: String,
   },
   emits: ['blur'],
   setup(props, ctx: SetupContext) {
@@ -84,6 +85,12 @@ export const OfOverlay = defineComponent({
             ctx.emit('blur')
           }
         })
+      },
+      onKeydown(evt: KeyboardEvent) {
+        if (focused && evt.key == 'Escape') {
+          focused = false
+          ctx.emit('blur', true)
+        }
       },
     }
     const state = computed(() => (props.embed ? 'embed' : 'overlay'))
@@ -190,30 +197,38 @@ export const OfOverlay = defineComponent({
           },
         },
         [
-          h(Transition, null, {
-            default: () =>
-              props.active
-                ? h(
-                    'div',
-                    {
-                      class: ['of-overlay', cls, props.class],
-                      id: props.id,
-                      role: 'document',
-                      ref: elt,
-                      tabIndex:
-                        props.active && state.value === 'overlay' ? '-1' : null,
-                      ...handlers,
-                    },
-                    props.loading
-                      ? () =>
-                          ctx.slots.loading ? ctx.slots.loading() : h(OfSpinner)
-                      : ctx.slots.default?.({
-                          active: props.active,
-                          state: state.value,
-                        })
-                  )
-                : undefined,
-          }),
+          h(
+            Transition,
+            { name: props.transition },
+            {
+              default: () =>
+                props.active
+                  ? h(
+                      'div',
+                      {
+                        class: ['of-overlay', cls, props.class],
+                        id: props.id,
+                        role: 'document',
+                        ref: elt,
+                        tabIndex:
+                          props.active && state.value === 'overlay'
+                            ? '-1'
+                            : null,
+                        ...handlers,
+                      },
+                      props.loading
+                        ? () =>
+                            ctx.slots.loading
+                              ? ctx.slots.loading()
+                              : h(OfSpinner)
+                        : ctx.slots.default?.({
+                            active: props.active,
+                            state: state.value,
+                          })
+                    )
+                  : undefined,
+            }
+          ),
         ]
       )
     }

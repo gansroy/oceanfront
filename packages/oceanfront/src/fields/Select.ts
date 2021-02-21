@@ -1,4 +1,7 @@
 import { Transition, VNode, ref, computed, watch, h } from 'vue'
+import { OfNavGroup } from '../components/NavGroup'
+import { OfListItem } from '../components/ListItem'
+import { OfIcon } from '../components/Icon'
 import {
   defineFieldType,
   FieldContext,
@@ -7,9 +10,6 @@ import {
   fieldRender,
 } from '../lib/fields'
 import { useItems } from '../lib/items'
-import { OfNavGroup } from '../components/NavGroup'
-import { OfListItem } from '../components/ListItem'
-import { OfIcon } from '../components/Icon'
 
 type ActiveItem = { text?: string; [key: string]: any }
 
@@ -176,12 +176,15 @@ export const SelectField = defineFieldType({
       }
       return false
     }
-    const closePopup = () => {
-      opened.value = false
-      if (closing) clearTimeout(closing)
-      closing = setTimeout(() => {
-        closing = null
-      }, 150)
+    const closePopup = (refocus?: boolean) => {
+      if (opened.value) {
+        opened.value = false
+        if (closing) clearTimeout(closing)
+        closing = setTimeout(() => {
+          closing = null
+        }, 150)
+        if (refocus) focus()
+      }
     }
     const focus = () => {
       const curelt = elt.value
@@ -190,7 +193,7 @@ export const SelectField = defineFieldType({
     const setValue = (val: any) => {
       inputValue.value = val
       if (ctx.onUpdate) ctx.onUpdate(val)
-      closePopup()
+      closePopup(true)
     }
     const hooks = {
       onBlur(_evt: FocusEvent) {
@@ -198,6 +201,13 @@ export const SelectField = defineFieldType({
       },
       onFocus(_evt: FocusEvent) {
         focused.value = true
+      },
+      onKeydown(evt: KeyboardEvent) {
+        if (evt.key == ' ' || evt.key == 'ArrowUp' || evt.key == 'ArrowDown') {
+          clickOpen()
+          evt.preventDefault()
+          evt.stopPropagation()
+        }
       },
       onVnodeMounted(vnode: VNode) {
         elt.value = vnode.el as HTMLElement

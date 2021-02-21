@@ -101,7 +101,7 @@ export const SliderField = defineFieldType({
           setValue(fixValue(pendingValue.value + opts.value.step))
         } else if (evt.key == 'ArrowDown' || evt.key == 'ArrowLeft') {
           setValue(fixValue(pendingValue.value - opts.value.step))
-        } else if (evt.key == 'Esc') {
+        } else if (evt.key == 'Escape') {
           pendingValue.value = stateValue.value
           cancelMove()
         }
