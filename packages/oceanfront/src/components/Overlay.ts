@@ -11,7 +11,7 @@ import {
   Transition,
 } from 'vue'
 import { useLayout } from '../lib/layout'
-import { PositionObserver, watchPosition } from '../lib/util'
+import { watchPosition } from '../lib/util'
 import OfSpinner from './Spinner.vue'
 
 const relativeParentRect = (elt: Element) => {
@@ -61,7 +61,6 @@ export const OfOverlay = defineComponent({
   },
   emits: ['blur'],
   setup(props, ctx: SetupContext) {
-    let bound: PositionObserver | undefined
     let focused = false
     const layout = useLayout()
     const elt = ref<HTMLElement | undefined>()
@@ -78,7 +77,7 @@ export const OfOverlay = defineComponent({
           }
         }
       },
-      onFocusOut(evt: Event) {
+      onFocusOut(_evt: Event) {
         requestAnimationFrame(() => {
           if (focused && !checkFocused(elt.value)) {
             focused = false
@@ -89,18 +88,12 @@ export const OfOverlay = defineComponent({
     }
     const state = computed(() => (props.embed ? 'embed' : 'overlay'))
     const target = ref()
-    const bind = (flag: boolean) => {
-      if (bound) {
-        bound.disconnect()
-      }
-      if (target.value) {
-        bound = watchPosition(
-          (_entries) => {
-            reposition()
-          },
-          target.value,
-          { scroll: true }
-        )
+    const targetPos = watchPosition({ scroll: true })
+    watch(targetPos.positions, (_pos) => reposition())
+    const bind = (active: boolean) => {
+      targetPos.disconnect()
+      if (active && target.value) {
+        targetPos.observe(target.value)
       }
     }
     const focus = () => {
@@ -211,13 +204,13 @@ export const OfOverlay = defineComponent({
                         props.active && state.value === 'overlay' ? '-1' : null,
                       ...handlers,
                     },
-                    [
-                      // props.loading ? () => ctx.slots.loading?.() // of-spinner
-                      ctx.slots.default?.({
-                        active: props.active,
-                        state: state.value,
-                      }),
-                    ]
+                    props.loading
+                      ? () =>
+                          ctx.slots.loading ? ctx.slots.loading() : h(OfSpinner)
+                      : ctx.slots.default?.({
+                          active: props.active,
+                          state: state.value,
+                        })
                   )
                 : undefined,
           }),

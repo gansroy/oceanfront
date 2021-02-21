@@ -1,5 +1,5 @@
 import { hsluvToHex, hexToHsluv } from 'hsluv'
-import { reactive, readonly, ref } from 'vue'
+import { readonly, ref } from 'vue'
 import { parseColor } from './color'
 import { Config, ConfigManager } from './config'
 import { readonlyUnref } from './util'

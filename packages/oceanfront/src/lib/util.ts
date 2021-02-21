@@ -1,4 +1,12 @@
-import { Ref, ToRefs, toRef, ref, unref, watch, reactive } from 'vue'
+import {
+  Ref,
+  ToRefs,
+  toRef,
+  unref,
+  triggerRef,
+  shallowRef,
+  shallowReadonly,
+} from 'vue'
 import { hasOwn } from '@vue/shared'
 
 export {
@@ -237,10 +245,6 @@ export function readonlyUnrefs<T extends object>(
   return new Proxy(val, readonlyUnrefsHandlers) as any
 }
 
-export interface PositionObserver {
-  disconnect(): void
-}
-
 type EltPos = { x: number; y: number; width: number; height: number }
 
 const eltPos = (elt: Element): EltPos => {
@@ -248,101 +252,154 @@ const eltPos = (elt: Element): EltPos => {
   return { x: sz.x, y: sz.y, width: sz.width, height: sz.height }
 }
 
+const scrollEvent = (evt: Event) => {
+  const reg = evt && evt.target && scrollWatching.get(evt.target as Element)
+  if (reg) {
+    for (const w of reg) {
+      if (!w._scrolled()) {
+        reg.delete(w)
+      }
+    }
+    if (!reg.size) {
+      scrollWatching.delete(evt.target as Element)
+    }
+  }
+}
+
+const scrollWatching: WeakMap<
+  Element,
+  Set<PositionObserverImpl>
+> = new WeakMap()
+
+export interface PositionObserver {
+  observe(target: Element, opts?: any): void
+  unobserve(target: Element): void
+  readonly positions: Ref<Map<Element, EltPos>>
+  disconnect(): void
+}
+
+class PositionObserverImpl implements PositionObserver {
+  _native?: ResizeObserver
+  _options: WatchPositionOpts
+  _polling: any
+  _positions: Ref<Map<Element, EltPos>>
+
+  constructor(opts?: WatchPositionOpts) {
+    const pos = shallowRef(new Map())
+    if (typeof ResizeObserver !== 'undefined') {
+      this._native = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          pos.value.set(entry.target, {
+            x: entry.contentRect.x,
+            y: entry.contentRect.y,
+            width: entry.contentRect.left + entry.contentRect.width,
+            height: entry.contentRect.top + entry.contentRect.height,
+          })
+        }
+        triggerRef(pos)
+      })
+    }
+    this._options = opts || {}
+    this._positions = pos
+  }
+
+  _poll() {
+    const elts = this._positions.value
+    let changed = false
+    for (const [target, pos] of elts) {
+      if (!document.body.contains(target)) {
+        elts.delete(target)
+        changed = true
+        continue
+      }
+      const newPos = eltPos(target)
+      if (
+        newPos.x != pos.x ||
+        newPos.y != pos.y ||
+        newPos.width != pos.width ||
+        newPos.height != pos.height
+      ) {
+        elts.set(target, newPos)
+        changed = true
+      }
+    }
+    if (changed) {
+      triggerRef(this._positions)
+    }
+    if (elts.size > 0 && !this._native) {
+      this._polling = setTimeout(this._poll.bind(this), 1000)
+    } else {
+      this._polling = undefined
+    }
+  }
+
+  _scrolled(): boolean {
+    if (this._polling) {
+      clearTimeout(this._polling)
+    }
+    if (this._positions.value.size > 0) {
+      this._polling = setTimeout(this._poll.bind(this), 0)
+      return true
+    } else {
+      return false
+    }
+  }
+
+  observe(target: Element, _opts?: any) {
+    if (target) {
+      this._positions.value.set(target, eltPos(target))
+      if (this._options.scroll) {
+        let parent = target.parentElement
+        while (parent && parent instanceof HTMLElement) {
+          let reg = scrollWatching.get(parent)
+          if (!reg) {
+            reg = new Set()
+            scrollWatching.set(parent, reg)
+            parent.addEventListener('scroll', scrollEvent, { passive: true })
+          }
+          reg.add(this)
+          parent = parent.parentElement
+        }
+      }
+      if (this._native) {
+        this._native.observe(target, { box: 'border-box' })
+      } else if (!this._polling) {
+        // first timeout is short to handle initial re-layout
+        this._polling = setTimeout(this._poll.bind(this, 50))
+      }
+      if (this._options.immediate) {
+        triggerRef(this._positions)
+      }
+    }
+  }
+
+  unobserve(target: Element) {
+    if (target) {
+      this._positions.value.delete(target)
+    }
+  }
+
+  get positions(): Ref<Map<Element, EltPos>> {
+    return shallowReadonly(this._positions)
+  }
+
+  disconnect() {
+    if (this._polling) {
+      clearTimeout(this._polling)
+      this._polling = undefined
+    }
+    this._native?.disconnect()
+    this._positions.value.clear()
+  }
+}
+
 export type WatchPositionOpts = {
   immediate?: boolean
   scroll?: boolean
 }
 
-const scrollWatch: WeakMap<HTMLElement, Set<HTMLElement>> = new WeakMap()
-
 export const watchPosition = (
-  cb: (elts: Map<Element, EltPos>) => void,
-  target: Element | (Element | null)[] | null,
   options?: WatchPositionOpts
-): PositionObserver | undefined => {
-  const elts = Array.isArray(target) ? target : [target]
-  const updated = reactive<Map<Element, EltPos>>(new Map())
-  const stop = watch(updated, (upd) => {
-    if (upd.size > 0) {
-      cb(upd)
-      upd.clear()
-    }
-  })
-  if (!elts.length) return
-
-  const checkElts: { target: Element; pos: EltPos }[] = []
-  for (const target of elts) {
-    if (!target) continue
-    checkElts.push({ target, pos: eltPos(target) })
-  }
-  if (options && options.immediate) {
-    for (const row of checkElts) {
-      updated.set(row.target, row.pos)
-    }
-  }
-
-  let dcon: PositionObserver
-  if (typeof ResizeObserver !== 'undefined') {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        updated.set(entry.target, {
-          x: entry.contentRect.x,
-          y: entry.contentRect.y,
-          width: entry.contentRect.left + entry.contentRect.width,
-          height: entry.contentRect.top + entry.contentRect.height,
-        })
-      }
-    })
-
-    for (const entry of checkElts) {
-      resizeObserver.observe(entry.target, { box: 'border-box' })
-    }
-    dcon = resizeObserver
-  } else {
-    const evalElts = () => {
-      for (let idx = 0; idx < checkElts.length; ) {
-        const { pos, target } = checkElts[idx]
-        if (!document.body.contains(target)) {
-          checkElts.splice(idx, 1)
-          continue
-        }
-        const newSize = eltPos(target)
-        checkElts[idx].pos = newSize
-        idx++
-      }
-    }
-    let timeout = 50 // first timeout is short to handle initial re-layout
-    const runEval = () => {
-      if (!checkElts.length) return
-      evalElts()
-      setTimeout(runEval, timeout)
-      timeout = 1500
-    }
-    runEval()
-    dcon = {
-      disconnect() {
-        checkElts.splice(0, checkElts.length)
-      },
-    }
-  }
-
-  if (options && options.scroll) {
-    for (const entry of checkElts) {
-      let parent = entry.target.parentElement
-      const onScroll = function (evt: Event) {
-        updated.set(entry.target, eltPos(entry.target))
-      }
-      while (parent && parent instanceof HTMLElement) {
-        parent.addEventListener('scroll', onScroll, { passive: true })
-        parent = parent.parentElement
-      }
-    }
-  }
-
-  return {
-    disconnect() {
-      dcon.disconnect()
-      stop()
-    },
-  }
+): PositionObserver => {
+  return new PositionObserverImpl(options)
 }

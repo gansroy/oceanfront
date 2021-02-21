@@ -1,4 +1,13 @@
-import { ref, computed, watch, h, watchEffect } from 'vue'
+import {
+  ref,
+  computed,
+  watch,
+  h,
+  watchEffect,
+  triggerRef,
+  shallowRef,
+  nextTick,
+} from 'vue'
 import {
   defineFieldType,
   FieldContext,
@@ -6,7 +15,7 @@ import {
   newFieldId,
   fieldRender,
 } from '../lib/fields'
-import { PositionObserver, watchPosition } from '../lib/util'
+import { watchPosition } from '../lib/util'
 
 function intoInt(val?: string | number): number | undefined {
   if (typeof val === 'number') {
@@ -63,10 +72,9 @@ export const SliderField = defineFieldType({
     let lazyInputValue = pendingValue.value
     let startX = 0
     let startVal = 0
-    const inputElt = ref<HTMLInputElement | undefined>()
-    const thumbElt = ref<HTMLDivElement | undefined>()
-    const trackElt = ref<HTMLDivElement | undefined>()
-    let trackSize: PositionObserver | undefined
+    const inputElt = shallowRef<HTMLInputElement | undefined>()
+    const thumbElt = shallowRef<HTMLDivElement | undefined>()
+    const trackElt = shallowRef<HTMLDivElement | undefined>()
     const trackWidth = ref(0)
     const focused = ref(false)
     const focus = () => {
@@ -156,32 +164,26 @@ export const SliderField = defineFieldType({
       if (ctx.onUpdate) ctx.onUpdate(val)
     }
 
-    const initPosition = () => {
-      const track = trackElt.value
-      if (track) {
-        trackSize = watchPosition((entries) => {
-          trackWidth.value = Math.round(entries.get(track)?.width || 0)
-        }, track)
-
-        // position thumb
-        watchEffect(() => {
-          const { delta, min } = opts.value
-          const tw = trackWidth.value
-          const val = pendingValue.value
-          const thumb = thumbElt.value
-          if (thumb && delta && tw) {
-            thumb.style.left =
-              Math.round((((val - min) * tw) / delta) * 100) / 100 + 'px'
-          }
-        })
+    const trackPos = watchPosition({ immediate: true })
+    watch(trackPos.positions, (entries) => {
+      const first = entries.values().next().value
+      trackWidth.value = Math.round(first?.width || 0)
+    })
+    watch(trackElt, (track) => {
+      trackPos.disconnect()
+      if (track) trackPos.observe(track)
+    })
+    // position thumb
+    watchEffect(() => {
+      const { delta, min } = opts.value
+      const tw = trackWidth.value
+      const val = pendingValue.value
+      const thumb = thumbElt.value
+      if (thumb && delta && tw) {
+        thumb.style.left =
+          Math.round((((val - min) * tw) / delta) * 100) / 100 + 'px'
       }
-    }
-    const destroyPosition = () => {
-      if (trackSize) {
-        trackSize.disconnect()
-        trackSize = undefined
-      }
-    }
+    })
 
     return fieldRender({
       class: 'of-slider-field',
@@ -190,8 +192,10 @@ export const SliderField = defineFieldType({
           'div',
           {
             class: 'of-slider',
-            onVnodeMounted: initPosition,
-            onVnodeBeforeUnmount: destroyPosition,
+            onVnodeMounted: () => {
+              // watch is not triggered on first render
+              nextTick(() => triggerRef(trackElt))
+            },
           },
           [
             h('input', {

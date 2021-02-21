@@ -4,11 +4,11 @@ module.exports = {
     node: true,
   },
   extends: [
+    'prettier/@typescript-eslint',
+    'prettier/vue',
     'plugin:jest/recommended',
     'plugin:vue/vue3-recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
-    'prettier/vue',
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -29,6 +29,7 @@ module.exports = {
     'vue/no-dupe-keys': 'off', // seems broken
     'vue/require-default-prop': 'off',
   },
+  parser: 'vue-eslint-parser',
   parserOptions: {
     parser: '@typescript-eslint/parser',
     extraFileExtensions: ['.vue'],

@@ -8,6 +8,7 @@ import {
   Ref,
   SetupContext,
   VNode,
+  WatchStopHandle,
 } from 'vue'
 import {
   FieldContext,
@@ -43,35 +44,33 @@ const renderSlot = (
   }
 }
 
-const calcPadding = (node: VNode, state: { watch?: PositionObserver }) => {
-  if (state.watch) {
-    state.watch.disconnect()
-  }
+const calcPadding = (
+  node: VNode,
+  state: { listen: PositionObserver; watch?: WatchStopHandle }
+) => {
+  state.listen.disconnect()
+  state.watch?.()
   const outer = node.el as HTMLElement | undefined
   if (!outer || !document.body.contains(outer)) {
     return
   }
   const prepend = outer.querySelector('.of-field-prepend') as HTMLElement | null
   const append = outer.querySelector('.of-field-append') as HTMLElement | null
-  if (!prepend && !append) {
-    return
-  }
-  state.watch = watchPosition(
-    (entries) => {
-      let presize = 0
-      let appsize = 0
-      for (const [target, pos] of entries) {
-        if (target === prepend) {
-          presize = Math.ceil(pos.width)
-        } else if (target === append) {
-          appsize = Math.ceil(pos.width)
-        }
+  if (prepend) state.listen.observe(prepend)
+  if (append) state.listen.observe(append)
+  state.watch = watch(state.listen.positions, (obs) => {
+    let presize = 0
+    let appsize = 0
+    for (const [target, pos] of obs) {
+      if (target === prepend) {
+        presize = Math.ceil(pos.width)
+      } else if (target === append) {
+        appsize = Math.ceil(pos.width)
       }
-      outer.style.setProperty('--of-field-size-prepend', presize + 'px')
-      outer.style.setProperty('--of-field-size-append', appsize + 'px')
-    },
-    [prepend, append]
-  )
+    }
+    outer.style.setProperty('--of-field-size-prepend', presize + 'px')
+    outer.style.setProperty('--of-field-size-append', appsize + 'px')
+  })
 }
 
 const makeDragIn = (spec: FieldDragIn, flag: Ref<boolean>) => {
@@ -238,8 +237,9 @@ export const OfField = defineComponent({
       { immediate: true }
     )
 
-    const padState = {}
+    const padState = { listen: watchPosition() }
     const checkPad = (node: VNode) => calcPadding(node, padState)
+
     const handlers = {
       onBlur(_evt: FocusEvent) {
         focused.value = false

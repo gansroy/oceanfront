@@ -29,6 +29,7 @@ module.exports = {
     "vue/no-dupe-keys": "off", // seems broken
     "vue/require-default-prop": "off",
   },
+  parser: "vue-eslint-parser",
   parserOptions: {
     parser: "@typescript-eslint/parser",
     extraFileExtensions: [".vue"],

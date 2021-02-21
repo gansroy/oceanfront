@@ -32,6 +32,7 @@ module.exports = {
     'vue/require-default-prop': 'off',
     'vue/singleline-html-element-content-newline': 'off',
   },
+  parser: 'vue-eslint-parser',
   parserOptions: {
     parser: '@typescript-eslint/parser',
   },
