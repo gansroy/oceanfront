@@ -125,7 +125,7 @@ export const OfField = defineComponent({
     loading: Boolean,
     locked: Boolean,
     // messages
-    maxlength: Number,
+    maxlength: [Number, String],
     mode: String as PropType<'edit' | 'readonly' | 'view'>,
     muted: Boolean,
     name: String,
@@ -133,7 +133,7 @@ export const OfField = defineComponent({
     readonly: Boolean,
     record: Object as PropType<FieldRecord>,
     required: Boolean,
-    size: { type: Number, default: undefined },
+    size: { type: [Number, String], default: undefined },
     // style
     type: String,
     value: {
