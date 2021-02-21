@@ -26,8 +26,6 @@ export const SliderField = defineFieldType({
     const pendingValue = ref<number>(0)
     const stateValue = ref()
     const opts = computed(() => {
-      console.log(props.max, typeof props.max)
-      // FIXME parse floats
       let min = intoInt(props.min) ?? 0
       let max = intoInt(props.max) ?? 100
       if (min > max) {

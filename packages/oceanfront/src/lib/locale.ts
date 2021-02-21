@@ -23,7 +23,7 @@ class LocaleManager implements LocaleState {
 
 const configManager = new ConfigManager('ofloc', LocaleManager)
 
-export function setLocale(loc: string) {
+export function setLocale(loc: string): void {
   configManager.extendingManager.locale = loc
 }
 

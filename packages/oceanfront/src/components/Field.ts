@@ -43,10 +43,6 @@ const renderSlot = (
   }
 }
 
-type PadCalc = {
-  watch: CompatResizeObserver
-}
-
 const calcPadding = (node: VNode, state: { watch?: CompatResizeObserver }) => {
   if (state.watch) {
     state.watch.disconnect()

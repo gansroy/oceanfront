@@ -7,8 +7,8 @@ import {
   fieldRender,
 } from '../lib/fields'
 import { useItems } from '../lib/items'
-import OfNavGroup from '../components/NavGroup.vue'
-import OfListItem from '../components/ListItem.vue'
+import { OfNavGroup } from '../components/NavGroup'
+import { OfListItem } from '../components/ListItem'
 import { OfIcon } from '../components/Icon'
 
 type ActiveItem = { text?: string; [key: string]: any }

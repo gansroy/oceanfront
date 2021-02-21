@@ -8,7 +8,8 @@
     "demo": "vite"
   },
   "dependencies": {
-    "oceanfront": "0.1.0",
+    "oceanfront": "*",
+    "oceanfront-vue-router": "*",
     "vue": "=3.0.5"
   },
   "devDependencies": {

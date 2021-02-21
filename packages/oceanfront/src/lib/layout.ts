@@ -65,7 +65,7 @@ export function setMobileBreakpoint(bp: number): void {
   configManager.extendingManager.mobileBreakpoint = bp
 }
 
-export function themeStyle(config?: ThemeConfig) {
+export function themeStyle(config?: ThemeConfig): Record<string, string> {
   if (!config) return {}
   let primaryHue
   let saturation
