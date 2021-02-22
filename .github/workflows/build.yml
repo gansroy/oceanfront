@@ -1,4 +1,4 @@
-name: Lints
+name: Build
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,8 +28,17 @@ jobs:
       - name: Run ESLint
         run: yarn run lint
 
-      - name: Run build
+      - name: Build
+        env:
+          OF_DEMO_ROOT_PATH: "/oceanfront/"
         run: yarn run build
 
       - name: Run unit tests
         run: yarn run test
+
+      - if: "github.event_name == 'push' || github.event_name == 'workflow_dispatch'"
+        name: Deploy demo site
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./packages/demo/dist
