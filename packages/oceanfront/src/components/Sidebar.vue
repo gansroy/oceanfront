@@ -7,7 +7,7 @@
     @blur="hide"
   >
     <template #default="{ active, state }">
-      <transition :name="state === 'overlay' && 'slide-right'">
+      <transition :name="state === 'overlay' ? 'slide-right' : null">
         <nav
           class="of-sidebar"
           :class="classAttr"

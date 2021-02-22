@@ -109,6 +109,8 @@ export const OfListItem = defineComponent({
             'of-list-item': true,
             'of--active': routeActive.value,
             'of--disabled': disabled.value,
+            'of--expandable': expand.value !== null,
+            'of--expand': expand.value,
             'of--focused': focused.value,
             'of--link': !!hrefVal,
           },

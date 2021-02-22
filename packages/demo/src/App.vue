@@ -29,7 +29,6 @@
       <of-sidebar v-model="sidebarActive" :embed="!isMobile">
         <of-nav-group @navigate="afterNav">
           <of-list-item to="/">Overview</of-list-item>
-          <of-list-item disabled>Buttons</of-list-item>
           <of-list-item to="/colors">Colors &amp; Theming</of-list-item>
           <of-list-item to="/icons">Icons</of-list-item>
           <of-list-group value="1">
@@ -38,11 +37,12 @@
                 Forms &amp; Inputs
               </of-list-item>
             </template>
-            <of-list-item to="/file-inputs">File</of-list-item>
-            <of-list-item to="/select-inputs">Select</of-list-item>
-            <of-list-item to="/slider-inputs">Slider</of-list-item>
-            <of-list-item to="/text-inputs">Text</of-list-item>
-            <of-list-item to="/toggle-inputs">Toggle</of-list-item>
+            <of-list-item disabled>Buttons</of-list-item>
+            <of-list-item to="/file-inputs">File Inputs</of-list-item>
+            <of-list-item to="/select-inputs">Select Inputs</of-list-item>
+            <of-list-item to="/slider-inputs">Slider Inputs</of-list-item>
+            <of-list-item to="/text-inputs">Text Inputs</of-list-item>
+            <of-list-item to="/toggle-inputs">Toggle Inputs</of-list-item>
             <of-list-item to="/picker-inputs">Pickers</of-list-item>
             <of-list-item to="/records">Records</of-list-item>
             <of-list-item to="/formatters">Value Formatters</of-list-item>
@@ -54,11 +54,10 @@
               </of-list-item>
             </template>
             <of-list-item to="/data-tables">Data Tables</of-list-item>
+            <of-list-item disabled>Menus and Toolbars</of-list-item>
             <of-list-item to="/pagination">Pagination</of-list-item>
-            <of-list-item disabled>Menus</of-list-item>
           </of-list-group>
           <of-list-item to="/tabs">Tabs</of-list-item>
-          <of-list-item disabled>Pagers</of-list-item>
           <of-list-item disabled>Dialogs</of-list-item>
         </of-nav-group>
       </of-sidebar>
@@ -203,6 +202,19 @@ export default defineComponent({
 .of-sidebar {
   padding-bottom: 0.25em;
   padding-top: 0.25em;
+}
+.of-sidebar .of--expandable {
+  .of-list-item-inner {
+    background-color: #e6e6e6;
+    border-radius: 0;
+  }
+  .of-list-item-content {
+    font-size: 80%;
+    text-transform: uppercase;
+  }
+}
+.of-sidebar .of-list-group .of-list-item {
+  border-left: 2px solid #ddd;
 }
 .of--overlay > .of-sidebar {
   margin-top: 48px;
