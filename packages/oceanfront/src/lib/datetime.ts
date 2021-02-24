@@ -48,7 +48,6 @@ class MonthGridImpl {
     }
 
     get selectedDate(): Date { return this._selectedDate }
-    get monthStart(): Date { return this._monthStart }
 
     set selectedDate(newDate: Date) {
         this._selectedDate = newDate
@@ -56,6 +55,8 @@ class MonthGridImpl {
         this._monthStart.setDate(1)
         this.render(true)
     }
+
+    get monthStart(): Date { return this._monthStart }
 
     nextMonth() {
         this._monthStart = addMonths(this._monthStart, 1)
@@ -72,12 +73,12 @@ class MonthGridImpl {
         let date = addDays(this._monthStart, - this._monthStart.getDay())
         let rowIdx = 0
         const grid = []
-        let today = new Date()
+        const today = new Date()
         // there are always at least 4 rows, and we want to stop as soon as we
         // hit another month 
         while (rowIdx < 4 || date.getMonth() == month) {
             rowIdx++
-            let row = []
+            const row = []
             for (let i = 0; i < 7; i++) {
                 row.push({
                     date,
@@ -98,6 +99,6 @@ class MonthGridImpl {
 }
 
 export const monthGrid: (r: MonthGridRenderer) => MonthGrid = (r: MonthGridRenderer) => {
-    let grid = new MonthGridImpl(r)
+    const grid = new MonthGridImpl(r)
     return grid
 }

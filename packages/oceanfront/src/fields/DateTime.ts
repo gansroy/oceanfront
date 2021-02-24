@@ -1,4 +1,4 @@
-import { computed, h, ref, ComputedRef } from 'vue'
+import { computed, h, ref } from 'vue'
 import { useFormats } from '../lib/formats'
 
 import {
@@ -13,9 +13,9 @@ import { monthGrid, MonthGridData, MonthGrid } from '../lib/datetime'
 import { OfIcon } from '../components/Icon';
 import { DateTimeFormatter } from 'src/formats/DateTime';
 
-export const renderDateTimePopup = (g: MonthGrid, data: MonthGridData) => {
+export const renderDateTimePopup = (g: MonthGrid, data: MonthGridData): any => {
     if (!data) return ''
-    let cells: any[] = []
+    const cells: any[] = []
     data.grid.forEach(row => {
         row.forEach(cell => {
             cells.push(
@@ -37,7 +37,7 @@ export const renderDateTimePopup = (g: MonthGrid, data: MonthGridData) => {
     const formatMgr = useFormats()
     const titleFormat = formatMgr.getTextFormatter("datetime", { nativeOptions: { month: "short", year: "numeric", day: "numeric", weekday: 'short' } })
     const monthFormat = formatMgr.getTextFormatter("datetime", { nativeOptions: { month: "short", year: "numeric" } })
-    let title = h(
+    const title = h(
         h(
             'div',
             { class: 'of-date-picker-title' },
@@ -90,7 +90,7 @@ export const DateTimeField = defineFieldType({
         })
         const closePopup = () => { opened.value = false }
         const gridData = ref(null as unknown as MonthGridData)
-        let g = monthGrid((g: MonthGridData) => {
+        const g = monthGrid((g: MonthGridData) => {
             if (g.newDate) {
                 opened.value = false
             }

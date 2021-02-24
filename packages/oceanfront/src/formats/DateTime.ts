@@ -29,7 +29,7 @@ export class DateTimeFormatter implements TextFormatter {
         })
     }
 
-    get options() {
+    get options(): DateTimeFormatterOptions {
         return this._options.value
     }
 
@@ -42,7 +42,7 @@ export class DateTimeFormatter implements TextFormatter {
         if (opts.nativeOptions !== undefined) {
             return opts.nativeOptions
         }
-        let fmtOpts = {} as any
+        const fmtOpts = {} as any
         if (opts.dateFormat == 'medium') {
             fmtOpts.day = 'numeric'
             fmtOpts.month = 'short'
@@ -79,7 +79,6 @@ export class DateTimeFormatter implements TextFormatter {
     }
 
     format(modelValue: any): TextFormatResult {
-        let blank = false
         let error
         let textValue = ''
         let value = modelValue
