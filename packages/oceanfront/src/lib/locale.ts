@@ -7,9 +7,13 @@ export interface LocaleNumberFormat {
   readonly auto: boolean
 }
 
+export interface LocaleDateFormat {
+}
+
 export interface LocaleState {
   readonly locale: string
   readonly numberFormat?: LocaleNumberFormat
+  readonly dateFormat?: LocaleDateFormat
 }
 
 class LocaleManager implements LocaleState {
