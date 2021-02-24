@@ -66,12 +66,12 @@ class MonthGridImpl {
         this.render()
     }
 
-    render(newDate: boolean = false): void {
-        let weekDays = [0, 1, 2, 3, 4, 5, 6]
-        let month = this._monthStart.getMonth()
+    render(newDate?: boolean): void {
+        const weekDays = [0, 1, 2, 3, 4, 5, 6]
+        const month = this._monthStart.getMonth()
         let date = addDays(this._monthStart, - this._monthStart.getDay())
         let rowIdx = 0
-        let grid = []
+        const grid = []
         let today = new Date()
         // there are always at least 4 rows, and we want to stop as soon as we
         // hit another month 
@@ -90,7 +90,7 @@ class MonthGridImpl {
             grid.push(row)
         }
         this._r({
-            newDate,
+            newDate: newDate || false,
             grid,
             weekDays,
         })
