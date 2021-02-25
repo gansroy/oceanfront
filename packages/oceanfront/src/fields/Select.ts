@@ -211,7 +211,7 @@ export const SelectField = defineFieldType({
         } else if (formatItems.value.length && (/(^Key([A-Z]$))/.test(evt.code) || /(^Digit([0-9]$))/.test(evt.code))) {
           searchText.value += evt.key
           for (let i = 0; i < formatItems.value.length; i++) {
-            let option = formatItems.value[i]
+            const option = formatItems.value[i] 
             if (option.value !== undefined) {
               const optionText: string = option.text
               if (optionText.substring(0, searchText.value.length).toLowerCase() == searchText.value.toLowerCase() ) {
