@@ -67,6 +67,7 @@ export const SelectField = defineFieldType({
       return initial ?? null
     })
 
+    const searchText = ref()
     const inputValue = ref()
     const pendingValue = ref() // store selected but unconfirmed value
     const stateValue = ref()
@@ -200,12 +201,25 @@ export const SelectField = defineFieldType({
       },
       onFocus(_evt: FocusEvent) {
         focused.value = true
+        searchText.value = ''
       },
       onKeydown(evt: KeyboardEvent) {
         if (evt.key == ' ' || evt.key == 'ArrowUp' || evt.key == 'ArrowDown') {
           clickOpen()
           evt.preventDefault()
           evt.stopPropagation()
+        } else if (formatItems.value.length && (/(^Key([A-Z]$))/.test(evt.code) || /(^Digit([0-9]$))/.test(evt.code))) {
+          searchText.value += evt.key
+          for (let i = 0; i < formatItems.value.length; i++) {
+            const option = formatItems.value[i] 
+            if (option.value !== undefined) {
+              const optionText: string = option.text
+              if (optionText.substring(0, searchText.value.length).toLowerCase() == searchText.value.toLowerCase() ) {
+                setValue(option.value)
+                return
+              } 
+            }
+          }
         }
       },
       onVnodeMounted(vnode: VNode) {
