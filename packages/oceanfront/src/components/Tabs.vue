@@ -26,6 +26,7 @@
               :key="tab.key"
               @click="selectTab(tab.key)"
               @mouseover="openSubMenu(tab.key, $event)"
+              @mouseleave="subMenuLeave()"
               v-for="tab in tabsList"
               :class="{
                 'is-active': selectedTabKey === tab.key,
@@ -51,10 +52,14 @@
           :capture="false"
           :shade="false"
           :target="subMenuOuter"
-          @blur="closeSubMenu()"
         >
           <slot name="sub-menu" v-if="showSubMenu">
-            <div role="menu" class="of-menu of-invisible-tabs">
+            <div 
+              role="menu" 
+              class="of-menu of-invisible-tabs" 
+              @mouseenter="subMenuClearTimeout()"
+              @mouseleave="subMenuLeave()"
+            >
               <div class="of-list-outer">
                 <div
                   class="of-list-item of--enabled"
@@ -199,6 +204,9 @@ export default defineComponent({
       () => props.value,
       (val) => {
         selectedTabKey.value = val
+        setTimeout(() => {
+          repositionLine();
+        })
       }
     )
 
@@ -516,12 +524,14 @@ export default defineComponent({
     const subMenuOpened = ref(false)
     const subMenuOuter = ref()
     const subMenuTabsList = ref()
+    const subMenuTimerId = ref()
 
     const openSubMenu = (key: number, _evt?: MouseEvent) => {
       if (!showSubMenu.value) return false
 
       if (key !== -1 && variant.value !== 'osx') {
         closeOverflowPopup()
+        subMenuClearTimeout()
         const tab: Tab | undefined = getTab(key)
 
         if (tab && tab.subMenuItems) {
@@ -540,6 +550,18 @@ export default defineComponent({
 
     const closeSubMenu = () => {
       subMenuOpened.value = false
+    }
+
+    const subMenuLeave = () => {
+      if (!showSubMenu.value) return false
+      
+      subMenuTimerId.value = setTimeout(() => {
+        closeSubMenu()
+      }, 500)
+    }
+
+    const subMenuClearTimeout = () => {
+      clearTimeout(subMenuTimerId.value)
     }
 
     const selectSubMenuTab = function (tab: Tab) {
@@ -577,6 +599,8 @@ export default defineComponent({
       openSubMenu,
       closeSubMenu,
       selectSubMenuTab,
+      subMenuLeave,
+      subMenuClearTimeout
     }
   },
 })
