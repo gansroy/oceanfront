@@ -1,4 +1,4 @@
-import { computed, h, ref } from 'vue'
+import { computed, h, ref, watch } from 'vue'
 import { useFormats } from '../lib/formats'
 
 import {
@@ -74,11 +74,30 @@ export const DateTimeField = defineFieldType({
     class: 'of-datetime-field',
     setup(props: FieldProps, ctx: FieldContext) {
         const formatMgr = useFormats()
+
         const formatter = computed(
-            () => formatMgr.getTextFormatter(props.type, props.formatOptions)
+            () => formatMgr.getTextFormatter("datetime", props.formatOptions) as DateTimeFormatter
         )
+
+        const parseDate = (value: any) => {
+            const df = formatter.value
+            try {
+                const loadedValue = df.loadValue(value)
+                if (loadedValue instanceof Date) value = loadedValue
+            } catch (e) { }
+            return value
+        }
+
+        const initialValue = computed(() => {
+            let initial = ctx.initialValue
+            if (initial === undefined) initial = props.defaultValue
+            initial = parseDate(initial)
+            return initial ?? null
+        })
+
+        const stateValue = ref()
         const opened = ref(false)
-        const editable = computed(() => ctx.mode === 'edit' || ctx.locked || false)
+        const editable = computed(() => ctx.mode === 'edit' && !ctx.locked)
         let defaultFieldId: string
         const inputId = computed(() => {
             let id = ctx.id
@@ -88,31 +107,50 @@ export const DateTimeField = defineFieldType({
             }
             return id
         })
-        const closePopup = () => { opened.value = false }
-        const gridData = ref(null as unknown as MonthGridData)
-        const g = monthGrid((g: MonthGridData) => {
-            if (g.newDate) {
-                opened.value = false
-            }
-            gridData.value = g
-        })
 
-        if (formatter.value instanceof DateTimeFormatter) {
-            const df = formatter.value as DateTimeFormatter
-            try {
-                const loadedValue = df.loadValue(ctx.value)
-                if (loadedValue instanceof Date) g.selectedDate = loadedValue
-            } catch (e) { }
+        const gridData = ref(null as unknown as MonthGridData)
+        let g: MonthGrid | undefined
+
+        const closePopup = () => {
+            g = undefined
+            opened.value = false
         }
 
+        watch(
+            () => ctx.value,
+            (val) => {
+                if (val === undefined || val === '') val = null
+                const loaded = parseDate(val)
+                if (loaded instanceof Date) {
+                    stateValue.value = val
+                }
+            },
+            {
+                immediate: true,
+            }
+        )
+
         const clickOpen = (_evt?: MouseEvent) => {
-            g.selectedDate = g.selectedDate
             opened.value = true
             return false
         }
+
+        const renderPopup = () => {
+            if (!g) {
+                g = monthGrid((data: MonthGridData) => {
+                    if (data.newDate) {
+                        opened.value = false
+                        if (ctx.onUpdate) ctx.onUpdate(formatter.value.formatPortable(g?.selectedDate))
+                    }
+                    gridData.value = data
+                }, parseDate(stateValue.value))
+            }
+            return renderDateTimePopup(g, gridData.value)
+        }
+
         return fieldRender({
             content: () => {
-                const val = formatter.value?.format(g.selectedDate)
+                const val = formatter.value?.format(stateValue.value)
                 const value = val?.textValue
                 return [
                     h(
@@ -129,14 +167,19 @@ export const DateTimeField = defineFieldType({
                     ),
                 ]
             },
-            cursor: editable.value ? "pointer" : "default",
-            click: clickOpen,
+            updated: computed(() => {
+                return initialValue.value !== stateValue.value
+            }),
+            cursor: computed(() => editable.value ? "pointer" : "default"),
+            click: computed(() => editable.value ? clickOpen : null),
             inputId,
             popup: {
-                content: () => renderDateTimePopup(g, gridData.value),
+                content: renderPopup,
                 visible: opened,
                 onBlur: closePopup,
             },
+            value: stateValue,
         })
     }
 })
+

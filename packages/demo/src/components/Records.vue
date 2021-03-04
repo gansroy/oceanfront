@@ -45,6 +45,14 @@
             />
           </div>
           <div class="row form-row">
+            <of-datetime-field
+              name="five"
+              label="Date picker"
+              label-position="field"
+              :record="testRecord"
+            />
+          </div>
+          <div class="row form-row">
             <button @click="testRecord.reset()" :disabled="testRecord.locked">
               Reset
             </button>
@@ -86,6 +94,7 @@ const testRecord = makeRecord({
   two: 'text',
   three: true,
   four: 25,
+  five: '2021-02-15 12:00:00',
 })
 
 export default defineComponent({

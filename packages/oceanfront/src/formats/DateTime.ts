@@ -10,6 +10,13 @@ export interface DateTimeFormatterOptions {
     nativeOptions?: Intl.DateTimeFormatOptions
 }
 
+const expand = (value: string | number, digits: number): string => {
+    let result = '' + value
+    while (result.length < digits) {
+        result = '0' + result
+    }
+    return result
+}
 
 export class DateTimeFormatter implements TextFormatter {
     private _locale: LocaleState
@@ -37,7 +44,7 @@ export class DateTimeFormatter implements TextFormatter {
         return 'of--text-datetime'
     }
 
-    formatterOptions(editing?: boolean): Intl.DateTimeFormatOptions {
+    formatterOptions(_editing?: boolean): Intl.DateTimeFormatOptions {
         const opts = this.options
         if (opts.nativeOptions !== undefined) {
             return opts.nativeOptions
@@ -59,26 +66,37 @@ export class DateTimeFormatter implements TextFormatter {
         return fmtOpts
     }
 
-    loadValue(modelValue: any): Date | null {
+    loadValue(modelValue?: string | Date | number | null): Date | null {
+        let value
         if (typeof modelValue === 'string') {
             modelValue = modelValue.trim()
         }
         if (modelValue === null || modelValue == undefined) {
-            modelValue = null
+            value = null
         } else if (modelValue instanceof Date) {
+            value = modelValue
         } else if (typeof modelValue === 'string') {
-            modelValue = Date.parse(modelValue)
+            // we expect "YYYY-MM-DD hh:mm:ss", always GMT
+            const matches = /^(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)(:\d\d)?$/.exec(modelValue)
+            if (!matches) {
+                value = new Date()
+            } else {
+                const dateStr = matches.slice(1, 4).join('-') + 'T' + matches.slice(4, 6).join(':') + ':00Z'
+                value = new Date(dateStr)
+            }
+        } else if (typeof modelValue === 'number') {
+            value = new Date(modelValue)
         } else {
             throw new TypeError('Unsupported value')
         }
-        return modelValue
+        return value
     }
 
-    unformat(input: string): Date | null {
+    unformat(_input: string): Date | null {
         throw new TypeError('Unsupported value')
     }
 
-    format(modelValue: any): TextFormatResult {
+    format(modelValue?: string | Date | number | null): TextFormatResult {
         let error
         let textValue = ''
         let value = modelValue
@@ -102,4 +120,19 @@ export class DateTimeFormatter implements TextFormatter {
         }
     }
 
+    formatPortable(date?: Date): string | undefined {
+        if (!date) return undefined
+        const Y = date.getUTCFullYear()
+        const M = date.getUTCMonth() + 1
+        const D = date.getUTCDate()
+        const h = date.getUTCHours()
+        const m = date.getUTCMinutes()
+        const s = date.getUTCSeconds()
+        return expand(Y, 4) + '-' +
+            expand(M, 2) + '-' +
+            expand(D, 2) + ' ' +
+            expand(h, 2) + ':' +
+            expand(m, 2) + ':' +
+            expand(s, 2)
+    }
 }

@@ -40,11 +40,11 @@ class MonthGridImpl {
     private _r: MonthGridRenderer
     private _monthStart: Date
 
-    constructor(r: MonthGridRenderer) {
+    constructor(r: MonthGridRenderer, date?: Date) {
         this._r = r
+        this._selectedDate = date ? date : new Date()
         this._monthStart = new Date(this._selectedDate.valueOf())
         this._monthStart.setDate(1)
-        this._selectedDate = new Date()
     }
 
     get selectedDate(): Date { return this._selectedDate }
@@ -98,7 +98,8 @@ class MonthGridImpl {
     }
 }
 
-export const monthGrid: (r: MonthGridRenderer) => MonthGrid = (r: MonthGridRenderer) => {
-    const grid = new MonthGridImpl(r)
+export const monthGrid: (r: MonthGridRenderer, date?: Date) => MonthGrid = (r: MonthGridRenderer, date?: Date) => {
+    const grid = new MonthGridImpl(r, date)
+    grid.render()
     return grid
 }
