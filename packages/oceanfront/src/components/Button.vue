@@ -1,5 +1,15 @@
 <template>
-  <button :class="['of-button', 'of-button--' + variant, {'of-button--rounded': rounded}]">
+  <button 
+    :disabled="disabled"
+    :class="[
+      {
+        'of-button--rounded': rounded,
+        'of-button--disabled': disabled,
+      },
+      'of-button', 
+      'of-button--' + variant
+    ]"
+  >
     <of-icon v-if="icon" :name="icon" />
     <slot>Submit</slot>
   </button>
@@ -14,6 +24,7 @@ export default defineComponent({
     label: String,
     icon: String,
     rounded: Boolean,
+    disabled: Boolean,
   },
   setup(props) {
     const variant = computed(() => props.variant || 'solid')

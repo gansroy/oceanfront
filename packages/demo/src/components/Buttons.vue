@@ -7,6 +7,7 @@
         <div class="column">
           <h4>Solid</h4>
           <of-button />
+          <of-button disabled>Disabled</of-button>
           <of-button icon="gear">With Icon</of-button>
           <of-button rounded>Rounded</of-button>
         </div>
@@ -31,7 +32,7 @@
           <h4>Set</h4>
           <span class="of-buttonset">
             <of-button icon="accept">Save</of-button>
-            <of-button icon="refresh">Refresh</of-button>
+            <of-button icon="refresh" disabled>Refresh</of-button>
             <of-button icon="cancel">Cancel</of-button>
           </span>
         </div>
@@ -48,6 +49,7 @@ export default defineComponent({
     const sampleCode = `
 <!-- Solid -->
 <of-button />
+<of-button disabled>Disabled</of-button>
 <of-button icon="gear">With Icon</of-button>
 <of-button rounded>Rounded</of-button>
 <!-- Outlined -->
@@ -60,7 +62,7 @@ export default defineComponent({
 <!-- Set -->
 <span class="of-buttonset">
   <of-button icon="accept">Save</of-button>
-  <of-button icon="refresh">Refresh</of-button>
+  <of-button icon="refresh" disabled>Refresh</of-button>
   <of-button icon="cancel">Cancel</of-button>
 </span>`
     return { sampleCode }
