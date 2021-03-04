@@ -1,0 +1,71 @@
+.of-datepicker-grid {
+    display: grid;
+    margin: 8px;
+    width: 300px;
+    grid-template-columns: repeat(7, 32px);
+    justify-content: center;
+    grid-gap: 4px;
+
+    & .picker-date {
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 14px;
+        border: solid 1px transparent;
+        border-radius: 50%;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        & div {
+            background-color: transparent;
+        }
+
+        &.today {
+            border-color: teal;
+        }
+
+        &.selected-date {
+            border-color: teal;
+            background-color: teal;
+            color: white;
+        }
+
+        &.other-month {
+            color: #CCC;
+            cursor: default;
+        }
+    }
+
+}
+
+.of-date-picker-title {
+    background-color: teal;
+    color: white;
+    font-size: 20px;
+    grid-column: 1 / span 7;
+    padding-left: 8px;
+}
+
+.of-date-picker-cur-year {
+    grid-column: auto / span 5;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.of-datepicker-nav-button {
+    display: flex;
+    place-items: center;
+    cursor: pointer;
+    &.next {
+        justify-content: flex-end;
+    }
+    &.prev {
+        justify-content: flex-start;
+    }
+}
+
+.of-datepicker-popup {
+    display: flex;
+    max-width: 320px;
+    flex-direction: column;
+}

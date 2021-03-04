@@ -5,15 +5,17 @@
     <of-highlight lang="html" :value="sampleCode" />
     <br />
     <div class="row">
-      <div class="column md-8"></div>
+      <div class="column md-8">
+        <of-datetime-field label="Date only" v-model:value="inputValue" />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { ref, defineComponent } from 'vue'
 
-const testCheckField = {
+const testDateTimeField = {
   description: 'Field description',
   help: 'field help',
   hidden: false,
@@ -25,11 +27,16 @@ const testCheckField = {
   inputLabel: 'Input Label',
 }
 
+const inputValue = ref('2021-03-05 12:00')
+
 export default defineComponent({
   setup() {
-    const sampleCode = `
+    const sampleCode = `<of-datetime-field
+  label="Date only"
+  v-model:value="inputValue"
+/>
 `
-    return { sampleCode, testCheckField }
+    return { sampleCode, testDateTimeField, inputValue }
   },
 })
 </script>
