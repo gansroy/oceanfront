@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { ref, defineComponent } from 'vue'
 
 const testDateTimeField = {
   description: 'Field description',
@@ -27,6 +27,8 @@ const testDateTimeField = {
   inputLabel: 'Input Label',
 }
 
+const inputValue = ref('2021-03-05 12:00')
+
 export default defineComponent({
   setup() {
     const sampleCode = `<of-datetime-field
@@ -34,7 +36,7 @@ export default defineComponent({
   v-model:value="inputValue"
 />
 `
-    return { sampleCode, testDateTimeField, inputValue: undefined }
+    return { sampleCode, testDateTimeField, inputValue }
   },
 })
 </script>
