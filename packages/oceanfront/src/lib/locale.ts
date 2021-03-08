@@ -7,14 +7,20 @@ export interface LocaleNumberFormat {
   readonly auto: boolean
 }
 
+export type LocaleDateFormat = {
+  placeholder?: any // LocaleDateFormat will be defined later. placeholder is here just to satisfy build 
+}
+
 export interface LocaleState {
   readonly locale: string
   readonly numberFormat?: LocaleNumberFormat
+  readonly dateFormat?: LocaleDateFormat
 }
 
 class LocaleManager implements LocaleState {
   locale: string
   numberFormat?: LocaleNumberFormat
+  dateFormat?: LocaleDateFormat
 
   constructor() {
     this.locale = navigator.language

@@ -11,7 +11,7 @@ import {
 } from '../lib/fields'
 import { useItems } from '../lib/items'
 
-type ActiveItem = { text?: string; [key: string]: any }
+type ActiveItem = { text?: string;[key: string]: any }
 
 export const renderSelectPopup = (
   items: any,
