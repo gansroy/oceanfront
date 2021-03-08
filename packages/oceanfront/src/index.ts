@@ -22,6 +22,7 @@ import { OfToggleField } from './components/ToggleField'
 import OfTabs from './components/Tabs.vue'
 import OfSpinner from './components/Spinner.vue'
 import OfPagination from './components/Pagination.vue'
+import OfButton from './components/Button.vue'
 
 import { FileField } from './fields/File'
 import { SelectField } from './fields/Select'
@@ -66,6 +67,7 @@ export const components: Record<string, Component> = {
   OfToggle,
   OfToggleField,
   OfSpinner,
+  OfButton,
 }
 
 export const fieldTypes: Record<string, FieldTypeConstructor> = {

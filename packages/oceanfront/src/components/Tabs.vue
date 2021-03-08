@@ -326,7 +326,7 @@ export default defineComponent({
     }
 
     const repositionLine = function () {
-      if (variant.value !== 'osx') {
+      if (variant.value !== 'osx' && tabs.value) {
         const currentTabHeaderItem = tabs.value.querySelector(
           '.of-tab-header-item.is-active'
         )
