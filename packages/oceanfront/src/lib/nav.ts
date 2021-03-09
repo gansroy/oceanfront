@@ -186,7 +186,7 @@ export function reactiveNavGroup(): NavGroup {
           if (idx < 0) idx = ordered.length - 1
           else if (idx >= ordered.length) idx = 0
           if (idx === scanVal.active) return false // looped around
-          if (ordered[idx] && !ordered[idx].disabled && ordered[idx].focus) {
+          if (ordered[idx] && !ordered[idx].disabled && ordered[idx].focus && ordered[idx].elt.clientHeight != 0) {
             ordered[idx].focus!()
             if (event) event.preventDefault()
             return true
