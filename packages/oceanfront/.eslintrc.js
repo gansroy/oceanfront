@@ -4,11 +4,11 @@ module.exports = {
     node: true,
   },
   extends: [
-    'prettier/@typescript-eslint',
-    'prettier/vue',
     'plugin:jest/recommended',
     'plugin:vue/vue3-recommended',
     'plugin:@typescript-eslint/recommended',
+    'prettier/@typescript-eslint',
+    'prettier/vue',
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',

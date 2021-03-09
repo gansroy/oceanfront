@@ -1,4 +1,4 @@
-import { ref, computed, watch, h, VNode } from 'vue'
+import { ref, computed, watch, h } from 'vue'
 import { OfOptionList } from '../components/OptionList'
 import { OfIcon } from '../components/Icon'
 import {
@@ -10,7 +10,7 @@ import {
 } from '../lib/fields'
 import { useItems } from '../lib/items'
 
-type ActiveItem = { text?: string;[key: string]: any }
+type ActiveItem = { text?: string; [key: string]: any }
 
 export const SelectField = defineFieldType({
   name: 'select',
@@ -163,22 +163,26 @@ export const SelectField = defineFieldType({
           clickOpen()
           evt.preventDefault()
           evt.stopPropagation()
-        } else if (formatItems.value.length && (/(^Key([A-Z]$))/.test(evt.code) || /(^Digit([0-9]$))/.test(evt.code))) {
+        } else if (
+          formatItems.value.length &&
+          (/(^Key([A-Z]$))/.test(evt.code) || /(^Digit([0-9]$))/.test(evt.code))
+        ) {
           searchText.value += evt.key
           for (let i = 0; i < formatItems.value.length; i++) {
-            const option = formatItems.value[i] 
+            const option = formatItems.value[i]
             if (option.value !== undefined) {
               const optionText: string = option.text
-              if (optionText.substring(0, searchText.value.length).toLowerCase() == searchText.value.toLowerCase() ) {
+              if (
+                optionText
+                  .substring(0, searchText.value.length)
+                  .toLowerCase() == searchText.value.toLowerCase()
+              ) {
                 setValue(option.value)
                 return
-              } 
+              }
             }
           }
         }
-      },
-      onVnodeMounted(vnode: VNode) {
-        elt.value = vnode.el as HTMLElement
       },
     }
 
@@ -206,6 +210,7 @@ export const SelectField = defineFieldType({
                 'of--align-' + (props.align || 'start'),
               ],
               id: inputId.value,
+              ref: elt,
               tabindex: 0,
               ...hooks,
             },
@@ -224,11 +229,13 @@ export const SelectField = defineFieldType({
       // messages
       pendingValue,
       popup: {
-        content: () => 
-          opened.value ? h(OfOptionList, {
-            items: formatItems.value,
-            onClick: setValue,
-          }) : undefined,
+        content: () =>
+          opened.value
+            ? h(OfOptionList, {
+                items: formatItems.value,
+                onClick: setValue,
+              })
+            : undefined,
         visible: opened,
         onBlur: closePopup,
       },
