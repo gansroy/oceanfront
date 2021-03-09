@@ -1,4 +1,4 @@
-import { computed, h, ref, watch } from 'vue'
+import { computed, h, Ref, ref, watch } from 'vue'
 import { useFormats } from '../lib/formats'
 
 import {
@@ -9,14 +9,14 @@ import {
     fieldRender,
 } from '../lib/fields'
 
-import { monthGrid, MonthGridData, MonthGrid } from '../lib/datetime'
+import { monthGrid, sameDate, prevMonth, nextMonth } from '../lib/datetime'
 import { OfIcon } from '../components/Icon';
 import { DateTimeFormatter } from 'src/formats/DateTime';
 
-export const renderDateTimePopup = (g: MonthGrid, data: MonthGridData): any => {
-    if (!data) return ''
+export const renderDateTimePopup = (monthStart: Ref<Date>, selectedDate: Ref<Date>): any => {
+    const gridData = monthGrid(monthStart.value)
     const cells: any[] = []
-    data.grid.forEach(row => {
+    gridData.grid.forEach(row => {
         row.forEach(cell => {
             cells.push(
                 h('div', {
@@ -24,11 +24,11 @@ export const renderDateTimePopup = (g: MonthGrid, data: MonthGridData): any => {
                         'picker-date',
                         {
                             'other-month': cell.otherMonth,
-                            'selected-date': cell.selected,
+                            'selected-date': sameDate(cell.date, selectedDate.value),
                             'today': cell.today,
                         }
                     ],
-                    onclick: cell.otherMonth ? null : () => g.selectedDate = cell.date
+                    onclick: cell.otherMonth ? null : () => selectedDate.value = cell.date
                 }, cell.date.getDate())
             )
         })
@@ -42,7 +42,7 @@ export const renderDateTimePopup = (g: MonthGrid, data: MonthGridData): any => {
             'div',
             { class: 'of-date-picker-title' },
             [
-                h('div', titleFormat?.format(g.selectedDate).textValue),
+                h('div', titleFormat?.format(selectedDate.value).textValue),
             ]
         )
     )
@@ -51,13 +51,13 @@ export const renderDateTimePopup = (g: MonthGrid, data: MonthGridData): any => {
         { role: 'menu', class: 'of-menu of-datepicker-popup' },
         h('div', { class: 'of-datepicker-grid' }, [
             title,
-            h('div', { class: 'of-datepicker-nav-button prev', onclick: () => g.prevMonth() },
+            h('div', { class: 'of-datepicker-nav-button prev', onclick: () => monthStart.value = prevMonth(monthStart.value) },
                 h(OfIcon, {
                     name: 'arrow-left',
                 })
             ),
-            h('div', { class: "of-date-picker-cur-year" }, monthFormat?.format(g.monthStart).textValue),
-            h('div', { class: 'of-datepicker-nav-button next', onclick: () => g.nextMonth() },
+            h('div', { class: "of-date-picker-cur-year" }, monthFormat?.format(monthStart.value).textValue),
+            h('div', { class: 'of-datepicker-nav-button next', onclick: () => monthStart.value = nextMonth(monthStart.value) },
                 h(OfIcon, {
                     name: 'arrow-right',
                 })
@@ -74,7 +74,6 @@ export const DateTimeField = defineFieldType({
     class: 'of-datetime-field',
     setup(props: FieldProps, ctx: FieldContext) {
         const formatMgr = useFormats()
-
         const formatter = computed(
             () => formatMgr.getTextFormatter("datetime", props.formatOptions) as DateTimeFormatter
         )
@@ -108,13 +107,20 @@ export const DateTimeField = defineFieldType({
             return id
         })
 
-        const gridData = ref(null as unknown as MonthGridData)
-        let g: MonthGrid | undefined
+        const selectedDate = ref(new Date)
+        const monthStart = ref(new Date)
 
         const closePopup = () => {
-            g = undefined
             opened.value = false
         }
+
+        watch(
+            selectedDate,
+            (_val) => {
+                opened.value = false
+                if (ctx.onUpdate) ctx.onUpdate(formatter.value.formatPortable(selectedDate.value))
+            }
+        )
 
         watch(
             () => ctx.value,
@@ -122,6 +128,7 @@ export const DateTimeField = defineFieldType({
                 if (val === undefined || val === '') val = null
                 const loaded = parseDate(val)
                 if (loaded instanceof Date) {
+                    selectedDate.value = loaded
                     stateValue.value = val
                 }
             },
@@ -131,21 +138,13 @@ export const DateTimeField = defineFieldType({
         )
 
         const clickOpen = (_evt?: MouseEvent) => {
+            monthStart.value = selectedDate.value
             opened.value = true
             return false
         }
 
         const renderPopup = () => {
-            if (!g) {
-                g = monthGrid((data: MonthGridData) => {
-                    if (data.newDate) {
-                        opened.value = false
-                        if (ctx.onUpdate) ctx.onUpdate(formatter.value.formatPortable(g?.selectedDate))
-                    }
-                    gridData.value = data
-                }, parseDate(stateValue.value))
-            }
-            return renderDateTimePopup(g, gridData.value)
+            return renderDateTimePopup(monthStart, selectedDate)
         }
 
         return fieldRender({
