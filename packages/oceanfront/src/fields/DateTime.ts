@@ -9,12 +9,19 @@ import {
     fieldRender,
 } from '../lib/fields'
 
-import { monthGrid, sameDate, prevMonth, nextMonth } from '../lib/datetime'
+import { monthGrid, sameDate, prevMonth, nextMonth, MonthGridCell } from '../lib/datetime'
 import { OfIcon } from '../components/Icon';
 import { DateTimeFormatter } from 'src/formats/DateTime';
 
-export const renderDateTimePopup = (monthStart: Ref<Date>, selectedDate: Ref<Date>): any => {
-    const gridData = monthGrid(monthStart.value)
+interface MonthGridProps {
+    monthStart: Date
+    disabledDate?: (cell: MonthGridCell) => any
+    onSelect?: (cell: MonthGridCell) => any
+    isSelected?: (cell: MonthGridCell) => boolean
+}
+
+const renderMonthGrid = (props: MonthGridProps) => {
+    const gridData = monthGrid(props.monthStart)
     const cells: any[] = []
     gridData.grid.forEach(row => {
         row.forEach(cell => {
@@ -24,15 +31,28 @@ export const renderDateTimePopup = (monthStart: Ref<Date>, selectedDate: Ref<Dat
                         'picker-date',
                         {
                             'other-month': cell.otherMonth,
-                            'selected-date': sameDate(cell.date, selectedDate.value),
+                            'selected-date': props.isSelected?.(cell) || false,
                             'today': cell.today,
                         }
                     ],
-                    onclick: cell.otherMonth ? null : () => selectedDate.value = cell.date
+                    onclick: props.onSelect ? () => props.onSelect?.(cell) : null,
                 }, cell.date.getDate())
             )
         })
     })
+
+    return cells
+
+}
+
+export const renderDateTimePopup = (monthStart: Ref<Date>, selectedDate: Ref<Date>): any => {
+    const gridProps = {
+        monthStart: monthStart.value,
+        selectedDate: selectedDate.value,
+        isSelected: (cell: MonthGridCell) => sameDate(cell.date, selectedDate.value),
+        onSelect: (cell: MonthGridCell) => cell.otherMonth ? null : selectedDate.value = cell.date,
+    }
+    const cells = renderMonthGrid(gridProps)
 
     const formatMgr = useFormats()
     const titleFormat = formatMgr.getTextFormatter("datetime", { nativeOptions: { month: "short", year: "numeric", day: "numeric", weekday: 'short' } })
@@ -66,6 +86,8 @@ export const renderDateTimePopup = (monthStart: Ref<Date>, selectedDate: Ref<Dat
         ]
         )
     )
+
+
 }
 
 
@@ -116,9 +138,9 @@ export const DateTimeField = defineFieldType({
 
         watch(
             selectedDate,
-            (_val) => {
+            (val: Date) => {
                 opened.value = false
-                if (ctx.onUpdate) ctx.onUpdate(formatter.value.formatPortable(selectedDate.value))
+                if (ctx.onUpdate) ctx.onUpdate(formatter.value.formatPortable(val))
             }
         )
 
