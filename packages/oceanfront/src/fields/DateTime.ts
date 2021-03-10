@@ -46,9 +46,8 @@ const renderMonthGrid = (props: MonthGridProps) => {
 }
 
 export const renderDateTimePopup = (monthStart: Ref<Date>, selectedDate: Ref<Date>): any => {
-    const gridProps = {
+    const gridProps: MonthGridProps = {
         monthStart: monthStart.value,
-        selectedDate: selectedDate.value,
         isSelected: (cell: MonthGridCell) => sameDate(cell.date, selectedDate.value),
         onSelect: (cell: MonthGridCell) => cell.otherMonth ? null : selectedDate.value = cell.date,
     }
