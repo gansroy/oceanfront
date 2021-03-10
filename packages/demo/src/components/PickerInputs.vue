@@ -6,7 +6,7 @@
     <br />
     <div class="row">
       <div class="column md-8">
-        <of-datetime-field label="Date only" v-model:value="inputValue" />
+        <of-datetime-field label="Date and time" v-model:value="inputValue" />
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@ const inputValue = ref('2021-03-05 12:00')
 export default defineComponent({
   setup() {
     const sampleCode = `<of-datetime-field
-  label="Date only"
+  label="Date and time"
   v-model:value="inputValue"
 />
 `
