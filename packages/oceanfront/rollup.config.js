@@ -17,8 +17,8 @@ import minimist from 'minimist'
 
 const argv = minimist(process.argv.slice(2))
 const projectRoot = path.resolve(__dirname, '.')
-const external = ['vue', 'vue-router']
-const globals = { vue: 'Vue', 'vue-router': 'VueRouter' }
+const external = ['vue']
+const globals = { vue: 'Vue' }
 const node_env = process.env.NODE_ENV || 'development'
 
 // Customize configs for individual targets
