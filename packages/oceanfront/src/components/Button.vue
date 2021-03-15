@@ -14,39 +14,61 @@
       <slot>Submit</slot>
     </button>
     <button 
-      v-if="split" 
+      v-if="split"
       class="expand"
       @click="toggleMenu($event)"
     > 
       <of-icon name="expand-down" />
     </button>
-    <OfPopoupMenu :items="items" :shown="menuShown" :outer="menuOuter" />
+    <of-overlay
+      v-if="split"
+      :active="menuShown"
+      :capture="false"
+      :shade="false"
+      :target="menuOuter"
+    >
+      <of-option-list :items="items" :on-click="onClick" />
+    </of-overlay>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
-import OfPopoupMenu from './PopupMenu.vue'
-import { usePopupMenu } from '../lib/popup_menu'
-
+import { defineComponent, computed, ref } from 'vue'
+import { OfOptionList } from '../components/OptionList'
 export default defineComponent({
   name: 'OfButton',  
-  components: { OfPopoupMenu },
+  components: { OfOptionList },
   props: {
     variant: String,
     label: String,
     icon: String,
     rounded: Boolean,
     disabled: Boolean,
-    items: { type: Array, default: () => [] },
+    split: Boolean,
+    items: [String, Array, Object],
   },
   setup(props) {
     const variant = computed(() => props.variant || 'solid')
-    const split = computed(() => props.items.length > 0)
+    const menuShown = ref(false)
+    const menuOuter = ref()
+    const onClick = (val: any) => {
+      console.log(val)
+      closeMenu()
+    }
+    const toggleMenu = (_evt?: MouseEvent) => {
+      menuOuter.value = _evt?.target
+      menuShown.value = !menuShown.value
+    }
+    const closeMenu = () => {
+      menuShown.value = false
+    }
     return {
-      variant, 
-      split,
-      ...usePopupMenu(),
+      onClick, 
+      closeMenu, 
+      toggleMenu, 
+      menuShown, 
+      menuOuter, 
+      variant
     }
   }
 })

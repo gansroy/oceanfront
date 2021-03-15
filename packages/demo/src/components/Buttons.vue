@@ -10,8 +10,8 @@
           <of-button disabled>Disabled</of-button>
           <of-button icon="gear">With Icon</of-button>
           <of-button rounded>Rounded</of-button>
-          <of-button :items="['Home', 'About']" />
-          <of-button icon="gear" rounded :items="['Home', 'About']" />
+          <of-button split :items="testItems" />
+          <of-button icon="gear" rounded split :items="testItems" />
         </div>
       </div>
       <div class="row">
@@ -21,8 +21,8 @@
           <of-button variant="outlined" disabled>Disabled</of-button>
           <of-button variant="outlined" icon="gear">With Icon</of-button>
           <of-button variant="outlined" rounded>Rounded</of-button>
-          <of-button variant="outlined" :items="['Home', 'About']" />
-          <of-button variant="outlined" icon="gear" rounded :items="['Home', 'About']" />
+          <of-button variant="outlined" split :items="testItems" />
+          <of-button variant="outlined" icon="gear" rounded split :items="testItems" />
         </div>
       </div>
       <div class="row">
@@ -32,8 +32,8 @@
           <of-button variant="text" disabled>Disabled</of-button>
           <of-button variant="text" icon="gear">With Icon</of-button>
           <of-button variant="text" rounded>Rounded</of-button>
-          <of-button variant="text" :items="['Home', 'About']" />
-          <of-button variant="text" icon="gear" rounded :items="['Home', 'About']" />
+          <of-button variant="text" split :items="testItems" />
+          <of-button variant="text" icon="gear" rounded split :items="testItems" />
         </div>
       </div>
       <div class="row">
@@ -42,7 +42,7 @@
           <span class="of-buttonset">
             <of-button icon="accept">Save</of-button>
             <of-button icon="refresh" disabled>Refresh</of-button>
-            <of-button icon="gear" rounded :items="['Home', 'About']" />
+            <of-button icon="gear" rounded split :items="testItems" />
             <of-button icon="cancel">Cancel</of-button>
           </span>
         </div>
@@ -62,30 +62,36 @@ export default defineComponent({
 <of-button disabled>Disabled</of-button>
 <of-button icon="gear">With Icon</of-button>
 <of-button rounded>Rounded</of-button>
-<of-button :items="['Home', 'About']" />
-<of-button icon="gear" rounded :items="['Home', 'About']" />
+<of-button split :items="testItems" />
+<of-button icon="gear" rounded split :items="testItems" />
 <!-- Outlined -->
 <of-button variant="outlined" />
 <of-button variant="outlined" disabled>Disabled</of-button>
 <of-button variant="outlined" icon="gear">With Icon</of-button>
 <of-button variant="outlined" rounded>Rounded</of-button>
-<of-button variant="outlined" :items="['Home', 'About']" />
-<of-button variant="outlined" icon="gear" rounded :items="['Home', 'About']" />
+<of-button variant="outlined" split :items="testItems" />
+<of-button variant="outlined" icon="gear" rounded split :items="testItems" />
 <!-- Text -->
 <of-button variant="text" />
 <of-button variant="text" disabled>Disabled</of-button>
 <of-button variant="text" icon="gear">With Icon</of-button>
 <of-button variant="text" rounded>Rounded</of-button>
-<of-button variant="text" :items="['Home', 'About']" />
-<of-button variant="text" icon="gear" rounded :items="['Home', 'About']" />
+<of-button variant="text" split :items="testItems" />
+<of-button variant="text" icon="gear" rounded split :items="testItems" />
 <!-- Set -->
 <span class="of-buttonset">
   <of-button icon="accept">Save</of-button>
   <of-button icon="refresh" disabled>Refresh</of-button>
-  <of-button icon="gear" rounded :items="['Home', 'About']" />
+  <of-button icon="gear" rounded split :items="testItems" />
   <of-button icon="cancel">Cancel</of-button>
 </span>`
-    return { sampleCode }
+    const testItems = [
+      { special: 'header', text: 'Test select items1' },
+      { text: 'Option 1', value: 'o1' },
+      { special: 'divider' },
+      { text: 'Option 2', value: 'o2' },
+    ]
+    return { sampleCode, testItems }
   },
 })
 </script>
