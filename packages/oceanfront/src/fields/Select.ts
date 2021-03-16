@@ -1,6 +1,5 @@
-import { ref, computed, watch, h, VNode, VNodeTypes } from 'vue'
-import { OfNavGroup } from '../components/NavGroup'
-import { OfListItem } from '../components/ListItem'
+import { ref, computed, watch, h, VNode } from 'vue'
+import { OfOptionList } from '../components/OptionList'
 import { OfIcon } from '../components/Icon'
 import {
   defineFieldType,
@@ -12,50 +11,6 @@ import {
 import { useItems } from '../lib/items'
 
 type ActiveItem = { text?: string;[key: string]: any }
-
-export const renderSelectPopup = (
-  items: any,
-  setValue: any,
-  active: boolean
-): VNodeTypes | undefined => {
-  let content
-  if (active) {
-    let rowsOuter: VNode | undefined
-    if (!items || !items.length) {
-      rowsOuter = h('div', { style: 'padding: 0 0.5em' }, 'No items')
-    } else {
-      const rows = []
-      for (const item of items) {
-        if (item.special === 'header') {
-          rows.push(h('div', { class: 'of-list-header' }, item.text))
-        } else if (item.special === 'divider') {
-          rows.push(h('div', { class: 'of-list-divider' }))
-        } else {
-          rows.push(
-            h(
-              OfListItem,
-              {
-                active: item.selected,
-                disabled: item.disabled,
-                onClick: () => {
-                  setValue(item.value)
-                },
-              },
-              () => item.text
-            )
-          )
-        }
-      }
-      rowsOuter = h('div', { class: 'of-list-outer' }, rows)
-    }
-    content = h('div', { role: 'menu', class: 'of-menu' }, [
-      h(OfNavGroup, () => rowsOuter),
-    ])
-  } else {
-    content = undefined
-  }
-  return content
-}
 
 export const SelectField = defineFieldType({
   name: 'select',
@@ -269,8 +224,11 @@ export const SelectField = defineFieldType({
       // messages
       pendingValue,
       popup: {
-        content: () =>
-          renderSelectPopup(formatItems.value, setValue, opened.value),
+        content: () => 
+          opened.value ? h(OfOptionList, {
+            items: formatItems.value,
+            onClick: setValue,
+          }) : undefined,
         visible: opened,
         onBlur: closePopup,
       },
