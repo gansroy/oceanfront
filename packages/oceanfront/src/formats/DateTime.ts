@@ -10,7 +10,7 @@ export interface DateTimeFormatterOptions {
     nativeOptions?: Intl.DateTimeFormatOptions
 }
 
-const expand = (value: string | number, digits: number): string => {
+export const expand = (value: string | number, digits: number): string => {
     let result = '' + value
     while (result.length < digits) {
         result = '0' + result

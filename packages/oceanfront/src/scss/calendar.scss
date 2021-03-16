@@ -45,6 +45,10 @@
     padding-left: 8px;
 }
 
+div.of-date-picker-cur-year {
+    cursor: pointer;
+}
+
 .of-date-picker-cur-year {
     grid-column: auto / span 5;
     text-align: center;
