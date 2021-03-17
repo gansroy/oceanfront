@@ -112,7 +112,7 @@
         <div />
       </div>
     </div>
-    <div class="of-date-picker-buttons">
+    <div class="of-date-picker-buttons" v-if="useButtons">
       <div class="of-date-picker-button accept" :onclick="accept">Accept</div>
       <div class="of-date-picker-button cancel" :onclick="cancel">Cancel</div>
     </div>
@@ -170,7 +170,8 @@ export default defineComponent({
         selected.getMonth(),
         selected.getDate()
       )
-      selectedDate.value = date
+      if (props.withTime) selectedDate.value = date
+      else props.accept?.(date)
     }
 
     const focusYearInput = (vn: VNode) => {
@@ -246,6 +247,7 @@ export default defineComponent({
       withTime: computed(() => props.withTime),
       isSelected: computed(() => props.isSelected ?? isSelected),
       monthStart,
+      useButtons: props.withTime,
 
       selectDate,
       nextMonth,

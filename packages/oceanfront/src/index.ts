@@ -14,6 +14,7 @@ import { OfNavGroup } from './components/NavGroup'
 import { OfOverlay } from './components/Overlay'
 import { OfSelectField } from './components/SelectField'
 import { OfDatetimeField } from './components/DatetimeField'
+import { OfDateField } from './components/DateField'
 import OfSidebar from './components/Sidebar.vue'
 import { OfSliderField } from './components/SliderField'
 import { OfTextField } from './components/TextField'
@@ -25,7 +26,7 @@ import OfPagination from './components/Pagination.vue'
 
 import { FileField } from './fields/File'
 import { SelectField } from './fields/Select'
-import { DateTimeField } from './fields/DateTime'
+import { DateTimeField, DateField } from './fields/DateTime'
 import { TextField } from './fields/Text'
 import { ToggleField } from './fields/Toggle'
 import { SliderField } from './fields/Slider'
@@ -42,12 +43,13 @@ import { UrlFormatter } from './formats/Url'
 
 import './scss/index.scss'
 import { FieldTypeConstructor } from './lib/fields'
-import { DateTimeFormatter } from './formats/DateTime'
+import { DateTimeFormatter, DateFormatter } from './formats/DateTime'
 
 export const components: Record<string, Component> = {
   OfConfig,
   OfDataTable,
   OfDatetimeField,
+  OfDateField,
   OfDialog,
   OfField,
   OfIcon,
@@ -77,6 +79,7 @@ export const fieldTypes: Record<string, FieldTypeConstructor> = {
   slider: SliderField,
   toggle: ToggleField,
   datetime: DateTimeField,
+  date: DateField,
 }
 
 export const textFormatters: Record<string, TextFormatterConstructor> = {
@@ -85,6 +88,7 @@ export const textFormatters: Record<string, TextFormatterConstructor> = {
   number: NumberFormatter,
   url: UrlFormatter,
   datetime: DateTimeFormatter,
+  date: DateFormatter,
 }
 
 export const directives: Record<string, Directive> = {}

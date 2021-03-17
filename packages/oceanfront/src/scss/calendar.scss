@@ -69,9 +69,24 @@ div.of-date-picker-cur-year {
 
 .of-datepicker-popup {
     display: flex;
-    max-width: 320px;
+    max-width: 280px;
     flex-direction: column;
+
+    & .of-datepicker-selectors {
+        display: grid;
+        width: 100%;
+        grid-template-columns: auto;
+        justify-items: center;
+     }
+    
+     &.with-time {
+        max-width: 320px;
+        & .of-datepicker-selectors {
+             grid-template-columns: auto auto;
+        }
+    }
 }
+
 .of-time-selector {
     display: grid;
     width: 100%;
@@ -85,12 +100,6 @@ div.of-date-picker-cur-year {
     }
 
 }
-
-.of-datepicker-selectors {
-    display: grid;
-    width: 100%;
-    grid-template-columns: auto auto;
- }
 
 .time-picker-arrow {
     cursor: pointer;
