@@ -17,6 +17,7 @@
       v-if="split"
       class="expand"
       @click="toggleMenu($event)"
+      @mouseleave="menuLeave()"
     > 
       <of-icon name="expand-down" />
     </button>
@@ -27,7 +28,12 @@
       :shade="false"
       :target="menuOuter"
     >
-      <of-option-list :items="items" :on-click="onClick" />
+      <of-option-list 
+        :items="items" 
+        :on-click="onClick" 
+        @mouseenter="menuClearTimeout()"
+        @mouseleave="menuLeave()"
+      />
     </of-overlay>
   </div>
 </template>
@@ -51,6 +57,7 @@ export default defineComponent({
     const variant = computed(() => props.variant || 'solid')
     const menuShown = ref(false)
     const menuOuter = ref()
+    const menuTimerId = ref()
     const onClick = (val: any) => {
       console.log(val)
       closeMenu()
@@ -62,13 +69,24 @@ export default defineComponent({
     const closeMenu = () => {
       menuShown.value = false
     }
+    const menuLeave = () => {
+      if (!menuShown.value) return false
+      menuTimerId.value = setTimeout(() => {
+        closeMenu()
+      }, 500)
+    }
+    const menuClearTimeout = () => {
+      clearTimeout(menuTimerId.value)
+    }
     return {
       onClick, 
       closeMenu, 
       toggleMenu, 
       menuShown, 
       menuOuter, 
-      variant
+      variant,
+      menuLeave,
+      menuClearTimeout
     }
   }
 })
