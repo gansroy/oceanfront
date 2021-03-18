@@ -159,7 +159,7 @@ export default defineComponent({
         minute: 'numeric',
       },
     })
-    const monthFormat = formatMgr.getTextFormatter('datetime', {
+    const monthFormat = formatMgr.getTextFormatter('date', {
       nativeOptions: { month: 'short', year: 'numeric' },
     })
 
