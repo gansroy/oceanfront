@@ -5,12 +5,11 @@ import { LocaleState, useLocale } from '../lib/locale'
 
 export interface DateTimeFormatterOptions {
     locale?: string
-    dateFormat: "short" | "medium" | undefined
-    time?: boolean
+    dateFormat?: "short" | "medium"
     nativeOptions?: Intl.DateTimeFormatOptions
 }
 
-const expand = (value: string | number, digits: number): string => {
+export const expand = (value: string | number, digits: number): string => {
     let result = '' + value
     while (result.length < digits) {
         result = '0' + result
@@ -18,7 +17,7 @@ const expand = (value: string | number, digits: number): string => {
     return result
 }
 
-export class DateTimeFormatter implements TextFormatter {
+abstract class DateTimeFormatterBase implements TextFormatter {
     private _locale: LocaleState
     private _options: Ref<DateTimeFormatterOptions>
 
@@ -59,38 +58,9 @@ export class DateTimeFormatter implements TextFormatter {
             fmtOpts.month = '2-digit'
             fmtOpts.year = 'numeric'
         }
-        if (opts.time) {
-            fmtOpts.hour = '2-digit'
-            fmtOpts.minute = '2-digit'
-        }
         return fmtOpts
     }
 
-    loadValue(modelValue?: string | Date | number | null): Date | null {
-        let value
-        if (typeof modelValue === 'string') {
-            modelValue = modelValue.trim()
-        }
-        if (modelValue === null || modelValue == undefined) {
-            value = null
-        } else if (modelValue instanceof Date) {
-            value = modelValue
-        } else if (typeof modelValue === 'string') {
-            // we expect "YYYY-MM-DD hh:mm:ss", always GMT
-            const matches = /^(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)(:\d\d)?$/.exec(modelValue)
-            if (!matches) {
-                value = new Date()
-            } else {
-                const dateStr = matches.slice(1, 4).join('-') + 'T' + matches.slice(4, 6).join(':') + ':00Z'
-                value = new Date(dateStr)
-            }
-        } else if (typeof modelValue === 'number') {
-            value = new Date(modelValue)
-        } else {
-            throw new TypeError('Unsupported value')
-        }
-        return value
-    }
 
     unformat(_input: string): Date | null {
         throw new TypeError('Unsupported value')
@@ -120,6 +90,19 @@ export class DateTimeFormatter implements TextFormatter {
         }
     }
 
+    abstract formatPortable(date?: Date): string | undefined
+    abstract loadValue(modelValue?: string | Date | number | null, dateOnly?: boolean): Date | null
+
+}
+
+export class DateTimeFormatter extends DateTimeFormatterBase {
+    formatterOptions(_editing?: boolean): Intl.DateTimeFormatOptions {
+        const fmtOpts = super.formatterOptions(_editing)
+        fmtOpts.hour = '2-digit'
+        fmtOpts.minute = '2-digit'
+        return fmtOpts
+    }
+
     formatPortable(date?: Date): string | undefined {
         if (!date) return undefined
         const Y = date.getUTCFullYear()
@@ -130,9 +113,127 @@ export class DateTimeFormatter implements TextFormatter {
         const s = date.getUTCSeconds()
         return expand(Y, 4) + '-' +
             expand(M, 2) + '-' +
-            expand(D, 2) + ' ' +
+            expand(D, 2) +
+            ' ' +
             expand(h, 2) + ':' +
             expand(m, 2) + ':' +
             expand(s, 2)
+
+    }
+
+    loadValue(modelValue?: string | Date | number | null): Date | null {
+        let value
+        if (typeof modelValue === 'string') {
+            modelValue = modelValue.trim()
+        }
+        if (modelValue === null || modelValue == undefined) {
+            value = null
+        } else if (modelValue instanceof Date) {
+            value = modelValue
+        } else if (typeof modelValue === 'string') {
+            // we expect "YYYY-MM-DD hh:mm:ss", always GMT
+            const re = /^(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)(:\d\d)?$/
+            const matches = re.exec(modelValue)
+            if (!matches) {
+                value = new Date()
+            } else {
+                const dateStr = matches.slice(1, 4).join('-') + 'T' + matches.slice(4, 6).join(':') + ':00Z'
+                value = new Date(dateStr)
+            }
+        } else if (typeof modelValue === 'number') {
+            value = new Date(modelValue)
+        } else {
+            throw new TypeError('Unsupported value')
+        }
+        return value
+    }
+}
+
+export class DateFormatter extends DateTimeFormatterBase {
+    formatPortable(date?: Date): string | undefined {
+        if (!date) return undefined
+        const Y = date.getUTCFullYear()
+        const M = date.getUTCMonth() + 1
+        const D = date.getUTCDate()
+        return expand(Y, 4) + '-' +
+            expand(M, 2) + '-' +
+            expand(D, 2)
+
+    }
+
+    loadValue(modelValue?: string | Date | number | null): Date | null {
+        let value
+        if (typeof modelValue === 'string') {
+            modelValue = modelValue.trim()
+        }
+        if (modelValue === null || modelValue == undefined) {
+            value = null
+        } else if (modelValue instanceof Date) {
+            value = modelValue
+        } else if (typeof modelValue === 'string') {
+            // we expect "YYYY-MM-DD hh:mm:ss", always GMT
+            const re = /^(\d\d\d\d)-(\d\d)-(\d\d)$/
+            const matches = re.exec(modelValue)
+            if (!matches) {
+                value = new Date()
+            } else {
+                const dateStr = matches.slice(1, 4).join('-')
+                value = new Date(dateStr)
+            }
+        } else if (typeof modelValue === 'number') {
+            value = new Date(modelValue)
+        } else {
+            throw new TypeError('Unsupported value')
+        }
+        return value
+    }
+}
+
+export class TimeFormatter extends DateTimeFormatterBase {
+    formatPortable(date?: Date): string | undefined {
+        if (!date) return undefined
+        const h = date.getHours()
+        const m = date.getMinutes()
+        const s = date.getSeconds()
+        return expand(h, 2) + ':' +
+            expand(m, 2) + ':' +
+            expand(s, 2)
+
+
+    }
+
+    formatterOptions(_editing?: boolean): Intl.DateTimeFormatOptions {
+        return {
+            hour: '2-digit',
+            minute: '2-digit'
+        }
+    }
+
+
+    loadValue(modelValue?: string | Date | number | null): Date | null {
+        let value
+        if (typeof modelValue === 'string') {
+            modelValue = modelValue.trim()
+        }
+        if (modelValue === null || modelValue == undefined) {
+            value = null
+        } else if (modelValue instanceof Date) {
+            value = modelValue
+        } else if (typeof modelValue === 'string') {
+            // we expect "YYYY-MM-DD hh:mm:ss", always GMT
+            const re = /^(\d\d):(\d\d)(:\d\d)?$/
+            const matches = re.exec(modelValue)
+            if (!matches) {
+                value = new Date()
+            } else {
+                const dateStr = '1970-01-01T' + matches.slice(1, 3).join(':') + ':00'
+                value = new Date(dateStr)
+            }
+        } else if (typeof modelValue === 'number') {
+            value = new Date(modelValue)
+        } else {
+            throw new TypeError('Unsupported value')
+        }
+        return value
     }
 }

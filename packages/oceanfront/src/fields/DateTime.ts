@@ -1,4 +1,4 @@
-import { computed, h, ref, watch } from 'vue'
+import { computed, h, Ref, ref, watch } from 'vue'
 import { useFormats } from '../lib/formats'
 
 import {
@@ -9,177 +9,188 @@ import {
     fieldRender,
 } from '../lib/fields'
 
-import { monthGrid, MonthGridData, MonthGrid } from '../lib/datetime'
 import { OfIcon } from '../components/Icon';
-import { DateTimeFormatter } from 'src/formats/DateTime';
+import { DateFormatter, DateTimeFormatter, TimeFormatter } from 'src/formats/DateTime';
+import OfDateTimePopup from '../components/DateTimePopup.vue'
 
-export const renderDateTimePopup = (g: MonthGrid, data: MonthGridData): any => {
-    if (!data) return ''
-    const cells: any[] = []
-    data.grid.forEach(row => {
-        row.forEach(cell => {
-            cells.push(
-                h('div', {
-                    class: [
-                        'picker-date',
-                        {
-                            'other-month': cell.otherMonth,
-                            'selected-date': cell.selected,
-                            'today': cell.today,
-                        }
-                    ],
-                    onclick: cell.otherMonth ? null : () => g.selectedDate = cell.date
-                }, cell.date.getDate())
-            )
-        })
+type InputType = 'date' | 'datetime' | 'time'
+
+type RenderOpts = {
+    close: (date?: Date) => any,
+    selectedDate: Ref<Date>,
+    monthStart: Ref<Date>
+    withTime: boolean,
+    withDate: boolean,
+}
+
+export const renderDateTimePopup = (opts: RenderOpts): any => {
+    return h(
+        OfDateTimePopup,
+        {
+            date: opts.selectedDate,
+            monthStart: opts.monthStart,
+            withTime: opts.withTime,
+            withDate: opts.withDate,
+            accept: opts.close,
+        }
+    )
+
+}
+
+const fieldSetup = (type: InputType) => (props: FieldProps, ctx: FieldContext) => {
+    const withTime = type == 'datetime' || type == 'time'
+    const withDate = type == 'datetime' || type == 'date'
+    const formatMgr = useFormats()
+    const formatter = computed(
+        () => {
+            switch (type) {
+                case 'date': return formatMgr.getTextFormatter(
+                    'date', { dateFormat: 'short' }) as DateFormatter
+                case 'time': return formatMgr.getTextFormatter(
+                    'time', { dateFormat: 'short' }) as TimeFormatter
+                default: return formatMgr.getTextFormatter(
+                    'datetime', { dateFormat: 'short' }) as DateTimeFormatter
+            }
+        }
+    )
+
+    const parseDate = (value: any) => {
+        const df = formatter.value
+        try {
+            const loadedValue = df.loadValue(value)
+            if (loadedValue instanceof Date) value = loadedValue
+        } catch (e) { }
+        return value
+    }
+
+    const initialValue = computed(() => {
+        let initial = ctx.initialValue
+        if (initial === undefined) initial = props.defaultValue
+        initial = parseDate(initial)
+        return initial ?? null
     })
 
-    const formatMgr = useFormats()
-    const titleFormat = formatMgr.getTextFormatter("datetime", { nativeOptions: { month: "short", year: "numeric", day: "numeric", weekday: 'short' } })
-    const monthFormat = formatMgr.getTextFormatter("datetime", { nativeOptions: { month: "short", year: "numeric" } })
-    const title = h(
-        h(
-            'div',
-            { class: 'of-date-picker-title' },
-            [
-                h('div', titleFormat?.format(g.selectedDate).textValue),
+    const stateValue = ref()
+    const opened = ref(false)
+    const editable = computed(() => ctx.mode === 'edit' && !ctx.locked)
+    let defaultFieldId: string
+    const inputId = computed(() => {
+        let id = ctx.id
+        if (!id) {
+            if (!defaultFieldId) defaultFieldId = newFieldId()
+            id = defaultFieldId
+        }
+        return id
+    })
+
+    const currentDate = ref(new Date)
+    const editableDate = ref(new Date)
+    const monthStart = ref(new Date)
+
+    const closePopup = () => {
+        opened.value = false
+    }
+
+    watch(
+        () => ctx.value,
+        (val) => {
+            if (val === undefined || val === '') val = null
+            const loaded = parseDate(val)
+            if (loaded instanceof Date) {
+                currentDate.value = loaded
+                monthStart.value = loaded
+                stateValue.value = val
+            }
+        },
+        {
+            immediate: true,
+        }
+    )
+
+    const clickOpen = (_evt?: MouseEvent) => {
+        editableDate.value = new Date(currentDate.value.valueOf())
+        monthStart.value = new Date(currentDate.value.valueOf())
+        opened.value = true
+        return false
+    }
+
+    const acceptResult = (date?: Date) => {
+        if (date && ctx.onUpdate) ctx.onUpdate(formatter.value.formatPortable(date))
+        opened.value = false
+    }
+
+    const renderPopup = () => {
+        return renderDateTimePopup({
+            close: acceptResult,
+            selectedDate: editableDate,
+            monthStart,
+            withTime,
+            withDate,
+        })
+    }
+
+    return fieldRender({
+        content: () => {
+            const val = formatter.value?.format(stateValue.value)
+            const value = val?.textValue
+            return [
+                h(
+                    'div',
+                    {
+                        class: [
+                            'of-field-input-label',
+                            'of--align-' + (props.align || 'start'),
+                        ],
+                        id: inputId.value,
+                        tabindex: 0,
+                    },
+                    value
+                ),
             ]
-        )
-    )
-    return h(
-        'div',
-        { role: 'menu', class: 'of-menu of-datepicker-popup' },
-        h('div', { class: 'of-datepicker-grid' }, [
-            title,
-            h('div', { class: 'of-datepicker-nav-button prev', onclick: () => g.prevMonth() },
-                h(OfIcon, {
-                    name: 'arrow-left',
-                })
-            ),
-            h('div', { class: "of-date-picker-cur-year" }, monthFormat?.format(g.monthStart).textValue),
-            h('div', { class: 'of-datepicker-nav-button next', onclick: () => g.nextMonth() },
-                h(OfIcon, {
-                    name: 'arrow-right',
-                })
-            ),
-            cells,
-        ]
-        )
-    )
+        },
+        updated: computed(() => {
+            return initialValue.value !== stateValue.value
+        }),
+        cursor: computed(() => editable.value ? "pointer" : "default"),
+        click: computed(() => editable.value ? clickOpen : null),
+        inputId,
+        popup: {
+            content: renderPopup,
+            visible: opened,
+            onBlur: closePopup,
+        },
+        value: stateValue,
+        append() {
+            return [
+                withDate ? h(OfIcon, {
+                    name: 'date',
+                    size: 'input',
+                }) : null,
+                withTime ? h(OfIcon, {
+                    name: 'time',
+                    size: 'input',
+                }) : null
+            ]
+        }
+    })
 }
 
 
 export const DateTimeField = defineFieldType({
     name: 'datetime',
     class: 'of-datetime-field',
-    setup(props: FieldProps, ctx: FieldContext) {
-        const formatMgr = useFormats()
+    setup: fieldSetup('datetime'),
+})
 
-        const formatter = computed(
-            () => formatMgr.getTextFormatter("datetime", props.formatOptions) as DateTimeFormatter
-        )
+export const DateField = defineFieldType({
+    name: 'date',
+    class: 'of-datetime-field',
+    setup: fieldSetup('date'),
+})
 
-        const parseDate = (value: any) => {
-            const df = formatter.value
-            try {
-                const loadedValue = df.loadValue(value)
-                if (loadedValue instanceof Date) value = loadedValue
-            } catch (e) { }
-            return value
-        }
-
-        const initialValue = computed(() => {
-            let initial = ctx.initialValue
-            if (initial === undefined) initial = props.defaultValue
-            initial = parseDate(initial)
-            return initial ?? null
-        })
-
-        const stateValue = ref()
-        const opened = ref(false)
-        const editable = computed(() => ctx.mode === 'edit' && !ctx.locked)
-        let defaultFieldId: string
-        const inputId = computed(() => {
-            let id = ctx.id
-            if (!id) {
-                if (!defaultFieldId) defaultFieldId = newFieldId()
-                id = defaultFieldId
-            }
-            return id
-        })
-
-        const gridData = ref(null as unknown as MonthGridData)
-        let g: MonthGrid | undefined
-
-        const closePopup = () => {
-            g = undefined
-            opened.value = false
-        }
-
-        watch(
-            () => ctx.value,
-            (val) => {
-                if (val === undefined || val === '') val = null
-                const loaded = parseDate(val)
-                if (loaded instanceof Date) {
-                    stateValue.value = val
-                }
-            },
-            {
-                immediate: true,
-            }
-        )
-
-        const clickOpen = (_evt?: MouseEvent) => {
-            opened.value = true
-            return false
-        }
-
-        const renderPopup = () => {
-            if (!g) {
-                g = monthGrid((data: MonthGridData) => {
-                    if (data.newDate) {
-                        opened.value = false
-                        if (ctx.onUpdate) ctx.onUpdate(formatter.value.formatPortable(g?.selectedDate))
-                    }
-                    gridData.value = data
-                }, parseDate(stateValue.value))
-            }
-            return renderDateTimePopup(g, gridData.value)
-        }
-
-        return fieldRender({
-            content: () => {
-                const val = formatter.value?.format(stateValue.value)
-                const value = val?.textValue
-                return [
-                    h(
-                        'div',
-                        {
-                            class: [
-                                'of-field-input-label',
-                                'of--align-' + (props.align || 'start'),
-                            ],
-                            id: inputId.value,
-                            tabindex: 0,
-                        },
-                        value
-                    ),
-                ]
-            },
-            updated: computed(() => {
-                return initialValue.value !== stateValue.value
-            }),
-            cursor: computed(() => editable.value ? "pointer" : "default"),
-            click: computed(() => editable.value ? clickOpen : null),
-            inputId,
-            popup: {
-                content: renderPopup,
-                visible: opened,
-                onBlur: closePopup,
-            },
-            value: stateValue,
-        })
-    }
+export const TimeField = defineFieldType({
+    name: 'time',
+    class: 'of-time-field',
+    setup: fieldSetup('time'),
 })
 

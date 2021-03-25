@@ -47,7 +47,23 @@
           <div class="row form-row">
             <of-datetime-field
               name="five"
+              label="Date and time picker"
+              label-position="field"
+              :record="testRecord"
+            />
+          </div>
+          <div class="row form-row">
+            <of-date-field
+              name="six"
               label="Date picker"
+              label-position="field"
+              :record="testRecord"
+            />
+          </div>
+          <div class="row form-row">
+            <of-time-field
+              name="seven"
+              label="Time picker"
               label-position="field"
               :record="testRecord"
             />
@@ -95,6 +111,8 @@ const testRecord = makeRecord({
   three: true,
   four: 25,
   five: '2021-02-15 12:00:00',
+  six: '2021-02-15',
+  seven: '12:00:00',
 })
 
 export default defineComponent({

@@ -6,7 +6,20 @@
     <br />
     <div class="row">
       <div class="column md-8">
-        <of-datetime-field label="Date only" v-model:value="inputValue" />
+        <of-date-field label="Date only" v-model:value="dateValue" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="column md-8">
+        <of-datetime-field
+          label="Date and time"
+          v-model:value="dateTimeValue"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="column md-8">
+        <of-time-field label="Time" v-model:value="timeValue" />
       </div>
     </div>
   </div>
@@ -27,16 +40,24 @@ const testDateTimeField = {
   inputLabel: 'Input Label',
 }
 
-const inputValue = ref('2021-03-05 12:00')
+const dateTimeValue = ref('2021-03-05 12:00')
+const dateValue = ref('2021-03-05')
+const timeValue = ref('18:55')
 
 export default defineComponent({
   setup() {
     const sampleCode = `<of-datetime-field
-  label="Date only"
+  label="Date and time"
   v-model:value="inputValue"
 />
 `
-    return { sampleCode, testDateTimeField, inputValue }
+    return {
+      sampleCode,
+      testDateTimeField,
+      dateValue,
+      dateTimeValue,
+      timeValue,
+    }
   },
 })
 </script>
