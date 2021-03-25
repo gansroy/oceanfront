@@ -10,15 +10,17 @@ import {
 } from '../lib/fields'
 
 import { OfIcon } from '../components/Icon';
-import { DateTimeFormatter } from 'src/formats/DateTime';
+import { DateFormatter, DateTimeFormatter, TimeFormatter } from 'src/formats/DateTime';
 import OfDateTimePopup from '../components/DateTimePopup.vue'
 
+type InputType = 'date' | 'datetime' | 'time'
 
 type RenderOpts = {
     close: (date?: Date) => any,
     selectedDate: Ref<Date>,
     monthStart: Ref<Date>
     withTime: boolean,
+    withDate: boolean,
 }
 
 export const renderDateTimePopup = (opts: RenderOpts): any => {
@@ -28,16 +30,28 @@ export const renderDateTimePopup = (opts: RenderOpts): any => {
             date: opts.selectedDate,
             monthStart: opts.monthStart,
             withTime: opts.withTime,
+            withDate: opts.withDate,
             accept: opts.close,
         }
     )
 
 }
 
-const fieldSetup = (withTime: boolean) => (props: FieldProps, ctx: FieldContext) => {
+const fieldSetup = (type: InputType) => (props: FieldProps, ctx: FieldContext) => {
+    const withTime = type == 'datetime' || type == 'time'
+    const withDate = type == 'datetime' || type == 'date'
     const formatMgr = useFormats()
     const formatter = computed(
-        () => formatMgr.getTextFormatter(withTime ? "datetime" : "date", { dateFormat: 'short' }) as DateTimeFormatter
+        () => {
+            switch (type) {
+                case 'date': return formatMgr.getTextFormatter(
+                    'date', { dateFormat: 'short' }) as DateFormatter
+                case 'time': return formatMgr.getTextFormatter(
+                    'time', { dateFormat: 'short' }) as TimeFormatter
+                default: return formatMgr.getTextFormatter(
+                    'datetime', { dateFormat: 'short' }) as DateTimeFormatter
+            }
+        }
     )
 
     const parseDate = (value: any) => {
@@ -110,7 +124,8 @@ const fieldSetup = (withTime: boolean) => (props: FieldProps, ctx: FieldContext)
             close: acceptResult,
             selectedDate: editableDate,
             monthStart,
-            withTime
+            withTime,
+            withDate,
         })
     }
 
@@ -147,10 +162,10 @@ const fieldSetup = (withTime: boolean) => (props: FieldProps, ctx: FieldContext)
         value: stateValue,
         append() {
             return [
-                h(OfIcon, {
+                withDate ? h(OfIcon, {
                     name: 'date',
                     size: 'input',
-                }),
+                }) : null,
                 withTime ? h(OfIcon, {
                     name: 'time',
                     size: 'input',
@@ -164,12 +179,18 @@ const fieldSetup = (withTime: boolean) => (props: FieldProps, ctx: FieldContext)
 export const DateTimeField = defineFieldType({
     name: 'datetime',
     class: 'of-datetime-field',
-    setup: fieldSetup(true),
+    setup: fieldSetup('datetime'),
 })
 
 export const DateField = defineFieldType({
     name: 'date',
     class: 'of-datetime-field',
-    setup: fieldSetup(false),
+    setup: fieldSetup('date'),
+})
+
+export const TimeField = defineFieldType({
+    name: 'time',
+    class: 'of-time-field',
+    setup: fieldSetup('time'),
 })
 

@@ -17,6 +17,11 @@
         />
       </div>
     </div>
+    <div class="row">
+      <div class="column md-8">
+        <of-time-field label="Time" v-model:value="timeValue" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -37,6 +42,7 @@ const testDateTimeField = {
 
 const dateTimeValue = ref('2021-03-05 12:00')
 const dateValue = ref('2021-03-05')
+const timeValue = ref('18:55')
 
 export default defineComponent({
   setup() {
@@ -45,7 +51,13 @@ export default defineComponent({
   v-model:value="inputValue"
 />
 `
-    return { sampleCode, testDateTimeField, dateValue, dateTimeValue }
+    return {
+      sampleCode,
+      testDateTimeField,
+      dateValue,
+      dateTimeValue,
+      timeValue,
+    }
   },
 })
 </script>

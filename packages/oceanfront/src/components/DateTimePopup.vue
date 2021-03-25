@@ -3,16 +3,16 @@
   <div
     role="menu"
     class="of-menu of-datepicker-popup"
-    :class="{ 'with-time': withTime }"
+    :class="{ 'with-time': withTime, 'with-date': withDate }"
     tabindex="0"
     :onVnodeMounted="mounted"
     :onVnodeUnmounted="unmounted"
   >
-    <div class="of-date-picker-title">
+    <div class="of-date-picker-title" v-if="withDate">
       {{ title }}
     </div>
     <div class="of-datepicker-selectors" @selectstart.prevent="">
-      <div class="of-datepicker-grid">
+      <div class="of-datepicker-grid" v-if="withDate">
         <div class="of-datepicker-nav-button prev" :onclick="prevMonth">
           <of-icon name="arrow-left" />
         </div>
@@ -137,6 +137,7 @@ export default defineComponent({
   props: {
     id: String,
     withTime: Boolean,
+    withDate: Boolean,
     date: Object,
     monthStart: Object,
     isSelected: Function,

@@ -79,7 +79,7 @@ div.of-date-picker-cur-year {
         justify-items: center;
      }
     
-     &.with-time {
+     &.with-time.with-date {
         max-width: 320px;
         & .of-datepicker-selectors {
              grid-template-columns: auto auto;
@@ -92,8 +92,11 @@ div.of-date-picker-cur-year {
     width: 100%;
     grid-template-columns: 1fr 30px 8px 30px 1fr;
     grid-template-rows: 48px auto auto auto 2fr;
-
     justify-items: center;
+
+    @at-root :not(.with-date) > * > & {
+        grid-template-rows: 16px auto auto auto 2fr;
+    }
 
     & .time-value {
         font-weight: bold;
