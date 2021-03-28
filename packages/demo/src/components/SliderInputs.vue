@@ -7,7 +7,7 @@
         <of-slider-field
           :max="sliderMax"
           :step="5"
-          v-model:value="sliderValue"
+          v-model="sliderValue"
           label="Slider input"
         ></of-slider-field>
       </div>
@@ -15,7 +15,7 @@
         <of-slider-field
           :max="sliderMax"
           :step="10"
-          v-model:value="sliderValue"
+          v-model="sliderValue"
           variant="outlined"
           label="Slider input"
         ></of-slider-field>
@@ -24,7 +24,7 @@
         <of-slider-field
           :max="sliderMax"
           :step="15"
-          v-model:value="sliderValue"
+          v-model="sliderValue"
           variant="filled"
           label="Slider input"
         ></of-slider-field>
@@ -49,7 +49,7 @@ export default defineComponent({
   :min="0"
   :max="100"
   :step="5"
-  v-model:value="fieldValue"
+  v-model="fieldValue"
   variant="filled"
 />`
     return {

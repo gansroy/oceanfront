@@ -57,7 +57,7 @@
                 <div class="column">
                   <of-text-field
                     v-bind="startAtField"
-                    v-model:value.number="startAt"
+                    v-model.number="startAtValue"
                     input-type="number"
                     variant="basic"
                   />
@@ -65,7 +65,7 @@
                 <div class="column">
                   <of-text-field
                     v-bind="perPageField"
-                    v-model:value.number="perPage"
+                    v-model.number="perPageValue"
                     input-type="number"
                     variant="basic"
                   />
@@ -103,17 +103,17 @@ export default defineComponent({
   name: 'OfPagination',
   components: { OfOverlay },
   props: {
-    value: { type: Number, required: true },
+    modelValue: { type: Number, required: true },
     totalPages: { type: Number, required: true },
     totalVisible: Number,
     variant: String,
-    customOffsetPopup: Boolean,
+    customOffsetPopup: [Boolean, String],
     startRecord: Number,
     perPage: Number,
   },
-  emits: ['update:value', 'select-page', 'update-offset'],
+  emits: ['update:modelValue', 'select-page', 'update-offset'],
   setup(props, context: SetupContext) {
-    let page: Ref<number> = computed(() => props.value || 1)
+    let page: Ref<number> = computed(() => props.modelValue || 1)
     const totalVisible: Ref<number> = computed(() => props.totalVisible || 5)
 
     const variant = computed(() => props.variant || 'standard')
@@ -175,12 +175,12 @@ export default defineComponent({
 
     const onSelectPage = function (page: number) {
       closeOffsetPopup()
-      context.emit('update:value', page)
+      context.emit('update:modelValue', page)
 
       const paginator: Paginator = {
         page: page,
-        startRecord: startAt.value,
-        perPage: perPage.value,
+        startRecord: startAtValue.value,
+        perPage: perPageValue.value,
       }
       context.emit('select-page', paginator)
     }
@@ -194,27 +194,27 @@ export default defineComponent({
     }
 
     //Custom Offset Popup
-    const startAt: Ref<number> = ref(props.startRecord || 1)
+    const startAtValue: Ref<number> = ref(props.startRecord || 1)
 
     watch(
       () => props.startRecord,
       (val) => {
-        startAt.value = val as number
+        startAtValue.value = val as number
       }
     )
 
-    const perPage: Ref<number> = ref(props.perPage || 20)
+    const perPageValue: Ref<number> = ref(props.perPage || 20)
 
     watch(
       () => props.perPage,
       (val) => {
-        perPage.value = val as number
+        perPageValue.value = val as number
       }
     )
 
     watchEffect(() => {
-      if (startAt.value <= 0) startAt.value = 1
-      if (perPage.value <= 0) perPage.value = 1
+      if (startAtValue.value <= 0) startAtValue.value = 1
+      if (perPageValue.value <= 0) perPageValue.value = 1
     })
 
     const showCustomOffsetPopup = computed(
@@ -268,8 +268,8 @@ export default defineComponent({
       closeOffsetPopup()
       const paginator: Paginator = {
         page: page.value,
-        startRecord: startAt.value,
-        perPage: perPage.value,
+        startRecord: startAtValue.value,
+        perPage: perPageValue.value,
       }
       context.emit('update-offset', paginator)
     }
@@ -291,10 +291,10 @@ export default defineComponent({
       offsetPopupOuter,
       openOffsetPopup,
       closeOffsetPopup,
-      startAt,
+      startAtValue,
       startAtField,
-      perPage,
       perPageField,
+      perPageValue,
       pageItems,
       updateOffsetParams,
     }

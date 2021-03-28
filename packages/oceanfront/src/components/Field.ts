@@ -127,6 +127,10 @@ export const OfField = defineComponent({
     // messages
     maxlength: [Number, String],
     mode: String as PropType<'edit' | 'readonly' | 'view'>,
+    modelValue: {
+      type: [String, Boolean, Number, Array, Object],
+      default: undefined,
+    },
     muted: Boolean,
     name: String,
     placeholder: String,
@@ -136,14 +140,10 @@ export const OfField = defineComponent({
     size: { type: [Number, String], default: undefined },
     // style
     type: String,
-    value: {
-      type: [String, Boolean, Number, Array, Object],
-      default: undefined,
-    },
     variant: String,
   },
   emits: {
-    'update:value': null,
+    'update:modelValue': null,
   },
   setup(props, ctx: SetupContext) {
     const formatMgr = useFormats()
@@ -176,7 +176,9 @@ export const OfField = defineComponent({
         : props.initialValue
     )
     const value = computed(() =>
-      props.name && record.value ? record.value.value[props.name] : props.value
+      props.name && record.value
+        ? record.value.value[props.name]
+        : props.modelValue
     )
     const locked = computed(() => props.locked || record.value?.locked)
 
@@ -190,7 +192,7 @@ export const OfField = defineComponent({
       value,
       onUpdate(value: any) {
         if (props.name && record.value) record.value.value[props.name] = value
-        else ctx.emit('update:value', value)
+        else ctx.emit('update:modelValue', value)
       },
       ...extractRefs(props, [
         'block',

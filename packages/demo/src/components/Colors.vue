@@ -16,7 +16,7 @@
                       label="Primary Hue"
                       min="0"
                       max="359"
-                      v-model:value="hue"
+                      v-model="hue"
                     />
                   </div>
                   <div class="row form-row">
@@ -24,7 +24,7 @@
                       label="Secondary Hue Offset"
                       min="0"
                       max="359"
-                      v-model:value="secondOffset"
+                      v-model="secondOffset"
                     />
                   </div>
                   <div class="row form-row">
@@ -32,7 +32,7 @@
                       label="Background Hue Offset"
                       min="0"
                       max="359"
-                      v-model:value="bgOffset"
+                      v-model="bgOffset"
                     />
                   </div>
                   <div class="row form-row">
@@ -40,14 +40,14 @@
                       label="Saturation"
                       min="0"
                       max="100"
-                      v-model:value="saturation"
+                      v-model="saturation"
                     />
                   </div>
-                  <!-- of-field type="color" v-model:value="color" variant="filled" / -->
-                  <!-- of-field type="color" v-model:value="color" / -->
+                  <!-- of-field type="color" v-model="color" variant="filled" / -->
+                  <!-- of-field type="color" v-model="color" / -->
 
                   <div class="row form-row">
-                    <of-toggle-field label="Dark mode" v-model:checked="dark" />
+                    <of-toggle-field label="Dark mode" v-model="dark" />
                   </div>
                 </div>
               </div>
