@@ -1,14 +1,40 @@
-import { computed, ComputedRef, reactive, watch } from 'vue'
+import {
+  ComponentInternalInstance,
+  computed,
+  ComputedRef,
+  getCurrentInstance,
+  inject,
+  InjectionKey,
+  onUnmounted,
+  provide,
+  reactive,
+  watch,
+} from 'vue'
 import { Config, ConfigManager } from './config'
 import { readonlyUnref } from './util'
 
+const NAV_GROUP = ('ofnavgrp' as unknown) as InjectionKey<NavGroup>
+
+export function provideNavGroup(grp: NavGroup | null): void {
+  provide(NAV_GROUP, grp)
+}
+
+export function useNavGroup(): NavGroup | null {
+  const grp = inject(NAV_GROUP) || null
+  const inst = getCurrentInstance()
+  if (grp && inst) {
+    return new NavGroupProxy(grp, inst)
+  }
+  return grp
+}
+
 export type NavGroupTarget = {
-  disabled?: boolean
-  focused?: boolean
-  elt?: any
-  id?: string
-  groupCurrent?: boolean
-  focus?: () => void
+  isCurrent?: boolean
+  readonly isDisabled?: boolean
+  readonly isFocused?: boolean
+  readonly elt?: any
+  readonly id?: string
+  readonly focus?: () => void
 }
 
 export type NavGroupUnregister = {
@@ -16,100 +42,50 @@ export type NavGroupUnregister = {
 }
 
 export type NavGroup = {
-  readonly groupFocused: ComputedRef<boolean>
-  groupRegister(target: NavGroupTarget): NavGroupUnregister | null
-  groupNavigate(
-    target: string | { event: KeyboardEvent } | { id: string }
-  ): boolean
+  readonly isFocused: ComputedRef<boolean>
+  register(target: NavGroupTarget): NavGroupUnregister | null
+  navigate(evt: KeyboardEvent): boolean
 }
 
-export type NavTo =
-  | string
-  | {
-      path: string
-      hash?: string
-      query?: Record<string, string>
-      replace?: boolean
-      force?: boolean
+interface NavComponent extends ComponentInternalInstance {
+  _navItems?: NavGroupUnregister[]
+}
+
+class NavGroupProxy implements NavGroup {
+  _grp: NavGroup
+  _inst: NavComponent
+
+  constructor(grp: NavGroup, inst: ComponentInternalInstance) {
+    this._grp = grp
+    this._inst = inst
+  }
+
+  get isFocused() {
+    return this._grp.isFocused
+  }
+
+  register(target: NavGroupTarget): NavGroupUnregister | null {
+    const inst = this._inst
+    const unreg = this._grp.register(target)
+    if (unreg) {
+      if (!inst._navItems) {
+        inst._navItems = []
+        onUnmounted(() => {
+          if (inst._navItems) {
+            for (const item of inst._navItems) {
+              item.unregister() // unregister
+            }
+          }
+        }, inst)
+      }
+      inst._navItems.push(unreg)
     }
-
-export interface NavRouter {
-  routeActive(target?: NavTo): boolean
-  routeNavigate(target: NavTo): Promise<void | string> | null
-  routeResolve(target?: NavTo): string | null
-}
-
-export interface NavState extends NavRouter, NavGroup {
-  readonly haveGroup: boolean
-  readonly haveRouter: boolean
-}
-
-export class NavManager implements NavState {
-  _afterRouteNavigate?: () => void
-  _group?: NavGroup
-  _router?: NavRouter
-
-  get haveGroup(): boolean {
-    return !!this._group
+    return unreg
   }
 
-  get haveRouter(): boolean {
-    return !!this._router
+  navigate(evt: KeyboardEvent): boolean {
+    return this._grp.navigate(evt)
   }
-
-  get groupFocused(): ComputedRef<boolean> {
-    return computed(() =>
-      this._group ? this._group.groupFocused.value : false
-    )
-  }
-
-  groupRegister(target: NavGroupTarget): NavGroupUnregister | null {
-    return (this._group && this._group.groupRegister(target)) || null
-  }
-
-  groupNavigate(
-    target: string | { event: KeyboardEvent } | { id: string }
-  ): boolean {
-    return (this._group && this._group.groupNavigate(target)) || false
-  }
-
-  routeActive(target: NavTo): boolean {
-    return (this._router && this._router.routeActive(target)) || false
-  }
-
-  routeNavigate(target: NavTo): Promise<void | string> | null {
-    const result = (this._router && this._router.routeNavigate(target)) || null
-    const after = this._afterRouteNavigate
-    if (result && after)
-      return result.then((r) => {
-        after()
-        return r
-      })
-    return result
-  }
-
-  routeResolve(target: NavTo): string | null {
-    return (this._router && this._router.routeResolve(target)) || null
-  }
-}
-
-const configManager = new ConfigManager('ofnav', NavManager)
-
-export function setNavGroup(group: NavGroup | null): void {
-  configManager.extendingManager._group = group || undefined
-}
-
-export function setAfterRouteNavigate(cb: () => void): void {
-  configManager.extendingManager._afterRouteNavigate = cb
-}
-
-export function setRouter(router: NavRouter | null): void {
-  configManager.extendingManager._router = router || undefined
-}
-
-export function useNav(config?: Config): NavState {
-  const mgr = configManager.inject(config)
-  return readonlyUnref(mgr)
 }
 
 export function reactiveNavGroup(): NavGroup {
@@ -133,62 +109,65 @@ export function reactiveNavGroup(): NavGroup {
     let lastActive
     let lastFocused
     for (const [idx, item] of orderedItems.value.entries()) {
-      if (item.disabled) continue
+      if (item.isDisabled) continue
       if (first === undefined) first = idx
-      if (item.focused) lastFocused = idx
-      if (item.groupCurrent) lastActive = idx
+      if (item.isFocused) lastFocused = idx
+      if (item.isCurrent) lastActive = idx
     }
-    const active = lastFocused ?? lastActive ?? first
-    return { lastFocused, lastActive, first, active }
+    const current = lastFocused ?? lastActive ?? first
+    return { lastFocused, lastActive, first, current }
   })
-  const focused = computed(() => {
-    const idx = scan.value.active
-    return (idx !== undefined && orderedItems.value[idx]?.focused) || false
+  const isFocused = computed(() => {
+    const idx = scan.value.current
+    return (idx !== undefined && orderedItems.value[idx]?.isFocused) || false
   })
   watch(
     () => scan.value,
     (scan) => {
       for (const [idx, item] of orderedItems.value.entries()) {
-        const active = idx === scan.active
-        if (item.groupCurrent !== active) item.groupCurrent = active
+        const current = idx === scan.current
+        if (item.isCurrent !== current) item.isCurrent = current
       }
     }
   )
 
   return {
-    groupFocused: focused,
-    groupRegister(target: NavGroupTarget): NavGroupUnregister | null {
+    isFocused,
+    register(target: NavGroupTarget): NavGroupUnregister | null {
       items.add(target)
       return {
         unregister: () => items.delete(target),
       }
     },
-    groupNavigate(
-      target: string | { event: KeyboardEvent } | { id: string }
-    ): boolean {
+    navigate(event: KeyboardEvent): boolean {
       const ordered = orderedItems.value
       const scanVal = scan.value
-      if (!ordered.length || scanVal.active === undefined) return false
-      const event: KeyboardEvent | undefined = (
-        typeof target === 'object' && (target as any)
-      ).event
-      const key = event?.key
+      if (!ordered.length || scanVal.current === undefined) return false
+      const key = event.key
+      let target = null
       if (key === 'ArrowDown' || key === 'ArrowRight') {
         target = 'next'
       } else if (key === 'ArrowUp' || key === 'ArrowLeft') {
         target = 'previous'
       } else if (event) return false
-      if (target === 'previous' || target === 'next') {
-        let idx = scanVal.active
+
+      if (target) {
+        if (event) event.preventDefault()
+        let idx = scanVal.current
         const offs = target === 'next' ? 1 : -1
+        let focus: (() => void) | undefined
         while (true) {
           idx += offs
           if (idx < 0) idx = ordered.length - 1
           else if (idx >= ordered.length) idx = 0
-          if (idx === scanVal.active) return false // looped around
-          if (ordered[idx] && !ordered[idx].disabled && ordered[idx].focus && ordered[idx].elt.clientHeight != 0) {
-            ordered[idx].focus!()
-            if (event) event.preventDefault()
+          if (idx === scanVal.current) return false // looped around
+          if (
+            ordered[idx] &&
+            !ordered[idx].isDisabled &&
+            (focus = ordered[idx].focus) &&
+            ordered[idx].elt.clientHeight != 0
+          ) {
+            focus()
             return true
           }
         }
