@@ -136,7 +136,13 @@ export {
 export { registerItemList, useItems } from './lib/items'
 export { setMobileBreakpoint, useLayout } from './lib/layout'
 export { useLocale } from './lib/locale'
-export { NavRouter, NavTo, setNavGroup, setRouter, useNav } from './lib/nav'
+export {
+  NavGroup,
+  NavGroupTarget,
+  NavGroupUnregister,
+  provideNavGroup,
+  useNavGroup,
+} from './lib/nav'
 export { makeRecord, setCurrentRecord, useRecords } from './lib/records'
 export { Tab } from './lib/tab'
 export {

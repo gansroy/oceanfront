@@ -5,85 +5,58 @@ import {
   PropType,
   reactive,
   ref,
-  Ref,
   SetupContext,
-  VNode,
+  watch,
 } from 'vue'
-import { NavGroupUnregister, NavTo, useNav } from '../lib/nav'
+import { useNavGroup } from '../lib/nav'
+import { Link, LinkTo, OfLink } from './Link'
 import { OfIcon } from './Icon'
 
 export const OfListItem = defineComponent({
   name: 'OfListItem',
   props: {
     active: { type: [Boolean, String], default: null },
-    disabled: Boolean,
+    disabled: { type: [Boolean, String], default: null },
     expand: { type: [Boolean, String], default: null },
-    href: String,
-    to: [String, Object] as PropType<NavTo>,
+    href: { type: String, default: null },
+    to: [String, Object] as PropType<LinkTo>,
   },
   emits: {
     click: null,
   },
   setup(props, ctx: SetupContext) {
-    let unreg: NavGroupUnregister | null
-    const nav = useNav()
-    const disabled = computed(() => props.disabled)
-    const elt = ref<HTMLElement | undefined>()
+    const navGroup = useNavGroup()
+    const elt = ref<HTMLElement>()
     const expand = computed(() => props.expand)
-    const focused = ref(false)
-    const focus = () => {
-      elt.value?.focus?.()
-    }
-    const href = computed(() => {
-      if (props.href) return props.href
-      return nav.routeResolve(props.to || props.href)
-    })
-    const routeActive = computed(() => {
-      if (props.active === null) {
-        return nav.routeActive(props.to || props.href)
-      }
-      return props.active
-    })
-    const navActive = ref(routeActive.value)
-    const clicked = (evt: Event) => {
-      const target = props.to || props.href
-      if (target && nav.routeNavigate(target)) {
-        evt.preventDefault()
-        return true
-      } else {
-        ctx.emit('click', evt)
-      }
+    const isCurrent = ref(!!props.active)
+    const isFocused = ref(false)
+    if (navGroup) {
+      navGroup.register(
+        reactive({
+          isCurrent,
+          isDisabled: computed(() => !!props.disabled),
+          elt,
+          isFocused,
+          focus: () => {
+            elt.value?.focus?.()
+          },
+        })
+      )
     }
     const handlers = {
-      onClick: clicked,
-      onBlur(_evt: FocusEvent) {
-        focused.value = false
+      onFocus() {
+        isFocused.value = true
       },
-      onFocus(_evt: FocusEvent) {
-        focused.value = true
-      },
-      onKeydown(evt: KeyboardEvent) {
-        if ((evt.key === ' ' || evt.key === 'Enter') && clicked(evt)) return
-        const result = nav.groupNavigate({ event: evt })
-        if (result) return false
-      },
-      onVnodeMounted(_vnode: VNode) {
-        unreg = nav.groupRegister(
-          reactive({
-            disabled: (disabled as any) as Ref<boolean | undefined>, // FIXME cast should not be necessary
-            elt,
-            focused,
-            navActive: navActive as Ref<boolean>, // FIXME cast should not be necessary
-            focus,
-          })
-        )
-      },
-      onVnodeUnmounted() {
-        elt.value = undefined
-        if (unreg) unreg.unregister()
-        unreg = null
+      onBlur() {
+        isFocused.value = false
       },
     }
+    watch(
+      () => props.active,
+      (active) => {
+        isCurrent.value = !!active
+      }
+    )
 
     const content = () => {
       const result = [
@@ -100,26 +73,57 @@ export const OfListItem = defineComponent({
     }
 
     return () => {
-      const hrefVal = disabled.value ? null : href.value
+      const disabled = props.disabled
       return h(
-        (hrefVal ? 'a' : 'div') as any,
+        OfLink as any,
         {
-          'aria-current': routeActive.value ? 'page' : undefined,
-          class: {
-            'of-list-item': true,
-            'of--active': routeActive.value,
-            'of--disabled': disabled.value,
-            'of--expandable': expand.value !== null,
-            'of--expand': expand.value,
-            'of--focused': focused.value,
-            'of--link': !!hrefVal,
-          },
-          href: hrefVal,
-          tabIndex: navActive.value ? 0 : -1,
-          ref: elt,
-          ...handlers,
+          href: disabled ? null : props.href,
+          to: disabled ? null : props.to,
         },
-        h('div', { class: 'of-list-item-inner' }, content())
+        {
+          custom: (link: Link) => {
+            const active =
+              props.active ??
+              (link.href ? link.isExactActive : navGroup && isCurrent.value)
+            const href = link.href
+            const activate = (evt: Event) => {
+              ctx.emit('click', evt)
+              if (link.href) {
+                link.navigate(evt)
+              }
+              return evt.defaultPrevented
+            }
+            return h(
+              href ? 'a' : 'div',
+              {
+                class: {
+                  'of-list-item': true,
+                  'of--active': active,
+                  'of--disabled': props.disabled,
+                  'of--expandable': expand.value !== null,
+                  'of--expanded': expand.value,
+                  'of--focused': isFocused.value,
+                  'of--link': !!href,
+                },
+                href: link.href,
+                ref: elt,
+                tabIndex: active ? 0 : -1,
+                onClick(evt: MouseEvent) {
+                  if (evt.button != null && evt.button !== 0) return
+                  activate(evt)
+                  return false
+                },
+                onKeydown(evt: KeyboardEvent) {
+                  if ((evt.key === ' ' || evt.key === 'Enter') && activate(evt))
+                    return
+                  navGroup?.navigate(evt)
+                },
+                ...handlers,
+              },
+              h('div', { class: 'of-list-item-inner' }, content())
+            )
+          },
+        }
       )
     }
   },

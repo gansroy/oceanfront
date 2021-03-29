@@ -27,7 +27,7 @@
     </header>
     <div class="app-body">
       <of-sidebar v-model="sidebarActive" :embed="!isMobile">
-        <of-nav-group @navigate="afterNav">
+        <of-nav-group>
           <of-list-item to="/">Overview</of-list-item>
           <of-list-item to="/colors">Colors &amp; Theming</of-list-item>
           <of-list-item to="/icons">Icons</of-list-item>
@@ -84,6 +84,7 @@ import {
   watch,
   nextTick,
 } from 'vue'
+import { useRouter } from 'vue-router'
 import { useLayout } from 'oceanfront'
 
 function formatError(e: any) {
@@ -99,6 +100,7 @@ export default defineComponent({
       return true
     })
     const layoutMgr = useLayout()
+    const router = useRouter()
     const baseFontSize = ref('16')
     const configActive = ref(false)
     const isMobile = computed(() => layoutMgr.isMobile)
@@ -129,12 +131,13 @@ export default defineComponent({
       if (isMobile.value) sidebarMobileActive.value = !sidebarMobileActive.value
       else sidebarDesktopActive.value = !sidebarDesktopActive.value
     }
+    watch(router.currentRoute, () => {
+      if (isMobile.value) {
+        sidebarMobileActive.value = false
+      }
+    })
+
     return {
-      afterNav: () => {
-        if (isMobile.value) {
-          sidebarMobileActive.value = false
-        }
-      },
       baseFontSize,
       configActive,
       error,
