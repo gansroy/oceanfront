@@ -5,14 +5,13 @@ import {
   reactive,
   ref,
   watch,
-  h 
+  h,
+  nextTick
 } from "vue";
 
-export interface DragEventOptions {
-  drag?: (event: Event) => void;
-  start?: (event: Event) => void;
-  end?: (event: Event) => void;
-}
+import {
+  triggerDragEvent
+} from '../lib/colorpicker'
 
 const clamp = (value: number, min: number, max: number) => {
   return min < max
@@ -90,35 +89,6 @@ export default defineComponent({
         emit("update:value", bright);
         emit("change", saturation, bright);
       }
-    };
-
-    const triggerDragEvent = (element: HTMLElement, options: DragEventOptions): void => {
-      let isDragging = false;
-
-      const moveFn = function(event: Event) {
-        options.drag?.(event);
-      };
-
-      const upFn = (event: Event) => {
-        document.removeEventListener("mousemove", moveFn);
-        document.removeEventListener("mouseup", upFn);
-        document.onselectstart = null;
-        document.ondragstart = null;
-
-        isDragging = false;
-
-        options.end?.(event);
-      };
-
-      element.addEventListener("mousedown", event => {
-        if (isDragging) return;
-        document.onselectstart = () => false;
-        document.ondragstart = () => false;
-        document.addEventListener("mousemove", moveFn);
-        document.addEventListener("mouseup", upFn);
-        isDragging = true;
-        options.start?.(event);
-      });
     }
 
     const updateCursorPosition = () => {
@@ -127,29 +97,24 @@ export default defineComponent({
         cursorLeft.value = currentHsv.s * el?.clientWidth;
         cursorTop.value = (1 - currentHsv.v) * el?.clientHeight;
       }
-    };
+    }
 
     onMounted(() => {
-
-      //FIXME
-      const testInstance = getCurrentInstance()
-      if (testInstance) {
-        const testEl = testInstance.vnode.el
-        console.log('clientWidth', testEl?.clientWidth)
-      }
-
-      if (instance && instance.vnode.el) {
-        triggerDragEvent(instance.vnode.el as HTMLElement, {
-          drag: (event: Event) => {
-            handleDrag(event as MouseEvent);
-          },
-          end: event => {
-            handleDrag(event as MouseEvent);
-          }
-        });
-        updateCursorPosition();
-      }
-    });
+      nextTick(() => {
+        if (instance && instance.vnode.el) {
+          triggerDragEvent(instance.vnode.el as HTMLElement, {
+            drag: (event: Event) => {
+              handleDrag(event as MouseEvent);
+            },
+            end: event => {
+              handleDrag(event as MouseEvent);
+            }
+          });
+          updateCursorPosition();
+        }
+            
+      })
+    })
 
     watch(
       () => props.hue,
@@ -157,7 +122,7 @@ export default defineComponent({
         currentHsv.h = hue;
         background.value = "hsl(" + Math.round(currentHsv.h) + ", 100%, 50%)";
       }
-    );
+    )
 
     watch(
       () => props.value,
@@ -165,7 +130,7 @@ export default defineComponent({
         currentHsv.v = value;
         updateCursorPosition();
       }
-    );
+    )
 
     watch(
       () => props.saturation,
@@ -174,12 +139,12 @@ export default defineComponent({
         updateCursorPosition();
       }
     );
-  
+
     return () => {
       return h(
         'div', {
           class: 'saturation',  
-          style: { backgroundColor: background.value }
+          style: { backgroundColor: background.value },
         }, [
           h('div', { class: 'saturation__white' },),
           h('div', { class: 'saturation__black' },),

@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <h1>Color Picker Inputs</h1>
+    <of-highlight lang="html" :value="sampleCode" />
     <div class="demo-fields">
-      <!-- <of-highlight lang="html" :value="sampleCode" /> -->
-      <of-color-field label="Color" v-model:value="inputValue" />
+      <of-color-field label="Color" v-model:value="colorValue" />
     </div>
   </div>
 </template>
@@ -20,12 +20,16 @@ const testColorField = {
   inputLabel: 'Input Label',
 }
 
-const inputValue = ref('20 20 20')
+const colorValue = ref({
+  h: 240,
+  s: 0.9,
+  v: 0.7
+})
 
 export default defineComponent({
   setup() {
-    const sampleCode = ``
-    return { sampleCode, testColorField, inputValue }
+    const sampleCode = `<of-color-field label="Color" v-model:value="colorValue" />`
+    return { sampleCode, testColorField, colorValue }
   },
 })
 </script>
