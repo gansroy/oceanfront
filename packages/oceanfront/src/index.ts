@@ -25,6 +25,7 @@ import OfTabs from './components/Tabs.vue'
 import OfSpinner from './components/Spinner.vue'
 import OfPagination from './components/Pagination.vue'
 import OfButton from './components/Button.vue'
+import { OfColorField } from './components/ColorField'
 
 import { FileField } from './fields/File'
 import { SelectField } from './fields/Select'
@@ -32,6 +33,7 @@ import { DateTimeField, DateField, TimeField } from './fields/DateTime'
 import { TextField } from './fields/Text'
 import { ToggleField } from './fields/Toggle'
 import { SliderField } from './fields/Slider'
+import { ColorField } from './fields/Color'
 
 import {
   registerFieldType,
@@ -72,6 +74,7 @@ export const components: Record<string, Component> = {
   OfToggleField,
   OfSpinner,
   OfButton,
+  OfColorField,
 }
 
 export const fieldTypes: Record<string, FieldTypeConstructor> = {
@@ -85,6 +88,7 @@ export const fieldTypes: Record<string, FieldTypeConstructor> = {
   datetime: DateTimeField,
   date: DateField,
   time: TimeField,
+  color: ColorField,
 }
 
 export const textFormatters: Record<string, TextFormatterConstructor> = {
