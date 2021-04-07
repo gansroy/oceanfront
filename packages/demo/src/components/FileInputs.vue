@@ -7,7 +7,7 @@
         <of-field
           type="file"
           label="Uploaded file"
-          :value="{ name: 'myreport.pdf', size: 10204 }"
+          :model-value="{ name: 'myreport.pdf', size: 10204 }"
           size="30"
           variant="basic"
         />
@@ -30,7 +30,7 @@ export default defineComponent({
     const sampleCode = `
 <of-file-field
   label="File input"
-  v-model:value="{name: 'Previous filename', size: 100}"
+  :model-value="{name: 'Previous filename', size: 100}"
   variant="filled"
 />`
 

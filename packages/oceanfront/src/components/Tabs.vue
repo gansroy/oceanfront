@@ -54,9 +54,9 @@
           :target="subMenuOuter"
         >
           <slot name="sub-menu" v-if="showSubMenu">
-            <div 
-              role="menu" 
-              class="of-menu of-invisible-tabs" 
+            <div
+              role="menu"
+              class="of-menu of-invisible-tabs"
               @mouseenter="subMenuClearTimeout()"
               @mouseleave="subMenuLeave()"
             >
@@ -186,26 +186,26 @@ export default defineComponent({
   components: { OfOverlay },
   props: {
     items: ({ type: [Object, Array] } as any) as PropType<ItemList>,
-    value: Number,
+    modelValue: Number,
     scrolling: { type: Boolean, default: false },
     overflowButton: { type: Boolean, default: false },
     variant: String,
     tabsList: Array,
     submenu: Boolean,
   },
-  emits: ['update:value', 'select-tab'],
+  emits: ['update:modelValue', 'select-tab'],
   setup(props, context: SetupContext) {
     let tabs: any = ref([])
     let ofTabsHeader: any = ref()
-    let selectedTabKey: any = ref(props.value)
+    let selectedTabKey: any = ref(props.modelValue)
     let tabsWidth: any = ref([])
 
     watch(
-      () => props.value,
+      () => props.modelValue,
       (val) => {
         selectedTabKey.value = val
         setTimeout(() => {
-          repositionLine();
+          repositionLine()
         })
       }
     )
@@ -479,7 +479,7 @@ export default defineComponent({
         closeSubMenu()
         switchOverflowPopupVisibility()
       } else if (selectedTab) {
-        context.emit('update:value', key)
+        context.emit('update:modelValue', key)
         if (emitSelectEvent) context.emit('select-tab', selectedTab)
 
         setTimeout(() => {
@@ -495,7 +495,7 @@ export default defineComponent({
       const selectedTab: Tab | undefined = getTab(key)
 
       if (selectedTab) {
-        context.emit('update:value', key)
+        context.emit('update:modelValue', key)
         context.emit('select-tab', selectedTab)
 
         setTimeout(() => {
@@ -554,7 +554,7 @@ export default defineComponent({
 
     const subMenuLeave = () => {
       if (!showSubMenu.value) return false
-      
+
       subMenuTimerId.value = setTimeout(() => {
         closeSubMenu()
       }, 500)
@@ -600,7 +600,7 @@ export default defineComponent({
       closeSubMenu,
       selectSubMenuTab,
       subMenuLeave,
-      subMenuClearTimeout
+      subMenuClearTimeout,
     }
   },
 })

@@ -27,8 +27,8 @@ export const OfToggleField = defineComponent({
         type: 'toggle',
         format,
         labelPosition: props.labelPosition,
-        value: props.checked as any, // FIXME working around odd type issue
-        'onUpdate:value': (val: boolean) => {
+        modelValue: props.checked as any, // FIXME working around odd type issue
+        'onUpdate:modelValue': (val: boolean) => {
           ctx.emit('update:checked', val)
         },
       })

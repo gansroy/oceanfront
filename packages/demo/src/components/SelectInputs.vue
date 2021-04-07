@@ -7,7 +7,7 @@
         <of-field
           :format="{ items: testItems, type: 'select' }"
           label="Select input"
-          value="Option 1"
+          model-value="Option 1"
           variant="basic"
         ></of-field>
       </div>
@@ -15,14 +15,14 @@
         <of-select-field
           :items="tzOpts"
           label="Select timezone"
-          value="America/Vancouver"
+          model-value="America/Vancouver"
           variant="outlined"
         ></of-select-field>
       </div>
       <div class="row form-row">
         <of-select-field
           label="Select input"
-          value="Selected"
+          model-value="Selected"
           variant="filled"
         ></of-select-field>
       </div>
@@ -39,7 +39,7 @@ export default defineComponent({
 <of-select-field
   label="Select input"
   :items="['apple', 'orange']"
-  v-model:value="fieldValue"
+  v-model="fieldValue"
   variant="filled"
 />`
     const testItems = [

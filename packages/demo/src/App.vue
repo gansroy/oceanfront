@@ -19,7 +19,7 @@
               min="10"
               max="30"
               step="2"
-              v-model:value="baseFontSize"
+              v-model="baseFontSize"
             />
           </div>
         </of-dialog>
