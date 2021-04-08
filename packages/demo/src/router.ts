@@ -16,6 +16,7 @@ import DateTimePickerInputs from './components/DateTimePickerInputs.vue'
 import ColorPickerInputs from './components/ColorPickerInputs.vue'
 import Tabs from './components/Tabs.vue'
 import Pagination from './components/Pagination.vue'
+import Calendar from './components/Calendar.vue'
 
 
 export const routerHistory = createWebHashHistory('/ofdocs')
@@ -38,5 +39,6 @@ export const router = createRouter({
     { path: '/data-tables', component: DataTables },
     { path: '/tabs', component: Tabs },
     { path: '/pagination', component: Pagination },
+    { path: '/calendar', component: Calendar },
   ],
 })

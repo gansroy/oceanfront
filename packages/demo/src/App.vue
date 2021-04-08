@@ -31,6 +31,7 @@
           <of-list-item to="/">Overview</of-list-item>
           <of-list-item to="/colors">Colors &amp; Theming</of-list-item>
           <of-list-item to="/icons">Icons</of-list-item>
+          <of-list-item to="/calendar">Calendar</of-list-item>
           <of-list-group value="1">
             <template #activator="{ state, toggle }">
               <of-list-item :expand="state" @click.prevent="toggle">
@@ -43,7 +44,9 @@
             <of-list-item to="/slider-inputs">Slider Inputs</of-list-item>
             <of-list-item to="/text-inputs">Text Inputs</of-list-item>
             <of-list-item to="/toggle-inputs">Toggle Inputs</of-list-item>
-            <of-list-item to="/datetime-picker-inputs">DateTime Picker</of-list-item>
+            <of-list-item to="/datetime-picker-inputs"
+              >DateTime Picker</of-list-item
+            >
             <of-list-item to="/color-picker-inputs">Color Picker</of-list-item>
             <of-list-item to="/records">Records</of-list-item>
             <of-list-item to="/formatters">Value Formatters</of-list-item>
