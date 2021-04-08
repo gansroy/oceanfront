@@ -50,6 +50,7 @@ export type CalendarEventPlacement = {
     /** Height, expressed in milliseconds */
     height: number
     left: number
+    columns: number
 }
 
 /** CalendarEventsGroup is a group of overlapping events */

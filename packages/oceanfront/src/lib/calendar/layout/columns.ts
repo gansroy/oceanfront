@@ -25,12 +25,25 @@ export default function layout(group: CalendarEventsGroup): void {
             })
         }
     }
+    columns.forEach((c, cIdx) => {
+        for (const p of c.placements) {
+            p.columns = 1
+            itColumns: for (const c2 of columns.slice(cIdx + 1)) {
+                for (const p2 of c2.placements) {
+                    if (hasOverlap(p.event.start, p.event.end, p2.event.start, p2.event.end)) {
+                        break itColumns;
+                    }
+                }
+                p.columns++;
+            }
+        }
+    })
     const colWidth = 1.0 / columns.length
     let left = 0
     for (const c of columns) {
         for (const p of c.placements) {
             p.left = left
-            p.width = colWidth
+            p.width = colWidth * p.columns
         }
         left += colWidth
     }

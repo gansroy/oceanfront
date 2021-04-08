@@ -64,6 +64,7 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
             top: 0,
             width: 0,
             left: 0,
+            columns: 1,
         })
     )
     for (const p of placements) {
