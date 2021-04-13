@@ -1,14 +1,14 @@
 import { hasOverlap } from '..'
 import { CalendarEventsGroup, Column } from '../common'
 
-export default function layout(group: CalendarEventsGroup, _unused: number): void {
+export default function layout(group: CalendarEventsGroup): void {
     const columns: Column[] = []
     for (const p of group.placements) {
         let added = false
         for (const c of columns) {
             let overlapping = false
             for (const other of c.placements) {
-                if (hasOverlap(p.event.start, p.event.end, other.event.start, other.event.end)) {
+                if (hasOverlap(p.start, p.end, other.start, other.end)) {
                     overlapping = true
                     break
                 }
@@ -32,7 +32,7 @@ export default function layout(group: CalendarEventsGroup, _unused: number): voi
             p.columns = 1
             itColumns: for (const c2 of columns.slice(cIdx + 1)) {
                 for (const p2 of c2.placements) {
-                    if (hasOverlap(p.event.start, p.event.end, p2.event.start, p2.event.end)) {
+                    if (hasOverlap(p.start, p.end, p2.start, p2.end)) {
                         break itColumns;
                     }
                 }

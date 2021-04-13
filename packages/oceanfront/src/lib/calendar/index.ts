@@ -60,6 +60,8 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
     const placements: CalendarEventPlacement[] = dayEvents.map(
         e => ({
             event: e,
+            start: Math.max(day * OFFSET_TIMESTAMP, e.start),
+            end: Math.min(day * OFFSET_TIMESTAMP + MINUTES_IN_DAY, e.end),
             height: 0,
             top: 0,
             width: 0,
@@ -70,7 +72,7 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
         })
     )
     for (const p of placements) {
-        const [start, end] = getNormalizedRange(p.event, day)
+        const [start, end] = [p.start, p.end]
         let startTime = p.event.startTime
         let endTime = p.event.endTime
 
@@ -103,7 +105,7 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
         }
     }
     for (const g of groups) {
-        layout(g, day * OFFSET_TIMESTAMP)
+        layout(g)
     }
     return groups
 }

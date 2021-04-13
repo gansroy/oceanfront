@@ -43,6 +43,8 @@ export interface InternalEvent {
 export type CalendarEventPlacement = {
     /** The original event */
     event: InternalEvent
+    start: TimestampIdentifier
+    end: TimestampIdentifier
     /** Top position, expressed in minutes since day start */
     top: number
     /** Width as a fraction of day width */
@@ -68,4 +70,4 @@ export type Column = {
     end: number
 }
 
-export type layoutFunc = (group: CalendarEventsGroup, day: TimestampIdentifier) => void
+export type layoutFunc = (group: CalendarEventsGroup) => void
