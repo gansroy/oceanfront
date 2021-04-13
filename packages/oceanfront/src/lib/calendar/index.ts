@@ -1,10 +1,10 @@
-import { CalendarEventPlacement, CalendarEventsGroup, DayIdentifier, InternalEvent, TimeIdentifier, Timestamp, TimestampIdentifier } from './common'
-import layout from './layout/columns'
+import { CalendarEventPlacement, CalendarEventsGroup, DayIdentifier, InternalEvent, layoutFunc, TimeIdentifier, Timestamp, TimestampIdentifier } from './common'
+
 
 const OFFSET_TIMESTAMP = 10000
 const OFFSET_YEAR = 10000
 const OFFSET_MONTH = 100
-const MINUTES_IN_DAY = 60 * 24
+export const MINUTES_IN_DAY = 60 * 24
 const MINUTES_IN_HOUR = 60
 
 export function toTimestamp(date: Date): Timestamp {
@@ -45,13 +45,13 @@ export const hasOverlap = (s0: number, e0: number, s1: number, e1: number, exclu
     return exclude ? !(s0 >= e1 || e0 <= s1) : !(s0 > e1 || e0 < s1)
 }
 
-export const getNormalizedRange = (event: InternalEvent, day: DayIdentifier) => {
+export const getNormalizedRange = (event: InternalEvent, day: DayIdentifier): TimestampIdentifier[] => {
     const start = day * OFFSET_TIMESTAMP
     const end = (day + 1) * OFFSET_TIMESTAMP
     return [Math.max(event.start, start), Math.min(event.end, end)]
 }
 
-export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: boolean): CalendarEventsGroup[] {
+export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: boolean, layout: layoutFunc): CalendarEventsGroup[] {
     const groups: CalendarEventsGroup[] = []
     const dayEvents = getEventsOfDay(events, day, allDay)
     dayEvents.sort(
@@ -65,6 +65,8 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
             width: 0,
             left: 0,
             columns: 1,
+            offset: 0,
+            zIndex: 0,
         })
     )
     for (const p of placements) {
@@ -101,11 +103,7 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
         }
     }
     for (const g of groups) {
-        layout(g)
+        layout(g, day * OFFSET_TIMESTAMP)
     }
     return groups
-}
-
-function positionEvents(group: CalendarEventsGroup): void {
-    0
 }

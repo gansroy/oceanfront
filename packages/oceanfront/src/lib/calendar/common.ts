@@ -20,7 +20,7 @@ export interface InternalEvent {
     /** Event end  date identifier */
     readonly endDay: DayIdentifier
     /** Event end  time identifier */
-    readonly endTime: DayIdentifier
+    readonly endTime: TimeIdentifier
     readonly start: TimestampIdentifier
     readonly end: TimestampIdentifier
     /** True if the event occupies all day */
@@ -51,6 +51,8 @@ export type CalendarEventPlacement = {
     height: number
     left: number
     columns: number
+    offset: number
+    zIndex: number
 }
 
 /** CalendarEventsGroup is a group of overlapping events */
@@ -62,5 +64,8 @@ export type CalendarEventsGroup = {
 
 export type Column = {
     placements: CalendarEventPlacement[]
+    offset: number
+    end: number
 }
 
+export type layoutFunc = (group: CalendarEventsGroup, day: TimestampIdentifier) => void

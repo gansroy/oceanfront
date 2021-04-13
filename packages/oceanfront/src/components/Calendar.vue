@@ -1,11 +1,17 @@
 <template>
   <div class="container">
+    <p>
+      <of-button @click="changeLayout"
+        >Switch to {{ switchTo }} layout</of-button
+      >
+    </p>
     <div style="position: relative; width: 400px; height: 960px">
       <div
         v-for="(p, index) in placements"
         :key="index"
         :style="{
-          'background-color': '#CCC',
+          'z-index': p.zIndex,
+          'background-color': p.event.color,
           height: '50px',
           border: 'solid 1px #000',
           'border-radius': '4px',
@@ -15,13 +21,15 @@
           top: (p.top / 960) * 100 + '%',
           height: (p.height / 960) * 100 + '%',
         }"
-      ></div>
+      >
+        {{ p.event.name }}
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import {
   getGroups,
   getDayIdentifier,
@@ -36,20 +44,28 @@ import {
   Timestamp,
 } from '../lib/calendar/common'
 
+import stackLayout from '../lib/calendar/layout/stack'
+import columnsLayout from '../lib/calendar/layout/columns'
+
+function eventColor(colIdx: number) {
+  const color = 'hsl(' + ((colIdx * 31) % 360) + ', 100%, 50%)'
+  return color
+}
+
 function mockData(): InternalEvent[] {
   const nowTS = toTimestamp(new Date())
   const times = [
-    [1, 0, 5, 45],
+    [0, 15, 5, 45],
     [1, 15, 5, 15],
     [1, 15, 3, 45],
-    [4, 0, 4, 15],
+    [4, 0, 4, 30],
     [2, 30, 6, 45],
     [1, 15, 3, 30],
     [7, 0, 7, 45],
-    [4, 15, 7, 45],
+    [4, 30, 7, 45],
     [9, 15, 10, 0],
   ]
-  return times.map((t) => {
+  return times.map((t, idx) => {
     const [sh, sm, eh, em] = t
     const sts: Timestamp = {
       ...nowTS,
@@ -62,6 +78,8 @@ function mockData(): InternalEvent[] {
       minutes: em,
     }
     return {
+      name: 'Event ' + idx,
+      color: eventColor(idx),
       startDay: getDayIdentifier(sts),
       startTime: getTimeIdentifier(sts),
       start: getTimestampIdintifier(sts),
@@ -75,14 +93,31 @@ function mockData(): InternalEvent[] {
 export default defineComponent({
   name: 'OfCalendar',
   setup() {
+    const layout = ref(stackLayout)
+    const switchTo = ref('columns')
     const events = mockData()
     const nowTS = toTimestamp(new Date())
-    const groups = getGroups(events, getDayIdentifier(nowTS), false)
-    const placements: CalendarEventPlacement[] = []
-    for (const g of groups) {
-      placements.push(...g.placements)
+
+    const changeLayout = () => {
+      switchTo.value = layout.value === stackLayout ? 'stack' : 'columns'
+      layout.value = layout.value === stackLayout ? columnsLayout : stackLayout
     }
-    return { placements }
+
+    const placements = computed(() => {
+      const groups = getGroups(
+        events,
+        getDayIdentifier(nowTS),
+        false,
+        layout.value
+      )
+      const placements: CalendarEventPlacement[] = []
+      for (const g of groups) {
+        placements.push(...g.placements)
+      }
+      return placements
+    })
+
+    return { placements, changeLayout, switchTo }
   },
 })
 </script>

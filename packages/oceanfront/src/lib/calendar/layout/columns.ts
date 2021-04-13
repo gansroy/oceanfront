@@ -1,7 +1,7 @@
 import { hasOverlap } from '..'
 import { CalendarEventsGroup, Column } from '../common'
 
-export default function layout(group: CalendarEventsGroup): void {
+export default function layout(group: CalendarEventsGroup, _unused: number): void {
     const columns: Column[] = []
     for (const p of group.placements) {
         let added = false
@@ -21,7 +21,9 @@ export default function layout(group: CalendarEventsGroup): void {
         }
         if (!added) {
             columns.push({
-                placements: [p]
+                placements: [p],
+                offset: 0,
+                end: 0
             })
         }
     }
