@@ -1,10 +1,21 @@
 <template>
   <table class="of-data-table">
     <colgroup>
+      <col v-if="rowsSelector" />
       <col v-for="(col, idx) of columns" :key="idx" />
     </colgroup>
     <thead>
       <tr>
+        <th v-if="rowsSelector">
+          <of-button
+            icon="accept"
+            rounded
+            split
+            :items="selectRowsItems"
+            :on-click-menu-item="selectRows"
+            >Select</of-button
+          >
+        </th>
         <th v-for="(col, idx) of columns" :class="col.class" :key="idx">
           {{ col.text }}
         </th>
@@ -12,6 +23,16 @@
     </thead>
     <tbody>
       <tr v-for="(row, rowidx) of rows" :key="rowidx">
+        <td v-if="rowsSelector">
+          <slot name="row-selector">
+            <of-toggle
+              type="toggle"
+              :record="rowsRecord"
+              :name="row.id"
+              variant="basic"
+            />
+          </slot>
+        </td>
         <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
           <!-- of-format :type="col.format" :value="row[col.value]" / -->
           {{ row[col.value] }}
@@ -20,6 +41,7 @@
     </tbody>
     <tfoot v-if="footerRows.length">
       <tr v-for="(row, rowidx) of footerRows" :key="rowidx">
+        <td v-if="rowsSelector">&nbsp;</td>
         <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
           <of-format :type="col.format" :value="row[col.value]" />
         </td>
@@ -29,7 +51,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch, PropType } from 'vue'
+import { FieldRecord, makeRecord } from '../lib/records'
+import {
+  computed,
+  defineComponent,
+  ref,
+  watch,
+  PropType,
+  SetupContext,
+  ComputedRef,
+} from 'vue'
 import { DataTableHeader } from '../lib/datatable'
 import { useFormats } from '../lib/formats'
 // import OfFormat from './Format'
@@ -46,8 +77,12 @@ export default defineComponent({
     itemsCount: [String, Number],
     itemsPerPage: [String, Number],
     page: [String, Number],
+    rowsSelector: Boolean,
   },
-  setup(props, _ctx) {
+  emits: {
+    'rows-selected': null,
+  },
+  setup(props, _ctx: SetupContext) {
     const fmtMgr = useFormats()
     const columns = computed(() => {
       const cols: any[] = []
@@ -92,10 +127,67 @@ export default defineComponent({
     const footerRows = computed(() => {
       return props.footerItems
     })
+    const rowsSelector = computed(() => {
+      let issetId = false
+      if (
+        rows.value &&
+        rows.value.hasOwnProperty(0) &&
+        rows.value[0].hasOwnProperty('id')
+      ) {
+        issetId = true
+      }
+      return (props.rowsSelector && issetId) ?? false
+    })
+    const rowsRecord: ComputedRef<FieldRecord> = computed(() => {
+      let ids: any = { all: false }
+      if (rowsSelector.value) {
+        for (const row of rows.value) {
+          ids[row.id] = false
+        }
+      }
+      return makeRecord(ids)
+    })
+    watch(
+      () => rowsRecord,
+      (updatedRecord) => {
+        console.log(updatedRecord.value)
+        console.log(rowsRecord.value.value['all'])
+        _ctx.emit('rows-selected', updatedRecord.value)
+      },
+      { deep: true }
+    )
+    const selectRows = function (val: any) {
+      if (!rows.value) return false
+      const checked = val == 'deselect-all' ? false : true
+
+      if (val === 'all') {
+        rowsRecord.value.value['all'] = true
+        rowsRecord.value.locked = true
+      } else {
+        rowsRecord.value.value['all'] = false
+        rowsRecord.value.locked = false
+      }
+
+      for (const row of rows.value) {
+        rowsRecord.value.value[row.id] = checked
+      }
+    }
+    const selectRowsItems = [
+      { text: 'Select Page', value: 'page' },
+      { special: 'divider' },
+      { text: 'Select All', value: 'all' },
+      { special: 'divider' },
+      { text: 'Deselect All', value: 'deselect-all' },
+    ]
+
     return {
       columns,
       footerRows,
       rows,
+      rowsSelector,
+      rowsRecord,
+      selectRowsItems,
+      selectRows,
     }
   },
 })
