@@ -16,6 +16,7 @@
       <div class="column">
         <of-data-table
           rows-selector
+          @rows-selected="onRowsSelected"
           :headers="headers"
           :items="items2"
           :footer-items="footerItems"
@@ -46,11 +47,15 @@ export default defineComponent({
       { id: '3', name: 'Third item', category: 'Category 3', size: 15125.56 },
     ]
     const footerItems = [{ size: 100.5 }]
+    const onRowsSelected = function (values: any) {
+      console.log(values)
+    }
     return {
       headers,
       items,
       items2,
       footerItems,
+      onRowsSelected,
     }
   },
 })
