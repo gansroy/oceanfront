@@ -52,6 +52,7 @@ export default defineComponent({
     disabled: Boolean,
     split: Boolean,
     items: [String, Array, Object],
+    onClickMenuItem: Function,
   },
   setup(props) {
     const variant = computed(() => props.variant || 'solid')
@@ -59,7 +60,8 @@ export default defineComponent({
     const menuOuter = ref()
     const menuTimerId = ref()
     const onClick = (val: any) => {
-      console.log(val)
+      if (props.onClickMenuItem)
+        props.onClickMenuItem.call(this, val);      
       closeMenu()
     }
     const toggleMenu = (_evt?: MouseEvent) => {
