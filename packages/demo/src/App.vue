@@ -43,7 +43,9 @@
             <of-list-item to="/slider-inputs">Slider Inputs</of-list-item>
             <of-list-item to="/text-inputs">Text Inputs</of-list-item>
             <of-list-item to="/toggle-inputs">Toggle Inputs</of-list-item>
-            <of-list-item to="/datetime-picker-inputs">DateTime Picker</of-list-item>
+            <of-list-item to="/datetime-picker-inputs"
+              >DateTime Picker</of-list-item
+            >
             <of-list-item to="/color-picker-inputs">Color Picker</of-list-item>
             <of-list-item to="/records">Records</of-list-item>
             <of-list-item to="/formatters">Value Formatters</of-list-item>
@@ -59,7 +61,7 @@
             <of-list-item to="/pagination">Pagination</of-list-item>
           </of-list-group>
           <of-list-item to="/tabs">Tabs</of-list-item>
-          <of-list-item disabled>Dialogs</of-list-item>
+          <of-list-item to="/popups">Popups and Dialogs</of-list-item>
         </of-nav-group>
       </of-sidebar>
       <main class="app-main">

@@ -46,6 +46,8 @@ const checkFocused = (elt?: HTMLElement) => {
   return (active && elt.contains(active)) || false
 }
 
+const inOverlay = () => !!document.activeElement?.closest('.of-overlay')
+
 export const OfOverlay = defineComponent({
   name: 'OfOverlay',
   inheritAttrs: false,
@@ -82,7 +84,7 @@ export const OfOverlay = defineComponent({
       },
       onFocusOut(_evt: Event) {
         requestAnimationFrame(() => {
-          if (focused && !checkFocused(elt.value)) {
+          if (focused && !checkFocused(elt.value) && !inOverlay()) {
             focused = false
             ctx.emit('blur')
           }
