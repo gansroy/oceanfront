@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h4>Tabs</h4>
+    <h1>Tabs</h1>
     <of-highlight lang="html" :value="sampleCode" />
     <h2>Regular tabs</h2>
     <of-tabs
