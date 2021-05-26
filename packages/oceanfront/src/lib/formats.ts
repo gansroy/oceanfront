@@ -8,6 +8,7 @@ export interface TextFormatResult {
   textValue?: string
   textClass?: string
   value?: any
+  [_: string]: any
 }
 export interface TextInputResult extends TextFormatResult {
   selStart?: number
@@ -31,7 +32,7 @@ export interface TextFormatter {
 }
 
 export type TextFormatterConstructor = {
-  new (config?: Config, options?: any): TextFormatter
+  new(config?: Config, options?: any): TextFormatter
 }
 type TextFormatterFn = { (config?: Config, options?: any): TextFormatter }
 

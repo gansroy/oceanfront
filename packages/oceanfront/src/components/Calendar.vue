@@ -108,6 +108,7 @@ export default defineComponent({
         events,
         getDayIdentifier(nowTS),
         false,
+        undefined,
         layout.value
       )
       const placements: CalendarEventPlacement[] = []

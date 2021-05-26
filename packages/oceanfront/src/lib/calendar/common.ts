@@ -13,6 +13,8 @@ export interface Timestamp {
 
 /** Calendar event, internal representation */
 export interface InternalEvent {
+    /** The original event that was parsed to create this internal representation */
+    readonly orig: any
     /** Event start day identifier */
     readonly startDay: DayIdentifier
     /** Event start time identifier */
@@ -23,12 +25,16 @@ export interface InternalEvent {
     readonly endTime: TimeIdentifier
     readonly start: TimestampIdentifier
     readonly end: TimestampIdentifier
+    readonly startTS: Timestamp
+    readonly endTS: Timestamp
     /** True if the event occupies all day */
     readonly allDay?: boolean
     /** Event name */
     readonly name?: string
     /** Event color */
     readonly color?: string
+    /** Event category */
+    readonly category?: string
 
     readonly [_: string]: any
 }
@@ -53,6 +59,7 @@ export type CalendarEventPlacement = {
     height: number
     left: number
     columns: number
+    columnAdjust: number
     offset: number
     zIndex: number
 }
@@ -70,4 +77,4 @@ export type Column = {
     end: number
 }
 
-export type layoutFunc = (group: CalendarEventsGroup) => void
+export type layoutFunc = (group: CalendarEventsGroup, overlapThreshold: number) => void
