@@ -12,13 +12,6 @@ import StackLayout from '../../lib/calendar/layout/stack'
 import ColumnLayout from '../../lib/calendar/layout/columns'
 import { DateTimeFormatterOptions } from "src/formats/DateTime"
 
-const timeFormat: DateTimeFormatterOptions = {
-    nativeOptions: {
-        hour: "numeric",
-        minute: "numeric",
-    }
-}
-
 function formatRange(mgr: FormatState, e: InternalEvent) {
     const start = new Date(e.startTS.year, e.startTS.month, e.startTS.day, e.startTS.hours, e.startTS.minutes)
     const end = new Date(e.endTS.year, e.endTS.month, e.endTS.day, e.endTS.hours, e.endTS.minutes)
