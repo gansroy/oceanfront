@@ -151,6 +151,7 @@ function regenerateEvents() {
         category: randomElement(categories),
         color: randomElement(colors),
         allDay: Math.random() > 0.8,
+        orig: false,
       }
       list.push(event)
     }
