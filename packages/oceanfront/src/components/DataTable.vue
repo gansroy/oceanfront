@@ -7,19 +7,22 @@
     <thead>
       <tr>
         <th v-if="rowsSelector" class="of-data-table-rows-selector">
-          <of-button
-            split
-            :items="selectRowsItems"
-            :on-click-menu-item="selectRows"
-            variant="text"
-          >
-            <of-toggle
-              type="toggle"
-              variant="basic"
-              :checked="headerRowsSelectorChecked"
-              @update:checked="onUpdateHeaderRowsSelector"
-            />
-          </of-button>
+          <slot name="header-rows-selector">
+            <of-button
+              split
+              :items="selectRowsItems"
+              :on-click-menu-item="selectRows"
+              variant="text"
+            >
+              <of-toggle
+                type="toggle"
+                variant="basic"
+                :checked="headerRowsSelectorChecked"
+                @update:checked="onUpdateHeaderRowsSelector"
+              />
+            </of-button>
+          </slot>
+          <slot name="header-first-cell" />
         </th>
         <th v-for="(col, idx) of columns" :class="col.class" :key="idx">
           {{ col.text }}
@@ -29,7 +32,7 @@
     <tbody>
       <tr v-for="(row, rowidx) of rows" :key="rowidx">
         <td v-if="rowsSelector">
-          <slot name="row-selector" :record="rowsRecord" :item-name="row.id">
+          <slot name="rows-selector" :record="rowsRecord" :item="row">
             <of-toggle
               type="toggle"
               :record="rowsRecord"
@@ -37,6 +40,7 @@
               variant="basic"
             />
           </slot>
+          <slot name="first-cell" :record="rowsRecord" :item="row" />
         </td>
         <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
           <!-- of-format :type="col.format" :value="row[col.value]" / -->
@@ -169,8 +173,7 @@ export default defineComponent({
     watch(
       () => props.resetSelection,
       (val) => {
-        if (val)
-          selectRows(RowsSelectorValues.DeselectAll)
+        if (val) selectRows(RowsSelectorValues.DeselectAll)
       }
     )
     const selectRows = function (val: any) {
