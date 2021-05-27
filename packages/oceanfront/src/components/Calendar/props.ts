@@ -36,6 +36,7 @@ export default {
         }
     },
     common: {
+        conflictColor: String,
         eventColor: Function as PropType<(e: InternalEvent) => any>,
         type: {
             type: String,

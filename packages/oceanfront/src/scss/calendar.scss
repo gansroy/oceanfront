@@ -179,7 +179,7 @@ div.of-date-picker-cur-year {
     padding-left: 2px;
     padding-right: 2px;
     &.conflict {
-        border-left: solid 2px red;
+        border-left: solid 2px var(--of-calendar-conflict-color, red);
     }
 }
 

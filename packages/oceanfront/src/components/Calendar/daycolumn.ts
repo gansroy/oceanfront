@@ -197,11 +197,15 @@ export default defineComponent({
     },
     render() {
         const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 0
+        const conflictColor = this.$props.conflictColor
 
         return h('div',
             {
                 class: "container",
-                style: eventHeight ? { "--of-event-height": `${eventHeight}px` } : undefined,
+                style: {
+                    "--of-event-height": eventHeight ? `${eventHeight}px` : undefined,
+                    "--of-calendar-conflict-color": conflictColor,
+                },
             },
             [
                 this.header(),
