@@ -96,7 +96,7 @@ export default function layout(group: CalendarEventsGroup, overlapThreshold: num
     let left = 0
     for (const c of columns) {
         for (const p of c.placements) {
-            const offset = 0.02 * p.offset
+            const offset = 0.05 * p.offset
             const nColumns = p.columns + p.columnAdjust
             p.left = left - p.columnAdjust * colWidth + offset
             p.width = colWidth * nColumns - offset

@@ -178,6 +178,9 @@ div.of-date-picker-cur-year {
     color: #FFF;
     padding-left: 2px;
     padding-right: 2px;
+    &.conflict {
+        border-left: solid 2px red;
+    }
 }
 
 .of-calendar-day {

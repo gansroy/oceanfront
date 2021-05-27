@@ -62,6 +62,7 @@ export type CalendarEventPlacement = {
     columnAdjust: number
     offset: number
     zIndex: number
+    conflict: boolean
 }
 
 /** CalendarEventsGroup is a group of overlapping events */

@@ -159,7 +159,10 @@ export default defineComponent({
                         const slot = this.$slots['event-content']
                         return h('div',
                             {
-                                class: 'of-calendar-event',
+                                class: {
+                                    'of-calendar-event': true,
+                                    conflict: e.conflict,
+                                },
                                 style: {
                                     'background-color': this.$props.eventColor?.(e.event) ?? e.event.color,
                                     'z-index': e.zIndex,

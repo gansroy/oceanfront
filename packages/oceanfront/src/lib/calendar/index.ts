@@ -75,6 +75,7 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
             offset: 0,
             zIndex: 0,
             columnAdjust: 0,
+            conflict: false,
         })
     )
     for (const p of placements) {
@@ -111,6 +112,9 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
         }
     }
     for (const g of groups) {
+        if (g.placements.length > 1) {
+            g.placements.forEach(p => { p.conflict = true })
+        }
         layout(g, overlapThreshold)
     }
     return groups
