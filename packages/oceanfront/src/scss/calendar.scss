@@ -181,6 +181,9 @@ div.of-date-picker-cur-year {
     &.conflict {
         border-left: solid 2px var(--of-calendar-conflict-color, red);
     }
+    &:hover {
+        min-height: var(--of-event-height, 20px);
+    }
 }
 
 .of-calendar-day {
