@@ -5,7 +5,7 @@
     <div class="demo-fields">
       <div class="row form-row">
         <of-pagination
-          v-model:value="page"
+          v-model="page"
           variant="standard"
           :per-page="perPage"
           :total-pages="total"
@@ -31,7 +31,7 @@ export default defineComponent({
   setup() {
     const sampleCode = `
 <of-pagination
-  v-model:value="1"
+  :model-value="1"
   variant="standard"
   :total-pages="20"
   custom-offset-popup

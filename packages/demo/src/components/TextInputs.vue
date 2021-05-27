@@ -7,7 +7,7 @@
         <div class="column">
           <of-text-field
             v-bind="textField"
-            v-model:value="textValue"
+            v-model="textValue"
             variant="basic"
           />
         </div>
@@ -24,7 +24,7 @@
         <div class="column">
           <of-text-field
             v-bind="textField"
-            v-model:value="textValue"
+            v-model="textValue"
             variant="outlined"
           />
         </div>
@@ -41,7 +41,7 @@
         <div class="column">
           <of-text-field
             v-bind="textField"
-            v-model:value="textValue"
+            v-model="textValue"
             variant="filled"
           />
         </div>
@@ -62,25 +62,33 @@
       <div class="demo-inline">
         <of-text-field
           class="of--small"
-          value="Small text input"
+          model-value="Small text input"
           style="width: 10em"
         />
       </div>
       <div class="demo-inline">
-        <of-text-field value="Normal text input" style="width: 10em" />
+        <of-text-field model-value="Normal text input" style="width: 10em" />
       </div>
       <div class="demo-inline">
         <of-text-field
           class="of--large"
-          value="Large text input"
+          model-value="Large text input"
           style="width: 10em"
         />
       </div>
       <div class="demo-inline">
-        <of-text-field readonly value="Read-only text" style="width: 10em" />
+        <of-text-field
+          readonly
+          model-value="Read-only text"
+          style="width: 10em"
+        />
       </div>
       <div class="demo-inline">
-        <of-text-field disabled value="Disabled text" style="width: 10em" />
+        <of-text-field
+          disabled
+          model-value="Disabled text"
+          style="width: 10em"
+        />
       </div>
       <div class="demo-inline">
         <of-text-field placeholder="Placeholder" style="width: 10em" />
@@ -89,7 +97,7 @@
         <of-text-field
           class="of--density-0"
           style="width: 10em"
-          value="Compact"
+          model-value="Compact"
         />
       </div>
       <div class="demo-inline">
@@ -97,6 +105,7 @@
           placeholder="Password"
           input-type="password"
           variant="basic"
+          model-value="password"
         />
       </div>
     </div>
@@ -106,18 +115,22 @@
           multiline
           class="of--small"
           style="width: 10em"
-          value="Small text area"
+          model-value="Small text area"
         />
       </div>
       <div class="demo-inline">
-        <of-text-field multiline style="width: 10em" value="Normal text area" />
+        <of-text-field
+          multiline
+          style="width: 10em"
+          model-value="Normal text area"
+        />
       </div>
       <div class="demo-inline">
         <of-text-field
           multiline
           class="of--large"
           style="width: 10em"
-          value="Large text area"
+          model-value="Large text area"
         />
       </div>
       <div class="demo-inline">
@@ -125,7 +138,7 @@
           multiline
           readonly
           style="width: 10em"
-          value="Read-only text area"
+          model-value="Read-only text area"
         />
       </div>
       <div class="demo-inline">
@@ -133,7 +146,7 @@
           multiline
           disabled
           style="width: 10em"
-          value="Disabled text area"
+          model-value="Disabled text area"
         />
       </div>
     </div>
@@ -172,7 +185,7 @@ export default defineComponent({
     const sampleCode = `
 <of-text-field
   label="Field Label"
-  v-model:value="fieldValue"
+  v-model="fieldValue"
   variant="filled"
 />`
     return {

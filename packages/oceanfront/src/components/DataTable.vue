@@ -1,10 +1,26 @@
 <template>
   <table class="of-data-table">
     <colgroup>
+      <col v-if="rowsSelector" />
       <col v-for="(col, idx) of columns" :key="idx" />
     </colgroup>
     <thead>
       <tr>
+        <th v-if="rowsSelector" class="of-data-table-rows-selector">
+          <of-button
+            split
+            :items="selectRowsItems"
+            :on-click-menu-item="selectRows"
+            variant="text"
+          >
+            <of-toggle
+              type="toggle"
+              variant="basic"
+              :checked="headerRowsSelectorChecked"
+              @update:checked="onUpdateHeaderRowsSelector"
+            />
+          </of-button>
+        </th>
         <th v-for="(col, idx) of columns" :class="col.class" :key="idx">
           {{ col.text }}
         </th>
@@ -12,6 +28,16 @@
     </thead>
     <tbody>
       <tr v-for="(row, rowidx) of rows" :key="rowidx">
+        <td v-if="rowsSelector">
+          <slot name="row-selector" :record="rowsRecord" :item-name="row.id">
+            <of-toggle
+              type="toggle"
+              :record="rowsRecord"
+              :name="row.id"
+              variant="basic"
+            />
+          </slot>
+        </td>
         <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
           <!-- of-format :type="col.format" :value="row[col.value]" / -->
           {{ row[col.value] }}
@@ -20,6 +46,7 @@
     </tbody>
     <tfoot v-if="footerRows.length">
       <tr v-for="(row, rowidx) of footerRows" :key="rowidx">
+        <td v-if="rowsSelector">&nbsp;</td>
         <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
           <of-format :type="col.format" :value="row[col.value]" />
         </td>
@@ -29,10 +56,25 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch, PropType } from 'vue'
+import { FieldRecord, makeRecord } from '../lib/records'
+import {
+  computed,
+  defineComponent,
+  ref,
+  watch,
+  PropType,
+  SetupContext,
+  ComputedRef,
+} from 'vue'
 import { DataTableHeader } from '../lib/datatable'
 import { useFormats } from '../lib/formats'
 // import OfFormat from './Format'
+
+enum RowsSelectorValues {
+  Page = 'page',
+  All = 'all',
+  DeselectAll = 'deselect-all',
+}
 
 export default defineComponent({
   name: 'OfDataTable',
@@ -46,8 +88,13 @@ export default defineComponent({
     itemsCount: [String, Number],
     itemsPerPage: [String, Number],
     page: [String, Number],
+    rowsSelector: Boolean,
+    resetSelection: Boolean,
   },
-  setup(props, _ctx) {
+  emits: {
+    'rows-selected': null,
+  },
+  setup(props, _ctx: SetupContext) {
     const fmtMgr = useFormats()
     const columns = computed(() => {
       const cols: any[] = []
@@ -92,10 +139,82 @@ export default defineComponent({
     const footerRows = computed(() => {
       return props.footerItems
     })
+    const rowsSelector = computed(() => {
+      let issetId = false
+      if (
+        rows.value &&
+        rows.value.hasOwnProperty(0) &&
+        rows.value[0].hasOwnProperty('id')
+      ) {
+        issetId = true
+      }
+      return (props.rowsSelector && issetId) ?? false
+    })
+    const rowsRecord: ComputedRef<FieldRecord> = computed(() => {
+      let ids: any = { all: false }
+      if (rowsSelector.value) {
+        for (const row of rows.value) {
+          ids[row.id] = false
+        }
+      }
+      return makeRecord(ids)
+    })
+    watch(
+      () => rowsRecord,
+      (updatedRecord) => {
+        _ctx.emit('rows-selected', updatedRecord.value.value)
+      },
+      { deep: true }
+    )
+    watch(
+      () => props.resetSelection,
+      (val) => {
+        if (val)
+          selectRows(RowsSelectorValues.DeselectAll)
+      }
+    )
+    const selectRows = function (val: any) {
+      if (!rows.value) return false
+      const checked = val == RowsSelectorValues.DeselectAll ? false : true
+      headerRowsSelectorChecked.value = checked
+
+      if (val === RowsSelectorValues.All) {
+        rowsRecord.value.value[RowsSelectorValues.All] = true
+        rowsRecord.value.locked = true
+      } else {
+        rowsRecord.value.value[RowsSelectorValues.All] = false
+        rowsRecord.value.locked = false
+      }
+
+      for (const row of rows.value) {
+        rowsRecord.value.value[row.id] = checked
+      }
+    }
+    const headerRowsSelectorChecked = ref(false)
+    const onUpdateHeaderRowsSelector = function (val: any) {
+      let select = val
+        ? RowsSelectorValues.Page
+        : RowsSelectorValues.DeselectAll
+      selectRows(select)
+    }
+    const selectRowsItems = [
+      { text: 'Select Page', value: RowsSelectorValues.Page },
+      { special: 'divider' },
+      { text: 'Select All', value: RowsSelectorValues.All },
+      { special: 'divider' },
+      { text: 'Deselect All', value: RowsSelectorValues.DeselectAll },
+    ]
+
     return {
       columns,
       footerRows,
       rows,
+      rowsSelector,
+      rowsRecord,
+      selectRowsItems,
+      selectRows,
+      onUpdateHeaderRowsSelector,
+      headerRowsSelectorChecked,
     }
   },
 })

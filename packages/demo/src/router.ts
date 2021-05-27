@@ -12,12 +12,12 @@ import SelectInputs from './components/SelectInputs.vue'
 import SliderInputs from './components/SliderInputs.vue'
 import TextInputs from './components/TextInputs.vue'
 import ToggleInputs from './components/ToggleInputs.vue'
-import DateTimePickerInputs from './components/DateTimePickerInputs.vue'
 import ColorPickerInputs from './components/ColorPickerInputs.vue'
+import DateTimePickerInputs from './components/DateTimePickerInputs.vue'
 import Tabs from './components/Tabs.vue'
 import Pagination from './components/Pagination.vue'
 import Calendar from './components/Calendar.vue'
-
+import Popups from './components/Popups.vue'
 
 export const routerHistory = createWebHashHistory('/ofdocs')
 export const router = createRouter({
@@ -40,5 +40,6 @@ export const router = createRouter({
     { path: '/tabs', component: Tabs },
     { path: '/pagination', component: Pagination },
     { path: '/calendar', component: Calendar },
+    { path: '/popups', component: Popups },
   ],
 })

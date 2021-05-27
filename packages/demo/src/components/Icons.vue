@@ -23,7 +23,7 @@
         <of-select-field
           label="Select icon set"
           :items="fontOpts"
-          v-model:value="iconFont"
+          v-model="iconFont"
         />
       </div>
     </div>

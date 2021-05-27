@@ -19,7 +19,7 @@
               min="10"
               max="30"
               step="2"
-              v-model:value="baseFontSize"
+              v-model="baseFontSize"
             />
           </div>
         </of-dialog>
@@ -62,7 +62,7 @@
             <of-list-item to="/pagination">Pagination</of-list-item>
           </of-list-group>
           <of-list-item to="/tabs">Tabs</of-list-item>
-          <of-list-item disabled>Dialogs</of-list-item>
+          <of-list-item to="/popups">Popups and Dialogs</of-list-item>
         </of-nav-group>
       </of-sidebar>
       <main class="app-main">
