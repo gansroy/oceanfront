@@ -1,24 +1,24 @@
 <template>
-  <div 
+  <div
     :class="[
       {
         'of-button--rounded': rounded,
         'of-button--split': split,
       },
-      'of-button', 
-      'of-button--' + variant
+      'of-button',
+      'of-button--' + variant,
     ]"
   >
     <button :disabled="disabled">
       <of-icon v-if="icon" :name="icon" class="of-button-icon" />
-      <slot>Submit</slot>
+      <slot>&nbsp;</slot>
     </button>
-    <button 
+    <button
       v-if="split"
       class="expand"
       @click="toggleMenu($event)"
       @mouseleave="menuLeave()"
-    > 
+    >
       <of-icon name="expand-down" />
     </button>
     <of-overlay
@@ -28,9 +28,9 @@
       :shade="false"
       :target="menuOuter"
     >
-      <of-option-list 
-        :items="items" 
-        :on-click="onClick" 
+      <of-option-list
+        :items="items"
+        :on-click="onClick"
         @mouseenter="menuClearTimeout()"
         @mouseleave="menuLeave()"
       />
@@ -42,11 +42,10 @@
 import { defineComponent, computed, ref } from 'vue'
 import { OfOptionList } from '../components/OptionList'
 export default defineComponent({
-  name: 'OfButton',  
+  name: 'OfButton',
   components: { OfOptionList },
   props: {
     variant: String,
-    label: String,
     icon: String,
     rounded: Boolean,
     disabled: Boolean,
@@ -60,8 +59,8 @@ export default defineComponent({
     const menuOuter = ref()
     const menuTimerId = ref()
     const onClick = (val: any) => {
-      if (props.onClickMenuItem)
-        props.onClickMenuItem.call(this, val);      
+      if (typeof val === 'function') val.call(this)
+      if (props.onClickMenuItem) props.onClickMenuItem.call(this, val)
       closeMenu()
     }
     const toggleMenu = (_evt?: MouseEvent) => {
@@ -81,15 +80,15 @@ export default defineComponent({
       clearTimeout(menuTimerId.value)
     }
     return {
-      onClick, 
-      closeMenu, 
-      toggleMenu, 
-      menuShown, 
-      menuOuter, 
+      onClick,
+      closeMenu,
+      toggleMenu,
+      menuShown,
+      menuOuter,
       variant,
       menuLeave,
-      menuClearTimeout
+      menuClearTimeout,
     }
-  }
+  },
 })
 </script>
