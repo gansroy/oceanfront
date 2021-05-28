@@ -70,6 +70,7 @@ abstract class DateTimeFormatterBase implements TextFormatter {
         let error
         let textValue = ''
         let value = modelValue
+        let parts
         try {
             value = this.loadValue(value)
             if (value !== null) {
@@ -78,6 +79,7 @@ abstract class DateTimeFormatterBase implements TextFormatter {
                     this.formatterOptions()
                 )
                 textValue = fmt.format(value)
+                parts = fmt.formatToParts(value)
             }
         } catch (e) {
             error = e.toString()
@@ -87,6 +89,7 @@ abstract class DateTimeFormatterBase implements TextFormatter {
             error,
             value,
             textClass: this.inputClass,
+            parts
         }
     }
 

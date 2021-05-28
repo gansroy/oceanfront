@@ -135,3 +135,127 @@ div.of-date-picker-cur-year {
         background-color: #EEE;
     }
 }
+
+
+.of-calendar-day-supertitles {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    border-top: solid 1px #CCC;
+}
+
+.of-calendar-day-supertitle {
+    text-align: center;
+}
+
+.of-calendar-allday-row .of-calendar-event {
+    height: var(--of-event-height, 20px);
+}
+
+.of-calendar-allday-row, .of-calendar-day-row, .of-calendar-day-titles {
+    display: grid;
+    grid-template-columns: 40px repeat( auto-fit, minmax(50px, 1fr) );
+    border-bottom: solid 1px #CCC;
+    &:first-child {
+        border-top: solid 1px #CCC;
+    }
+}
+
+.of-calendar-day-row {
+    & .of-calendar-event {
+        position: absolute;
+    }
+}
+
+.of-calendar-event {
+    white-space: nowrap;
+    overflow: hidden;
+    border: solid 1px #eee;
+    border-radius: 4px;
+    margin-left: 2px;
+    margin-right: 2px;
+    box-sizing: border-box;
+    font-size: 70%;
+    color: #FFF;
+    padding-left: 2px;
+    padding-right: 2px;
+    &.conflict {
+        border-left: solid 2px var(--of-calendar-conflict-color, red);
+    }
+    &:hover {
+        min-height: var(--of-event-height, 20px);
+    }
+}
+
+.of-calendar-day {
+    position: relative;
+}
+
+.of-calendar-day-events-container {
+    position: absolute;
+    top: 0;
+    left:0;
+    right: 0;
+    bottom: 0;
+    margin-right: 10px;
+}
+
+.of-calendar-interval {
+    height: var(--of-calendar-iterval-height, 48px);
+    box-sizing: border-box;
+    border-bottom: solid 1px #CCC;
+    &:first-child .of-calendar-interval-label { display: none;}
+    position: relative;
+}
+
+.of-calendar-interval-label {
+    position: absolute;
+    background-color: #fff;
+    text-align: right;
+    top: 0;
+    right: 12px;
+    transform: translateY(-50%);
+    left: 0;
+}
+
+.of-calendar-day-supertitle {
+    border-top: solid 1px #CCC;
+    border-bottom: solid 1px #CCC;
+}
+
+.of-calendar-gutter, .of-calendar-day-supertitle  {
+    border-left: solid 1px #CCC;
+    border-right: solid 1px #CCC;
+}
+.of-calendar-day, .of-calendar-category-title {
+    border-right: solid 1px #CCC;
+}
+
+.of-calendar-category-title, .of-calendar-day-supertitle {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2px;
+}
+
+.of-calendar-day-title {
+    & .weekday {
+        text-transform: uppercase;
+        font-size: 70%;
+        color: #AAA;
+        text-align: center;
+    }
+    & .day-number {
+        border: 1px solid #CCC;
+        background-color: #CCC;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+
+        &.today {
+            background-color: teal;
+            color: #FFF;
+        }
+    }
+}

@@ -9,7 +9,7 @@ const addMonths = (d: Date, months: number): Date => {
     return new Date(d.getFullYear(), d.getMonth() + months, 1)
 }
 
-const addDays = (d: Date, days: number): Date => {
+export const addDays = (d: Date, days: number): Date => {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate() + days)
 }
 

@@ -22,6 +22,7 @@ import { OfTextField } from './components/TextField'
 import { OfToggle } from './components/Toggle'
 import { OfToggleField } from './components/ToggleField'
 import OfTabs from './components/Tabs.vue'
+import OfCalendar from './components/Calendar/Calendar'
 import OfSpinner from './components/Spinner.vue'
 import OfPagination from './components/Pagination.vue'
 import OfButton from './components/Button.vue'
@@ -69,6 +70,7 @@ export const components: Record<string, Component> = {
   OfSidebar,
   OfSliderField,
   OfTabs,
+  OfCalendar,
   OfTextField,
   OfToggle,
   OfToggleField,
