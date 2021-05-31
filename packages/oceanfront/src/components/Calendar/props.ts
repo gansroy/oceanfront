@@ -1,4 +1,4 @@
-import { InternalEvent } from "../../lib/calendar/common"
+import { CalendarEvent, InternalEvent } from "../../lib/calendar/common"
 import { PropType } from "vue"
 
 const validTypes = [
@@ -48,7 +48,7 @@ export default {
             default: (): Date => new Date,
         },
         layout: String,
-        events: Array as PropType<InternalEvent[]>,
+        events: Array as PropType<CalendarEvent[]>,
         categoryTitles: {
             type: Boolean,
             default: (): boolean => true,

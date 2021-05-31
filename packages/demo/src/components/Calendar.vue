@@ -60,15 +60,12 @@
 
 <script lang="ts">
 import { defineComponent, Ref, ref } from 'vue'
-import { InternalEvent, Timestamp } from 'oceanfront/src/lib/calendar/common'
 import {
-  getDayIdentifier,
-  getTimeIdentifier,
-  getTimestampIdintifier,
-  toTimestamp,
-} from 'oceanfront/src/lib/calendar'
+  CalendarEvent,
+  InternalEvent,
+} from 'oceanfront/src/lib/calendar/common'
 import { makeRecord } from 'oceanfront'
-import { addDays } from 'oceanfront/src/lib/datetime'
+import { addDays, addMinutes } from 'oceanfront/src/lib/datetime'
 
 const types = [
   { value: 'day', text: 'Day' },
@@ -114,44 +111,50 @@ function randomElement<T>(list: T[]): T {
   return list[idx]
 }
 
-let events: Ref<InternalEvent[]> = ref([])
+let events: Ref<CalendarEvent[]> = ref([])
+
+function expand(n: number, digits: number): string {
+  let str = `${n}`
+  for (; str.length < digits; ) {
+    str = `0${str}`
+  }
+  return str
+}
+
+function formatDate(d: Date) {
+  return (
+    expand(d.getUTCFullYear(), 4) +
+    '-' +
+    expand(d.getUTCMonth() + 1, 2) +
+    '-' +
+    expand(d.getUTCDate(), 2) +
+    ' ' +
+    expand(d.getUTCHours(), 2) +
+    ':' +
+    expand(d.getUTCMinutes(), 2) +
+    ':' +
+    expand(d.getUTCSeconds(), 2)
+  )
+}
 
 function regenerateEvents() {
   const now = new Date()
-  const list: InternalEvent[] = []
+  const list: CalendarEvent[] = []
   for (let i = -6; i < 7; i++) {
-    const nEvents = 2 + Math.random() * 6
+    const nEvents = 2 + Math.random() * 3
+    const theDate = addDays(now, i)
+    theDate.setHours(0)
+    theDate.setMinutes(0)
     for (let idx = 0; idx < nEvents; idx++) {
-      const theDate = addDays(now, i)
-      const nowTS = toTimestamp(theDate)
-      const sh = Math.floor(Math.random() * 12)
-      const sm = Math.floor(Math.random() * 4) * 15
-      const eh = sh + 1 + Math.floor(Math.random() * 6)
-      const em = Math.floor(Math.random() * 4) * 15
-      const sts: Timestamp = {
-        ...nowTS,
-        hours: sh,
-        minutes: sm,
-      }
-      const ets: Timestamp = {
-        ...nowTS,
-        hours: eh,
-        minutes: em,
-      }
-      const event = {
+      const start = addMinutes(theDate, Math.floor(Math.random() * 420))
+      const duration = 30 + Math.floor(Math.random() * 360)
+      const event: CalendarEvent = {
         name: randomElement(names),
-        startTS: sts,
-        endTS: ets,
-        startDay: getDayIdentifier(sts),
-        startTime: getTimeIdentifier(sts),
-        start: getTimestampIdintifier(sts),
-        endDay: getDayIdentifier(ets),
-        endTime: getTimeIdentifier(ets),
-        end: getTimestampIdintifier(ets),
-        category: randomElement(categories),
+        start: formatDate(start),
+        duration,
         color: randomElement(colors),
         allDay: Math.random() > 0.8,
-        orig: false,
+        category: randomElement(categories),
       }
       list.push(event)
     }

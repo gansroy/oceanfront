@@ -1,6 +1,6 @@
 import { defineComponent, h } from "vue"
 import calendarProps from './props'
-import { CalendarEventPlacement, InternalEvent, layoutFunc } from '../../lib/calendar/common'
+import { CalendarEvent, CalendarEventPlacement, InternalEvent, layoutFunc, parseEvent } from '../../lib/calendar/common'
 import { FormatState, useFormats } from "src/lib/formats"
 import {
     getGroups,
@@ -11,6 +11,7 @@ import {
 import StackLayout from '../../lib/calendar/layout/stack'
 import ColumnLayout from '../../lib/calendar/layout/columns'
 import { DateTimeFormatterOptions } from "src/formats/DateTime"
+
 
 function formatRange(mgr: FormatState, e: InternalEvent) {
     const start = new Date(e.startTS.year, e.startTS.month, e.startTS.day, e.startTS.hours, e.startTS.minutes)
@@ -34,6 +35,11 @@ export default defineComponent({
         ...calendarProps.common,
     },
     computed: {
+        parsedEvents(): InternalEvent[] {
+            const events: CalendarEvent[] = this.$props.events || []
+            const mgr = useFormats()
+            return events.map(e => parseEvent(e, mgr)).filter(e => e !== undefined) as InternalEvent[]
+        },
         formatMgr: () => useFormats(),
         layoutFunc(): layoutFunc {
             return this.$props.layout === 'stack' ? StackLayout : ColumnLayout
@@ -46,7 +52,7 @@ export default defineComponent({
             for (const cat of this.$props.categoriesList || []) {
                 const day = getDayIdentifier(toTimestamp(cat.date))
                 allDayEvents[cat.category] = this.$props.events
-                    ? getEventsOfDay(this.$props.events, day, true, this.ignoreCategories ? undefined : cat.category, true)
+                    ? getEventsOfDay(this.parsedEvents, day, true, this.ignoreCategories ? undefined : cat.category, true)
                     : []
             }
             return allDayEvents
@@ -57,7 +63,7 @@ export default defineComponent({
                 const day = getDayIdentifier(toTimestamp(cat.date))
                 const threshold = parseInt(this.$props.overlapThreshold as unknown as string) || 0
                 const groups = this.$props.events
-                    ? getGroups(this.$props.events, day, false, this.ignoreCategories ? undefined : cat.category, this.layoutFunc, threshold)
+                    ? getGroups(this.parsedEvents, day, false, this.ignoreCategories ? undefined : cat.category, this.layoutFunc, threshold)
                     : []
                 const placements = []
                 for (const g of groups) {
@@ -197,13 +203,13 @@ export default defineComponent({
     },
     render() {
         const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 0
-        const conflictColor = this.$props.conflictColor
+        const conflictColor = this.$props.conflictColor || null
 
         return h('div',
             {
                 class: "container",
                 style: {
-                    "--of-event-height": eventHeight ? `${eventHeight}px` : undefined,
+                    "--of-event-height": eventHeight ? `${eventHeight}px` : null,
                     "--of-calendar-conflict-color": conflictColor,
                 },
             },

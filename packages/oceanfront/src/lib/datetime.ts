@@ -13,6 +13,14 @@ export const addDays = (d: Date, days: number): Date => {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate() + days)
 }
 
+export const addMinutes = (d: Date, minutes: number): Date => {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes() + minutes)
+}
+
+export const allDayEnd = (d: Date): Date => {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)
+}
+
 export interface MonthGridCell {
     date: Date
     today: boolean
