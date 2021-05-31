@@ -7,13 +7,11 @@ import {
     getEventsOfDay,
     getDayIdentifier,
     toTimestamp,
-    getNormalizedRange,
     getNormalizedTSRange,
 } from '../../lib/calendar'
 import StackLayout from '../../lib/calendar/layout/stack'
 import ColumnLayout from '../../lib/calendar/layout/columns'
 import { DateTimeFormatterOptions } from "src/formats/DateTime"
-import { addDays } from "src/lib/datetime"
 
 
 function formatRange(mgr: FormatState, e: InternalEvent, withinDate: Date) {

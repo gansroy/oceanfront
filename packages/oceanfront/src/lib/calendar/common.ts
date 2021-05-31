@@ -1,6 +1,5 @@
 import { DateTimeFormatter } from "src/formats/DateTime"
-import { DurationFormatter } from "src/formats/Duration"
-import { FormatState, useFormats } from "src/lib/formats"
+import { FormatState } from "src/lib/formats"
 import { getDayIdentifier, getTimeIdentifier, getTimestampIdintifier, toTimestamp } from "."
 import { allDayEnd, addMinutes } from "../datetime"
 
@@ -15,7 +14,6 @@ export interface Timestamp {
     readonly hours: number
     readonly minutes: number
 }
-
 
 /** Calendar event. This event representation is used to supply events to the
  * calendar. The events will be parsed into InternalEvent. If event duration
