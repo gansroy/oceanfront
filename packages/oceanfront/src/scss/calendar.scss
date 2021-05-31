@@ -149,6 +149,7 @@ div.of-date-picker-cur-year {
 
 .of-calendar-allday-row .of-calendar-event {
     height: var(--of-event-height, 20px);
+    z-index: 1;
 }
 
 .of-calendar-allday-row, .of-calendar-day-row, .of-calendar-day-titles {
@@ -167,6 +168,7 @@ div.of-date-picker-cur-year {
 }
 
 .of-calendar-event {
+    position: relative;
     white-space: nowrap;
     overflow: hidden;
     border: solid 1px #eee;
