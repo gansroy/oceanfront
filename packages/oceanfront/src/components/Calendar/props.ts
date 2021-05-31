@@ -1,4 +1,4 @@
-import { CalendarEvent, InternalEvent } from "../../lib/calendar/common"
+import { CalendarEvent, InternalEvent, Timestamp } from "../../lib/calendar/common"
 import { PropType } from "vue"
 
 const validTypes = [
@@ -19,6 +19,7 @@ export default {
     internal: {
         categoriesList: Array as PropType<categoryItem[]>,
         ignoreCategories: Boolean,
+        visibleRange: Array as PropType<Timestamp[]>,
     },
     week: {
         weekStart: { type: [Number, String], default: 0, },

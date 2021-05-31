@@ -1,6 +1,6 @@
 import { defineComponent, h } from "vue"
 import calendarProps from './props'
-import { CalendarEvent, CalendarEventPlacement, InternalEvent, layoutFunc, parseEvent } from '../../lib/calendar/common'
+import { CalendarAlldayEventPlacement, CalendarEvent, CalendarEventPlacement, InternalEvent, layoutFunc, parseEvent } from '../../lib/calendar/common'
 import { FormatState, useFormats } from "src/lib/formats"
 import {
     getGroups,
@@ -8,14 +8,15 @@ import {
     getDayIdentifier,
     toTimestamp,
     getNormalizedTSRange,
+    eventsStartingAtDay,
 } from '../../lib/calendar'
 import StackLayout from '../../lib/calendar/layout/stack'
 import ColumnLayout from '../../lib/calendar/layout/columns'
 import { DateTimeFormatterOptions } from "src/formats/DateTime"
+import { BusyInfo, layoutAllday } from "src/lib/calendar/layout/allday"
 
 
 function formatRange(mgr: FormatState, e: InternalEvent, withinDate: Date) {
-
     const [startTS, endTS] = getNormalizedTSRange(e, withinDate)
     const start = new Date(startTS.year, startTS.month, startTS.day, startTS.hours, startTS.minutes)
     const end = new Date(endTS.year, endTS.month, endTS.day, endTS.hours, endTS.minutes)
@@ -51,12 +52,22 @@ export default defineComponent({
             return (this.$props.events?.filter((e) => e.allDay).length || 0) > 0
         },
         allDayEvents() {
+            const visRange = this.visibleRange || []
+            const rangeStart = getDayIdentifier(visRange[0])
             const allDayEvents = {} as any
+            let busyInfo: BusyInfo = { busyColumns: [], currentColumn: 0 }
             for (const cat of this.$props.categoriesList || []) {
                 const day = getDayIdentifier(toTimestamp(cat.date))
-                allDayEvents[cat.category] = this.$props.events
-                    ? getEventsOfDay(this.parsedEvents, day, true, this.ignoreCategories ? undefined : cat.category, true)
+                const evs = this.$props.events
+                    ? eventsStartingAtDay(
+                        getEventsOfDay(this.parsedEvents, day, true, this.ignoreCategories ? undefined : cat.category, true),
+                        day,
+                        rangeStart
+                    )
                     : []
+                const layedOut = layoutAllday(evs, visRange, busyInfo)
+                if (this.$props.type == 'category') busyInfo = { busyColumns: [], currentColumn: 0 }
+                allDayEvents[cat.category] = layedOut
             }
             return allDayEvents
         },
@@ -117,23 +128,30 @@ export default defineComponent({
         },
         allDayRow() {
             if (!this.hasAllDay) return ''
+            const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 20
+            let height = 0
             const columns = !this.$props.categoriesList
                 ? ''
                 : this.$props.categoriesList.map((cat) => {
-                    const events = this.allDayEvents[cat.category] as InternalEvent[] || []
+                    const events = this.allDayEvents[cat.category] as CalendarAlldayEventPlacement[] || []
                     return h('div', { class: 'of-calendar-day' },
-                        events.map(e => h('div',
-                            {
-                                class: 'of-calendar-event',
-                                style: {
-                                    'background-color': this.$props.eventColor?.(e) ?? e.color,
-                                }
-                            },
-                            h('strong', e.name),
-                        ))
+                        events.map(e => {
+                            height = Math.max(e.top, height)
+                            return h('div',
+                                {
+                                    class: 'of-calendar-event',
+                                    style: {
+                                        'background-color': this.$props.eventColor?.(e.event) ?? e.event.color,
+                                        width: '' + ((e.daysSpan * 100) - 2) + '%',
+                                        top: '' + (e.top * eventHeight) + 'px',
+                                    }
+                                },
+                                h('strong', e.event.name),
+                            )
+                        })
                     )
                 })
-            return h('div', { class: 'of-calendar-allday-row' }, [
+            return h('div', { class: 'of-calendar-allday-row', style: { height: '' + (height * eventHeight + eventHeight) + 'px' } }, [
                 h('div', { class: 'of-calendar-gutter' }),
                 columns,
             ])
@@ -205,14 +223,14 @@ export default defineComponent({
         },
     },
     render() {
-        const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 0
+        const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 20
         const conflictColor = this.$props.conflictColor || null
 
         return h('div',
             {
                 class: "container",
                 style: {
-                    "--of-event-height": eventHeight ? `${eventHeight}px` : null,
+                    "--of-event-height": `${eventHeight}px`,
                     "--of-calendar-conflict-color": conflictColor,
                 },
             },

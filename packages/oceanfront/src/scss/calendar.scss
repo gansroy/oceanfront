@@ -161,14 +161,8 @@ div.of-date-picker-cur-year {
     }
 }
 
-.of-calendar-day-row {
-    & .of-calendar-event {
-        position: absolute;
-    }
-}
-
 .of-calendar-event {
-    position: relative;
+    position: absolute;
     white-space: nowrap;
     overflow: hidden;
     border: solid 1px #eee;

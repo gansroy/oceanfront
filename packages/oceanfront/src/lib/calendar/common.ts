@@ -8,6 +8,7 @@ export type TimeIdentifier = number
 export type TimestampIdentifier = number
 
 export interface Timestamp {
+    readonly date: Date
     readonly year: number
     readonly month: number
     readonly day: number
@@ -68,6 +69,11 @@ export interface InternalEvent {
     readonly [_: string]: any
 }
 
+export type CalendarAlldayEventPlacement = {
+    event: InternalEvent
+    top: number
+    daysSpan: number
+}
 
 /** CalendarEventPlacement represents the placement of an event within a day.
  * Expressing height in milliseconds allows to adapt for different vertical

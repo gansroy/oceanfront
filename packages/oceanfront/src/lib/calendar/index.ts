@@ -10,11 +10,30 @@ const MINUTES_IN_HOUR = 60
 
 export function toTimestamp(date: Date): Timestamp {
     return {
+        date: date,
         year: date.getFullYear(),
         month: date.getMonth(),
         day: date.getDate(),
         hours: date.getHours(),
         minutes: date.getMinutes(),
+    }
+}
+
+export function fromTimestamp(ts: Timestamp): Date {
+    return new Date(ts.year, ts.month, ts.day, ts.hours, ts.minutes)
+}
+
+export function withZeroTime(ts: Timestamp): Timestamp {
+    const d = new Date(ts.date.valueOf())
+    d.setHours(0)
+    d.setMinutes(0)
+    d.setSeconds(0)
+    d.setMilliseconds(0)
+    return {
+        ...ts,
+        date: d,
+        hours: 0,
+        minutes: 0,
     }
 }
 
@@ -32,9 +51,39 @@ export function compareTimestamps(a: Timestamp, b: Timestamp): number {
     return 0
 }
 
+export function daysInEvent(e: InternalEvent, range?: Timestamp[]): number {
+    // This is a bit tricky. Simple arithmetic may yield incorrect
+    // results because of DST
+    let [start, end] = [e.startTS, e.endTS]
+    if (range !== undefined) {
+        if (compareTimestamps(start, range[0]) < 0) {
+            start = range[0]
+        }
+        if (compareTimestamps(end, range[1]) > 0) {
+            end = range[1]
+        }
+    }
+    let date = fromTimestamp(start)
+    let nDays = 0
+    for (; compareTimestamps(start, end) < 0; date = addDays(date, 1), start = toTimestamp(date)) {
+        nDays++
+    }
+    return nDays
+
+}
+
 export const getDayIdentifier = (date: Timestamp): DayIdentifier => {
     return date.year * OFFSET_YEAR + date.month * OFFSET_MONTH + date.day
 }
+
+export const dayIdToTs = (id: DayIdentifier): Timestamp => {
+    const day = id % OFFSET_MONTH
+    const month = (id % OFFSET_YEAR) / OFFSET_MONTH
+    const year = Math.floor(id / OFFSET_YEAR)
+    return toTimestamp(new Date(year, month, day))
+}
+
+
 
 export const getTimeIdentifier = (date: Timestamp): TimeIdentifier => {
     return date.hours * MINUTES_IN_HOUR + date.minutes
@@ -51,6 +100,12 @@ export const isEventInRange =
         || (start >= event.start && start < event.end)
         || (start >= event.start && start < event.end)
 
+
+export const eventsStartingAtDay = (events: InternalEvent[], day: DayIdentifier, intervalStart: DayIdentifier): InternalEvent[] => {
+    return events.filter(e => {
+        return Math.max(e.startDay, intervalStart) == day
+    })
+}
 
 export const getEventsOfDay = (events: InternalEvent[], day: DayIdentifier, allDay: boolean, category?: string, sorted?: boolean): InternalEvent[] => {
     const filtered = events.filter(
@@ -74,21 +129,29 @@ export const getNormalizedRange = (event: InternalEvent, day: DayIdentifier): Ti
     return [Math.max(event.start, start), Math.min(event.end, end)]
 }
 
-export const getNormalizedTSRange = (event: InternalEvent, day: Date): Timestamp[] => {
-    const dayStartTS = {
-        ...toTimestamp(day),
-        hours: 0,
-        minutes: 0,
+export function getNormalizedTSRange(event: InternalEvent, day: Date): Timestamp[];
+export function getNormalizedTSRange(event: InternalEvent, startTS: Timestamp, endTS: Timestamp): Timestamp[];
+
+
+export function getNormalizedTSRange(event: InternalEvent, dayOrStartTS: Date | Timestamp, endTS?: Timestamp): Timestamp[] {
+    if (dayOrStartTS instanceof Date) {
+        endTS = {
+            ...toTimestamp(addDays(dayOrStartTS, 1)),
+            hours: 0,
+            minutes: 0,
+        }
+        dayOrStartTS = {
+            ...toTimestamp(dayOrStartTS),
+            hours: 0,
+            minutes: 0,
+        }
     }
-    const dayEndTS = {
-        ...toTimestamp(addDays(day, 1)),
-        hours: 0,
-        minutes: 0,
-    }
-    const start = compareTimestamps(event.startTS, dayStartTS) < 0 ? dayStartTS : event.startTS
-    const end = compareTimestamps(event.endTS, dayEndTS) > 0 ? dayEndTS : event.endTS
+    const start = compareTimestamps(event.startTS, dayOrStartTS) < 0 ? dayOrStartTS : event.startTS
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const end = compareTimestamps(event.endTS, endTS!) > 0 ? endTS! : event.endTS
     return [start, end]
 }
+
 
 export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: boolean, category: string | undefined, layout: layoutFunc, overlapThreshold: number): CalendarEventsGroup[] {
     const groups: CalendarEventsGroup[] = []
