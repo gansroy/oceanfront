@@ -31,7 +31,10 @@ export const getTimestampIdintifier = (date: Timestamp): DayIdentifier => {
 
 export const isEventInRange =
     (event: InternalEvent, start: TimestampIdentifier, end: TimestampIdentifier): boolean =>
-        event.start >= start && event.end <= end
+        (event.end > start && event.end <= end)
+        || (event.start >= start && event.start < end)
+        || (start >= event.start && start < event.end)
+        || (start >= event.start && start < event.end)
 
 
 export const getEventsOfDay = (events: InternalEvent[], day: DayIdentifier, allDay: boolean, category?: string, sorted?: boolean): InternalEvent[] => {

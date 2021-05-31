@@ -115,9 +115,7 @@ let events: Ref<CalendarEvent[]> = ref([])
 
 function expand(n: number, digits: number): string {
   let str = `${n}`
-  for (; str.length < digits; ) {
-    str = `0${str}`
-  }
+  for (; str.length < digits; str = `0${str}`) {}
   return str
 }
 
@@ -138,6 +136,7 @@ function formatDate(d: Date) {
 }
 
 function regenerateEvents() {
+  let number = 1
   const now = new Date()
   const list: CalendarEvent[] = []
   for (let i = -6; i < 7; i++) {
@@ -147,9 +146,11 @@ function regenerateEvents() {
     theDate.setMinutes(0)
     for (let idx = 0; idx < nEvents; idx++) {
       const start = addMinutes(theDate, Math.floor(Math.random() * 420))
-      const duration = 30 + Math.floor(Math.random() * 360)
+      const duration =
+        30 +
+        Math.floor(Math.random() * 360 + (Math.random() > 0.95 ? 4 * 360 : 0))
       const event: CalendarEvent = {
-        name: randomElement(names),
+        name: randomElement(names) + ' ' + number++,
         start: formatDate(start),
         duration,
         color: randomElement(colors),
