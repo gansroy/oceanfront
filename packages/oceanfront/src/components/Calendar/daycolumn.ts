@@ -7,16 +7,21 @@ import {
     getEventsOfDay,
     getDayIdentifier,
     toTimestamp,
+    getNormalizedRange,
+    getNormalizedTSRange,
 } from '../../lib/calendar'
 import StackLayout from '../../lib/calendar/layout/stack'
 import ColumnLayout from '../../lib/calendar/layout/columns'
 import { DateTimeFormatterOptions } from "src/formats/DateTime"
+import { addDays } from "src/lib/datetime"
 
 
-function formatRange(mgr: FormatState, e: InternalEvent) {
-    const start = new Date(e.startTS.year, e.startTS.month, e.startTS.day, e.startTS.hours, e.startTS.minutes)
-    const end = new Date(e.endTS.year, e.endTS.month, e.endTS.day, e.endTS.hours, e.endTS.minutes)
-    const spansNoon = e.startTS.hours < 12 != e.endTS.hours < 12
+function formatRange(mgr: FormatState, e: InternalEvent, withinDate: Date) {
+
+    const [startTS, endTS] = getNormalizedTSRange(e, withinDate)
+    const start = new Date(startTS.year, startTS.month, startTS.day, startTS.hours, startTS.minutes)
+    const end = new Date(endTS.year, endTS.month, endTS.day, endTS.hours, endTS.minutes)
+    const spansNoon = startTS.hours < 12 != endTS.hours < 12
     const opts: DateTimeFormatterOptions = {
         nativeOptions: { hour: "numeric", minute: "numeric" }
     }
@@ -154,7 +159,7 @@ export default defineComponent({
                         const separator = !brk
                             ? ' '
                             : h('br')
-                        const formattedRange = formatRange(this.formatMgr, e.event)
+                        const formattedRange = formatRange(this.formatMgr, e.event, cat.date)
                         const slot = this.$slots['event-content']
                         return h('div',
                             {

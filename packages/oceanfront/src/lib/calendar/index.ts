@@ -1,3 +1,4 @@
+import { addDays } from '../datetime'
 import { CalendarEventPlacement, CalendarEventsGroup, DayIdentifier, InternalEvent, layoutFunc, TimeIdentifier, Timestamp, TimestampIdentifier } from './common'
 
 
@@ -15,6 +16,20 @@ export function toTimestamp(date: Date): Timestamp {
         hours: date.getHours(),
         minutes: date.getMinutes(),
     }
+}
+
+export function compareTimestamps(a: Timestamp, b: Timestamp): number {
+    let delta = a.year - b.year
+    if (delta != 0) return Math.sign(delta)
+    delta = a.month - b.month
+    if (delta != 0) return Math.sign(delta)
+    delta = a.day - b.day
+    if (delta != 0) return Math.sign(delta)
+    delta = a.hours - b.hours
+    if (delta != 0) return Math.sign(delta)
+    delta = a.minutes - b.minutes
+    if (delta != 0) return Math.sign(delta)
+    return 0
 }
 
 export const getDayIdentifier = (date: Timestamp): DayIdentifier => {
@@ -57,6 +72,22 @@ export const getNormalizedRange = (event: InternalEvent, day: DayIdentifier): Ti
     const start = day * OFFSET_TIMESTAMP
     const end = (day + 1) * OFFSET_TIMESTAMP
     return [Math.max(event.start, start), Math.min(event.end, end)]
+}
+
+export const getNormalizedTSRange = (event: InternalEvent, day: Date): Timestamp[] => {
+    const dayStartTS = {
+        ...toTimestamp(day),
+        hours: 0,
+        minutes: 0,
+    }
+    const dayEndTS = {
+        ...toTimestamp(addDays(day, 1)),
+        hours: 0,
+        minutes: 0,
+    }
+    const start = compareTimestamps(event.startTS, dayStartTS) < 0 ? dayStartTS : event.startTS
+    const end = compareTimestamps(event.endTS, dayEndTS) > 0 ? dayEndTS : event.endTS
+    return [start, end]
 }
 
 export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: boolean, category: string | undefined, layout: layoutFunc, overlapThreshold: number): CalendarEventsGroup[] {

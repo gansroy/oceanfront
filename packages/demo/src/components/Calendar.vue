@@ -145,10 +145,10 @@ function regenerateEvents() {
     theDate.setHours(0)
     theDate.setMinutes(0)
     for (let idx = 0; idx < nEvents; idx++) {
-      const start = addMinutes(theDate, Math.floor(Math.random() * 420))
+      const start = addMinutes(theDate, Math.floor(Math.random() * 28) * 15)
       const duration =
         30 +
-        Math.floor(Math.random() * 360 + (Math.random() > 0.95 ? 4 * 360 : 0))
+        15 * Math.floor(Math.random() * 24 + (Math.random() > 0.95 ? 96 : 0))
       const event: CalendarEvent = {
         name: randomElement(names) + ' ' + number++,
         start: formatDate(start),
