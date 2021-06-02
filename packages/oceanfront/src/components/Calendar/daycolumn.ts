@@ -40,6 +40,7 @@ export default defineComponent({
     },
     emits: [
         'click:event',
+        'click:category',
     ],
     computed: {
         parsedEvents(): InternalEvent[] {
@@ -113,7 +114,16 @@ export default defineComponent({
                 : this.$props.categoriesList.map((cat) => {
                     const theDay = cat.date
 
-                    return h('div', { class: 'of-calendar-category-title' },
+                    return h(
+                        'div',
+                        {
+                            class: 'of-calendar-category-title',
+                            onClick: (event: any) => {
+                                if (this.$props.type === 'category') {
+                                    this.$emit('click:category', event, cat.category)
+                                }
+                            }
+                        },
                         slot
                             ? slot({
                                 categoryName: cat.category,

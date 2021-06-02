@@ -223,6 +223,11 @@ div.of-date-picker-cur-year {
     border-left: solid 1px #CCC;
     border-right: solid 1px #CCC;
 }
+
+.of-calendar-category-title {
+    cursor: pointer;
+}
+
 .of-calendar-day, .of-calendar-category-title {
     border-right: solid 1px #CCC;
 }

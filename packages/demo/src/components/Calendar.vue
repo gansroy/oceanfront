@@ -44,6 +44,7 @@
     <of-calendar
       @click:event="eventClicked"
       @click:day="dayClicked"
+      @click:category="categoryClicked"
       :type="values.type"
       :day="values.day"
       num-days="3"
@@ -59,8 +60,19 @@
         <div v-if="props.isDate">
           <b>{{ props.date.getDate() }} </b>
         </div>
-        <div v-if="!props.isDate">
-          <of-icon name="user" /><i>{{ props.categoryName }} </i>
+        <div v-if="!props.isDate" style="width: 100%">
+          <div
+            :style="{
+              'background-color':
+                props.categoryName === values.selectedCategory
+                  ? '#eee'
+                  : 'inherit',
+              width: '100%',
+              'text-align': 'center',
+            }"
+          >
+            <of-icon name="user" /><i>{{ props.categoryName }} </i>
+          </div>
         </div>
       </template>
       <template
@@ -215,6 +227,9 @@ export default defineComponent({
       },
       dayClicked: (nativeEvent: any, day: Date) => {
         state.value = { ...state.value, type: 'day', day: day }
+      },
+      categoryClicked: (nativeEvent: any, category: string) => {
+        state.value = { ...state.value, selectedCategory: category }
       },
       hidePopup: () => {
         detailsVisible.value = false
