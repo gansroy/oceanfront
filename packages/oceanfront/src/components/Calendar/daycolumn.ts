@@ -38,6 +38,9 @@ export default defineComponent({
         ...calendarProps.internal,
         ...calendarProps.common,
     },
+    emits: [
+        'click:event'
+    ],
     computed: {
         parsedEvents(): InternalEvent[] {
             const events: CalendarEvent[] = this.$props.events || []
@@ -144,7 +147,10 @@ export default defineComponent({
                                         'background-color': this.$props.eventColor?.(e.event) ?? e.event.color,
                                         width: '' + ((e.daysSpan * 100) - 2) + '%',
                                         top: '' + (e.top * eventHeight) + 'px',
-                                    }
+                                    },
+                                    onClick: (event: any) => {
+                                        this.$emit('click:event', event, e.event)
+                                    },
                                 },
                                 h('strong', e.event.name),
                             )
@@ -167,7 +173,9 @@ export default defineComponent({
                 ? ''
                 : this.$props.categoriesList.map((cat) => {
                     const intervals = this.intervals.map(_ =>
-                        h('div', { class: "of-calendar-interval" })
+                        h('div', {
+                            class: "of-calendar-interval",
+                        })
                     )
                     const es = this.dayEvents[cat.category] as CalendarEventPlacement[] || []
                     const events = es.map(e => {
@@ -190,7 +198,10 @@ export default defineComponent({
                                     width: e.width * 100 + '%',
                                     top: e.top + '%',
                                     height: e.height + '%',
-                                }
+                                },
+                                onClick: (event: any) => {
+                                    this.$emit('click:event', event, e.event)
+                                },
                             },
                             slot
                                 ? slot({
@@ -209,7 +220,7 @@ export default defineComponent({
                     return h('div', { class: 'of-calendar-day' },
                         [
                             ...intervals,
-                            h('div', { class: 'of-calendar-day-events-container' }, events)
+                            ...events,
                         ])
                 })
             return h('div', { class: 'of-calendar-day-row' }, [

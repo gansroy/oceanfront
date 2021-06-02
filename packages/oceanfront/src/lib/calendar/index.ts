@@ -1,5 +1,8 @@
 import { addDays } from '../datetime'
-import { CalendarEventPlacement, CalendarEventsGroup, DayIdentifier, InternalEvent, layoutFunc, TimeIdentifier, Timestamp, TimestampIdentifier } from './common'
+import {
+    CalendarEventPlacement, CalendarEventsGroup, DayIdentifier,
+    InternalEvent, layoutFunc, TimeIdentifier, Timestamp, TimestampIdentifier
+} from './common'
 
 
 const OFFSET_TIMESTAMP = 10000

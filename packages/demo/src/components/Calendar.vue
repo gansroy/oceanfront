@@ -1,5 +1,25 @@
 <template>
   <div class="container">
+    <of-overlay
+      :active="detailsVisible"
+      :target="detailsTarget"
+      :capture="false"
+      :shade="false"
+      @blur="hidePopup"
+    >
+      <div
+        :style="{
+          width: '200px',
+          height: '60px',
+          color: '#FFF',
+          'background-color': detailsEvent.color,
+          border: 'solid 2px #FFF',
+          'border-radius': '10px',
+        }"
+      >
+        {{ detailsEvent.name }}
+      </div>
+    </of-overlay>
     <p>
       <of-select-field
         :items="types"
@@ -22,6 +42,7 @@
       >
     </p>
     <of-calendar
+      @click:event="eventClicked"
       :type="values.type"
       num-days="3"
       :events="events"
@@ -167,6 +188,9 @@ regenerateEvents()
 
 export default defineComponent({
   setup() {
+    const detailsTarget: Ref<any> = ref(null)
+    const detailsVisible = ref(false)
+    const detailsEvent: Ref<any> = ref({})
     const _xx = state.value
     return {
       events: ref(events),
@@ -174,8 +198,23 @@ export default defineComponent({
       state,
       values: state.value,
       types,
-      regenerateEvents,
+      regenerateEvents: () => {
+        detailsVisible.value = false
+        regenerateEvents()
+      },
       categories,
+      detailsVisible,
+      detailsTarget,
+      detailsEvent,
+      eventClicked: (nativeEvent: any, event: InternalEvent) => {
+        detailsTarget.value = nativeEvent.target
+        detailsEvent.value = event
+        detailsVisible.value = true
+      },
+      hidePopup: (e: Event) => {
+        detailsVisible.value = false
+        e.stopPropagation()
+      },
     }
   },
 })
