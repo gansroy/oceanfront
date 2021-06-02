@@ -43,7 +43,9 @@
     </p>
     <of-calendar
       @click:event="eventClicked"
+      @click:day="dayClicked"
       :type="values.type"
+      :day="values.day"
       num-days="3"
       :events="events"
       :layout="values.layout"
@@ -211,9 +213,11 @@ export default defineComponent({
         detailsEvent.value = event
         detailsVisible.value = true
       },
-      hidePopup: (e: Event) => {
+      dayClicked: (nativeEvent: any, day: Date) => {
+        state.value = { ...state.value, type: 'day', day: day }
+      },
+      hidePopup: () => {
         detailsVisible.value = false
-        e.stopPropagation()
       },
     }
   },

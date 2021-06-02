@@ -39,7 +39,7 @@ export default defineComponent({
         ...calendarProps.common,
     },
     emits: [
-        'click:event'
+        'click:event',
     ],
     computed: {
         parsedEvents(): InternalEvent[] {

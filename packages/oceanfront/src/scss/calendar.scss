@@ -234,6 +234,7 @@ div.of-date-picker-cur-year {
 }
 
 .of-calendar-day-title {
+    cursor: pointer;
     & .weekday {
         text-transform: uppercase;
         font-size: 70%;

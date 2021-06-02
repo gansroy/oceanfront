@@ -20,6 +20,7 @@ export default defineComponent({
         ...calendarProps.internal,
         ...calendarProps.common,
     },
+    emits: ['click:day'],
     computed: {
         formatMgr: () => useFormats()
     },
@@ -34,7 +35,13 @@ export default defineComponent({
         renderDayNumber(date?: Date) {
             const weekFmt = this.formatMgr.getTextFormatter('date', weekDayFormat)
             const dayFmt = this.formatMgr.getTextFormatter('date', dayFormat)
-            return h('div', { class: 'of-calendar-day-title' },
+            return h('div',
+                {
+                    class: 'of-calendar-day-title',
+                    onClick: (event: any) => {
+                        this.$emit('click:day', event, date)
+                    },
+                },
                 [
                     h('div', { class: 'weekday' }, weekFmt?.format(date).textValue),
                     h('div', { class: 'day-number' }, dayFmt?.format(date).textValue)
