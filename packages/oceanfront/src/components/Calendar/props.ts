@@ -37,6 +37,10 @@ export default {
         }
     },
     common: {
+        mousePrecision: {
+            type: [Number, String],
+            default: 15,
+        },
         conflictColor: String,
         eventColor: Function as PropType<(e: InternalEvent) => any>,
         type: {

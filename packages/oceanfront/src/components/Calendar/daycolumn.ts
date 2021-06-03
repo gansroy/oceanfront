@@ -1,6 +1,6 @@
 import { defineComponent, h } from "vue"
 import calendarProps from './props'
-import { CalendarAlldayEventPlacement, CalendarEvent, CalendarEventPlacement, InternalEvent, layoutFunc, parseEvent } from '../../lib/calendar/common'
+import { CalendarAlldayEventPlacement, CalendarEvent, CalendarEventPlacement, InternalEvent, layoutFunc, parseEvent, Timestamp } from '../../lib/calendar/common'
 import { FormatState, useFormats } from "src/lib/formats"
 import {
     getGroups,
@@ -9,11 +9,13 @@ import {
     toTimestamp,
     getNormalizedTSRange,
     eventsStartingAtDay,
+    withZeroTime,
 } from '../../lib/calendar'
 import StackLayout from '../../lib/calendar/layout/stack'
 import ColumnLayout from '../../lib/calendar/layout/columns'
 import { DateTimeFormatterOptions } from "src/formats/DateTime"
 import { BusyInfo, layoutAllday } from "src/lib/calendar/layout/allday"
+import { addMinutes } from "src/lib/datetime"
 
 
 function formatRange(mgr: FormatState, e: InternalEvent, withinDate: Date) {
@@ -42,6 +44,9 @@ export default defineComponent({
         'click:event',
         'click:category',
         'click:day',
+        'mousedown:time',
+        'mousemove:time',
+        'mouseup:time',
     ],
     computed: {
         parsedEvents(): InternalEvent[] {
@@ -97,6 +102,20 @@ export default defineComponent({
         },
     },
     methods: {
+        getEventTimestamp(e: MouseEvent | TouchEvent, day: Timestamp) {
+            const precision = parseInt(this.$props.mousePrecision as unknown as string) || 15
+            const bounds = (e.currentTarget as HTMLElement).getBoundingClientRect()
+            const touchEvent: TouchEvent = e as TouchEvent
+            const mouseEvent: MouseEvent = e as MouseEvent
+            const touches: TouchList = touchEvent.changedTouches || touchEvent.touches
+            const clientY: number = touches && touches[0] ? touches[0].clientY : mouseEvent.clientY
+            const offsetY = (clientY - bounds.top)
+            let minutes = Math.floor(offsetY / bounds.height * 24 * 60)
+            minutes -= minutes % precision
+            const ts = toTimestamp(addMinutes(withZeroTime(day).date, minutes))
+            return ts
+        },
+
         superTitle() {
             const slot = this.$slots['super-title']
             if (!slot) return ''
@@ -212,6 +231,9 @@ export default defineComponent({
                                 onClick: (event: any) => {
                                     this.$emit('click:event', event, e.event)
                                 },
+                                onMouseDown: (event: any) => {
+                                    event.stopPropagation()
+                                },
                             },
                             slot
                                 ? slot({
@@ -226,8 +248,23 @@ export default defineComponent({
                                 ]
                         )
                     })
-
-                    return h('div', { class: 'of-calendar-day' },
+                    return h(
+                        'div',
+                        {
+                            class: 'of-calendar-day',
+                            onMouseMove: (e: MouseEvent | TouchEvent) => {
+                                const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
+                                this.$emit('mousemove:time', e, ts)
+                            },
+                            onMouseDown: (e: MouseEvent | TouchEvent) => {
+                                const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
+                                this.$emit('mousedown:time', e, ts)
+                            },
+                            onMouseUp: (e: MouseEvent | TouchEvent) => {
+                                const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
+                                this.$emit('mouseup:time', e, ts)
+                            }
+                        },
                         [
                             ...intervals,
                             ...events,
@@ -253,6 +290,9 @@ export default defineComponent({
                 style: {
                     "--of-event-height": `${eventHeight}px`,
                     "--of-calendar-conflict-color": conflictColor,
+                },
+                onSelectStart(e: Event) {
+                    e.preventDefault()
                 },
             },
             [

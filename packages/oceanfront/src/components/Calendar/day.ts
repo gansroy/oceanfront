@@ -4,7 +4,7 @@ import dayColumns from './daycolumn'
 import { DateTimeFormatterOptions } from 'src/formats/DateTime'
 import { useFormats } from "src/lib/formats"
 import { Timestamp } from "src/lib/calendar/common"
-import { toTimestamp } from "src/lib/calendar"
+import { toTimestamp, withZeroTime } from "src/lib/calendar"
 import { addDays } from "src/lib/datetime"
 
 const weekDayFormat: DateTimeFormatterOptions = {
@@ -27,8 +27,8 @@ export default defineComponent({
         getVisibleRange(): Timestamp[] {
             const firstDay = this.$props.day
             const lastDay = addDays(firstDay, 1)
-            const firstTS = { ...toTimestamp(firstDay), hours: 0, minutes: 0 }
-            const lastTS = { ...toTimestamp(lastDay), hours: 0, minutes: 0 }
+            const firstTS = withZeroTime(toTimestamp(firstDay))
+            const lastTS = withZeroTime(toTimestamp(lastDay))
             return [firstTS, lastTS]
         },
         renderDayNumber(date?: Date) {
