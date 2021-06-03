@@ -41,6 +41,7 @@ export default defineComponent({
     emits: [
         'click:event',
         'click:category',
+        'click:day',
     ],
     computed: {
         parsedEvents(): InternalEvent[] {
@@ -108,28 +109,27 @@ export default defineComponent({
             if (!this.$props.categoryTitles) {
                 return ''
             }
-            const slot = this.$slots['category-title']
+            const isDate = this.$props.type != 'category'
+            const slot = isDate ? this.$slots['day-title'] : this.$slots['category-title']
             const titles = !this.$props.categoriesList
                 ? ''
                 : this.$props.categoriesList.map((cat) => {
                     const theDay = cat.date
-
+                    const slotArgs = isDate ? theDay : cat.category
                     return h(
                         'div',
                         {
                             class: 'of-calendar-category-title',
                             onClick: (event: any) => {
-                                if (this.$props.type === 'category') {
+                                if (!isDate) {
                                     this.$emit('click:category', event, cat.category)
+                                } else {
+                                    this.$emit('click:day', event, theDay)
                                 }
                             }
                         },
                         slot
-                            ? slot({
-                                categoryName: cat.category,
-                                isDate: this.$props.type != 'category',
-                                date: theDay,
-                            })
+                            ? slot(slotArgs)
                             : cat.category
                     )
 

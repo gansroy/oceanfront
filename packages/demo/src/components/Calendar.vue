@@ -56,22 +56,20 @@
       <template #header v-if="values.useSlots">
         <h3>Additional controls can go here</h3>
       </template>
-      <template #category-title="props" v-if="values.useSlots">
-        <div v-if="props.isDate">
-          <b>{{ props.date.getDate() }} </b>
-        </div>
-        <div v-if="!props.isDate" style="width: 100%">
+      <template #day-title="date" v-if="values.useSlots">
+        {{ date.getDate() }}
+      </template>
+      <template #category-title="category" v-if="values.useSlots">
+        <div style="width: 100%">
           <div
             :style="{
               'background-color':
-                props.categoryName === values.selectedCategory
-                  ? '#eee'
-                  : 'inherit',
+                category === values.selectedCategory ? '#eee' : 'inherit',
               width: '100%',
               'text-align': 'center',
             }"
           >
-            <of-icon name="user" /><i>{{ props.categoryName }} </i>
+            <of-icon name="user" /><i>{{ category }} </i>
           </div>
         </div>
       </template>

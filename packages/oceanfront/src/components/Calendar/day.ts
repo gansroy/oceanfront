@@ -20,7 +20,6 @@ export default defineComponent({
         ...calendarProps.internal,
         ...calendarProps.common,
     },
-    emits: ['click:day'],
     computed: {
         formatMgr: () => useFormats()
     },
@@ -38,9 +37,6 @@ export default defineComponent({
             return h('div',
                 {
                     class: 'of-calendar-day-title',
-                    onClick: (event: any) => {
-                        this.$emit('click:day', event, date)
-                    },
                 },
                 [
                     h('div', { class: 'weekday' }, weekFmt?.format(date).textValue),
@@ -48,12 +44,12 @@ export default defineComponent({
                 ]
             )
         },
-        categoryTitleSlot() {
-            return (args: any) => {
-                const slot = this.$slots['category-title']
+        dayTitleSlot() {
+            return (date: any) => {
+                const slot = this.$slots['day-title']
                 return slot
-                    ? slot(args)
-                    : this.renderDayNumber(args.date)
+                    ? slot(date)
+                    : this.renderDayNumber(date)
             }
         },
         superTitleSlot() {
@@ -61,7 +57,7 @@ export default defineComponent({
         },
         collectSlots() {
             return {
-                'category-title': this.categoryTitleSlot(),
+                'day-title': this.dayTitleSlot(),
                 'super-title': this.superTitleSlot(),
             }
         },

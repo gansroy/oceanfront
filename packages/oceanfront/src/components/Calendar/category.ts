@@ -8,10 +8,15 @@ export default defineComponent({
         ...calendarProps.common,
         ...calendarProps.category,
     },
+    emits: ['click:day'],
     methods: {
         superTitleSlot() {
             return (_: any) => {
-                return this.renderDayNumber(this.$props.day)
+                return h('div', {
+                    onClick: (event: any) => {
+                        this.$emit('click:day', event, this.$props.day)
+                    }
+                }, this.renderDayNumber(this.$props.day))
             }
         },
         categoryTitleSlot() {
