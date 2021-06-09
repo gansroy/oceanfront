@@ -42,6 +42,7 @@
       >
     </p>
     <of-calendar
+      :selectable="true"
       @click:event="eventClicked"
       @click:day="dayClicked"
       @click:category="categoryClicked"

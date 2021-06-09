@@ -37,9 +37,10 @@ export default {
         }
     },
     common: {
-        mousePrecision: {
+        selectable: Boolean,
+        hourIntervals: {
             type: [Number, String],
-            default: 15,
+            default: 4,
         },
         conflictColor: String,
         eventColor: Function as PropType<(e: InternalEvent) => any>,

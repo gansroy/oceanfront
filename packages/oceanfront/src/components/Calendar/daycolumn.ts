@@ -10,6 +10,7 @@ import {
     getNormalizedTSRange,
     eventsStartingAtDay,
     withZeroTime,
+    getTimestampIdintifier,
 } from '../../lib/calendar'
 import StackLayout from '../../lib/calendar/layout/stack'
 import ColumnLayout from '../../lib/calendar/layout/columns'
@@ -47,8 +48,22 @@ export default defineComponent({
         'mousedown:time',
         'mousemove:time',
         'mouseup:time',
+        'selection:change',
+        'selection:end',
+        'selection:cancel',
     ],
+    data() {
+        const selecting = false
+        return {
+            selecting: selecting as 'start' | 'end' | false,
+            selectionStart: 0,
+            selectionEnd: 0,
+        }
+    },
     computed: {
+        numHourIntervals(): number {
+            return parseInt(this.$props.hourIntervals as unknown as string) || 4
+        },
         parsedEvents(): InternalEvent[] {
             const events: CalendarEvent[] = this.$props.events || []
             const mgr = useFormats()
@@ -102,8 +117,13 @@ export default defineComponent({
         },
     },
     methods: {
+        getEventIntervalRange(ts: Timestamp): number[] {
+            const startTsId = getTimestampIdintifier(ts)
+            const endTsId = getTimestampIdintifier(toTimestamp(addMinutes(ts.date, 60 / this.numHourIntervals)))
+            return [startTsId, endTsId]
+        },
         getEventTimestamp(e: MouseEvent | TouchEvent, day: Timestamp) {
-            const precision = parseInt(this.$props.mousePrecision as unknown as string) || 15
+            const precision = 60 / this.numHourIntervals
             const bounds = (e.currentTarget as HTMLElement).getBoundingClientRect()
             const touchEvent: TouchEvent = e as TouchEvent
             const mouseEvent: MouseEvent = e as MouseEvent
@@ -201,10 +221,24 @@ export default defineComponent({
             const days = !this.$props.categoriesList
                 ? ''
                 : this.$props.categoriesList.map((cat) => {
-                    const intervals = this.intervals.map(_ =>
-                        h('div', {
-                            class: "of-calendar-interval",
+                    const theDayTS = withZeroTime(toTimestamp(cat.date))
+                    const intervals = this.intervals.map((_, i) => {
+                        const numSubIntervals = this.numHourIntervals
+                        const subIntevals = Array.from({ length: numSubIntervals }, (_, j) => {
+                            const minutes = 60 * i + 60 / numSubIntervals * j
+                            const intervalTime = getTimestampIdintifier(toTimestamp(addMinutes(theDayTS.date, minutes)))
+                            return h('div', {
+                                class: {
+                                    'of-calendar-subinterval': true,
+                                    selected: this.$data.selecting && intervalTime >= this.$data.selectionStart && intervalTime < this.$data.selectionEnd
+                                }
+                            })
                         })
+                        return h('div', {
+                            class: "of-calendar-interval",
+                        },
+                            subIntevals)
+                    }
                     )
                     const es = this.dayEvents[cat.category] as CalendarEventPlacement[] || []
                     const events = es.map(e => {
@@ -255,23 +289,59 @@ export default defineComponent({
                             onMouseMove: (e: MouseEvent | TouchEvent) => {
                                 const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
                                 this.$emit('mousemove:time', e, ts)
+                                if (this.selecting) {
+                                    const [startTs, endTs] = this.getEventIntervalRange(ts)
+                                    if (startTs < this.selectionStart) {
+                                        this.selecting = "start"
+                                        this.selectionStart = startTs
+                                    } else if (endTs > this.selectionEnd) {
+                                        this.selecting = "end"
+                                        this.selectionEnd = endTs
+                                    } else if (this.selecting == "start") {
+                                        this.selectionStart = startTs
+                                    } else if (this.selecting == "end") {
+                                        this.selectionEnd = endTs
+                                    }
+                                    this.$emit('selection:change', this.selectionStart, this.selectionEnd)
+                                }
                             },
                             onMouseDown: (e: MouseEvent | TouchEvent) => {
                                 const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
+                                const [startTsId, endTsId] = this.getEventIntervalRange(ts)
                                 this.$emit('mousedown:time', e, ts)
+                                if (this.selectable) {
+                                    this.$data.selecting = "end"
+                                    this.$data.selectionStart = startTsId
+                                    this.$data.selectionEnd = endTsId
+                                    this.$emit('selection:change', this.selectionStart, this.selectionEnd)
+                                }
                             },
                             onMouseUp: (e: MouseEvent | TouchEvent) => {
                                 const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
                                 this.$emit('mouseup:time', e, ts)
-                            }
+                                if (this.selecting) {
+                                    this.$emit('selection:end', this.selectionStart, this.selectionEnd)
+                                    this.selecting = false
+                                }
+                            },
                         },
                         [
                             ...intervals,
                             ...events,
                         ])
                 })
-            return h('div', { class: 'of-calendar-day-row' }, [
-                h('div', { class: 'of-calendar-gutter' }, intervals),
+            return h('div', {
+                class: 'of-calendar-day-row',
+                onMouseLeave: (_: MouseEvent | TouchEvent) => {
+                    if (this.selecting) {
+                        this.$emit('selection:cancel')
+                        this.selecting = false
+                    }
+                },
+            }, [
+                h('div', {
+                    class: 'of-calendar-gutter',
+                }, intervals),
                 days,
             ])
         },
@@ -281,15 +351,17 @@ export default defineComponent({
         },
     },
     render() {
+        console.log(this.$props)
         const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 20
         const conflictColor = this.$props.conflictColor || null
-
+        const subIntervalHeight = '' + (100 / this.numHourIntervals) + '%'
         return h('div',
             {
                 class: "container",
                 style: {
                     "--of-event-height": `${eventHeight}px`,
                     "--of-calendar-conflict-color": conflictColor,
+                    "--of-calendar-subinterval-height": subIntervalHeight,
                 },
                 onSelectStart(e: Event) {
                     e.preventDefault()

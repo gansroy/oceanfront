@@ -262,3 +262,11 @@ div.of-date-picker-cur-year {
         }
     }
 }
+
+.of-calendar-subinterval {
+    height: var(--of-calendar-subinterval-height, 25%);
+    &.selected {
+        background: cornflowerblue ;
+        opacity: 0.3;
+    }
+}
