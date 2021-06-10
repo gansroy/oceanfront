@@ -309,7 +309,8 @@ export default defineComponent({
                                 const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
                                 const [startTsId, endTsId] = this.getEventIntervalRange(ts)
                                 this.$emit('mousedown:time', e, ts)
-                                if (this.selectable) {
+                                const leftPressed = (e as MouseEvent).buttons === 1
+                                if (this.selectable && leftPressed) {
                                     this.$data.selecting = "end"
                                     this.$data.selectionStart = startTsId
                                     this.$data.selectionEnd = endTsId
@@ -319,7 +320,8 @@ export default defineComponent({
                             onMouseUp: (e: MouseEvent | TouchEvent) => {
                                 const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
                                 this.$emit('mouseup:time', e, ts)
-                                if (this.selecting) {
+                                const leftReleased = ((e as MouseEvent).buttons & 1) === 0
+                                if (this.selecting && leftReleased) {
                                     this.$emit('selection:end', this.selectionStart, this.selectionEnd)
                                     this.selecting = false
                                 }
@@ -351,7 +353,6 @@ export default defineComponent({
         },
     },
     render() {
-        console.log(this.$props)
         const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 20
         const conflictColor = this.$props.conflictColor || null
         const subIntervalHeight = '' + (100 / this.numHourIntervals) + '%'
