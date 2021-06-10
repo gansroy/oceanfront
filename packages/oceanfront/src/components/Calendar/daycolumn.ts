@@ -189,16 +189,18 @@ export default defineComponent({
                     return h('div', { class: 'of-calendar-day' },
                         events.map(e => {
                             height = Math.max(e.top, height)
+                            const finalColor = this.$props.eventColor?.(e.event) ?? e.event.color
                             return h('div',
                                 {
                                     class: 'of-calendar-event',
                                     style: {
-                                        'background-color': this.$props.eventColor?.(e.event) ?? e.event.color,
+                                        'background-color': finalColor,
                                         width: '' + ((e.daysSpan * 100) - 2) + '%',
                                         top: '' + (e.top * eventHeight) + 'px',
                                     },
                                     onClick: (event: any) => {
-                                        this.$emit('click:event', event, e.event)
+                                        console.log(finalColor)
+                                        this.$emit('click:event', event, { ...e.event, color: finalColor })
                                     },
                                 },
                                 h('strong', e.event.name),
@@ -248,6 +250,7 @@ export default defineComponent({
                             : h('br')
                         const formattedRange = formatRange(this.formatMgr, e.event, cat.date)
                         const slot = this.$slots['event-content']
+                        const finalColor = this.$props.eventColor?.(e.event) ?? e.event.color
                         return h('div',
                             {
                                 class: {
@@ -255,7 +258,7 @@ export default defineComponent({
                                     conflict: e.conflict,
                                 },
                                 style: {
-                                    'background-color': this.$props.eventColor?.(e.event) ?? e.event.color,
+                                    'background-color': finalColor,
                                     'z-index': e.zIndex,
                                     left: e.left * 100 + '%',
                                     width: e.width * 100 + '%',
@@ -263,7 +266,7 @@ export default defineComponent({
                                     height: e.height + '%',
                                 },
                                 onClick: (event: any) => {
-                                    this.$emit('click:event', event, e.event)
+                                    this.$emit('click:event', event, { ...e.event, color: finalColor })
                                 },
                                 onMouseDown: (event: any) => {
                                     event.stopPropagation()
