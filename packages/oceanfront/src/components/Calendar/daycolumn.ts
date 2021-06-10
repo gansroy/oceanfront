@@ -199,7 +199,6 @@ export default defineComponent({
                                         top: '' + (e.top * eventHeight) + 'px',
                                     },
                                     onClick: (event: any) => {
-                                        console.log(finalColor)
                                         this.$emit('click:event', event, { ...e.event, color: finalColor })
                                     },
                                 },
