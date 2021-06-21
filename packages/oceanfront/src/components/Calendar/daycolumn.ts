@@ -58,6 +58,7 @@ export default defineComponent({
             selecting: selecting as 'start' | 'end' | false,
             selectionStart: 0,
             selectionEnd: 0,
+            selectionCategory: "",
         }
     },
     computed: {
@@ -231,7 +232,11 @@ export default defineComponent({
                             return h('div', {
                                 class: {
                                     'of-calendar-subinterval': true,
-                                    selected: this.$data.selecting && intervalTime >= this.$data.selectionStart && intervalTime < this.$data.selectionEnd
+                                    selected:
+                                        this.$data.selecting
+                                        && intervalTime >= this.$data.selectionStart
+                                        && intervalTime < this.$data.selectionEnd
+                                        && this.$data.selectionCategory == cat.category
                                 }
                             })
                         })
@@ -304,7 +309,7 @@ export default defineComponent({
                                     } else if (this.selecting == "end") {
                                         this.selectionEnd = endTs
                                     }
-                                    this.$emit('selection:change', this.selectionStart, this.selectionEnd)
+                                    this.$emit('selection:change', this.selectionStart, this.selectionEnd, this.selectionCategory)
                                 }
                             },
                             onMouseDown: (e: MouseEvent | TouchEvent) => {
@@ -316,7 +321,8 @@ export default defineComponent({
                                     this.$data.selecting = "end"
                                     this.$data.selectionStart = startTsId
                                     this.$data.selectionEnd = endTsId
-                                    this.$emit('selection:change', this.selectionStart, this.selectionEnd)
+                                    this.$data.selectionCategory = cat.category
+                                    this.$emit('selection:change', this.selectionStart, this.selectionEnd, this.selectionCategory)
                                 }
                             },
                             onMouseUp: (e: MouseEvent | TouchEvent) => {
@@ -324,7 +330,7 @@ export default defineComponent({
                                 this.$emit('mouseup:time', e, ts)
                                 const leftReleased = ((e as MouseEvent).buttons & 1) === 0
                                 if (this.selecting && leftReleased) {
-                                    this.$emit('selection:end', this.selectionStart, this.selectionEnd)
+                                    this.$emit('selection:end', this.selectionStart, this.selectionEnd, this.selectionCategory)
                                     this.selecting = false
                                 }
                             },
