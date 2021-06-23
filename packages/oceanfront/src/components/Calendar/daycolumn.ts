@@ -43,6 +43,8 @@ export default defineComponent({
     },
     emits: [
         'click:event',
+        'enter:event',
+        'leave:event',
         'click:category',
         'click:day',
         'mousedown:time',
@@ -202,6 +204,12 @@ export default defineComponent({
                                     onClick: (event: any) => {
                                         this.$emit('click:event', event, { ...e.event, color: finalColor })
                                     },
+                                    onMouseEnter: (event: any) => {
+                                        this.$emit('enter:event', event, e)
+                                    },
+                                    onMouseLeave: (event: any) => {
+                                        this.$emit('leave:event', event, e)
+                                    },
                                 },
                                 h('strong', e.event.name),
                             )
@@ -274,6 +282,16 @@ export default defineComponent({
                                 },
                                 onMouseDown: (event: any) => {
                                     event.stopPropagation()
+                                },
+                                onMouseEnter: (event: any) => {
+                                    if (!this.selecting) {
+                                        this.$emit('enter:event', event, e)
+                                    }
+                                },
+                                onMouseLeave: (event: any) => {
+                                    if (!this.selecting) {
+                                        this.$emit('leave:event', event, e)
+                                    }
                                 },
                             },
                             slot

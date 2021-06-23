@@ -2,7 +2,7 @@ import { CalendarEvent, InternalEvent, Timestamp } from "../../lib/calendar/comm
 import { PropType } from "vue"
 
 const validTypes = [
-    'day', 'month', 'week', 'category', 'ndays'
+    'day', 'month', 'week', 'category', 'ndays', 'month'
 ]
 
 function validateType(type: string): boolean {
@@ -35,6 +35,14 @@ export default {
             type: [Number, String],
             default: "3",
         }
+    },
+    month: {
+        fixedRowHeight: Boolean,
+        eventsLimit: {
+            type: [String, Number],
+            default: "5",
+        },
+        hideOtherMonths: Boolean
     },
     common: {
         selectable: Boolean,

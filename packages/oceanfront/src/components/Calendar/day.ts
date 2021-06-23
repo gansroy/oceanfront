@@ -1,21 +1,14 @@
 import { defineComponent, h } from "vue"
 import calendarProps from './props'
 import dayColumns from './daycolumn'
-import { DateTimeFormatterOptions } from 'src/formats/DateTime'
 import { useFormats } from "src/lib/formats"
 import { Timestamp } from "src/lib/calendar/common"
 import { toTimestamp, withZeroTime } from "src/lib/calendar"
 import { addDays } from "src/lib/datetime"
-
-const weekDayFormat: DateTimeFormatterOptions = {
-    nativeOptions: { weekday: "short" }
-}
-
-const dayFormat: DateTimeFormatterOptions = {
-    nativeOptions: { day: "numeric" }
-}
+import Base from './base'
 
 export default defineComponent({
+    mixins: [Base],
     props: {
         ...calendarProps.internal,
         ...calendarProps.common,
@@ -30,19 +23,6 @@ export default defineComponent({
             const firstTS = withZeroTime(toTimestamp(firstDay))
             const lastTS = withZeroTime(toTimestamp(lastDay))
             return [firstTS, lastTS]
-        },
-        renderDayNumber(date?: Date) {
-            const weekFmt = this.formatMgr.getTextFormatter('date', weekDayFormat)
-            const dayFmt = this.formatMgr.getTextFormatter('date', dayFormat)
-            return h('div',
-                {
-                    class: 'of-calendar-day-title',
-                },
-                [
-                    h('div', { class: 'weekday' }, weekFmt?.format(date).textValue),
-                    h('div', { class: 'day-number' }, dayFmt?.format(date).textValue)
-                ]
-            )
         },
         dayTitleSlot() {
             return (date: any) => {

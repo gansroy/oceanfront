@@ -161,6 +161,44 @@ div.of-date-picker-cur-year {
     }
 }
 
+.of-calendar-month-day {
+    & .day-title {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 2px;
+    }
+    border-right: solid 1px #CCC;
+    &:first-child {
+        border-left: solid 1px #CCC;
+    }
+    & .of-calendar-event {
+        height: var(--of-event-height, 20px);
+        z-index: 1;
+        position:relative;
+    }
+    & .events {
+        height: var(--of-month-day-heigth, auto);
+    }
+}
+
+.of-calendar-month-row {
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(50px, 1fr) );
+    border-bottom: solid 1px #CCC;
+    &:first-child {
+        border-top: solid 1px #CCC;
+    }
+}
+
+.of-calendar-more {
+    text-align: right;
+    font-size: 75%;
+    font-weight: bold;
+    padding-right: 4px;
+    cursor: pointer;
+    height: var(--of-event-height, auto);
+}
+
 .of-calendar-event {
     cursor: pointer;
     position: absolute;

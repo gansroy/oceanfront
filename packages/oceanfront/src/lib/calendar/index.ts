@@ -1,4 +1,4 @@
-import { addDays } from '../datetime'
+import { addDays, addMonths } from '../datetime'
 import {
     CalendarEventPlacement, CalendarEventsGroup, DayIdentifier,
     InternalEvent, layoutFunc, TimeIdentifier, Timestamp, TimestampIdentifier
@@ -115,6 +115,18 @@ export const getEventsOfDay = (events: InternalEvent[], day: DayIdentifier, allD
         e => (e.allDay || false) === allDay
             && (category === undefined || category === e.category)
             && isEventInRange(e, day * OFFSET_TIMESTAMP, (day + 1) * OFFSET_TIMESTAMP)
+    )
+    if (!sorted) return filtered
+    return filtered.sort(
+        (a, b) => a.start - b.start
+    )
+}
+
+export const getEventsOfMonth = (events: InternalEvent[], day: Timestamp, sorted?: boolean): InternalEvent[] => {
+    const start = getTimestampIdintifier(toTimestamp(addMonths(day.date, 0)))
+    const end = getTimestampIdintifier(toTimestamp(addMonths(day.date, 1)))
+    const filtered = events.filter(
+        e => isEventInRange(e, start, end)
     )
     if (!sorted) return filtered
     return filtered.sort(

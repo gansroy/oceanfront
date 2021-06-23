@@ -33,6 +33,11 @@
       ></of-select-field>
       <of-toggle-field name="useSlots" label="Use slots" :record="state" />
       <of-toggle-field
+        name="hideOtherMonths"
+        label="Hide adjacent months"
+        :record="state"
+      />
+      <of-toggle-field
         name="customColors"
         label="Custom colors"
         :record="state"
@@ -45,6 +50,7 @@
       :selectable="true"
       @click:event="eventClicked"
       @click:day="dayClicked"
+      @click:more="dayClicked"
       @click:category="categoryClicked"
       :type="values.type"
       :day="values.day"
@@ -53,12 +59,16 @@
       :layout="values.layout"
       :categories="categories"
       :event-color="values.customColors ? eventColor : null"
+      :hide-other-months="values.hideOtherMonths"
     >
       <template #header v-if="values.useSlots">
         <h3>Additional controls can go here</h3>
       </template>
       <template #day-title="date" v-if="values.useSlots">
         {{ date.getDate() }}
+      </template>
+      <template #more="count" v-if="values.useSlots">
+        {{ count }} more events
       </template>
       <template #category-title="category" v-if="values.useSlots">
         <div style="width: 100%">
@@ -106,6 +116,7 @@ const types = [
   { value: 'week', text: 'Week' },
   { value: 'category', text: 'Category' },
   { value: 'ndays', text: 'N Days' },
+  { value: 'month', text: 'Month' },
 ]
 
 function eventColor(e: InternalEvent) {
@@ -130,7 +141,7 @@ function eventColor(e: InternalEvent) {
 
 const state = makeRecord({
   useSlots: false,
-  type: 'day',
+  type: 'month',
   layout: 'columns',
 })
 
@@ -173,7 +184,7 @@ function regenerateEvents() {
   let number = 1
   const now = new Date()
   const list: CalendarEvent[] = []
-  for (let i = -6; i < 7; i++) {
+  for (let i = -31; i < 31; i++) {
     const nEvents = 2 + Math.random() * 3
     const theDate = addDays(now, i)
     theDate.setHours(0)
