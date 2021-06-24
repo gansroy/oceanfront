@@ -5,12 +5,20 @@ export const sameDate = (d1: Date, d2: Date): boolean =>
 
 
 // always sets day to 1!
-const addMonths = (d: Date, months: number): Date => {
+export const addMonths = (d: Date, months: number): Date => {
     return new Date(d.getFullYear(), d.getMonth() + months, 1)
 }
 
 export const addDays = (d: Date, days: number): Date => {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate() + days)
+}
+
+export const addMinutes = (d: Date, minutes: number): Date => {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes() + minutes)
+}
+
+export const allDayEnd = (d: Date): Date => {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)
 }
 
 export interface MonthGridCell {

@@ -1,13 +1,43 @@
+import { DateTimeFormatter } from "src/formats/DateTime"
+import { FormatState } from "src/lib/formats"
+import { getDayIdentifier, getTimeIdentifier, getTimestampIdintifier, toTimestamp } from "."
+import { allDayEnd, addMinutes } from "../datetime"
+
 export type DayIdentifier = number
 export type TimeIdentifier = number
 export type TimestampIdentifier = number
 
 export interface Timestamp {
+    readonly date: Date
     readonly year: number
     readonly month: number
     readonly day: number
     readonly hours: number
     readonly minutes: number
+}
+
+/** Calendar event. This event representation is used to supply events to the
+ * calendar. The events will be parsed into InternalEvent. If event duration
+ * cannot be determined from either of `end` or `duration` fields, the event
+ * will be considered all-day regardless of `allDay` field value. All-day events
+ * can span multiple days.  */
+export interface CalendarEvent {
+    /** Event name */
+    readonly name: string
+    /** Event start date/time "2009-12-28 11:30" */
+    readonly start: string
+    /** Event end date/time "2009-12-28 14:45" */
+    readonly end?: string
+    /** Event duration in minutes */
+    readonly duration?: number
+    /** Event color */
+    readonly color?: string
+    /** True if the event takes all day */
+    readonly allDay?: boolean
+    /** Event category */
+    readonly category?: string
+    readonly [_: string]: any
+
 }
 
 
@@ -39,6 +69,11 @@ export interface InternalEvent {
     readonly [_: string]: any
 }
 
+export type CalendarAlldayEventPlacement = {
+    event: InternalEvent
+    top: number
+    daysSpan: number
+}
 
 /** CalendarEventPlacement represents the placement of an event within a day.
  * Expressing height in milliseconds allows to adapt for different vertical
@@ -79,3 +114,38 @@ export type Column = {
 }
 
 export type layoutFunc = (group: CalendarEventsGroup, overlapThreshold: number) => void
+
+export const parseEvent = (e: CalendarEvent, f: FormatState): InternalEvent | undefined => {
+    const fm = f.getTextFormatter('datetime') as DateTimeFormatter
+    const startDate = fm.loadValue(e.start)
+    if (startDate == null) { return undefined }
+    let endDate: Date | null = null
+    if (e.end) {
+        endDate = fm.loadValue(e.end)
+    }
+    if (endDate == null && e.duration || 0 > 0) {
+        endDate = addMinutes(startDate, e.duration || 0)
+    }
+    let allDay = e.allDay || false
+    if (endDate == null || endDate < startDate) {
+        allDay = true
+        endDate = allDayEnd(startDate)
+    }
+    const startTS = toTimestamp(startDate)
+    const endTS = toTimestamp(endDate)
+    return {
+        name: e.name,
+        color: e.color,
+        allDay: allDay,
+        startTS: startTS,
+        endTS: endTS,
+        start: getTimestampIdintifier(startTS),
+        end: getTimestampIdintifier(endTS),
+        startDay: getDayIdentifier(startTS),
+        endDay: getDayIdentifier(endTS),
+        startTime: getTimeIdentifier(startTS),
+        endTime: getTimeIdentifier(endTS),
+        category: e.category,
+        orig: e,
+    }
+}

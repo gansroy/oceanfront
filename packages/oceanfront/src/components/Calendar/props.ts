@@ -1,8 +1,8 @@
-import { InternalEvent } from "../../lib/calendar/common"
+import { CalendarEvent, InternalEvent, Timestamp } from "../../lib/calendar/common"
 import { PropType } from "vue"
 
 const validTypes = [
-    'day', 'month', 'week', 'category', 'ndays'
+    'day', 'month', 'week', 'category', 'ndays', 'month'
 ]
 
 function validateType(type: string): boolean {
@@ -19,6 +19,7 @@ export default {
     internal: {
         categoriesList: Array as PropType<categoryItem[]>,
         ignoreCategories: Boolean,
+        visibleRange: Array as PropType<Timestamp[]>,
     },
     week: {
         weekStart: { type: [Number, String], default: 0, },
@@ -35,7 +36,20 @@ export default {
             default: "3",
         }
     },
+    month: {
+        fixedRowHeight: Boolean,
+        eventsLimit: {
+            type: [String, Number],
+            default: "5",
+        },
+        hideOtherMonths: Boolean
+    },
     common: {
+        selectable: Boolean,
+        hourIntervals: {
+            type: [Number, String],
+            default: 4,
+        },
         conflictColor: String,
         eventColor: Function as PropType<(e: InternalEvent) => any>,
         type: {
@@ -48,7 +62,7 @@ export default {
             default: (): Date => new Date,
         },
         layout: String,
-        events: Array as PropType<InternalEvent[]>,
+        events: Array as PropType<CalendarEvent[]>,
         categoryTitles: {
             type: Boolean,
             default: (): boolean => true,

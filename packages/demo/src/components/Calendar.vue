@@ -1,5 +1,25 @@
 <template>
   <div class="container">
+    <of-overlay
+      :active="detailsVisible"
+      :target="detailsTarget"
+      :capture="false"
+      :shade="false"
+      @blur="hidePopup"
+    >
+      <div
+        :style="{
+          width: '200px',
+          height: '60px',
+          color: '#FFF',
+          'background-color': detailsEvent.color,
+          border: 'solid 2px #FFF',
+          'border-radius': '10px',
+        }"
+      >
+        {{ detailsEvent.name }}
+      </div>
+    </of-overlay>
     <p>
       <of-select-field
         :items="types"
@@ -13,6 +33,11 @@
       ></of-select-field>
       <of-toggle-field name="useSlots" label="Use slots" :record="state" />
       <of-toggle-field
+        name="hideOtherMonths"
+        label="Hide adjacent months"
+        :record="state"
+      />
+      <of-toggle-field
         name="customColors"
         label="Custom colors"
         :record="state"
@@ -22,22 +47,41 @@
       >
     </p>
     <of-calendar
+      :selectable="true"
+      @click:event="eventClicked"
+      @click:day="dayClicked"
+      @click:more="dayClicked"
+      @click:category="categoryClicked"
       :type="values.type"
+      :day="values.day"
       num-days="3"
       :events="events"
       :layout="values.layout"
       :categories="categories"
       :event-color="values.customColors ? eventColor : null"
+      :hide-other-months="values.hideOtherMonths"
     >
       <template #header v-if="values.useSlots">
         <h3>Additional controls can go here</h3>
       </template>
-      <template #category-title="props" v-if="values.useSlots">
-        <div v-if="props.isDate">
-          <b>{{ props.date.getDate() }} </b>
-        </div>
-        <div v-if="!props.isDate">
-          <of-icon name="user" /><i>{{ props.categoryName }} </i>
+      <template #day-title="date" v-if="values.useSlots">
+        {{ date.getDate() }}
+      </template>
+      <template #more="count" v-if="values.useSlots">
+        {{ count }} more events
+      </template>
+      <template #category-title="category" v-if="values.useSlots">
+        <div style="width: 100%">
+          <div
+            :style="{
+              'background-color':
+                category === values.selectedCategory ? '#eee' : 'inherit',
+              width: '100%',
+              'text-align': 'center',
+            }"
+          >
+            <of-icon name="user" /><i>{{ category }} </i>
+          </div>
         </div>
       </template>
       <template
@@ -60,21 +104,19 @@
 
 <script lang="ts">
 import { defineComponent, Ref, ref } from 'vue'
-import { InternalEvent, Timestamp } from 'oceanfront/src/lib/calendar/common'
 import {
-  getDayIdentifier,
-  getTimeIdentifier,
-  getTimestampIdintifier,
-  toTimestamp,
-} from 'oceanfront/src/lib/calendar'
+  CalendarEvent,
+  InternalEvent,
+} from 'oceanfront/src/lib/calendar/common'
 import { makeRecord } from 'oceanfront'
-import { addDays } from 'oceanfront/src/lib/datetime'
+import { addDays, addMinutes } from 'oceanfront/src/lib/datetime'
 
 const types = [
   { value: 'day', text: 'Day' },
   { value: 'week', text: 'Week' },
   { value: 'category', text: 'Category' },
   { value: 'ndays', text: 'N Days' },
+  { value: 'month', text: 'Month' },
 ]
 
 function eventColor(e: InternalEvent) {
@@ -99,7 +141,7 @@ function eventColor(e: InternalEvent) {
 
 const state = makeRecord({
   useSlots: false,
-  type: 'day',
+  type: 'month',
   layout: 'columns',
 })
 
@@ -114,44 +156,51 @@ function randomElement<T>(list: T[]): T {
   return list[idx]
 }
 
-let events: Ref<InternalEvent[]> = ref([])
+let events: Ref<CalendarEvent[]> = ref([])
+
+function expand(n: number, digits: number): string {
+  let str = `${n}`
+  for (; str.length < digits; str = `0${str}`) {}
+  return str
+}
+
+function formatDate(d: Date) {
+  return (
+    expand(d.getUTCFullYear(), 4) +
+    '-' +
+    expand(d.getUTCMonth() + 1, 2) +
+    '-' +
+    expand(d.getUTCDate(), 2) +
+    ' ' +
+    expand(d.getUTCHours(), 2) +
+    ':' +
+    expand(d.getUTCMinutes(), 2) +
+    ':' +
+    expand(d.getUTCSeconds(), 2)
+  )
+}
 
 function regenerateEvents() {
+  let number = 1
   const now = new Date()
-  const list: InternalEvent[] = []
-  for (let i = -6; i < 7; i++) {
-    const nEvents = 2 + Math.random() * 6
+  const list: CalendarEvent[] = []
+  for (let i = -31; i < 31; i++) {
+    const nEvents = 2 + Math.random() * 3
+    const theDate = addDays(now, i)
+    theDate.setHours(0)
+    theDate.setMinutes(0)
     for (let idx = 0; idx < nEvents; idx++) {
-      const theDate = addDays(now, i)
-      const nowTS = toTimestamp(theDate)
-      const sh = Math.floor(Math.random() * 12)
-      const sm = Math.floor(Math.random() * 4) * 15
-      const eh = sh + 1 + Math.floor(Math.random() * 6)
-      const em = Math.floor(Math.random() * 4) * 15
-      const sts: Timestamp = {
-        ...nowTS,
-        hours: sh,
-        minutes: sm,
-      }
-      const ets: Timestamp = {
-        ...nowTS,
-        hours: eh,
-        minutes: em,
-      }
-      const event = {
-        name: randomElement(names),
-        startTS: sts,
-        endTS: ets,
-        startDay: getDayIdentifier(sts),
-        startTime: getTimeIdentifier(sts),
-        start: getTimestampIdintifier(sts),
-        endDay: getDayIdentifier(ets),
-        endTime: getTimeIdentifier(ets),
-        end: getTimestampIdintifier(ets),
-        category: randomElement(categories),
+      const start = addMinutes(theDate, Math.floor(Math.random() * 28) * 15)
+      const duration =
+        30 +
+        15 * Math.floor(Math.random() * 24 + (Math.random() > 0.95 ? 96 : 0))
+      const event: CalendarEvent = {
+        name: randomElement(names) + ' ' + number++,
+        start: formatDate(start),
+        duration,
         color: randomElement(colors),
         allDay: Math.random() > 0.8,
-        orig: false,
+        category: randomElement(categories),
       }
       list.push(event)
     }
@@ -163,6 +212,9 @@ regenerateEvents()
 
 export default defineComponent({
   setup() {
+    const detailsTarget: Ref<any> = ref(null)
+    const detailsVisible = ref(false)
+    const detailsEvent: Ref<any> = ref({})
     const _xx = state.value
     return {
       events: ref(events),
@@ -170,8 +222,28 @@ export default defineComponent({
       state,
       values: state.value,
       types,
-      regenerateEvents,
+      regenerateEvents: () => {
+        detailsVisible.value = false
+        regenerateEvents()
+      },
       categories,
+      detailsVisible,
+      detailsTarget,
+      detailsEvent,
+      eventClicked: (nativeEvent: any, event: InternalEvent) => {
+        detailsTarget.value = nativeEvent.target
+        detailsEvent.value = event
+        detailsVisible.value = true
+      },
+      dayClicked: (nativeEvent: any, day: Date) => {
+        state.value = { ...state.value, type: 'day', day: day }
+      },
+      categoryClicked: (nativeEvent: any, category: string) => {
+        state.value = { ...state.value, selectedCategory: category }
+      },
+      hidePopup: () => {
+        detailsVisible.value = false
+      },
     }
   },
 })

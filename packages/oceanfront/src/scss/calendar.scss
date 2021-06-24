@@ -149,6 +149,7 @@ div.of-date-picker-cur-year {
 
 .of-calendar-allday-row .of-calendar-event {
     height: var(--of-event-height, 20px);
+    z-index: 1;
 }
 
 .of-calendar-allday-row, .of-calendar-day-row, .of-calendar-day-titles {
@@ -160,13 +161,47 @@ div.of-date-picker-cur-year {
     }
 }
 
-.of-calendar-day-row {
+.of-calendar-month-day {
+    & .day-title {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 2px;
+    }
+    border-right: solid 1px #CCC;
+    &:first-child {
+        border-left: solid 1px #CCC;
+    }
     & .of-calendar-event {
-        position: absolute;
+        height: var(--of-event-height, 20px);
+        z-index: 1;
+        position:relative;
+    }
+    & .events {
+        height: var(--of-month-day-heigth, auto);
     }
 }
 
+.of-calendar-month-row {
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(50px, 1fr) );
+    border-bottom: solid 1px #CCC;
+    &:first-child {
+        border-top: solid 1px #CCC;
+    }
+}
+
+.of-calendar-more {
+    text-align: right;
+    font-size: 75%;
+    font-weight: bold;
+    padding-right: 4px;
+    cursor: pointer;
+    height: var(--of-event-height, auto);
+}
+
 .of-calendar-event {
+    cursor: pointer;
+    position: absolute;
     white-space: nowrap;
     overflow: hidden;
     border: solid 1px #eee;
@@ -226,6 +261,11 @@ div.of-date-picker-cur-year {
     border-left: solid 1px #CCC;
     border-right: solid 1px #CCC;
 }
+
+.of-calendar-category-title {
+    cursor: pointer;
+}
+
 .of-calendar-day, .of-calendar-category-title {
     border-right: solid 1px #CCC;
 }
@@ -237,6 +277,7 @@ div.of-date-picker-cur-year {
 }
 
 .of-calendar-day-title {
+    cursor: pointer;
     & .weekday {
         text-transform: uppercase;
         font-size: 70%;
@@ -257,5 +298,13 @@ div.of-date-picker-cur-year {
             background-color: teal;
             color: #FFF;
         }
+    }
+}
+
+.of-calendar-subinterval {
+    height: var(--of-calendar-subinterval-height, 25%);
+    &.selected {
+        background: cornflowerblue ;
+        opacity: 0.3;
     }
 }
