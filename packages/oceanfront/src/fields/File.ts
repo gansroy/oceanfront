@@ -64,7 +64,7 @@ export const FileField = defineFieldType({
     const handleUpdate = (files: FileList | null) => {
       let val = null
       if (files && files.length) {
-        val = { name: files[0].name }
+        val = files[0];
       }
       // FIXME shouldn't need to set stateValue here
       stateValue.value = val
