@@ -24,7 +24,7 @@
           </slot>
           <slot name="header-first-cell" />
         </th>
-        <th v-for="(col, idx) of columns" :class="col.class" :key="idx">
+        <th v-for="(col, idx) of columns" :class="col.class" :key="idx" :style="{ width: col.width }">
           {{ col.text }}
         </th>
       </tr>

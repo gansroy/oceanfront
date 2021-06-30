@@ -32,7 +32,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   setup() {
     const headers = [
-      { text: 'Name', value: 'name', divider: true },
+      { text: 'Name', value: 'name', divider: true, width: '150px' },
       { text: 'Category', value: 'category' },
       { text: 'Size', value: 'size', format: 'number' },
     ]
