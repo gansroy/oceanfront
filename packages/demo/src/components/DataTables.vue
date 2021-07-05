@@ -37,8 +37,28 @@ export default defineComponent({
       { text: 'Size', value: 'size', format: 'number' },
     ]
     const items = [
-      { name: 'First item', category: 'Category 1', size: 15.56 },
-      { name: 'Second item', category: 'Category 2', size: -15.56 },
+      { 
+        name: 'First item', 
+        category: {
+          value: 'Category 1',  
+          type: 'link',
+          data: {
+            url: 'https://1crm.com'
+          }
+        }, 
+        size: 15.56 
+      },
+      { 
+        name: 'Second item', 
+        category: {
+          value: 'Category 2',  
+          type: 'link',
+          data: {
+            url: 'https://1crm.com'
+          }
+        }, 
+        size: -15.56 
+      },
       { name: 'Third item', category: 'Category 3', size: 15125.56 },
     ]
     const items2 = [

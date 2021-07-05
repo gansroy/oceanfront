@@ -43,8 +43,11 @@
           <slot name="first-cell" :record="rowsRecord" :item="row" />
         </td>
         <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
-          <!-- of-format :type="col.format" :value="row[col.value]" / -->
-          {{ row[col.value] }}
+          <of-data-type 
+            :value="row[col.value]" 
+            :type="row.types[col.value].type"  
+            :data="row.types[col.value].data">
+          </of-data-type>
         </td>
       </tr>
     </tbody>
@@ -136,7 +139,20 @@ export default defineComponent({
         count > 0 && idx < propItems.length;
         idx++
       ) {
-        result.push(propItems[idx])
+        let row = propItems[idx];
+        row.types = {};
+      
+        columns.value.forEach(column => {
+          let type = 'text';
+          let data = {};
+          if(typeof row[column.value] == 'object') {
+            type = row[column.value].type;
+            data = row[column.value].data;
+            row[column.value] = row[column.value].value;
+          }
+          row.types[column.value] = {'type': type, 'data': data};
+        });
+        result.push(row)
       }
       return result
     })
