@@ -74,8 +74,6 @@ import {
   ComputedRef,
 } from 'vue'
 import { DataTableHeader } from '../lib/datatable'
-import { useFormats } from '../lib/formats'
-// import OfFormat from './Format'
 
 enum RowsSelectorValues {
   Page = 'page',
@@ -102,14 +100,12 @@ export default defineComponent({
     'rows-selected': null,
   },
   setup(props, _ctx: SetupContext) {
-    const fmtMgr = useFormats()
     const columns = computed(() => {
       const cols: any[] = []
       for (const hdr of props.headers as DataTableHeader[]) {
-        const format = fmtMgr.getTextFormatter(hdr.format)
-        const align = hdr.align || (format && format.align)
+        const align = hdr.align
         const cls = ['of--align-' + (align || 'start'), hdr.class]
-        cols.push(Object.assign({}, hdr, { format, align, class: cls }))
+        cols.push(Object.assign({}, hdr, { align, class: cls }))
       }
       return cols
     })

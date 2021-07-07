@@ -1,5 +1,6 @@
 import { defineComponent, h } from "vue";
 import dataProps from './props'
+import { OfLink } from '../Link'
 
 export default defineComponent({
   props: {
@@ -7,11 +8,15 @@ export default defineComponent({
     ...dataProps.link
   },
   render() {
-    return h('a',
-      { 
-        href: this.$props.data.url
-      },
-      this.$props.value   
-    )
+      return h(
+        OfLink as any,
+        {
+          href: this.$props.data.href || null,
+          to: this.$props.data.to || null,
+        },
+        {
+          default: () => this.$props.value,
+        }
+      )
   },
 })

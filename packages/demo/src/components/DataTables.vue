@@ -34,30 +34,42 @@ export default defineComponent({
     const headers = [
       { text: 'Name', value: 'name', divider: true, width: '150px' },
       { text: 'Category', value: 'category' },
-      { text: 'Size', value: 'size', format: 'number' },
+      { text: 'Size', value: 'size', align: 'end' },
     ]
     const items = [
       { 
         name: 'First item', 
         category: {
-          value: 'Category 1',  
+          value: 'Category 1',
           type: 'link',
           data: {
-            url: 'https://1crm.com'
+            href: 'https://1crm.com'
           }
         }, 
-        size: 15.56 
+        size: {
+          value: 15.56,  
+          type: 'currency',
+          data: {
+            symbol: '&#36;'
+          }
+        }, 
       },
       { 
         name: 'Second item', 
         category: {
-          value: 'Category 2',  
+          value: 'Category 2',
           type: 'link',
           data: {
-            url: 'https://1crm.com'
+            href: 'https://1crm.com'
           }
         }, 
-        size: -15.56 
+        size: {
+          value: -15.56,  
+          type: 'currency',
+          data: {
+            symbol: '&#36;'
+          }
+        }, 
       },
       { name: 'Third item', category: 'Category 3', size: 15125.56 },
     ]
