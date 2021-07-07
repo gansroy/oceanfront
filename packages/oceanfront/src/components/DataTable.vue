@@ -141,7 +141,7 @@ export default defineComponent({
         columns.value.forEach(column => {
           let type = 'text';
           let data = {};
-          if(typeof row[column.value] == 'object') {
+          if(typeof row[column.value] == 'object' && row[column.value] !== null) {
             type = row[column.value].type;
             data = row[column.value].data;
             row[column.value] = row[column.value].value;
