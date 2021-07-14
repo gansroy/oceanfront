@@ -26,6 +26,10 @@ export default defineComponent({
             if (limit < 2) return 2
             return limit
         },
+        eventHeightNumber(): number {
+            return parseInt(this.$props.eventHeight as unknown as string) || 20
+        },
+
         monthGrid(): MonthGridData {
             return monthGrid(this.day)
         },
@@ -110,17 +114,17 @@ export default defineComponent({
                 }))
         },
         renderGrid() {
-            return h('div', { class: 'of-calendar-month-grid' },
+            const style = this.fixedRowHeight ? { '--of-month-day-heigth': '' + (this.eventHeightNumber * this.eventsLimitNumber) + 'px' } : {}
+            return h('div', { class: 'of-calendar-month-grid', style },
                 this.monthGrid.grid.map(this.renderRow))
         }
     },
     render() {
-        const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 20
         return h('div',
             {
                 class: "container",
                 style: {
-                    "--of-event-height": `${eventHeight}px`,
+                    "--of-event-height": `${this.eventHeightNumber}px`,
                 },
                 onSelectStart(e: Event) {
                     e.preventDefault()
