@@ -64,6 +64,10 @@ export default defineComponent({
         }
     },
     computed: {
+
+        overlapThresholdNumber(): number {
+            return parseInt(this.$props.overlapThreshold as unknown as string) || 0
+        },
         numHourIntervals(): number {
             return parseInt(this.$props.hourIntervals as unknown as string) || 4
         },
@@ -103,7 +107,7 @@ export default defineComponent({
             const dayEvents = {} as any
             for (const cat of this.$props.categoriesList || []) {
                 const day = getDayIdentifier(toTimestamp(cat.date))
-                const threshold = parseInt(this.$props.overlapThreshold as unknown as string) || 0
+                const threshold = this.overlapThresholdNumber
                 const groups = this.$props.events
                     ? getGroups(this.parsedEvents, day, false, this.ignoreCategories ? undefined : cat.category, this.layoutFunc, threshold)
                     : []
@@ -193,6 +197,7 @@ export default defineComponent({
                         events.map(e => {
                             height = Math.max(e.top, height)
                             const finalColor = this.$props.eventColor?.(e.event) ?? e.event.color
+                            const slot = this.$slots['allday-event-content']
                             return h('div',
                                 {
                                     class: 'of-calendar-event',
@@ -211,7 +216,7 @@ export default defineComponent({
                                         this.$emit('leave:event', event, e)
                                     },
                                 },
-                                h('strong', e.event.name),
+                                slot ? slot({ event: e.event }) : h('strong', e.event.name),
                             )
                         })
                     )
@@ -256,7 +261,7 @@ export default defineComponent({
                     )
                     const es = this.dayEvents[cat.category] as CalendarEventPlacement[] || []
                     const events = es.map(e => {
-                        const brk = e.event.end - e.event.start > 45
+                        const brk = e.event.end - e.event.start > this.overlapThresholdNumber
                         const separator = !brk
                             ? ' '
                             : h('br')
@@ -296,7 +301,7 @@ export default defineComponent({
                             },
                             slot
                                 ? slot({
-                                    placement: e,
+                                    event: e.event,
                                     brk,
                                     formattedRange
                                 })

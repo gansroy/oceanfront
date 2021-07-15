@@ -85,17 +85,23 @@
         </div>
       </template>
       <template
-        #event-content="{ formattedRange, placement, brk }"
+        #event-content="{ formattedRange, event, brk }"
         v-if="values.useSlots"
       >
         <of-icon name="phone" />
         <b
           ><i>
-            {{ placement.event.name }}
+            {{ event.name }}
           </i></b
         >
         <br v-if="brk" />
         {{ formattedRange }}
+      </template>
+      <template #allday-event-content="{ event }" v-if="values.useSlots">
+        <of-icon name="phone" />
+        <b>
+          <i>{{ event.name }}</i>
+        </b>
       </template>
     </of-calendar>
   </div>
@@ -248,3 +254,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style >
+.of-calendar-event {
+  font-size: 70%;
+}
+</style>

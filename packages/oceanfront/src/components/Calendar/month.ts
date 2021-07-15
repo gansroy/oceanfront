@@ -86,6 +86,7 @@ export default defineComponent({
                                 h('div', { class: 'events' },
                                     [
                                         events.map(e => {
+                                            const slot = this.$slots['allday-event-content']
                                             const finalColor = this.$props.eventColor?.(e) ?? e.color
                                             return h('div',
                                                 {
@@ -103,7 +104,7 @@ export default defineComponent({
                                                         this.$emit('leave:event', event, e)
                                                     },
                                                 },
-                                                h('strong', e.name),
+                                                slot ? slot({ event: e }) : h('strong', e.name),
                                             )
                                         }),
                                         this.renderMoreLink(more, day.date),
