@@ -41,7 +41,7 @@ export default defineComponent({
     },
     methods: {
         dayEvents(day: Date): InternalEvent[] {
-            return getEventsOfDay(this.parsedEvents, getDayIdentifier(toTimestamp(day)), false)
+            return getEventsOfDay(this.parsedEvents, getDayIdentifier(toTimestamp(day)), "ignore")
         },
         header() {
             const slot = this.$slots['header']
