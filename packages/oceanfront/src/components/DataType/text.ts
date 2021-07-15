@@ -1,11 +1,9 @@
-import { defineComponent } from "vue";
-import dataProps from './props'
+import { PropType, defineComponent } from "vue";
+import { DataTypeValue } from '../../lib/datatype'
 
 export default defineComponent({
-    props: {
-        ...dataProps.common
-    },
+    props: { value: { type: Object as PropType<DataTypeValue>, required: true } },
     render() {
-        return this.$props.value
+        return this.$props.value?.value
     },
 })

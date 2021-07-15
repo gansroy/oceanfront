@@ -36,18 +36,14 @@
             <of-toggle
               type="toggle"
               :record="rowsRecord"
-              :name="row.id"
+              :name="row.id.value"
               variant="basic"
             />
           </slot>
           <slot name="first-cell" :record="rowsRecord" :item="row" />
         </td>
         <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
-          <of-data-type 
-            :value="row[col.value]" 
-            :type="row.types[col.value].type"  
-            :data="row.types[col.value].data">
-          </of-data-type>
+          <of-data-type :value="row[col.value]"></of-data-type>
         </td>
       </tr>
     </tbody>
@@ -135,20 +131,7 @@ export default defineComponent({
         count > 0 && idx < propItems.length;
         idx++
       ) {
-        let row = propItems[idx];
-        row.types = {};
-      
-        columns.value.forEach(column => {
-          let type = 'text';
-          let data = {};
-          if(typeof row[column.value] == 'object' && row[column.value] !== null) {
-            type = row[column.value].type;
-            data = row[column.value].data;
-            row[column.value] = row[column.value].value;
-          }
-          row.types[column.value] = {'type': type, 'data': data};
-        });
-        result.push(row)
+        result.push(propItems[idx])
       }
       return result
     })
@@ -170,7 +153,7 @@ export default defineComponent({
       let ids: any = { all: false }
       if (rowsSelector.value) {
         for (const row of rows.value) {
-          ids[row.id] = false
+          ids[row.id.value] = false
         }
       }
       return makeRecord(ids)
@@ -202,7 +185,7 @@ export default defineComponent({
       }
 
       for (const row of rows.value) {
-        rowsRecord.value.value[row.id] = checked
+        rowsRecord.value.value[row.id.value] = checked
       }
     }
     const headerRowsSelectorChecked = ref(false)

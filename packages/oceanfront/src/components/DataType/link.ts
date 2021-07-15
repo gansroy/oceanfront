@@ -1,21 +1,18 @@
-import { defineComponent, h } from "vue";
-import dataProps from './props'
+import { PropType, defineComponent, h } from "vue";
+import { DataTypeValue } from '../../lib/datatype'
 import { OfLink } from '../Link'
 
 export default defineComponent({
-  props: {
-    ...dataProps.common,
-    ...dataProps.link
-  },
+  props: { value: { type: Object as PropType<DataTypeValue>, required: true } },
   render() {
       return h(
         OfLink as any,
         {
-          href: this.$props.data.href || null,
-          to: this.$props.data.to || null,
+          href: this.$props.value.params.href || null,
+          to: this.$props.value.params.to || null,
         },
         {
-          default: () => this.$props.value,
+          default: () => this.$props.value.value,
         }
       )
   },

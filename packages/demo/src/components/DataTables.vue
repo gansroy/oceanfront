@@ -11,7 +11,6 @@
         />
       </div>
     </div>
-
     <div class="row">
       <div class="column">
         <of-data-table
@@ -38,29 +37,33 @@ export default defineComponent({
     ]
     const items = [
       { 
-        name: 'First item', 
+        name: { 
+          value: 'First item' 
+        }, 
         category: {
           value: 'Category 1',
-          type: 'link',
-          data: {
+          format: 'link',
+          params: {
             href: 'https://1crm.com'
           }
         }, 
         size: {
           value: 15.56,  
-          type: 'currency',
-          data: {
+          format: 'currency',
+          params: {
             symbol: '&#36;'
           }
         }, 
       },
       { 
-        name: 'Second item', 
+        name: { 
+          value: 'Second item' 
+        }, 
         category: {
           value: 'Category 2',
-          type: 'link',
-          data: {
-            href: 'https://1crm.com'
+          format: 'link',
+          params: {
+            to: 'tabs'
           }
         }, 
         size: {
@@ -71,13 +74,64 @@ export default defineComponent({
           }
         }, 
       },
-      { name: 'Third item', category: 'Category 3', size: 15125.56 },
+      { 
+        name: { 
+          value: 'Third item' 
+        }, 
+        category: {
+          value: 'Category 3'
+        }, 
+        size: { 
+          value: 15125.56 
+        }
+      },
     ]
+
     const items2 = [
-      { id: '1', name: 'First item', category: 'Category 1', size: 15.56 },
-      { id: '2', name: 'Second item', category: 'Category 2', size: -15.56 },
-      { id: '3', name: 'Third item', category: 'Category 3', size: 15125.56 },
+      { 
+        id: { 
+          value: '1' 
+        }, 
+        name: { 
+          value: 'First item'
+        }, 
+        category: { 
+          value: 'Category 1' 
+        }, 
+        size: { 
+          value: 15.56 
+        },  
+      },
+      { 
+        id: { 
+          value: '2' 
+        }, 
+        name: { 
+          value: 'Second item'
+        }, 
+        category: { 
+          value: 'Category 2' 
+        }, 
+        size: { 
+          value: -15.56 
+        },  
+      },
+      { 
+        id: { 
+          value: '3' 
+        }, 
+        name: { 
+          value: 'Third item'
+        }, 
+        category: { 
+          value: 'Category 3' 
+        }, 
+        size: { 
+          value: 15125.56 
+        },  
+      },
     ]
+
     const footerItems = [{ size: 100.5 }]
     const onRowsSelected = function (values: any) {
       console.log(values)

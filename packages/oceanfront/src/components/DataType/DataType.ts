@@ -1,14 +1,16 @@
-import { defineComponent, h } from "vue"
-import dataProps from './props'
+import { PropType, defineComponent, h } from "vue"
+import { DataTypeValue } from '../../lib/datatype'
 import Text from "./text"
 import Currency from "./currency"
 import Link from "./link"
 
 export default defineComponent({
   name: 'OfDataType',
-  props: dataProps.common,
+  props: { 
+    value: { type: Object as PropType<DataTypeValue>, required: true },
+  },
   render() {
-    switch (this.$props.type) {
+    switch (this.$props.value.format) {
       case 'currency':
         return h(Currency, this.$props, this.$slots)
       case 'link':
