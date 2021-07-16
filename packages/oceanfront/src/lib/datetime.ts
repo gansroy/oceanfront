@@ -23,7 +23,6 @@ export const allDayEnd = (d: Date): Date => {
 
 export const firstSunday = (d?: Date): Date => {
     d = d || new Date()
-    console.log(d.getDay())
     return new Date
 }
 export interface MonthGridCell {
