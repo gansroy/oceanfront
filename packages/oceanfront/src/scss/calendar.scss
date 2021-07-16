@@ -219,6 +219,9 @@ div.of-date-picker-cur-year {
         min-height: var(--of-event-height, 20px);
         min-width: fit-content;
         z-index: 10000;
+        &.two-lines {
+            min-height:   calc( 2 *  var(--of-event-height, 20px));
+        }
     }
 }
 

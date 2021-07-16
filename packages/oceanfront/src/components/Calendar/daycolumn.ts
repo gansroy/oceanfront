@@ -276,6 +276,7 @@ export default defineComponent({
                                     ...eventClass,
                                     'of-calendar-event': true,
                                     conflict: e.conflict,
+                                    'two-lines': brk,
                                 },
                                 style: {
                                     'background-color': finalColor,
