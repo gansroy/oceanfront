@@ -37,9 +37,7 @@ export default defineComponent({
     ]
     const items = [
       { 
-        name: { 
-          value: 'First item' 
-        }, 
+        name: 'First item', 
         category: {
           value: 'Category 1',
           format: 'link',
@@ -56,9 +54,7 @@ export default defineComponent({
         }, 
       },
       { 
-        name: { 
-          value: 'Second item' 
-        }, 
+        name: 'Second item', 
         category: {
           value: 'Category 2',
           format: 'link',
@@ -68,67 +64,37 @@ export default defineComponent({
         }, 
         size: {
           value: -15.56,  
-          type: 'currency',
-          data: {
+          format: 'currency',
+          params: {
             symbol: '&#36;'
           }
         }, 
       },
       { 
-        name: { 
-          value: 'Third item' 
-        }, 
-        category: {
-          value: 'Category 3'
-        }, 
-        size: { 
-          value: 15125.56 
-        }
+        name: 'Third item', 
+        category: 'Category 3', 
+        size: 15125.56 
       },
     ]
 
     const items2 = [
       { 
-        id: { 
-          value: '1' 
-        }, 
-        name: { 
-          value: 'First item'
-        }, 
-        category: { 
-          value: 'Category 1' 
-        }, 
-        size: { 
-          value: 15.56 
-        },  
+        id: '1', 
+        name: 'First item', 
+        category: 'Category 1', 
+        size: 15.56,  
       },
       { 
-        id: { 
-          value: '2' 
-        }, 
-        name: { 
-          value: 'Second item'
-        }, 
-        category: { 
-          value: 'Category 2' 
-        }, 
-        size: { 
-          value: -15.56 
-        },  
+        id: '2', 
+        name: 'Second item', 
+        category: 'Category 2', 
+        size: -15.56,  
       },
       { 
-        id: { 
-          value: '3' 
-        }, 
-        name: { 
-          value: 'Third item'
-        }, 
-        category: { 
-          value: 'Category 3' 
-        }, 
-        size: { 
-          value: 15125.56 
-        },  
+        id: '3', 
+        name: 'Third item', 
+        category: 'Category 3', 
+        size: 15125.56,  
       },
     ]
 
