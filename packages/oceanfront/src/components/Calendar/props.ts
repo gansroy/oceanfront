@@ -74,5 +74,7 @@ export default {
             default: "20",
         },
         overlapThreshold: { type: [Number, String], default: "45" },
+        dayStart: { type: [Number, String], default: 0 },
+        dayEnd: { type: [Number, String], default: 24 },
     }
 }

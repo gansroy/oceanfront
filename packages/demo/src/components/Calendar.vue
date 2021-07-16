@@ -42,6 +42,7 @@
         label="Custom colors"
         :record="state"
       />
+      <of-toggle-field name="limitHours" label="Limit hours" :record="state" />
       <of-button rounded icon="refresh" @click="regenerateEvents"
         >Regenerate events</of-button
       >
@@ -60,6 +61,8 @@
       :categories="categories"
       :event-color="values.customColors ? eventColor : null"
       :hide-other-months="values.hideOtherMonths"
+      :day-start="values.limitHours ? 8 : 0"
+      :day-end="values.limitHours ? 18 : 24"
     >
       <template #header v-if="values.useSlots">
         <h3>Additional controls can go here</h3>
@@ -147,6 +150,7 @@ function eventColor(e: InternalEvent) {
 
 const state = makeRecord({
   useSlots: false,
+  limitHours: false,
   type: 'month',
   layout: 'columns',
 })

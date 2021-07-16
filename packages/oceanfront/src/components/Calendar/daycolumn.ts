@@ -109,7 +109,7 @@ export default defineComponent({
                 const day = getDayIdentifier(toTimestamp(cat.date))
                 const threshold = this.overlapThresholdNumber
                 const groups = this.$props.events
-                    ? getGroups(this.parsedEvents, day, false, this.ignoreCategories ? undefined : cat.category, this.layoutFunc, threshold)
+                    ? getGroups(this.parsedEvents, day, false, this.ignoreCategories ? undefined : cat.category, this.layoutFunc, threshold, this.hoursInterval)
                     : []
                 const placements = []
                 for (const g of groups) {
@@ -119,11 +119,20 @@ export default defineComponent({
             }
             return dayEvents
         },
-        intervals() {
-            return Array.from({ length: 24 }, (_, i) => i)
-        },
+        hoursInterval() {
+            let start: number = parseInt(this.dayStart as unknown as string) || 0;
+            let end: number = parseInt(this.dayEnd as unknown as string) || 0;
+            if (start >= end) [start, end] = [0, 24];
+            if (start < 0) start = 0;
+            if (end > 24) end = 24;
+            return [start, end];
+        }
     },
     methods: {
+        intervals() {
+            const [start, end] = this.hoursInterval;
+            return Array.from({ length: end - start }, (_, i) => i + start)
+        },
         getEventIntervalRange(ts: Timestamp): number[] {
             const startTsId = getTimestampIdintifier(ts)
             const endTsId = getTimestampIdintifier(toTimestamp(addMinutes(ts.date, 60 / this.numHourIntervals)))
@@ -228,7 +237,7 @@ export default defineComponent({
             ])
         },
         dayRow() {
-            const intervals = this.intervals.map(
+            const intervals = this.intervals().map(
                 (interval) =>
                     h('div', { class: 'of-calendar-interval' },
                         h('div', { class: 'of-calendar-interval-label' }, interval)
@@ -238,7 +247,7 @@ export default defineComponent({
                 ? ''
                 : this.$props.categoriesList.map((cat) => {
                     const theDayTS = withZeroTime(toTimestamp(cat.date))
-                    const intervals = this.intervals.map((_, i) => {
+                    const intervals = this.intervals().map((_, i) => {
                         const numSubIntervals = this.numHourIntervals
                         const subIntevals = Array.from({ length: numSubIntervals }, (_, j) => {
                             const minutes = 60 * i + 60 / numSubIntervals * j

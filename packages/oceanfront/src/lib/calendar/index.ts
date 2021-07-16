@@ -168,7 +168,21 @@ export function getNormalizedTSRange(event: InternalEvent, dayOrStartTS: Date | 
 }
 
 
-export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: boolean, category: string | undefined, layout: layoutFunc, overlapThreshold: number): CalendarEventsGroup[] {
+export function getGroups(
+    events: InternalEvent[],
+    day: DayIdentifier,
+    allDay: boolean, category: string | undefined,
+    layout: layoutFunc,
+    overlapThreshold: number,
+    [startHour, endHour]: number[]): CalendarEventsGroup[] {
+
+    const dayStart = day * OFFSET_TIMESTAMP + startHour * MINUTES_IN_HOUR
+    const dayEnd = day * OFFSET_TIMESTAMP + endHour * MINUTES_IN_HOUR
+
+    const dayStart30 = day * OFFSET_TIMESTAMP + startHour * MINUTES_IN_HOUR + MINUTES_IN_HOUR / 2
+    const dayEnd30 = day * OFFSET_TIMESTAMP + endHour * MINUTES_IN_HOUR - MINUTES_IN_HOUR / 2
+
+    const dayLength = (endHour - startHour) * MINUTES_IN_HOUR
     const groups: CalendarEventsGroup[] = []
     const dayEvents = getEventsOfDay(events, day, allDay, category)
     dayEvents.sort(
@@ -177,8 +191,8 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
     const placements: CalendarEventPlacement[] = dayEvents.map(
         e => ({
             event: e,
-            start: Math.max(day * OFFSET_TIMESTAMP, e.start),
-            end: Math.min(day * OFFSET_TIMESTAMP + MINUTES_IN_DAY, e.end),
+            start: Math.max(dayStart, e.start),
+            end: Math.min(dayEnd, e.end),
             height: 0,
             top: 0,
             width: 0,
@@ -191,20 +205,19 @@ export function getGroups(events: InternalEvent[], day: DayIdentifier, allDay: b
         })
     )
     for (const p of placements) {
-        const [start, end] = [p.start, p.end]
-        let startTime = p.event.startTime
-        let endTime = p.event.endTime
+        let [start, end] = [p.start, p.end]
+        if (end - start < 30) {
+            end = start + 30
+            if (end > dayEnd) {
+                end = dayEnd
+                start = dayEnd30
+            }
+        }
+        p.start = start
+        p.end = end
 
-        if (p.event.startDay < day) {
-            p.top = 0
-            startTime = 0
-        } else {
-            p.top = p.event.startTime / MINUTES_IN_DAY * 100
-        }
-        if (p.event.endDay > day) {
-            endTime = MINUTES_IN_DAY
-        }
-        p.height = (endTime - startTime) / MINUTES_IN_DAY * 100
+        p.top = (start % OFFSET_TIMESTAMP - dayStart % OFFSET_TIMESTAMP) / dayLength * 100
+        p.height = (end % OFFSET_TIMESTAMP - start % OFFSET_TIMESTAMP) / dayLength * 100
         let added = false
         for (const g of groups) {
             if (hasOverlap(start, end, g.start, g.end)) {
