@@ -21,6 +21,11 @@ export const allDayEnd = (d: Date): Date => {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)
 }
 
+export const firstSunday = (d?: Date): Date => {
+    d = d || new Date()
+    console.log(d.getDay())
+    return new Date
+}
 export interface MonthGridCell {
     date: Date
     today: boolean

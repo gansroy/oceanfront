@@ -29,7 +29,7 @@ export default defineComponent({
                 const slot = this.$slots['day-title']
                 return slot
                     ? slot(date)
-                    : this.renderDayNumber(date)
+                    : this.renderDayNumber(date, true)
             }
         },
         superTitleSlot() {

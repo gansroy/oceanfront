@@ -152,7 +152,7 @@ div.of-date-picker-cur-year {
     z-index: 1;
 }
 
-.of-calendar-allday-row, .of-calendar-day-row, .of-calendar-day-titles {
+.of-calendar-allday-row, .of-calendar-day-row, .of-calendar-day-titles, .of-calendar-month-row {
     display: grid;
     grid-template-columns: 40px repeat( auto-fit, minmax(50px, 1fr) );
     border-bottom: solid 1px #CCC;
@@ -178,15 +178,6 @@ div.of-date-picker-cur-year {
     }
     & .events {
         height: var(--of-month-day-heigth, auto);
-    }
-}
-
-.of-calendar-month-row {
-    display: grid;
-    grid-template-columns: repeat( auto-fit, minmax(50px, 1fr) );
-    border-bottom: solid 1px #CCC;
-    &:first-child {
-        border-top: solid 1px #CCC;
     }
 }
 

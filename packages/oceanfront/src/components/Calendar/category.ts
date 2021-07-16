@@ -16,7 +16,7 @@ export default defineComponent({
                     onClick: (event: any) => {
                         this.$emit('click:day', event, this.$props.day)
                     }
-                }, this.renderDayNumber(this.$props.day))
+                }, this.renderDayNumber(this.$props.day, true))
             }
         },
         categoryTitleSlot() {

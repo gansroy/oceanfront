@@ -1,4 +1,4 @@
-import { monthGrid, MonthGridCell, MonthGridData } from "src/lib/datetime";
+import { addDays, firstSunday, monthGrid, MonthGridCell, MonthGridData } from "src/lib/datetime";
 import calendarProps from './props'
 import { defineComponent, h } from "vue";
 import { useFormats } from "src/lib/formats";
@@ -51,7 +51,7 @@ export default defineComponent({
             const slot = this.$slots['day-title']
             const content = slot
                 ? slot(day)
-                : this.renderDayNumber(day)
+                : this.renderDayNumber(day, false)
             return h('div', {
                 class: 'day-title', onClick: (event: any) => {
                     this.$emit('click:day', event, day)
@@ -70,55 +70,70 @@ export default defineComponent({
         },
         renderRow(rowDays: MonthGridCell[]) {
             return h('div', { class: 'of-calendar-month-row' },
-                rowDays.map(day => {
-                    const dayEvents = this.dayEvents(day.date)
-                    let limit = this.eventsLimitNumber
-                    let more = 0
-                    if (dayEvents.length > limit) {
-                        limit -= 1
-                        more = dayEvents.length - limit
-                    }
-                    const events = dayEvents.slice(0, limit)
-                    return h('div', { class: 'of-calendar-month-day' },
-                        day.otherMonth && this.hideOtherMonths ? [] :
-                            [
-                                this.renderDayNumberOrSlot(day.date),
-                                h('div', { class: 'events' },
-                                    [
-                                        events.map(e => {
-                                            const slot = this.$slots['allday-event-content']
-                                            const finalColor = this.$props.eventColor?.(e) ?? e.color
-                                            const eventClass = this.$props.eventClass?.(e) ?? {}
-                                            return h('div',
-                                                {
-                                                    class: { ...eventClass, 'of-calendar-event': true },
-                                                    style: {
-                                                        'background-color': finalColor,
+                [
+                    h('div', { class: 'of-calendar-gutter' }),
+                    rowDays.map(day => {
+                        const dayEvents = this.dayEvents(day.date)
+                        let limit = this.eventsLimitNumber
+                        let more = 0
+                        if (dayEvents.length > limit) {
+                            limit -= 1
+                            more = dayEvents.length - limit
+                        }
+                        const events = dayEvents.slice(0, limit)
+                        return h('div', { class: 'of-calendar-month-day' },
+                            day.otherMonth && this.hideOtherMonths ? [] :
+                                [
+                                    this.renderDayNumberOrSlot(day.date),
+                                    h('div', { class: 'events' },
+                                        [
+                                            events.map(e => {
+                                                const slot = this.$slots['allday-event-content']
+                                                const finalColor = this.$props.eventColor?.(e) ?? e.color
+                                                const eventClass = this.$props.eventClass?.(e) ?? {}
+                                                return h('div',
+                                                    {
+                                                        class: { ...eventClass, 'of-calendar-event': true },
+                                                        style: {
+                                                            'background-color': finalColor,
+                                                        },
+                                                        onClick: (event: any) => {
+                                                            this.$emit('click:event', event, { ...e, color: finalColor })
+                                                        },
+                                                        onMouseEnter: (event: any) => {
+                                                            this.$emit('enter:event', event, e)
+                                                        },
+                                                        onMouseLeave: (event: any) => {
+                                                            this.$emit('leave:event', event, e)
+                                                        },
                                                     },
-                                                    onClick: (event: any) => {
-                                                        this.$emit('click:event', event, { ...e, color: finalColor })
-                                                    },
-                                                    onMouseEnter: (event: any) => {
-                                                        this.$emit('enter:event', event, e)
-                                                    },
-                                                    onMouseLeave: (event: any) => {
-                                                        this.$emit('leave:event', event, e)
-                                                    },
-                                                },
-                                                slot ? slot({ event: e }) : h('strong', e.name),
-                                            )
-                                        }),
-                                        this.renderMoreLink(more, day.date),
-                                    ]
-                                )
-                            ]
-                    )
-                }))
+                                                    slot ? slot({ event: e }) : h('strong', e.name),
+                                                )
+                                            }),
+                                            this.renderMoreLink(more, day.date),
+                                        ]
+                                    )
+                                ]
+                        )
+                    })
+                ]
+            )
         },
         renderGrid() {
+            const fs = firstSunday(this.day)
             const style = this.fixedRowHeight ? { '--of-month-day-heigth': '' + (this.eventHeightNumber * this.eventsLimitNumber) + 'px' } : {}
-            return h('div', { class: 'of-calendar-month-grid', style },
-                this.monthGrid.grid.map(this.renderRow))
+            return h('div', { class: 'of-calendar-month-grid', style }, [
+                h('div', { class: 'of-calendar-day-titles' }, [
+                    h('div', { class: 'of-calendar-gutter' }),
+                    Array.from({ length: 7 }, (_, i) => {
+                        return h('div', { class: 'of-calendar-category-title' },
+                            h('div', { class: 'of-calendar-day-title' },
+                                this.renderWeekDay(addDays(fs, i))
+                            ))
+                    })
+                ]),
+                this.monthGrid.grid.map(this.renderRow)
+            ])
         }
     },
     render() {
