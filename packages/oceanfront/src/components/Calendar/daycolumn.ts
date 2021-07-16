@@ -197,10 +197,11 @@ export default defineComponent({
                         events.map(e => {
                             height = Math.max(e.top, height)
                             const finalColor = this.$props.eventColor?.(e.event) ?? e.event.color
+                            const eventClass = this.$props.eventClass?.(e.event) ?? {}
                             const slot = this.$slots['allday-event-content']
                             return h('div',
                                 {
-                                    class: 'of-calendar-event',
+                                    class: { ...eventClass, 'of-calendar-event': true },
                                     style: {
                                         'background-color': finalColor,
                                         width: '' + ((e.daysSpan * 100) - 2) + '%',
@@ -268,9 +269,11 @@ export default defineComponent({
                         const formattedRange = formatRange(this.formatMgr, e.event, cat.date)
                         const slot = this.$slots['event-content']
                         const finalColor = this.$props.eventColor?.(e.event) ?? e.event.color
+                        const eventClass = this.$props.eventClass?.(e.event) ?? {}
                         return h('div',
                             {
                                 class: {
+                                    ...eventClass,
                                     'of-calendar-event': true,
                                     conflict: e.conflict,
                                 },

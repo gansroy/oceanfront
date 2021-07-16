@@ -88,9 +88,10 @@ export default defineComponent({
                                         events.map(e => {
                                             const slot = this.$slots['allday-event-content']
                                             const finalColor = this.$props.eventColor?.(e) ?? e.color
+                                            const eventClass = this.$props.eventClass?.(e.event) ?? {}
                                             return h('div',
                                                 {
-                                                    class: 'of-calendar-event',
+                                                    class: { ...eventClass, 'of-calendar-event': true },
                                                     style: {
                                                         'background-color': finalColor,
                                                     },

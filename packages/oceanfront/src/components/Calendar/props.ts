@@ -52,6 +52,7 @@ export default {
         },
         conflictColor: String,
         eventColor: Function as PropType<(e: InternalEvent) => any>,
+        eventClass: Function as PropType<(e: InternalEvent) => any>,
         type: {
             type: String,
             validator: validateType,
