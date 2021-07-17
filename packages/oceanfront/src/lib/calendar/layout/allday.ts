@@ -11,7 +11,6 @@ export const layoutAllday = (events: InternalEvent[], interval: Timestamp[], bus
     busy.currentColumn++
     return events.map(e => {
         const nDays = daysInEvent(e, interval)
-        if (nDays == 0) debugger
         const numRows = busy.busyColumns.length
         let freeRow = busy.busyColumns.findIndex(busyCol => currentColumn >= busyCol)
         if (!~freeRow) {
