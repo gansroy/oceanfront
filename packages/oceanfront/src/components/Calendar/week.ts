@@ -26,12 +26,8 @@ export default defineComponent({
             return [firstTS, lastTS]
         },
         getCategoriesList() {
-            const weekDay = this.$props.day.getDay()
-            let weekStart = parseInt(this.$props.weekStart as string)
-            if (weekStart < 0) weekStart = 0
-            if (weekStart > 6) weekStart = 6
-            if (isNaN(weekStart)) weekStart = 0
-            const offset = weekStart - weekDay
+            const weekDay = this.$props.day.getDay() || 7
+            const offset = 1 - weekDay
             return Array.from({ length: 7 }, (_, i) => ({ category: '' + i, date: addDays(this.$props.day, i + offset) }))
         },
     },

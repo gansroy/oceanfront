@@ -21,10 +21,41 @@ export const allDayEnd = (d: Date): Date => {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)
 }
 
-export const firstSunday = (d?: Date): Date => {
+/** First monday of the month */
+export const firstMonday = (d?: Date): Date => {
     d = d || new Date()
-    return addDays(d, -d.getDay())
+    d = new Date(d.getFullYear(), d.getMonth(), 1)
+    const wd = d.getDay() || 7
+    return addDays(d, 1 - wd)
 }
+
+const monthDaysRolling = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
+const monthDaysRollingLeap = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
+
+export const isLeapYear = (y: number): boolean =>
+    (y % 4 == 0) && ((y % 100 != 0) || (y % 400 == 0))
+
+export const weeksInYear = (y: number): number => {
+    let d = new Date(y, 0, 1)
+    if (d.getDay() == 4) return 53
+    d = new Date(y, 11, 31)
+    if (d.getDay() == 4) return 53
+    return 52
+}
+
+/** ISO week number */
+export const isoWeekNumber = (d: Date): number => {
+    const dow = d.getDay() || 7
+    const y = d.getFullYear()
+    const isLeap = isLeapYear(y)
+    const month = d.getMonth()
+    const doy = d.getDate() + (isLeap ? monthDaysRollingLeap[month] : monthDaysRolling[month])
+    const w = Math.floor((10 + doy - dow) / 7)
+    if (w < 1) return weeksInYear(y - 1)
+    if (w > weeksInYear(y)) return 1
+    return w
+}
+
 export interface MonthGridCell {
     date: Date
     today: boolean
@@ -46,11 +77,12 @@ export function prevMonth(date: Date): Date {
 }
 
 export const monthGrid = (forDate?: Date): MonthGridData => {
-    const weekDays = [0, 1, 2, 3, 4, 5, 6]
+    const weekDays = [1, 2, 3, 4, 5, 6, 7]
     const monthStart = new Date(forDate?.valueOf() ?? new Date().valueOf())
     monthStart.setDate(1)
     const month = monthStart.getMonth()
-    let date = addDays(monthStart, - monthStart.getDay())
+    const wd = monthStart.getDay() || 7
+    let date = addDays(monthStart, 1 - wd)
     let rowIdx = 0
     const grid = []
     const today = new Date()

@@ -254,6 +254,12 @@ div.of-date-picker-cur-year {
 .of-calendar-gutter, .of-calendar-day-supertitle  {
     border-left: solid 1px #CCC;
     border-right: solid 1px #CCC;
+    &.of-week-number {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 .of-calendar-category-title {

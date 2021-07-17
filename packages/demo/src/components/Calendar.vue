@@ -53,6 +53,7 @@
       @click:day="dayClicked"
       @click:more="dayClicked"
       @click:category="categoryClicked"
+      @click:week="weekClicked"
       :type="values.type"
       :day="values.day"
       num-days="3"
@@ -72,6 +73,9 @@
       </template>
       <template #more="count" v-if="values.useSlots">
         {{ count }} more events
+      </template>
+      <template #week-number="number" v-if="values.useSlots">
+        W{{ number }}
       </template>
       <template #category-title="category" v-if="values.useSlots">
         <div style="width: 100%">
@@ -244,6 +248,9 @@ export default defineComponent({
         detailsTarget.value = nativeEvent.target
         detailsEvent.value = event
         detailsVisible.value = true
+      },
+      weekClicked: (nativeEvent: any, weekNumber: number, firstDay: Date) => {
+        state.value = { ...state.value, type: 'week', day: firstDay }
       },
       dayClicked: (nativeEvent: any, day: Date) => {
         state.value = { ...state.value, type: 'day', day: day }

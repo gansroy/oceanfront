@@ -1,4 +1,4 @@
-import { addDays, firstSunday, monthGrid, MonthGridCell, MonthGridData } from "src/lib/datetime";
+import { addDays, firstMonday, isoWeekNumber, monthGrid, MonthGridCell, MonthGridData } from "src/lib/datetime";
 import calendarProps from './props'
 import { defineComponent, h } from "vue";
 import { useFormats } from "src/lib/formats";
@@ -19,6 +19,7 @@ export default defineComponent({
         'leave:event',
         'click:day',
         'click:more',
+        'click:week',
     ],
     computed: {
         eventsLimitNumber(): number {
@@ -68,10 +69,19 @@ export default defineComponent({
                 }
             }, slot ? slot(count) : `${count} more`)
         },
-        renderRow(rowDays: MonthGridCell[]) {
+        renderRow(rowDays: MonthGridCell[], weekNumber: number) {
+            const firstDay = addDays(firstMonday(this.day), weekNumber * 7)
+            const wn = isoWeekNumber(firstDay);
+            const wnSlot = this.$slots['week-number']
             return h('div', { class: 'of-calendar-month-row' },
                 [
-                    h('div', { class: 'of-calendar-gutter' }),
+                    h('div',
+                        {
+                            class: 'of-calendar-gutter of-week-number',
+                            onClick: (event: any) => {
+                                this.$emit('click:week', event, wn, firstDay)
+                            }
+                        }, wnSlot ? wnSlot(wn) : wn),
                     rowDays.map(day => {
                         const dayEvents = this.dayEvents(day.date)
                         let limit = this.eventsLimitNumber
@@ -120,7 +130,7 @@ export default defineComponent({
             )
         },
         renderGrid() {
-            const fs = firstSunday(this.day)
+            const fm = firstMonday(this.day)
             const style = this.fixedRowHeight ? { '--of-month-day-heigth': '' + (this.eventHeightNumber * this.eventsLimitNumber) + 'px' } : {}
             return h('div', { class: 'of-calendar-month-grid', style }, [
                 h('div', { class: 'of-calendar-day-titles' }, [
@@ -128,7 +138,7 @@ export default defineComponent({
                     Array.from({ length: 7 }, (_, i) => {
                         return h('div', { class: 'of-calendar-category-title' },
                             h('div', { class: 'of-calendar-day-title' },
-                                this.renderWeekDay(addDays(fs, i))
+                                this.renderWeekDay(addDays(fm, i))
                             ))
                     })
                 ]),
