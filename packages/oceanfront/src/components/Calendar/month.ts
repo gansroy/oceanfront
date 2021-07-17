@@ -1,10 +1,10 @@
-import { addDays, firstMonday, isoWeekNumber, monthGrid, MonthGridCell, MonthGridData } from "src/lib/datetime";
-import calendarProps from './props'
-import { defineComponent, h } from "vue";
-import { useFormats } from "src/lib/formats";
-import { CalendarEvent, InternalEvent, parseEvent } from "src/lib/calendar/common";
 import { getDayIdentifier, getEventsOfDay, toTimestamp } from "src/lib/calendar";
-import Base from './base'
+import { CalendarEvent, InternalEvent, parseEvent } from "src/lib/calendar/common";
+import { addDays, firstMonday, isoWeekNumber, monthGrid, MonthGridCell, MonthGridData } from "src/lib/datetime";
+import { useFormats } from "src/lib/formats";
+import { defineComponent, h } from "vue";
+import Base from './base';
+import calendarProps from './props';
 
 export default defineComponent({
     mixins: [Base],
@@ -69,6 +69,51 @@ export default defineComponent({
                 }
             }, slot ? slot(count) : `${count} more`)
         },
+        renderRowDayEvent(e: InternalEvent) {
+            const finalColor = this.$props.eventColor?.(e) ?? e.color
+            const eventClass = this.$props.eventClass?.(e) ?? {}
+            return h('div',
+                {
+                    class: { ...eventClass, 'of-calendar-event': true },
+                    style: {
+                        'background-color': finalColor,
+                    },
+                    onClick: (event: any) => {
+                        this.$emit('click:event', event, { ...e, color: finalColor })
+                    },
+                    onMouseEnter: (event: any) => {
+                        this.$emit('enter:event', event, e)
+                    },
+                    onMouseLeave: (event: any) => {
+                        this.$emit('leave:event', event, e)
+                    },
+                },
+                this.renderSlot('allday-event-content', { event: e }, () => h('strong', e.name))
+            )
+        },
+        renderRowDay(day: MonthGridCell) {
+            const dayEvents = this.dayEvents(day.date)
+            let limit = this.eventsLimitNumber
+            let more = 0
+            if (dayEvents.length > limit) {
+                limit -= 1
+                more = dayEvents.length - limit
+            }
+            const events = dayEvents.slice(0, limit)
+            return h('div', { class: 'of-calendar-month-day' },
+                day.otherMonth && this.hideOtherMonths ? [] :
+                    [
+                        this.renderDayNumberOrSlot(day.date),
+                        h('div', { class: 'events' },
+                            [
+                                events.map(this.renderRowDayEvent),
+                                this.renderMoreLink(more, day.date),
+                            ]
+                        )
+                    ]
+            )
+
+        },
         renderRow(rowDays: MonthGridCell[], weekNumber: number) {
             const firstDay = addDays(firstMonday(this.day), weekNumber * 7)
             const wn = isoWeekNumber(firstDay);
@@ -82,50 +127,7 @@ export default defineComponent({
                                 this.$emit('click:week', event, wn, firstDay)
                             }
                         }, wnSlot ? wnSlot(wn) : wn),
-                    rowDays.map(day => {
-                        const dayEvents = this.dayEvents(day.date)
-                        let limit = this.eventsLimitNumber
-                        let more = 0
-                        if (dayEvents.length > limit) {
-                            limit -= 1
-                            more = dayEvents.length - limit
-                        }
-                        const events = dayEvents.slice(0, limit)
-                        return h('div', { class: 'of-calendar-month-day' },
-                            day.otherMonth && this.hideOtherMonths ? [] :
-                                [
-                                    this.renderDayNumberOrSlot(day.date),
-                                    h('div', { class: 'events' },
-                                        [
-                                            events.map(e => {
-                                                const slot = this.$slots['allday-event-content']
-                                                const finalColor = this.$props.eventColor?.(e) ?? e.color
-                                                const eventClass = this.$props.eventClass?.(e) ?? {}
-                                                return h('div',
-                                                    {
-                                                        class: { ...eventClass, 'of-calendar-event': true },
-                                                        style: {
-                                                            'background-color': finalColor,
-                                                        },
-                                                        onClick: (event: any) => {
-                                                            this.$emit('click:event', event, { ...e, color: finalColor })
-                                                        },
-                                                        onMouseEnter: (event: any) => {
-                                                            this.$emit('enter:event', event, e)
-                                                        },
-                                                        onMouseLeave: (event: any) => {
-                                                            this.$emit('leave:event', event, e)
-                                                        },
-                                                    },
-                                                    slot ? slot({ event: e }) : h('strong', e.name),
-                                                )
-                                            }),
-                                            this.renderMoreLink(more, day.date),
-                                        ]
-                                    )
-                                ]
-                        )
-                    })
+                    rowDays.map(this.renderRowDay)
                 ]
             )
         },

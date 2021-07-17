@@ -1,10 +1,10 @@
 import { defineComponent, h } from "vue"
-import calendarProps from './props'
-import DayCalendar from "./day"
-import WeekCalendar from "./week"
 import CategoryCalendar from "./category"
-import NDaysCalendar from "./ndays"
+import DayCalendar from "./day"
 import MonthCalendar from "./month"
+import NDaysCalendar from "./ndays"
+import calendarProps from './props'
+import WeekCalendar from "./week"
 
 export default defineComponent({
     name: 'OfCalendar',

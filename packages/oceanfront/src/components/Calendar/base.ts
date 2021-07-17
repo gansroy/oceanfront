@@ -15,16 +15,17 @@ export default defineComponent({
         formatMgr: () => useFormats()
     },
     methods: {
+        renderSlot(name: string, param: any, fallback: Function) {
+            const slot = this.$slots[name]
+            return slot ? slot(param) : fallback()
+        },
         renderWeekDay(date?: Date) {
             const weekFmt = this.formatMgr.getTextFormatter('date', weekDayFormat)
             return h('div', { class: 'weekday' }, weekFmt?.format(date).textValue)
         },
         renderDayNumber(date?: Date, weekday?: boolean) {
             const dayFmt = this.formatMgr.getTextFormatter('date', dayFormat)
-            return h('div',
-                {
-                    class: 'of-calendar-day-title',
-                },
+            return h('div', { class: 'of-calendar-day-title', },
                 [
                     weekday ? this.renderWeekDay(date) : null,
                     h('div', { class: 'day-number' }, dayFmt?.format(date).textValue)

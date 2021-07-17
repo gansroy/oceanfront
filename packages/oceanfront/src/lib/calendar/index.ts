@@ -71,7 +71,7 @@ export function daysInEvent(e: InternalEvent, range?: Timestamp[]): number {
     for (; compareTimestamps(start, end) < 0; date = addDays(date, 1), start = toTimestamp(date)) {
         nDays++
     }
-    return nDays
+    return nDays || 1
 
 }
 
@@ -179,7 +179,6 @@ export function getGroups(
     const dayStart = day * OFFSET_TIMESTAMP + startHour * MINUTES_IN_HOUR
     const dayEnd = day * OFFSET_TIMESTAMP + endHour * MINUTES_IN_HOUR
 
-    const dayStart30 = day * OFFSET_TIMESTAMP + startHour * MINUTES_IN_HOUR + MINUTES_IN_HOUR / 2
     const dayEnd30 = day * OFFSET_TIMESTAMP + endHour * MINUTES_IN_HOUR - MINUTES_IN_HOUR / 2
 
     const dayLength = (endHour - startHour) * MINUTES_IN_HOUR

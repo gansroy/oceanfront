@@ -1,22 +1,31 @@
-import { defineComponent, h } from "vue"
-import calendarProps from './props'
-import { CalendarAlldayEventPlacement, CalendarEvent, CalendarEventPlacement, InternalEvent, layoutFunc, parseEvent, Timestamp } from '../../lib/calendar/common'
-import { FormatState, useFormats } from "src/lib/formats"
-import {
-    getGroups,
-    getEventsOfDay,
-    getDayIdentifier,
-    toTimestamp,
-    getNormalizedTSRange,
-    eventsStartingAtDay,
-    withZeroTime,
-    getTimestampIdintifier,
-} from '../../lib/calendar'
-import StackLayout from '../../lib/calendar/layout/stack'
-import ColumnLayout from '../../lib/calendar/layout/columns'
 import { DateTimeFormatterOptions } from "src/formats/DateTime"
 import { BusyInfo, layoutAllday } from "src/lib/calendar/layout/allday"
 import { addMinutes } from "src/lib/datetime"
+import { FormatState, useFormats } from "src/lib/formats"
+import { defineComponent, h } from "vue"
+import {
+    eventsStartingAtDay,
+    getDayIdentifier,
+    getEventsOfDay,
+    getGroups,
+    getNormalizedTSRange,
+    getTimestampIdintifier,
+    toTimestamp,
+    withZeroTime
+} from '../../lib/calendar'
+import {
+    CalendarAlldayEventPlacement,
+    CalendarEvent,
+    CalendarEventPlacement,
+    InternalEvent,
+    layoutFunc,
+    parseEvent,
+    Timestamp
+} from '../../lib/calendar/common'
+import ColumnLayout from '../../lib/calendar/layout/columns'
+import StackLayout from '../../lib/calendar/layout/stack'
+import Base from './base'
+import calendarProps, { categoryItem } from './props'
 
 
 function formatRange(mgr: FormatState, e: InternalEvent, withinDate: Date) {
@@ -37,6 +46,7 @@ function formatRange(mgr: FormatState, e: InternalEvent, withinDate: Date) {
 }
 
 export default defineComponent({
+    mixins: [Base],
     props: {
         ...calendarProps.internal,
         ...calendarProps.common,
@@ -90,13 +100,8 @@ export default defineComponent({
             let busyInfo: BusyInfo = { busyColumns: [], currentColumn: 0 }
             for (const cat of this.$props.categoriesList || []) {
                 const day = getDayIdentifier(toTimestamp(cat.date))
-                const evs = this.$props.events
-                    ? eventsStartingAtDay(
-                        getEventsOfDay(this.parsedEvents, day, true, this.ignoreCategories ? undefined : cat.category, true),
-                        day,
-                        rangeStart
-                    )
-                    : []
+                const dayEvents = getEventsOfDay(this.parsedEvents, day, true, this.ignoreCategories ? undefined : cat.category, true)
+                const evs = eventsStartingAtDay(dayEvents, day, rangeStart)
                 const layedOut = layoutAllday(evs, visRange, busyInfo)
                 if (this.$props.type == 'category') busyInfo = { busyColumns: [], currentColumn: 0 }
                 allDayEvents[cat.category] = layedOut
@@ -108,14 +113,9 @@ export default defineComponent({
             for (const cat of this.$props.categoriesList || []) {
                 const day = getDayIdentifier(toTimestamp(cat.date))
                 const threshold = this.overlapThresholdNumber
-                const groups = this.$props.events
-                    ? getGroups(this.parsedEvents, day, false, this.ignoreCategories ? undefined : cat.category, this.layoutFunc, threshold, this.hoursInterval)
-                    : []
-                const placements = []
-                for (const g of groups) {
-                    placements.push(...g.placements)
-                }
-                dayEvents[cat.category] = placements
+                const forCategory = this.ignoreCategories ? undefined : cat.category
+                const groups = getGroups(this.parsedEvents, day, false, forCategory, this.layoutFunc, threshold, this.hoursInterval)
+                dayEvents[cat.category] = groups.map(g => g.placements).flat(1)
             }
             return dayEvents
         },
@@ -162,81 +162,225 @@ export default defineComponent({
                 h('div', { class: "of-calendar-day-supertitle" }, slot()),
             ]
         },
+        renderCategoryTitle(cat: categoryItem) {
+            const isDate = this.$props.type != 'category'
+            const slotName = isDate ? 'day-title' : 'category-title'
+            const theDay = cat.date
+            const slotArgs = isDate ? theDay : cat.category
+            const eventName = isDate ? 'click:day' : 'click:category'
+            return h('div',
+                {
+                    class: 'of-calendar-category-title',
+                    onClick: (event: any) => this.$emit(eventName, event, slotArgs)
+                },
+                this.renderSlot(slotName, slotArgs, () => cat.category)
+            )
+        },
         title() {
             if (!this.$props.categoryTitles) {
                 return ''
             }
-            const isDate = this.$props.type != 'category'
-            const slot = isDate ? this.$slots['day-title'] : this.$slots['category-title']
             const titles = !this.$props.categoriesList
                 ? ''
-                : this.$props.categoriesList.map((cat) => {
-                    const theDay = cat.date
-                    const slotArgs = isDate ? theDay : cat.category
-                    return h(
-                        'div',
-                        {
-                            class: 'of-calendar-category-title',
-                            onClick: (event: any) => {
-                                if (!isDate) {
-                                    this.$emit('click:category', event, cat.category)
-                                } else {
-                                    this.$emit('click:day', event, theDay)
-                                }
-                            }
-                        },
-                        slot
-                            ? slot(slotArgs)
-                            : cat.category
-                    )
+                : this.$props.categoriesList.map(this.renderCategoryTitle)
 
-                })
             return h('div', { class: 'of-calendar-day-titles' }, [
                 h('div', { class: 'of-calendar-gutter' }),
                 titles
             ])
         },
+        allDayRowEvent(acc: { height: number, columns: any[] }, eventHeight: number) {
+            return (e: CalendarAlldayEventPlacement) => {
+                acc.height = Math.max(e.top, acc.height)
+                const finalColor = this.$props.eventColor?.(e.event) ?? e.event.color
+                const eventClass = this.$props.eventClass?.(e.event) ?? {}
+                const slot = this.$slots['allday-event-content']
+                return h('div',
+                    {
+                        class: { ...eventClass, 'of-calendar-event': true },
+                        style: {
+                            'background-color': finalColor,
+                            width: '' + (((e.daysSpan || 1) * 100) - 2) + '%',
+                            top: '' + (e.top * eventHeight) + 'px',
+                        },
+                        onClick: (event: any) => {
+                            this.$emit('click:event', event, { ...e.event, color: finalColor })
+                        },
+                        onMouseenter: (event: any) => {
+                            this.$emit('enter:event', event, e)
+                        },
+                        onMouseleave: (event: any) => {
+                            this.$emit('leave:event', event, e)
+                        },
+                    },
+                    slot ? slot({ event: e.event }) : h('strong', e.event.name),
+                )
+            }
+        },
+        allDayRowCell(acc: { height: number, columns: any[] }, cat: categoryItem) {
+            const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 20
+            const events = this.allDayEvents[cat.category] as CalendarAlldayEventPlacement[] || []
+            const vnode = h('div', { class: 'of-calendar-day' },
+                events.map(this.allDayRowEvent(acc, eventHeight))
+            )
+            acc.columns.push(vnode)
+            return acc
+        },
         allDayRow() {
             if (!this.hasAllDay) return ''
             const eventHeight = parseInt(this.$props.eventHeight as unknown as string) || 20
-            let height = 0
-            const columns = !this.$props.categoriesList
-                ? ''
-                : this.$props.categoriesList.map((cat) => {
-                    const events = this.allDayEvents[cat.category] as CalendarAlldayEventPlacement[] || []
-                    return h('div', { class: 'of-calendar-day' },
-                        events.map(e => {
-                            height = Math.max(e.top, height)
-                            const finalColor = this.$props.eventColor?.(e.event) ?? e.event.color
-                            const eventClass = this.$props.eventClass?.(e.event) ?? {}
-                            const slot = this.$slots['allday-event-content']
-                            return h('div',
-                                {
-                                    class: { ...eventClass, 'of-calendar-event': true },
-                                    style: {
-                                        'background-color': finalColor,
-                                        width: '' + ((e.daysSpan * 100) - 2) + '%',
-                                        top: '' + (e.top * eventHeight) + 'px',
-                                    },
-                                    onclick: (event: any) => {
-                                        this.$emit('click:event', event, { ...e.event, color: finalColor })
-                                    },
-                                    onnmouseenter: (event: any) => {
-                                        this.$emit('enter:event', event, e)
-                                    },
-                                    onmouseleave: (event: any) => {
-                                        this.$emit('leave:event', event, e)
-                                    },
-                                },
-                                slot ? slot({ event: e.event }) : h('strong', e.event.name),
-                            )
-                        })
-                    )
-                })
+            const { height, columns } = !this.$props.categoriesList
+                ? { height: 0, columns: [] as any[] }
+                : this.$props.categoriesList.reduce(this.allDayRowCell, { height: 0, columns: [] as any[] })
             return h('div', { class: 'of-calendar-allday-row', style: { height: '' + (height * eventHeight + eventHeight) + 'px' } }, [
                 h('div', { class: 'of-calendar-gutter' }),
                 columns,
             ])
+        },
+        intervalSelectionHandlers(cat: categoryItem) {
+            return {
+                onMousemove: (e: MouseEvent | TouchEvent) => {
+                    const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
+                    this.$emit('mousemove:time', e, ts)
+                    if (this.selecting) {
+                        const [startTs, endTs] = this.getEventIntervalRange(ts)
+                        if (startTs < this.selectionStart) {
+                            this.selecting = "start"
+                            this.selectionStart = startTs
+                        } else if (endTs > this.selectionEnd) {
+                            this.selecting = "end"
+                            this.selectionEnd = endTs
+                        } else if (this.selecting == "start") {
+                            this.selectionStart = startTs
+                        } else if (this.selecting == "end") {
+                            this.selectionEnd = endTs
+                        }
+                        this.$emit('selection:change', this.selectionStart, this.selectionEnd, this.selectionCategory)
+                    }
+                },
+
+                onMousedown: (e: MouseEvent | TouchEvent) => {
+                    const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
+                    const [startTsId, endTsId] = this.getEventIntervalRange(ts)
+                    this.$emit('mousedown:time', e, ts)
+                    const leftPressed = (e as MouseEvent).buttons === 1
+                    if (this.selectable && leftPressed) {
+                        this.$data.selecting = "end"
+                        this.$data.selectionStart = startTsId
+                        this.$data.selectionEnd = endTsId
+                        this.$data.selectionCategory = cat.category
+                        this.$emit('selection:change', this.selectionStart, this.selectionEnd, this.selectionCategory)
+                    }
+                },
+                onMouseup: (e: MouseEvent | TouchEvent) => {
+                    const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
+                    this.$emit('mouseup:time', e, ts)
+                    const leftReleased = ((e as MouseEvent).buttons & 1) === 0
+                    if (this.selecting && leftReleased) {
+                        this.$emit('selection:end', this.selectionStart, this.selectionEnd, this.selectionCategory)
+                        this.selecting = false
+                    }
+                },
+            }
+        },
+        dayRowEventHandlers(e: InternalEvent) {
+            return {
+                onClick: (event: any) => {
+                    this.$emit('click:event', event, e)
+                },
+                onMousedown: (event: any) => {
+                    event.stopPropagation()
+                },
+                onMouseenter: (event: any) => {
+                    if (!this.selecting) {
+                        this.$emit('enter:event', event, e)
+                    }
+                },
+                onMouseleave: (event: any) => {
+                    if (!this.selecting) {
+                        this.$emit('leave:event', event, e)
+                    }
+                },
+            }
+        },
+        dayRowEvent(cat: categoryItem) {
+            return (e: CalendarEventPlacement) => {
+                const brk = e.event.end - e.event.start > this.overlapThresholdNumber
+                const separator = !brk
+                    ? ' '
+                    : h('br')
+                const formattedRange = formatRange(this.formatMgr, e.event, cat.date)
+                const finalColor = this.$props.eventColor?.(e.event) ?? e.event.color
+                const eventClass = this.$props.eventClass?.(e.event) ?? {}
+                const finalEvent = { ...e.event, color: finalColor }
+                return h('div',
+                    {
+                        class: {
+                            ...eventClass,
+                            'of-calendar-event': true,
+                            conflict: e.conflict,
+                            'two-lines': brk,
+                        },
+                        style: {
+                            'background-color': finalColor,
+                            'z-index': e.zIndex,
+                            left: e.left * 100 + '%',
+                            width: e.width * 100 + '%',
+                            top: e.top + '%',
+                            height: e.height + '%',
+                        },
+                        ...this.dayRowEventHandlers(finalEvent)
+                    },
+                    this.renderSlot(
+                        'event-content',
+                        { event: e.event, brk, formattedRange },
+                        () => [h('strong', e.event.name), separator, formattedRange,]
+                    )
+                )
+
+            }
+        },
+        dayRowInterval(cat: categoryItem, intervalNumber: number) {
+            return (_: any, subIntervalNumber: number) => {
+                const theDayTS = withZeroTime(toTimestamp(cat.date))
+                const numSubIntervals = this.numHourIntervals
+                const [startHour] = this.hoursInterval
+                const minutes = 60 * intervalNumber + 60 / numSubIntervals * subIntervalNumber + startHour * 60
+                const intervalTime = getTimestampIdintifier(toTimestamp(addMinutes(theDayTS.date, minutes)))
+                return h('div', {
+                    class: {
+                        'of-calendar-subinterval': true,
+                        selected:
+                            this.$data.selecting
+                            && intervalTime >= this.$data.selectionStart
+                            && intervalTime < this.$data.selectionEnd
+                            && this.$data.selectionCategory == cat.category
+                    }
+                })
+            }
+        },
+        dayRowCell(cat: categoryItem) {
+            const numSubIntervals = this.numHourIntervals
+            const intervals = this.intervals().map((_, intervalNumber) => {
+                const subIntevals = Array.from({ length: numSubIntervals }, this.dayRowInterval(cat, intervalNumber))
+                return h('div', {
+                    class: "of-calendar-interval",
+                },
+                    subIntevals)
+            })
+            const es = this.dayEvents[cat.category] as CalendarEventPlacement[] || []
+            const events = es.map(this.dayRowEvent(cat))
+            return h(
+                'div',
+                {
+                    class: 'of-calendar-day',
+                    ...this.intervalSelectionHandlers(cat),
+                },
+                [
+                    ...intervals,
+                    ...events,
+                ])
+
         },
         dayRow() {
             const intervals = this.intervals().map(
@@ -245,144 +389,10 @@ export default defineComponent({
                         h('div', { class: 'of-calendar-interval-label' }, interval)
                     )
             )
-            const [startHour] = this.hoursInterval
-            const days = !this.$props.categoriesList
-                ? ''
-                : this.$props.categoriesList.map((cat) => {
-                    const theDayTS = withZeroTime(toTimestamp(cat.date))
-                    const intervals = this.intervals().map((_, i) => {
-                        const numSubIntervals = this.numHourIntervals
-                        const subIntevals = Array.from({ length: numSubIntervals }, (_, j) => {
-                            const minutes = 60 * i + 60 / numSubIntervals * j + startHour * 60
-                            const intervalTime = getTimestampIdintifier(toTimestamp(addMinutes(theDayTS.date, minutes)))
-                            return h('div', {
-                                class: {
-                                    'of-calendar-subinterval': true,
-                                    selected:
-                                        this.$data.selecting
-                                        && intervalTime >= this.$data.selectionStart
-                                        && intervalTime < this.$data.selectionEnd
-                                        && this.$data.selectionCategory == cat.category
-                                }
-                            })
-                        })
-                        return h('div', {
-                            class: "of-calendar-interval",
-                        },
-                            subIntevals)
-                    }
-                    )
-                    const es = this.dayEvents[cat.category] as CalendarEventPlacement[] || []
-                    const events = es.map(e => {
-                        const brk = e.event.end - e.event.start > this.overlapThresholdNumber
-                        const separator = !brk
-                            ? ' '
-                            : h('br')
-                        const formattedRange = formatRange(this.formatMgr, e.event, cat.date)
-                        const slot = this.$slots['event-content']
-                        const finalColor = this.$props.eventColor?.(e.event) ?? e.event.color
-                        const eventClass = this.$props.eventClass?.(e.event) ?? {}
-                        return h('div',
-                            {
-                                class: {
-                                    ...eventClass,
-                                    'of-calendar-event': true,
-                                    conflict: e.conflict,
-                                    'two-lines': brk,
-                                },
-                                style: {
-                                    'background-color': finalColor,
-                                    'z-index': e.zIndex,
-                                    left: e.left * 100 + '%',
-                                    width: e.width * 100 + '%',
-                                    top: e.top + '%',
-                                    height: e.height + '%',
-                                },
-                                onclick: (event: any) => {
-                                    this.$emit('click:event', event, { ...e.event, color: finalColor })
-                                },
-                                onmousedown: (event: any) => {
-                                    event.stopPropagation()
-                                },
-                                onmouseenter: (event: any) => {
-                                    if (!this.selecting) {
-                                        this.$emit('enter:event', event, e)
-                                    }
-                                },
-                                onmouseleave: (event: any) => {
-                                    if (!this.selecting) {
-                                        this.$emit('leave:event', event, e)
-                                    }
-                                },
-                            },
-                            slot
-                                ? slot({
-                                    event: e.event,
-                                    brk,
-                                    formattedRange
-                                })
-                                : [
-                                    h('strong', e.event.name),
-                                    separator,
-                                    formattedRange,
-                                ]
-                        )
-                    })
-                    return h(
-                        'div',
-                        {
-                            class: 'of-calendar-day',
-                            onmousemove: (e: MouseEvent | TouchEvent) => {
-                                const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
-                                this.$emit('mousemove:time', e, ts)
-                                if (this.selecting) {
-                                    const [startTs, endTs] = this.getEventIntervalRange(ts)
-                                    if (startTs < this.selectionStart) {
-                                        this.selecting = "start"
-                                        this.selectionStart = startTs
-                                    } else if (endTs > this.selectionEnd) {
-                                        this.selecting = "end"
-                                        this.selectionEnd = endTs
-                                    } else if (this.selecting == "start") {
-                                        this.selectionStart = startTs
-                                    } else if (this.selecting == "end") {
-                                        this.selectionEnd = endTs
-                                    }
-                                    this.$emit('selection:change', this.selectionStart, this.selectionEnd, this.selectionCategory)
-                                }
-                            },
-
-                            onmousedown: (e: MouseEvent | TouchEvent) => {
-                                const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
-                                const [startTsId, endTsId] = this.getEventIntervalRange(ts)
-                                this.$emit('mousedown:time', e, ts)
-                                const leftPressed = (e as MouseEvent).buttons === 1
-                                if (this.selectable && leftPressed) {
-                                    this.$data.selecting = "end"
-                                    this.$data.selectionStart = startTsId
-                                    this.$data.selectionEnd = endTsId
-                                    this.$data.selectionCategory = cat.category
-                                    this.$emit('selection:change', this.selectionStart, this.selectionEnd, this.selectionCategory)
-                                }
-                            },
-                            onmouseup: (e: MouseEvent | TouchEvent) => {
-                                const ts = this.getEventTimestamp(e, toTimestamp(cat.date))
-                                this.$emit('mouseup:time', e, ts)
-                                const leftReleased = ((e as MouseEvent).buttons & 1) === 0
-                                if (this.selecting && leftReleased) {
-                                    this.$emit('selection:end', this.selectionStart, this.selectionEnd, this.selectionCategory)
-                                    this.selecting = false
-                                }
-                            },
-                        },
-                        [
-                            ...intervals,
-                            ...events,
-                        ])
-                })
+            const days = (this.$props.categoriesList || []).map(this.dayRowCell)
             return h('div', {
                 class: 'of-calendar-day-row',
-                onmouseleave: (_: MouseEvent | TouchEvent) => {
+                onMouseleave: (_: MouseEvent | TouchEvent) => {
                     if (this.selecting) {
                         this.$emit('selection:cancel')
                         this.selecting = false

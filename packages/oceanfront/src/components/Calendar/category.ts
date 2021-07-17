@@ -1,6 +1,6 @@
 import { defineComponent, h } from "vue"
-import calendarProps from './props'
 import DayCalendar from './day'
+import calendarProps from './props'
 
 export default defineComponent({
     mixins: [DayCalendar],
