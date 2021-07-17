@@ -135,6 +135,12 @@ export {
   registerTextFormatter,
   useFormats,
 } from './lib/formats'
+
+export {
+  addDays, addMonths
+} from './lib/datetime'
+
+
 export { registerItemList, useItems } from './lib/items'
 export { setMobileBreakpoint, useLayout } from './lib/layout'
 export { useLocale } from './lib/locale'
