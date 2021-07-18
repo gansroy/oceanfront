@@ -13,13 +13,8 @@ export default defineComponent({
     },
     methods: {
         getVisibleRange(): Timestamp[] {
-            const weekDay = this.$props.day.getDay()
-            let weekStart = parseInt(this.$props.weekStart as string)
-            if (weekStart < 0) weekStart = 0
-            if (weekStart > 6) weekStart = 6
-            if (isNaN(weekStart)) weekStart = 0
-            const offset = weekStart - weekDay
-            const firstDay = addDays(this.$props.day, offset)
+            const weekDay = this.$props.day.getDay() || 7
+            const firstDay = addDays(this.$props.day, 1 - weekDay)
             const lastDay = addDays(firstDay, 7)
             const firstTS = { ...toTimestamp(firstDay), hours: 0, minutes: 0 }
             const lastTS = { ...toTimestamp(lastDay), hours: 0, minutes: 0 }
