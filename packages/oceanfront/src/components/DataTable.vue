@@ -36,15 +36,14 @@
             <of-toggle
               type="toggle"
               :record="rowsRecord"
-              :name="row.id"
+              :name="row.id.value"
               variant="basic"
             />
           </slot>
           <slot name="first-cell" :record="rowsRecord" :item="row" />
         </td>
         <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
-          <!-- of-format :type="col.format" :value="row[col.value]" / -->
-          {{ row[col.value] }}
+          <of-data-type :value="row[col.value]"></of-data-type>
         </td>
       </tr>
     </tbody>
@@ -71,8 +70,6 @@ import {
   ComputedRef,
 } from 'vue'
 import { DataTableHeader } from '../lib/datatable'
-import { useFormats } from '../lib/formats'
-// import OfFormat from './Format'
 
 enum RowsSelectorValues {
   Page = 'page',
@@ -99,14 +96,12 @@ export default defineComponent({
     'rows-selected': null,
   },
   setup(props, _ctx: SetupContext) {
-    const fmtMgr = useFormats()
     const columns = computed(() => {
       const cols: any[] = []
       for (const hdr of props.headers as DataTableHeader[]) {
-        const format = fmtMgr.getTextFormatter(hdr.format)
-        const align = hdr.align || (format && format.align)
+        const align = hdr.align
         const cls = ['of--align-' + (align || 'start'), hdr.class]
-        cols.push(Object.assign({}, hdr, { format, align, class: cls }))
+        cols.push(Object.assign({}, hdr, { align, class: cls }))
       }
       return cols
     })
@@ -158,7 +153,7 @@ export default defineComponent({
       let ids: any = { all: false }
       if (rowsSelector.value) {
         for (const row of rows.value) {
-          ids[row.id] = false
+          ids[row.id.value] = false
         }
       }
       return makeRecord(ids)
@@ -190,7 +185,7 @@ export default defineComponent({
       }
 
       for (const row of rows.value) {
-        rowsRecord.value.value[row.id] = checked
+        rowsRecord.value.value[row.id.value] = checked
       }
     }
     const headerRowsSelectorChecked = ref(false)
