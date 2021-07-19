@@ -4,6 +4,7 @@ import { extendDefaultConfig } from './lib/config'
 import { OfConfig } from './components/Config'
 import OfDataTable from './components/DataTable.vue'
 import OfDialog from './components/Dialog.vue'
+import OfDateTimePopup from './components/DateTimePopup.vue'
 import { OfIcon } from './components/Icon'
 import { OfField } from './components/Field'
 import { OfFormat } from './components/Format'
@@ -57,6 +58,7 @@ export const components: Record<string, Component> = {
   OfDatetimeField,
   OfDateField,
   OfTimeField,
+  OfDateTimePopup,
   OfDialog,
   OfField,
   OfIcon,
