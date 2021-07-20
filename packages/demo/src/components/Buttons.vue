@@ -116,7 +116,7 @@ export default defineComponent({
 
     const testItems = [
       { special: 'header', text: 'Test select items1' },
-      { text: 'Option 1', value: selectMenu },
+      { text: 'Option 1', value: selectMenu, attrs: { 'data-test': 'my-btn' } },
       { special: 'divider' },
       { text: 'Option 2', value: 'o2' },
     ]

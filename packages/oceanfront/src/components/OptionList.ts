@@ -29,6 +29,7 @@ export const OfOptionList = defineComponent({
                 onClick: () => {
                   props.onClick(item.value)
                 },
+                attrs: item.attrs
               },
               () => item.text
             )
