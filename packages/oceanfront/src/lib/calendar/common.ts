@@ -40,7 +40,7 @@ export interface CalendarEvent {
     /** True if the event takes all day */
     readonly allDay?: boolean
     /** Event category */
-    readonly category?: string
+    readonly category?: string | string[]
     readonly [_: string]: any
 
 }
@@ -69,7 +69,7 @@ export interface InternalEvent {
     /** Event color */
     readonly color?: string
     /** Event category */
-    readonly category?: string
+    readonly category?: string | string[]
 
     uniq: string;
 
