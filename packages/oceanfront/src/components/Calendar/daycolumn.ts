@@ -16,16 +16,16 @@ import {
 import {
     CalendarAlldayEventPlacement,
     CalendarEvent,
-    CalendarEventPlacement,
-    InternalEvent,
+    CalendarEventPlacement, categoryItem, InternalEvent,
     layoutFunc,
     parseEvent,
-    Timestamp
+    Timestamp,
+    uniqEvent
 } from '../../lib/calendar/common'
 import ColumnLayout from '../../lib/calendar/layout/columns'
 import StackLayout from '../../lib/calendar/layout/stack'
 import Base from './base'
-import calendarProps, { categoryItem } from './props'
+import calendarProps from './props'
 
 
 function formatRange(mgr: FormatState, e: InternalEvent, withinDate: Date) {
@@ -104,7 +104,9 @@ export default defineComponent({
                 const evs = eventsStartingAtDay(dayEvents, day, rangeStart)
                 const layedOut = layoutAllday(evs, visRange, busyInfo)
                 if (this.$props.type == 'category') busyInfo = { busyColumns: [], currentColumn: 0 }
-                allDayEvents[cat.category] = layedOut
+                allDayEvents[cat.category] = layedOut.map(p => {
+                    return { ...p, event: { ...p.event, uniq: uniqEvent(p.event, cat) } }
+                })
             }
             return allDayEvents
         },
@@ -115,7 +117,9 @@ export default defineComponent({
                 const threshold = this.overlapThresholdNumber
                 const forCategory = this.ignoreCategories ? undefined : cat.category
                 const groups = getGroups(this.parsedEvents, day, false, forCategory, this.layoutFunc, threshold, this.hoursInterval)
-                dayEvents[cat.category] = groups.map(g => g.placements).flat(1)
+                dayEvents[cat.category] = groups.map(g => g.placements.map(p => {
+                    return { ...p, event: { ...p.event, uniq: uniqEvent(p.event, cat) } }
+                })).flat(1)
             }
             return dayEvents
         },
@@ -207,10 +211,10 @@ export default defineComponent({
                             this.$emit('click:event', event, { ...e.event, color: finalColor })
                         },
                         onMouseenter: (event: any) => {
-                            this.$emit('enter:event', event, e)
+                            this.$emit('enter:event', event, e.event)
                         },
                         onMouseleave: (event: any) => {
-                            this.$emit('leave:event', event, e)
+                            this.$emit('leave:event', event, e.event)
                         },
                     },
                     slot ? slot({ event: e.event }) : h('strong', e.event.name),
@@ -232,7 +236,8 @@ export default defineComponent({
             const { height, columns } = !this.$props.categoriesList
                 ? { height: 0, columns: [] as any[] }
                 : this.$props.categoriesList.reduce(this.allDayRowCell, { height: 0, columns: [] as any[] })
-            return h('div', { class: 'of-calendar-allday-row', style: { height: '' + (height * eventHeight + eventHeight) + 'px' } }, [
+            const heightAttr = '' + (height * eventHeight + eventHeight) + 'px';
+            return h('div', { class: 'of-calendar-allday-row', style: { height: heightAttr, 'min-height': heightAttr } }, [
                 h('div', { class: 'of-calendar-gutter' }),
                 columns,
             ])
@@ -328,13 +333,14 @@ export default defineComponent({
                             width: e.width * 100 + '%',
                             top: e.top + '%',
                             height: e.height + '%',
+                            'min-height': e.height + '%',
                         },
                         ...this.dayRowEventHandlers(finalEvent)
                     },
                     this.renderSlot(
                         'event-content',
-                        { event: e.event, brk, formattedRange },
-                        () => [h('strong', e.event.name), separator, formattedRange,]
+                        { event: finalEvent, brk, formattedRange },
+                        () => [h('strong', finalEvent.name), separator, formattedRange,]
                     )
                 )
 

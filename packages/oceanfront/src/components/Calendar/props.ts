@@ -1,5 +1,5 @@
 import { PropType } from "vue"
-import { CalendarEvent, InternalEvent, Timestamp } from "../../lib/calendar/common"
+import { CalendarEvent, categoryItem, InternalEvent, Timestamp } from "../../lib/calendar/common"
 
 const validTypes = [
     'day', 'month', 'week', 'category', 'ndays', 'month'
@@ -7,11 +7,6 @@ const validTypes = [
 
 function validateType(type: string): boolean {
     return validTypes.indexOf(type) >= 0
-}
-
-export type categoryItem = {
-    category: string,
-    date: Date
 }
 
 

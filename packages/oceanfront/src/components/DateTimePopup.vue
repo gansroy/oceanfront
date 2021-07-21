@@ -8,7 +8,7 @@
     :onVnodeMounted="mounted"
     :onVnodeUnmounted="unmounted"
   >
-    <div class="of-date-picker-title" v-if="withDate">
+    <div class="of-date-picker-title" v-if="withDate && !withoutTitle">
       {{ title }}
     </div>
     <div class="of-datepicker-selectors" @selectstart.prevent="">
@@ -142,6 +142,7 @@ export default defineComponent({
     monthStart: Object,
     isSelected: Function,
     accept: Function,
+    withoutTitle: Boolean,
   },
   setup(props, _ctx: SetupContext) {
     let theNode: VNode | null

@@ -1,5 +1,5 @@
 import { getDayIdentifier, getEventsOfDay, toTimestamp } from "src/lib/calendar";
-import { CalendarEvent, InternalEvent, parseEvent } from "src/lib/calendar/common";
+import { CalendarEvent, InternalEvent, parseEvent, uniqEvent } from "src/lib/calendar/common";
 import { addDays, firstMonday, isoWeekNumber, monthGrid, MonthGridCell, MonthGridData } from "src/lib/datetime";
 import { useFormats } from "src/lib/formats";
 import { defineComponent, h } from "vue";
@@ -43,6 +43,7 @@ export default defineComponent({
     methods: {
         dayEvents(day: Date): InternalEvent[] {
             return getEventsOfDay(this.parsedEvents, getDayIdentifier(toTimestamp(day)), "ignore")
+                .map(e => uniqEvent(e, { category: "", date: day }))
         },
         header() {
             const slot = this.$slots['header']
@@ -69,7 +70,8 @@ export default defineComponent({
                 }
             }, slot ? slot(count) : `${count} more`)
         },
-        renderRowDayEvent(e: InternalEvent) {
+        renderRowDayEvent(e: InternalEvent, idx: number) {
+            const top = this.eventHeightNumber * idx
             const finalColor = this.$props.eventColor?.(e) ?? e.color
             const eventClass = this.$props.eventClass?.(e) ?? {}
             return h('div',
@@ -77,14 +79,15 @@ export default defineComponent({
                     class: { ...eventClass, 'of-calendar-event': true },
                     style: {
                         'background-color': finalColor,
+                        top: `${top}px`
                     },
                     onClick: (event: any) => {
                         this.$emit('click:event', event, { ...e, color: finalColor })
                     },
-                    onMouseEnter: (event: any) => {
+                    onMouseenter: (event: any) => {
                         this.$emit('enter:event', event, e)
                     },
-                    onMouseLeave: (event: any) => {
+                    onMouseleave: (event: any) => {
                         this.$emit('leave:event', event, e)
                     },
                 },
