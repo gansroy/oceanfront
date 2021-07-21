@@ -110,10 +110,15 @@ export const eventsStartingAtDay = (events: InternalEvent[], day: DayIdentifier,
     })
 }
 
+const categoryMatch = (cat: string, categories: string | string[] | undefined): boolean => {
+    if (Array.isArray(categories)) return !!~categories.indexOf(cat)
+    return cat === categories
+}
+
 export const getEventsOfDay = (events: InternalEvent[], day: DayIdentifier, allDay: boolean | "ignore", category?: string, sorted?: boolean): InternalEvent[] => {
     const filtered = events.filter(
         e => (allDay === "ignore" || (e.allDay || false) === allDay)
-            && (category === undefined || category === e.category)
+            && (category === undefined || categoryMatch(category, e.category))
             && isEventInRange(e, day * OFFSET_TIMESTAMP, (day + 1) * OFFSET_TIMESTAMP)
     )
     if (!sorted) return filtered

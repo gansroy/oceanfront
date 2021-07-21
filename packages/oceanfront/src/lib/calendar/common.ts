@@ -1,11 +1,16 @@
 import { DateTimeFormatter } from "src/formats/DateTime"
 import { FormatState } from "src/lib/formats"
 import { getDayIdentifier, getTimeIdentifier, getTimestampIdintifier, toTimestamp } from "."
-import { allDayEnd, addMinutes } from "../datetime"
+import { addMinutes, allDayEnd } from "../datetime"
 
 export type DayIdentifier = number
 export type TimeIdentifier = number
 export type TimestampIdentifier = number
+
+export type categoryItem = {
+    category: string,
+    date: Date
+}
 
 export interface Timestamp {
     readonly date: Date
@@ -35,7 +40,7 @@ export interface CalendarEvent {
     /** True if the event takes all day */
     readonly allDay?: boolean
     /** Event category */
-    readonly category?: string
+    readonly category?: string | string[]
     readonly [_: string]: any
 
 }
@@ -64,7 +69,9 @@ export interface InternalEvent {
     /** Event color */
     readonly color?: string
     /** Event category */
-    readonly category?: string
+    readonly category?: string | string[]
+
+    uniq: string;
 
     readonly [_: string]: any
 }
@@ -134,6 +141,7 @@ export const parseEvent = (e: CalendarEvent, f: FormatState): InternalEvent | un
     const startTS = toTimestamp(startDate)
     const endTS = toTimestamp(endDate)
     return {
+        uniq: "",
         name: e.name,
         color: e.color,
         allDay: allDay,
@@ -148,4 +156,8 @@ export const parseEvent = (e: CalendarEvent, f: FormatState): InternalEvent | un
         category: e.category,
         orig: e,
     }
+}
+
+export const uniqEvent = (e: InternalEvent, cat: categoryItem): InternalEvent => {
+    return { ...e, uniq: "" + getDayIdentifier(toTimestamp(cat.date)) + "|" + cat.category }
 }

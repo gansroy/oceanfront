@@ -149,6 +149,7 @@ div.of-date-picker-cur-year {
 
 .of-calendar-allday-row .of-calendar-event {
     height: var(--of-event-height, 20px);
+    min-height: var(--of-event-height, 20px);
     z-index: 1;
 }
 
@@ -173,11 +174,12 @@ div.of-date-picker-cur-year {
     }
     & .of-calendar-event {
         height: var(--of-event-height, 20px);
+        width: 100%;
         z-index: 1;
-        position:relative;
     }
     & .events {
         height: var(--of-month-day-heigth, auto);
+        position: relative;
     }
 }
 
