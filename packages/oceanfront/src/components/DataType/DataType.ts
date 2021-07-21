@@ -7,10 +7,10 @@ import Link from "./link"
 export default defineComponent({
   name: 'OfDataType',
   props: { 
-    value: { type: [Object, String, Number] as PropType<DataTypeValue>, required: true } ,
+    value: { type: [String, Boolean, Number, Array, Object] as PropType<DataTypeValue>, default: null } ,
   },
   render() {
-    if(typeof(this.$props.value) === 'object') {
+    if(this.$props.value && typeof(this.$props.value) === 'object') {
       switch (this.$props.value.format) {
         case 'currency':
           return h(Currency, this.$props, this.$slots)
