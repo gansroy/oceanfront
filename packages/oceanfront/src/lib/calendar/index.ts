@@ -9,7 +9,7 @@ const OFFSET_TIMESTAMP = 10000
 const OFFSET_YEAR = 10000
 const OFFSET_MONTH = 100
 export const MINUTES_IN_DAY = 60 * 24
-const MINUTES_IN_HOUR = 60
+export const MINUTES_IN_HOUR = 60
 
 export function toTimestamp(date: Date): Timestamp {
     return {

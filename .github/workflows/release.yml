@@ -1,14 +1,17 @@
-name: Release
+name: Ping app-js
 
 on:
   push:
     branches:
-      - auto-publish
+      - main
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: 
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout sources
@@ -33,12 +36,10 @@ jobs:
 
       - name: Run unit tests
         run: yarn run test
-      
-      - name: Release
-        working-directory: ./packages/oceanfront
-        run: yarn publish --patch
 
-      - name: Status
-        run: git status
-
-
+      - name: Ping app-js
+        run: |
+          curl -X POST https://api.github.com/repos/1CRM/app-js/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.APPJS_PING_TOKEN }} \
+          --data '{"event_type": "update_oceanfront"}'
