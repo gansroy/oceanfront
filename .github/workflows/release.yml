@@ -26,7 +26,7 @@ jobs:
       - run: cat /home/runner/work/_temp/.npmrc | grep -v false > .npmrc
       - run: echo always-auth=true >> .npmrc
       - run: mv .npmrc /home/runner/work/_temp/.npmrc
-      - run: yarn publish packages/oceanfront
+      - run: npm publish packages/oceanfront
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
