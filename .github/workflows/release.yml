@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - auto-publish
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+          registry-url: "https://npm.pkg.github.com"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run ESLint
+        run: yarn run lint
+
+      - name: Build
+        env:
+          OF_DEMO_ROOT_PATH: "/oceanfront/"
+        run: yarn run build
+
+      - name: Run unit tests
+        run: yarn run test
+      
+      - name: Release
+        run: yarn publish --patch
+
+      - name: Status
+        run: git status
+
+
