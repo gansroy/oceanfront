@@ -41,7 +41,6 @@ export function withZeroTime(ts: Timestamp): Timestamp {
 }
 
 export function compareTimestamps(a: Timestamp, b: Timestamp): number {
-    console.log(1);
     let delta = a.year - b.year
     if (delta != 0) return Math.sign(delta)
     delta = a.month - b.month
