@@ -23,5 +23,11 @@ jobs:
           node-version: "12.x"
           registry-url: "https://npm.pkg.github.com"
 
-      - run: cat /home/runner/work/_temp/.npmrc
+      - run: cat /home/runner/work/_temp/.npmrc | grep -v false > .npmrc
+      - run: echo always-auth=true >> .npmrc
+      - run: mv .npmrc /home/runner/work/_temp/.npmrc
+      - run: yarn publish packages/oceanfront
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
