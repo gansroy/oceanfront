@@ -35,6 +35,7 @@ jobs:
         run: yarn run test
       
       - name: Release
+        working-directory: ./packages/oceanfront
         run: yarn publish --patch
 
       - name: Status
