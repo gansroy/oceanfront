@@ -20,6 +20,7 @@ export const OfListItem = defineComponent({
     expand: { type: [Boolean, String], default: null },
     href: { type: String, default: null },
     to: [String, Object] as PropType<LinkTo>,
+    attrs: { type: Object }
   },
   emits: {
     click: null,
@@ -119,6 +120,7 @@ export const OfListItem = defineComponent({
                   navGroup?.navigate(evt)
                 },
                 ...handlers,
+                ...props.attrs
               },
               h('div', { class: 'of-list-item-inner' }, content())
             )
