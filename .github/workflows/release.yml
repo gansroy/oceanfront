@@ -23,5 +23,5 @@ jobs:
           node-version: "12.x"
           registry-url: "https://npm.pkg.github.com"
 
-      - run: ls ~
+      - run: cat /home/runner/work/_temp/.npmrc
 
