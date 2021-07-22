@@ -37,9 +37,6 @@ jobs:
       - name: Run unit tests
         run: yarn run test
 
-      - name: Copy .npmrc
-        run: cp  .npmrc ./packages/oceanfront
-
       - name: Release
         working-directory: ./packages/oceanfront
         run: yarn publish --patch
