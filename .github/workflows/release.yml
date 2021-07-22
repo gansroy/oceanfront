@@ -37,13 +37,11 @@ jobs:
       - name: Run unit tests
         run: yarn run test
 
-      - name: Release
-        working-directory: ./packages/oceanfront
-        run: yarn publish --patch
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Status
-        run: git status
+      - name: Ping app-js
+        run: |
+          curl -X POST https://api.github.com/repos/1CRM/app-js/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.APPJS_PING_TOKEN }} \
+          --data '{"event_type": "update_oceanfront" }}'
 
 
