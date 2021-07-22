@@ -37,6 +37,8 @@ jobs:
       - name: Release
         working-directory: ./packages/oceanfront
         run: yarn publish --patch
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Status
         run: git status
