@@ -64,7 +64,7 @@ export default defineComponent({
       closeMenu()
     }
     const toggleMenu = (_evt?: MouseEvent) => {
-      menuOuter.value = _evt?.target
+      menuOuter.value = (_evt?.target as Element).parentNode
       menuShown.value = !menuShown.value
     }
     const closeMenu = () => {
