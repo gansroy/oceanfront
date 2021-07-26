@@ -535,9 +535,11 @@ export default defineComponent({
         const tab: Tab | undefined = getTab(key)
 
         if (tab && tab.subMenuItems) {
-          subMenuTabsList.value = tab.subMenuItems
-          subMenuOuter.value = _evt?.target
-          subMenuOpened.value = true
+          subMenuTimerId.value = setTimeout(() => {
+            subMenuTabsList.value = tab.subMenuItems
+              subMenuOuter.value = _evt?.target
+              subMenuOpened.value = true
+          }, subMenuOpened.value ? 0 : 500)
         } else {
           closeSubMenu()
         }
@@ -555,6 +557,7 @@ export default defineComponent({
     const subMenuLeave = () => {
       if (!showSubMenu.value) return false
 
+      subMenuClearTimeout()
       subMenuTimerId.value = setTimeout(() => {
         closeSubMenu()
       }, 500)
