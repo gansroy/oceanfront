@@ -56,6 +56,7 @@
             <of-date-field
               name="six"
               label="Date picker"
+              required
               label-position="field"
               :record="testRecord"
             />
@@ -110,7 +111,7 @@ const testRecord = makeRecord({
   two: 'text',
   three: true,
   four: 25,
-  five: '2021-02-15 12:00:00',
+  five: '',
   six: '2021-02-15',
   seven: '12:00:00',
 })

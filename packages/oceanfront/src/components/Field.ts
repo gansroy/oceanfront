@@ -82,8 +82,8 @@ const makeDragIn = (spec: FieldDragIn, flag: Ref<boolean>) => {
         if (evt.dataTransfer) {
           evt.dataTransfer.dropEffect =
             spec.dropEffect === 'none' ||
-            spec.dropEffect === 'link' ||
-            spec.dropEffect === 'move'
+              spec.dropEffect === 'link' ||
+              spec.dropEffect === 'move'
               ? spec.dropEffect
               : 'copy'
         }
@@ -156,8 +156,8 @@ export const OfField = defineComponent({
         (fmt && typeof fmt === 'string'
           ? fmt
           : typeof fmt === 'object'
-          ? (fmt as any).fieldType || (fmt as any).type
-          : undefined)
+            ? (fmt as any).fieldType || (fmt as any).type
+            : undefined)
       )
     })
     const dragOver = ref(false)
@@ -282,7 +282,7 @@ export const OfField = defineComponent({
         const label = ctx.slots.label
           ? ctx.slots.label()
           : labelText
-          ? h(
+            ? h(
               'label',
               {
                 class: 'of-field-label',
@@ -290,7 +290,7 @@ export const OfField = defineComponent({
               },
               [labelText]
             )
-          : undefined
+            : undefined
         const cls = [
           'of-field',
           {

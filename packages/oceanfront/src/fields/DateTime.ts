@@ -40,6 +40,7 @@ export const renderDateTimePopup = (opts: RenderOpts): any => {
 const fieldSetup = (type: InputType) => (props: FieldProps, ctx: FieldContext) => {
     const withTime = type == 'datetime' || type == 'time'
     const withDate = type == 'datetime' || type == 'date'
+    const withClear = !ctx.required
     const formatMgr = useFormats()
     const formatter = computed(
         () => {
@@ -100,6 +101,10 @@ const fieldSetup = (type: InputType) => (props: FieldProps, ctx: FieldContext) =
                 currentDate.value = loaded
                 monthStart.value = loaded
                 stateValue.value = val
+            } else {
+                currentDate.value = new Date()
+                monthStart.value = new Date()
+                stateValue.value = ""
             }
         },
         {
@@ -131,8 +136,9 @@ const fieldSetup = (type: InputType) => (props: FieldProps, ctx: FieldContext) =
 
     return fieldRender({
         content: () => {
-            const val = formatter.value?.format(stateValue.value)
-            const value = val?.textValue
+            const value = stateValue.value ?
+                formatter.value?.format(stateValue.value)?.textValue
+                : ""
             return [
                 h(
                     'div',
@@ -166,9 +172,18 @@ const fieldSetup = (type: InputType) => (props: FieldProps, ctx: FieldContext) =
                     name: 'date',
                     size: 'input',
                 }) : null,
-                withTime ? h(OfIcon, {
+                withTime && !withDate ? h(OfIcon, {
                     name: 'time',
                     size: 'input',
+                }) : null,
+                withClear ? h(OfIcon, {
+                    name: 'circle-cross',
+                    size: 'input',
+                    onClick: (e: MouseEvent | TouchEvent) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        ctx.onUpdate?.("");
+                    }
                 }) : null
             ]
         }
