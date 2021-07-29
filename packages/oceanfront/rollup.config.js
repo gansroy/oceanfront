@@ -83,6 +83,7 @@ function pluginConfig(compact, extractCss) {
     }),
     commonjs(),
     replace({
+      preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(node_env),
       __DEV__: JSON.stringify(node_env === 'development'),
       __VUE_OPTIONS_API__: JSON.stringify(true),

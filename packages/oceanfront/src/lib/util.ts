@@ -78,10 +78,8 @@ export function extendReactive<T extends object, U extends object>(
       }
       return Reflect.has(target, key)
     },
-    ownKeys(target: T): (string | number | symbol)[] {
-      const keys: Set<string | number | symbol> = new Set(
-        Reflect.ownKeys(target)
-      )
+    ownKeys(target: T): (string | symbol)[] {
+      const keys: Set<string | symbol> = new Set(Reflect.ownKeys(target))
       for (const upd of updates) {
         Reflect.ownKeys(upd).forEach((k) => keys.add(k))
       }
@@ -116,7 +114,7 @@ export function extractRefs<T extends object, K extends keyof T>(
       ret[k] = toRef(props, k)
     }
   }
-  return (ret as unknown) as ToRefs<T[K]>
+  return ret as unknown as ToRefs<T[K]>
 }
 
 export function restrictProps<T extends object, K extends keyof T>(
@@ -142,7 +140,7 @@ export function restrictProps<T extends object, K extends keyof T>(
       if (ifDefined && (target as any)[key] === undefined) result = false
       return result
     },
-    ownKeys(target: T): (string | number | symbol)[] {
+    ownKeys(target: T): (string | symbol)[] {
       let result = Reflect.ownKeys(target).filter(
         (k) => !limitProps || props.has(k)
       )
@@ -174,7 +172,7 @@ export function definedProps<T extends object, K extends keyof T>(
     has(target: T, key: string): boolean {
       return hasOwn(target, key) && target[key] !== undefined
     },
-    ownKeys(target: T): (string | number | symbol)[] {
+    ownKeys(target: T): (string | symbol)[] {
       return Reflect.ownKeys(target).filter(
         (k) => (target as any)[k] !== undefined
       )
@@ -200,7 +198,7 @@ const readonlyUnrefHandlers = {
   has(target: Ref, key: string | number | symbol): boolean {
     return Reflect.has(target.value, key)
   },
-  ownKeys(target: Ref): (string | number | symbol)[] {
+  ownKeys(target: Ref): (string | symbol)[] {
     return Reflect.ownKeys(target.value)
   },
   set(_target: Ref, _key: string, _value: any, _receiver: object): boolean {
@@ -218,7 +216,7 @@ const readonlyUnrefHandlers = {
 }
 
 export function readonlyUnref<T>(val: Ref<T>): T {
-  return (new Proxy(val, readonlyUnrefHandlers) as any) as T
+  return new Proxy(val, readonlyUnrefHandlers) as any as T
 }
 
 const readonlyUnrefsHandlers = {
