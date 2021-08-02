@@ -1,5 +1,5 @@
 <template>
-    <div class="badge" :class="stateClass"><slot></slot></div>
+    <div class="badge" :class="{[stateClass] : true, circular, icon}"><slot></slot></div>
 </template>
 
 <script lang="ts">
@@ -15,30 +15,18 @@ type Status =
 export default defineComponent({
     props: {
         status: String as PropType<Status>,
+        circular: Boolean,
+        icon: Boolean,
     },
     setup(props) {
         const stateClass = computed( () => "state-" + props.status);
+        const circular = computed( () => props.circular);
+        const icon = computed( () => props.icon);
         return {
-            stateClass
+            stateClass,
+            circular,
+            icon,
         }
     },
 })
 </script>
-
-
-<style>
-.badge {
-    display: inline-block; 
-    padding-left: 1ex;
-    padding-right: 1ex;
-    border: solid 1px;
-    border-color: var(--border-color-badge); 
-    color: var(--color-badge);
-    background: var(--bg-badge);
-    border-radius: 14px;
-    height: 28px;
-    margin-left: 0.25ex;
-    margin-right: 0.25ex;
-}
-
-</style>
