@@ -1,5 +1,5 @@
 <template>
-    <div class="badge" :class="{[stateClass] : true, circular, icon}"><slot></slot></div>
+    <div class="of-badge" :class="{[stateClass] : true, 'of--circular': circular, 'of--icon': icon}"><slot></slot></div>
 </template>
 
 <script lang="ts">

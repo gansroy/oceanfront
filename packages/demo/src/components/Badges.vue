@@ -12,8 +12,8 @@
     <br>
     <of-badge v-for="status in statusList" circular :status="status" :key="status"><of-icon name="print" />{{status}}</of-badge>
     <h2>Icon only</h2>
-    <of-badge icon :status="info"><of-icon name="print" /></of-badge>
-    <of-badge circular icon :status="info"><of-icon name="print" /></of-badge>
+    <of-badge icon status="info"><of-icon name="print" /></of-badge>
+    <of-badge circular icon status="info"><of-icon name="print" /></of-badge>
   </div>
 </template>
 

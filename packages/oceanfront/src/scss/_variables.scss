@@ -147,7 +147,7 @@ $border-color-menu-header: var(
   #{$base-color-menu-header}
 );
 $border-color-progress: var(--border-color-progress, #{$base-color-soft});
-$border-radius-badge: 4px;
+$border-radius-badge: 0.5em;
 $border-radius-button: var(--border-radius-button, 5px);
 $border-radius-input: var(--border-radius-input, 5px);
 $border-radius-menu-current: var(--border-radius-menu-current, 2px);
@@ -189,13 +189,13 @@ $font-size-tab: var(--font-size-tab, #{$font-size-input});
 $font-weight-badge: var(--font-weight-badge, bold);
 $font-weight-input: var(--font-weight-input, normal);
 $letter-spacing-input: var(--letter-spacing-input, 0);
-$line-height-badge: var(--line-height-badge, 1.2);
+$line-height-badge: var(--line-height-badge, 1);
 $line-height-input: var(--line-height-input, 1.125); // 18/16
 $line-height-form-label: var(--line-height-form-label, 1.7);
 $line-height-menu-option: var(--line-height-menu-option, 1.35);
 $opacity-input-disabled: var(--opacity-input-disabled, 0.85);
-$pad-h-badge: var(--pad-h-badge, 0.3em);
-$pad-v-badge: var(--pad-v-badge, 0.15em);
+$pad-h-badge: var(--pad-h-badge, 0.5em);
+$pad-v-badge: var(--pad-v-badge, 0.5em);
 $pad-h-compact-input: var(--pad-h-compact-input, 0.4em);
 $pad-h-input: var(--pad-h-input, 0.4em);
 $pad-v-compact-input: var(--pad-v-compact-input, 0.25em);
@@ -218,7 +218,7 @@ $text-shadow-disabled: var(
 );
 $text-shadow-label: var(--text-shadow-label, 0 1px 0 rgba(150, 150, 150, 0.1));
 $text-shadow-progress: var(--text-shadow-progress, 0 0 2px #fff);
-$vertical-align-badge: baseline;
+$vertical-align-badge: middle;
 $vertical-align-button: middle;
 $vertical-align-input: text-bottom; // NOTE: was middle in previous version
 $width-bullet: var(--width-bullet, 1.1em);
