@@ -63,6 +63,7 @@
           </of-list-group>
           <of-list-item to="/tabs">Tabs</of-list-item>
           <of-list-item to="/popups">Popups and Dialogs</of-list-item>
+          <of-list-item to="/badges">Badges</of-list-item>
         </of-nav-group>
       </of-sidebar>
       <main class="app-main">

@@ -23,6 +23,7 @@ import { OfTextField } from './components/TextField'
 import { OfToggle } from './components/Toggle'
 import { OfToggleField } from './components/ToggleField'
 import OfTabs from './components/Tabs.vue'
+import OfBadge from './components/Badge.vue'
 import OfCalendar from './components/Calendar/Calendar'
 import OfSpinner from './components/Spinner.vue'
 import OfPagination from './components/Pagination.vue'
@@ -80,7 +81,8 @@ export const components: Record<string, Component> = {
   OfSpinner,
   OfButton,
   OfColorField,
-  OfDataType
+  OfDataType,
+  OfBadge,
 }
 
 export const fieldTypes: Record<string, FieldTypeConstructor> = {
