@@ -1,5 +1,5 @@
 <template>
-    <div class="of-badge" :class="{[stateClass] : true, 'of--circular': circular, 'of--icon': icon}"><slot></slot></div>
+    <div class="of-badge" :class="badgeClass"><slot></slot></div>
 </template>
 
 <script lang="ts">
@@ -11,21 +11,36 @@ type Status =
     | "error" | "alert" | "warning" 
     | "danger" | "closed" | "dead" | "invert" ;
 
+type Size = "normal" | "small" | "large"
+
+const sizeClass = (size: Size | undefined) => {
+    switch(size) {
+        case "small": return {"of--small": true}
+        case "large": return {"of--large": true}
+        default: return {}
+    }
+}
 
 export default defineComponent({
     props: {
         status: String as PropType<Status>,
+        size: String as PropType<Size>,
         circular: Boolean,
         icon: Boolean,
+        compact: Boolean,
     },
     setup(props) {
-        const stateClass = computed( () => "state-" + props.status);
-        const circular = computed( () => props.circular);
-        const icon = computed( () => props.icon);
+        const badgeClass = computed( () => {
+            return {
+                ["state-" + props.status] : !!props.status,
+                'of--circular': props.circular, 
+                'of--icon': props.icon,
+                'of--compact': props.compact,
+                ...sizeClass(props.size)
+                }
+        })
         return {
-            stateClass,
-            circular,
-            icon,
+            badgeClass,
         }
     },
 })

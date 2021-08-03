@@ -8,6 +8,7 @@
   border-radius: $border-radius-badge;
   margin: 0 .25em .5em 0.25em;
   font-weight: $font-weight-badge;
+  font-size: $font-size-badge;
   min-width: 2ex;
   min-height: 2ex;
   line-height: $line-height-badge;
@@ -19,11 +20,23 @@
     margin: 0 .25em 0 0.25em;
     vertical-align: middle;
   }
+  &.of--compact {
+    padding: $pad-v-compact-badge $pad-h-badge;
+  }
   &.of--circular {
     border-radius: 500rem;
   }
-  &.of--icon .of-icon {
-    margin: auto;    
+  &.of--icon {
+    padding: $pad-v-badge $pad-v-badge;
+    & .of-icon {
+      margin: auto;    
+    }
   }
 }
 
+.of--small {
+  --font-size-badge: #{$font-size-badge-sm};
+}
+.of--large {
+  --font-size-badge: #{$font-size-badge-lg};
+}

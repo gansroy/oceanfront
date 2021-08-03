@@ -180,7 +180,9 @@ $color-field-focus-label: var(--of-color-field-focus-label);
 $color-label: var(--color-label, #{$base-color-label-text});
 $color-menu-option: var(--color-menu-option, #{$base-color-field-text});
 $font-family-input: var(--font-family-input, inherit);
-$font-size-badge: var(--font-size-badge, 0.75rem);
+$font-size-badge: var(--font-size-badge, 0.8rem);
+$font-size-badge-sm: var(--font-size-badge-sm, 0.55rem);
+$font-size-badge-lg: var(--font-size-badge-lg, 1.05rem);
 $font-size-input: var(--font-size-input, 1rem);
 $font-size-input-sm: var(--font-size-input-sm, 0.8125rem); // 13/16
 $font-size-input-lg: var(--font-size-input-lg, 1.125rem); // 18/16
@@ -196,6 +198,7 @@ $line-height-menu-option: var(--line-height-menu-option, 1.35);
 $opacity-input-disabled: var(--opacity-input-disabled, 0.85);
 $pad-h-badge: var(--pad-h-badge, 0.5em);
 $pad-v-badge: var(--pad-v-badge, 0.5em);
+$pad-v-compact-badge: var(--pad-v-compact-badge, 0.2em);
 $pad-h-compact-input: var(--pad-h-compact-input, 0.4em);
 $pad-h-input: var(--pad-h-input, 0.4em);
 $pad-v-compact-input: var(--pad-v-compact-input, 0.25em);
