@@ -22,6 +22,7 @@ const sizeClass = (size: Size | undefined) => {
 }
 
 export default defineComponent({
+    name: 'OfBadge',
     props: {
         status: String as PropType<Status>,
         size: String as PropType<Size>,
