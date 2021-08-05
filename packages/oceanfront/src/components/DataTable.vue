@@ -24,7 +24,12 @@
           </slot>
           <slot name="header-first-cell" />
         </th>
-        <th v-for="(col, idx) of columns" :class="col.class" :key="idx" :style="{ width: col.width }">
+        <th
+          v-for="(col, idx) of columns"
+          :class="col.class"
+          :key="idx"
+          :style="{ width: col.width }"
+        >
           {{ col.text }}
         </th>
       </tr>
@@ -36,7 +41,7 @@
             <of-toggle
               type="toggle"
               :record="rowsRecord"
-              :name="row.id.value"
+              :name="row.id"
               variant="basic"
             />
           </slot>
@@ -82,9 +87,9 @@ export default defineComponent({
   // components: { OfFormat },
   props: {
     footerItems: { type: Array, default: () => [] },
-    headers: ({ type: Array, default: () => [] } as any) as object &
+    headers: { type: Array, default: () => [] } as any as object &
       PropType<DataTableHeader[]>,
-    items: ({ type: Array, default: () => [] } as any) as object &
+    items: { type: Array, default: () => [] } as any as object &
       PropType<Record<string, any>>,
     itemsCount: [String, Number],
     itemsPerPage: [String, Number],
@@ -95,7 +100,7 @@ export default defineComponent({
   emits: {
     'rows-selected': null,
   },
-  setup(props, _ctx: SetupContext) {
+  setup(props, ctx: SetupContext) {
     const columns = computed(() => {
       const cols: any[] = []
       for (const hdr of props.headers as DataTableHeader[]) {
@@ -153,15 +158,15 @@ export default defineComponent({
       let ids: any = { all: false }
       if (rowsSelector.value) {
         for (const row of rows.value) {
-          ids[row.id.value] = false
+          ids[row.id] = false
         }
       }
       return makeRecord(ids)
     })
     watch(
-      () => rowsRecord,
-      (updatedRecord) => {
-        _ctx.emit('rows-selected', updatedRecord.value.value)
+      () => rowsRecord.value.value,
+      (val) => {
+        ctx.emit('rows-selected', val)
       },
       { deep: true }
     )
@@ -185,7 +190,7 @@ export default defineComponent({
       }
 
       for (const row of rows.value) {
-        rowsRecord.value.value[row.id.value] = checked
+        rowsRecord.value.value[row.id] = checked
       }
     }
     const headerRowsSelectorChecked = ref(false)
