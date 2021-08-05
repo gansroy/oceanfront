@@ -10,7 +10,7 @@ import {
 } from '../lib/fields'
 import { useItems } from '../lib/items'
 
-type ActiveItem = { text?: string; [key: string]: any }
+type ActiveItem = { text?: string;[key: string]: any }
 
 export const SelectField = defineFieldType({
   name: 'select',
@@ -165,7 +165,8 @@ export const SelectField = defineFieldType({
           evt.stopPropagation()
         } else if (
           formatItems.value.length &&
-          (/(^Key([A-Z]$))/.test(evt.code) || /(^Digit([0-9]$))/.test(evt.code))
+          (/(^Key([A-Z]$))/.test(evt.code) || /(^Digit([0-9]$))/.test(evt.code)) &&
+          (!evt.altKey && !evt.metaKey && !evt.ctrlKey)
         ) {
           searchText.value += evt.key
           for (let i = 0; i < formatItems.value.length; i++) {
@@ -232,9 +233,9 @@ export const SelectField = defineFieldType({
         content: () =>
           opened.value
             ? h(OfOptionList, {
-                items: formatItems.value,
-                onClick: setValue,
-              })
+              items: formatItems.value,
+              onClick: setValue,
+            })
             : undefined,
         visible: opened,
         onBlur: closePopup,
