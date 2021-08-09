@@ -27,6 +27,9 @@
   &:last-child > td {
     border-bottom: 1px solid #ddd;
   }
+  &.selected {
+    background-color: $base-color-hover;
+  }
 }
 
 .of-data-table > tfoot > tr {

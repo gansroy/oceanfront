@@ -35,7 +35,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(row, rowidx) of rows" :key="rowidx">
+      <tr v-for="(row, rowidx) of rows" :key="rowidx" :class="{ 'selected': rowsRecord.value[row.id] }">
         <td v-if="rowsSelector">
           <slot name="rows-selector" :record="rowsRecord" :item="row">
             <of-toggle
