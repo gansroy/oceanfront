@@ -3,41 +3,60 @@
   border-radius: 4px;
   border-spacing: 0;
   width: 100%;
-
+  
+  display: grid;
+  grid-template-columns: var(--of-table-columns);
+  
   .of-data-table-rows-selector {
     padding: 0;
     margin: 0;
     text-align: left;
-    width: 5%;
   }
 }
 
-.of-data-table > thead th {
+.of-data-table-header, .of-data-table-row, .of-data-table-footer {
+  display: contents;
+}
+
+.of-data-table > .of-data-table-header > div {
+  display: flex;
+  align-items: center;
   border-bottom: 2px solid #ddd;
   padding: 0.25rem 0.75rem;
+  font-weight: bold;
+  &.of-data-table-rows-selector {
+    padding: 0;
+    margin: 0;
+  }
 }
 
-.of-data-table > tbody > tr {
-  > td {
+.of-data-table > .of-data-table-row {
+  > div {
     padding: 0.25rem 0.75rem;
+    &.of-data-table-rows-selector {
+      padding: 0;
+      margin: 0;
+    }
   }
-  + tr > td {
+  + .of-data-table-row > div {
     border-top: 1px solid #ddd;
   }
-  &:last-child > td {
+  &:last-child > div {
     border-bottom: 1px solid #ddd;
   }
-  &.selected {
+  &.selected div {
     background-color: $base-color-hover;
   }
 }
 
-.of-data-table > tfoot > tr {
-  > td {
+.of-data-table > .of-data-table-footer {
+  > div {
     font-weight: bolder;
     padding: 0.25rem 0.75rem;
   }
-  &:first-child > td {
-    border-top: 3px double #ddd;
-  }
+}
+
+.of-data-table-row + .of-data-table-footer > div, 
+    .of-data-table-header + .of-data-table-footer > div {
+  border-top: 3px double #ddd;
 }
