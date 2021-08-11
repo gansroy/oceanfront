@@ -40,9 +40,11 @@
 }
 .of--align-start {
   text-align: start;
+  justify-content: flex-start;
 }
 .of--align-end {
   text-align: end;
+  justify-content: flex-end;
 }
 
 .of--cursor-default {
