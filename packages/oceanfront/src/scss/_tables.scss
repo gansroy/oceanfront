@@ -44,7 +44,7 @@
   &:last-child > div {
     border-bottom: 1px solid #ddd;
   }
-  &.selected div {
+  &.selected > div {
     background-color: $base-color-hover;
   }
 }
