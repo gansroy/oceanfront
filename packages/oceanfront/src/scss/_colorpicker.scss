@@ -8,10 +8,6 @@
   .color-picker {
     position: relative;
     box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
     background-color: white;
     padding: 10px;
@@ -72,7 +68,7 @@
         height: 100%;
         border-radius: 15px;
         background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMkAAAAdCAYAAAAAaUg8AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAKtJREFUeNrs09EKgjAUgOGzEFfv/7CVBceiLiJiLnf7fSAbDoUj/iWnyKgRcXxf9Wtt7Vvntf8854jLY3uN19qzf67nH/e2nmmdZ8xjg2x+sI533qf9g4wM/3GvLPumOHVMWf/4SiWWsUG6/6bG+/NWDgE0iQREAiIBkYBIQCQgEhAJiAQQCYgERAIiAZGASEAkIBJAJCASEAmIBEQCIgGRgEgAkYBIYNAqwAD5oWo3bpsiKwAAAABJRU5ErkJggg==);
-        background: -webkit-linear-gradient(
+        background: linear-gradient(
           left,
           rgb(255, 0, 0) 0%,
           rgb(255, 255, 0) 16.66%,
