@@ -19,6 +19,7 @@ export const ColorField = defineFieldType({
     const stateValue = ref()
     const hsl = ref()
     const rgb = ref()
+    const label = ref()
     const opened = ref(false)
     const editable = computed(() => ctx.mode === 'edit' && !ctx.locked)
     let defaultFieldId: string
@@ -36,6 +37,10 @@ export const ColorField = defineFieldType({
     const clickOpen = () => {
       opened.value = true
     }
+    const hexp = (val: number): string => {
+      const v = val.toString(16)
+      return v.length == 1 ? '0' + v : v
+    }
     watch(
       () => stateValue.value,
       (val) => {
@@ -45,6 +50,8 @@ export const ColorField = defineFieldType({
           l: Math.round(val.v * 100),
         }
         rgb.value = hsvToRgb(val.h, val.s, val.v)
+        label.value =
+          '#' + hexp(rgb.value.r) + hexp(rgb.value.g) + hexp(rgb.value.b)
       },
       { deep: true }
     )
@@ -109,34 +116,20 @@ export const ColorField = defineFieldType({
     }
 
     return fieldRender({
-      content: () => {
-        const value = stateValue.value
-        return [
-          h(
-            'div',
-            {
-              class: [
-                'of-field-color-picker',
-                'of-field-input-label',
-                'of--align-' + (props.align || 'start'),
-              ],
-              style: {
-                backgroundColor:
-                  'hsl(' +
-                  hsl.value.h +
-                  ', ' +
-                  hsl.value.s +
-                  '%, ' +
-                  hsl.value.l +
-                  '%)',
-              },
-              id: inputId.value,
-              tabindex: 0,
-            },
-            value
-          ),
-        ]
-      },
+      class: 'of-color-field',
+      content: () =>
+        h(
+          'div',
+          {
+            class: [
+              'of-field-input-label',
+              'of--align-' + (props.align || 'start'),
+            ],
+            id: inputId.value,
+            tabindex: 0,
+          },
+          [label.value]
+        ),
       click: clickOpen,
       cursor: editable.value ? 'pointer' : 'default',
       inputId,
@@ -145,6 +138,20 @@ export const ColorField = defineFieldType({
         visible: opened,
         onBlur: closePopup,
       },
+      prepend: () =>
+        h('div', {
+          class: 'of-color-swatch',
+          style: {
+            backgroundColor:
+              'hsl(' +
+              hsl.value.h +
+              ', ' +
+              hsl.value.s +
+              '%, ' +
+              hsl.value.l +
+              '%)',
+          },
+        }),
       value: stateValue,
       updated: computed(() => initialValue.value !== stateValue.value),
     })

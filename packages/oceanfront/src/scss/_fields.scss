@@ -596,3 +596,10 @@
     cursor: pointer;
   }
 }
+
+.of-color-swatch {
+  border: 1px solid $border-color-field;
+  border-radius: 2px;
+  width: 2.5em;
+  height: 1.1em;
+}
