@@ -61,7 +61,7 @@ export const OfOverlay = defineComponent({
     loading: Boolean,
     pad: { type: Boolean, default: true }, // FIXME change to string enum
     shade: { type: Boolean, default: true },
-    target: ({ type: [Element, String] } as any) as PropType<Element | string>,
+    target: { type: [Element, String] } as any as PropType<Element | string>,
     transition: String,
   },
   emits: ['blur'],
@@ -82,7 +82,7 @@ export const OfOverlay = defineComponent({
           }
         }
       },
-      onFocusOut(_evt: Event) {
+      onFocusout(_evt: Event) {
         requestAnimationFrame(() => {
           if (focused && !checkFocused(elt.value) && !inOverlay()) {
             focused = false

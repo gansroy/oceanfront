@@ -1,42 +1,34 @@
 <template>
-  <table class="of-data-table">
-    <colgroup>
-      <col v-if="rowsSelector" />
-      <col v-for="(col, idx) of columns" :key="idx" />
-    </colgroup>
-    <thead>
-      <tr>
-        <th v-if="rowsSelector" class="of-data-table-rows-selector">
+  <div class="of-data-table" :style="columnsStyle">
+      <div class="of-data-table-header">
+        <div v-if="rowsSelector" class="of-data-table-rows-selector">
           <slot name="header-rows-selector">
             <of-button
-              split
-              :items="selectRowsItems"
-              :on-click-menu-item="selectRows"
-              variant="text"
-            >
-              <of-toggle
-                type="toggle"
-                variant="basic"
-                :checked="headerRowsSelectorChecked"
-                @update:checked="onUpdateHeaderRowsSelector"
-              />
+                split
+                :items="selectRowsItems"
+                :on-click-menu-item="selectRows"
+                variant="text"
+              >
+                <of-toggle
+                  type="toggle"
+                  variant="basic"
+                  :checked="headerRowsSelectorChecked"
+                  @update:checked="onUpdateHeaderRowsSelector"
+                />
             </of-button>
           </slot>
           <slot name="header-first-cell" />
-        </th>
-        <th
-          v-for="(col, idx) of columns"
-          :class="col.class"
-          :key="idx"
-          :style="{ width: col.width }"
-        >
-          {{ col.text }}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(row, rowidx) of rows" :key="rowidx" :class="{ 'selected': rowsRecord.value[row.id] }">
-        <td v-if="rowsSelector">
+        </div>
+        <div
+            v-for="(col, idx) of columns"
+            :class="col.class"
+            :key="idx"
+          >
+            <span>{{ col.text }}</span>
+        </div>
+      </div>
+      <div class="of-data-table-row" v-for="(row, rowidx) of rows" :key="rowidx" :class="{ 'selected': rowsRecord.value[row.id] }">
+        <div v-if="rowsSelector">
           <slot name="rows-selector" :record="rowsRecord" :item="row">
             <of-toggle
               type="toggle"
@@ -46,21 +38,20 @@
             />
           </slot>
           <slot name="first-cell" :record="rowsRecord" :item="row" />
-        </td>
-        <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
+        </div>
+        <div v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
           <of-data-type :value="row[col.value]"></of-data-type>
-        </td>
-      </tr>
-    </tbody>
-    <tfoot v-if="footerRows.length">
-      <tr v-for="(row, rowidx) of footerRows" :key="rowidx">
-        <td v-if="rowsSelector">&nbsp;</td>
-        <td v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
+        </div>
+      </div>
+    <template v-if="footerRows.length">
+      <div class="of-data-table-footer" v-for="(row, rowidx) of footerRows" :key="rowidx">
+        <div :class="{first: rowidx == 0}" v-if="rowsSelector">&nbsp;</div>
+        <div v-for="(col, colidx) of columns" :class="[col.class, rowidx == 0 ? 'first' : undefined]" :key="colidx">
           <of-format :type="col.format" :value="row[col.value]" />
-        </td>
-      </tr>
-    </tfoot>
-  </table>
+        </div>
+      </div>
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
@@ -80,6 +71,20 @@ enum RowsSelectorValues {
   Page = 'page',
   All = 'all',
   DeselectAll = 'deselect-all',
+}
+
+
+const showSelector = (hasSelector: boolean, rows: any[]) : boolean => {
+      let issetId = false
+      if (
+        rows&&
+        rows.hasOwnProperty(0) &&
+        rows[0].hasOwnProperty('id')
+      ) {
+        issetId = true
+      }
+      return (hasSelector && issetId) ?? false
+
 }
 
 export default defineComponent({
@@ -127,6 +132,22 @@ export default defineComponent({
       if (props.itemsCount != null) return 0 // external navigation
       return Math.max(0, perPage.value * (page.value - 1))
     })
+    const columnsStyle = computed(() => {
+      const selectorWidth = showSelector(props.rowsSelector, rows.value) ? "min-content" : ""
+      const widths = props.headers?.map(h => {
+        if (!h.width) return "auto";
+        const w = h.width.toString()
+        if (w.endsWith("%") || w.match(/^[0-9]+(\.[0-9]*)?$/)) {
+          const widthNumber = parseFloat(w)
+          if (isNaN(widthNumber)) return "auto"
+          return "" + widthNumber + "fr"
+        }
+        return w
+      }).join(" ")
+      return {
+        "--of-table-columns": `${selectorWidth} ${widths}`,
+      }
+    })
     const rows = computed(() => {
       const result = []
       let count = perPage.value
@@ -143,17 +164,9 @@ export default defineComponent({
     const footerRows = computed(() => {
       return props.footerItems
     })
-    const rowsSelector = computed(() => {
-      let issetId = false
-      if (
-        rows.value &&
-        rows.value.hasOwnProperty(0) &&
-        rows.value[0].hasOwnProperty('id')
-      ) {
-        issetId = true
-      }
-      return (props.rowsSelector && issetId) ?? false
-    })
+    
+    const rowsSelector = computed(() => showSelector(props.rowsSelector, rows.value))
+
     const rowsRecord: ComputedRef<FieldRecord> = computed(() => {
       let ids: any = { all: false }
       if (rowsSelector.value) {
@@ -218,6 +231,7 @@ export default defineComponent({
       selectRows,
       onUpdateHeaderRowsSelector,
       headerRowsSelectorChecked,
+      columnsStyle,
     }
   },
 })

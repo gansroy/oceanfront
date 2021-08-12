@@ -40,9 +40,11 @@
 }
 .of--align-start {
   text-align: start;
+  justify-content: flex-start;
 }
 .of--align-end {
   text-align: end;
+  justify-content: flex-end;
 }
 
 .of--cursor-default {
@@ -115,6 +117,7 @@
   color: $color-field;
   display: flex;
   font-size: $font-size-input;
+  overflow: hidden;
   position: relative;
   max-width: 100%; // don't extend past containing cell
   // vertical-align: $vertical-align-input;
@@ -289,6 +292,10 @@
     display: block;
     font-size: 80%;
     padding: 0 $pad-h-input;
+  }
+  .of-field-input-label {
+    min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
+    pointer-events: none;
   }
 
   .of-field-inner {
@@ -588,4 +595,11 @@
   &:not(.of--readonly) .of-slider-thumb {
     cursor: pointer;
   }
+}
+
+.of-color-swatch {
+  border: 1px solid $border-color-field;
+  border-radius: 2px;
+  width: 2.5em;
+  height: 1.1em;
 }
