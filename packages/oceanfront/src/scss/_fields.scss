@@ -293,6 +293,10 @@
     font-size: 80%;
     padding: 0 $pad-h-input;
   }
+  .of-field-input-label {
+    min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
+    pointer-events: none;
+  }
 
   .of-field-inner {
     background: $bg-field;
