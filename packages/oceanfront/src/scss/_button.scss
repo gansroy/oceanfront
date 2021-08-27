@@ -14,10 +14,11 @@
       cursor: default;
     }
     &.expand {
-      padding: 0.5rem;
+      padding: .5rem 1rem;
     }
     &.expand i {
       pointer-events: none;
+      margin-left: .6rem;
     }
     &:hover {
       background-color: #c9c9c9;
@@ -32,6 +33,16 @@
       &:last-of-type {
         border-top-right-radius: 2rem;
         border-bottom-right-radius: 2rem;
+      }
+    }
+  }
+  &--split {
+    button {
+      &.expand {
+        padding: .5rem .3rem;
+      }
+      &.expand i {
+        margin-left: 0;
       }
     }
   }
