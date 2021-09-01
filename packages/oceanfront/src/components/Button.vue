@@ -9,20 +9,30 @@
       'of-button--' + variant,
     ]"
   >
-    <button :disabled="disabled">
-      <of-icon v-if="icon" :name="icon" class="of-button-icon" />
+    <button 
+      v-if="split || !items" 
+      :disabled="disabled"
+      @click="onClickMenu"
+    >
+      <of-icon 
+        v-if="icon" 
+        :name="icon" 
+        class="of-button-icon" 
+      />
       <slot>&nbsp;</slot>
     </button>
     <button
-      v-if="split"
+      v-if="items"
       class="expand"
       @click="toggleMenu($event)"
       @mouseleave="menuLeave()"
     >
+      <of-icon v-if="icon && !split" :name="icon" class="of-button-icon" />
+      <slot v-if="!split">&nbsp;</slot>
       <of-icon name="expand-down" />
     </button>
     <of-overlay
-      v-if="split"
+      v-if="items"
       :active="menuShown"
       :capture="false"
       :shade="false"
@@ -30,7 +40,7 @@
     >
       <of-option-list
         :items="items"
-        :on-click="onClick"
+        :on-click="onClickItem"
         @mouseenter="menuClearTimeout()"
         @mouseleave="menuLeave()"
       />
@@ -51,17 +61,20 @@ export default defineComponent({
     disabled: Boolean,
     split: Boolean,
     items: [String, Array, Object],
-    onClickMenuItem: Function,
+    onClickMenu: Function,
   },
   setup(props) {
     const variant = computed(() => props.variant || 'solid')
     const menuShown = ref(false)
     const menuOuter = ref()
     const menuTimerId = ref()
-    const onClick = (val: any) => {
+    const onClickItem = (val: any) => {
       if (typeof val === 'function') val.call(this)
-      if (props.onClickMenuItem) props.onClickMenuItem.call(this, val)
       closeMenu()
+    }
+    const onClickMenu = (val: any) => {
+      closeMenu()
+      if (props.onClickMenu && props.split) props.onClickMenu.call(this, val)
     }
     const toggleMenu = (_evt?: MouseEvent) => {
       menuOuter.value = (_evt?.target as Element).parentNode
@@ -80,7 +93,8 @@ export default defineComponent({
       clearTimeout(menuTimerId.value)
     }
     return {
-      onClick,
+      onClickItem,
+      onClickMenu,
       closeMenu,
       toggleMenu,
       menuShown,
