@@ -3,6 +3,7 @@
     :class="[
       {
         'of-button--rounded': rounded,
+        'of-button--expand': !split && items,
         'of-button--split': split,
       },
       'of-button',
@@ -17,19 +18,17 @@
       <of-icon 
         v-if="icon" 
         :name="icon" 
-        class="of-button-icon" 
       />
       <slot>&nbsp;</slot>
     </button>
     <button
       v-if="items"
-      class="expand"
       @click="toggleMenu($event)"
       @mouseleave="menuLeave()"
     >
-      <of-icon v-if="icon && !split" :name="icon" class="of-button-icon" />
+      <of-icon v-if="icon && !split" :name="icon" />
       <slot v-if="!split">&nbsp;</slot>
-      <of-icon name="expand-down" />
+      <of-icon name="expand-down" class="expand"/>
     </button>
     <of-overlay
       v-if="items"

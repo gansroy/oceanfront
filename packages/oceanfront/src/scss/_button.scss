@@ -1,30 +1,43 @@
 .of-button {
   display: inline-flex;
   color: #000;
-  margin-right: 0.5rem;
+  margin-right: .5rem;
   button {
-    border: 1px solid #c9c9c9;
-    padding: .5rem .8rem;
+    border-width: 0;
+    border-style: solid;
+    border-color:#c9c9c9;
     cursor: pointer;
-    i {
-      vertical-align: middle;
+    padding: .5rem .3rem;
+    &:first-of-type,
+    &:last-of-type {
+      border-top-width: 1px;
+      border-bottom-width: 1px;
+      border-right-width: 1px;
     }
-    .of-button-icon {
-      margin: 0 0.5rem 0 0;
+    &:first-of-type {
+      border-left-width: 1px;
+      padding: .5rem .8rem;
     }
     &:disabled {
       opacity: 0.5;
       cursor: default;
     }
-    &.expand {
-      padding: .5rem .5rem;
-    }
-    &.expand i {
-      pointer-events: none;
-      margin-left: .6rem;
-    }
     &:hover {
       background-color: #c9c9c9;
+    }
+    > i {
+      vertical-align: middle;
+      padding-right: .3rem; 
+    }
+  }
+  &--expand {
+    .expand {
+      padding: 0 0 0 .9rem !important;
+    }
+  }
+  &--split {
+    .expand {
+      padding-right: 0 !important;
     }
   }
   &--rounded {
@@ -37,33 +50,6 @@
         border-top-right-radius: 2rem;
         border-bottom-right-radius: 2rem;
       }
-    }
-  }
-  &--split {
-    button {
-      &.expand {
-        padding: .5rem .3rem;
-      }
-      &.expand i {
-        margin-left: 0;
-      }
-    }
-  }
-  &--split,
-  &--rounded {
-    button {
-      &:first-of-type {
-        border-right: none;
-      }
-      &:last-of-type {
-        border-left: none;
-      }
-    }
-  }
-  &--solid,
-  &--outlined {
-    button {
-      border: 1px solid #c9c9c9;
     }
   }
   &--solid {
@@ -79,7 +65,7 @@
   }
   &--text {
     button {
-      border: none;
+      border: none !important;
       &:hover {
         background-color: transparent;
       }
@@ -99,14 +85,14 @@
     button {
       border-top-right-radius: 2rem;
       border-bottom-right-radius: 2rem;
-      border-right: 1px solid #c9c9c9;
+      border-right-width: 1px;
     }
   }
   .of-button:first-of-type {
     button {
       border-top-left-radius: 2rem;
       border-bottom-left-radius: 2rem;
-      border-left: 1px solid #c9c9c9;
+      border-left-width: 1px;
     }
   }
 }
