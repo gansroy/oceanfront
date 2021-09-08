@@ -1,52 +1,56 @@
 <template>
   <div class="of-data-table" :style="columnsStyle">
-      <div class="of-data-table-header">
-        <div v-if="rowsSelector" class="of-data-table-rows-selector">
-          <slot name="header-rows-selector">
-            <of-button
-                split
-                :items="selectRowsItems"
-                :on-click-menu-item="selectRows"
-                variant="text"
-              >
-                <of-toggle
-                  type="toggle"
-                  variant="basic"
-                  :checked="headerRowsSelectorChecked"
-                  @update:checked="onUpdateHeaderRowsSelector"
-                />
-            </of-button>
-          </slot>
-          <slot name="header-first-cell" />
-        </div>
-        <div
-            v-for="(col, idx) of columns"
-            :class="col.class"
-            :key="idx"
-          >
-            <span>{{ col.text }}</span>
-        </div>
-      </div>
-      <div class="of-data-table-row" v-for="(row, rowidx) of rows" :key="rowidx" :class="{ 'selected': rowsRecord.value[row.id] }">
-        <div v-if="rowsSelector">
-          <slot name="rows-selector" :record="rowsRecord" :item="row">
+    <div class="of-data-table-header">
+      <div v-if="rowsSelector" class="of-data-table-rows-selector">
+        <slot name="header-rows-selector">
+          <of-button split :items="selectRowsItems" variant="text">
             <of-toggle
               type="toggle"
-              :record="rowsRecord"
-              :name="row.id"
               variant="basic"
+              :checked="headerRowsSelectorChecked"
+              @update:checked="onUpdateHeaderRowsSelector"
             />
-          </slot>
-          <slot name="first-cell" :record="rowsRecord" :item="row" />
-        </div>
-        <div v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
-          <of-data-type :value="row[col.value]"></of-data-type>
-        </div>
+          </of-button>
+        </slot>
+        <slot name="header-first-cell" />
       </div>
+      <div v-for="(col, idx) of columns" :class="col.class" :key="idx">
+        <span>{{ col.text }}</span>
+      </div>
+    </div>
+    <div
+      class="of-data-table-row"
+      v-for="(row, rowidx) of rows"
+      :key="rowidx"
+      :class="{ selected: rowsRecord.value[row.id] }"
+    >
+      <div v-if="rowsSelector">
+        <slot name="rows-selector" :record="rowsRecord" :item="row">
+          <of-toggle
+            type="toggle"
+            :record="rowsRecord"
+            :name="row.id"
+            variant="basic"
+          />
+        </slot>
+        <slot name="first-cell" :record="rowsRecord" :item="row" />
+      </div>
+      <div v-for="(col, colidx) of columns" :class="col.class" :key="colidx">
+        <of-data-type :value="row[col.value]"></of-data-type>
+      </div>
+    </div>
     <template v-if="footerRows.length">
-      <div class="of-data-table-footer" v-for="(row, rowidx) of footerRows" :key="rowidx">
-        <div :class="{first: rowidx == 0}" v-if="rowsSelector">&nbsp;</div>
-        <div v-for="(col, colidx) of columns" :class="[col.class, rowidx == 0 ? 'first' : undefined]" :key="colidx">
+      <div
+        class="of-data-table-footer"
+        v-for="(row, rowidx) of footerRows"
+        :key="rowidx"
+      >
+        <div :class="{ first: rowidx == 0 }" v-if="rowsSelector">&nbsp;</div>
+        <div
+          v-for="(col, colidx) of columns"
+          :class="[col.class, rowidx == 0 ? 'first' : undefined]"
+          :key="colidx"
+        >
           <of-format :type="col.format" :value="row[col.value]" />
         </div>
       </div>
@@ -73,18 +77,12 @@ enum RowsSelectorValues {
   DeselectAll = 'deselect-all',
 }
 
-
-const showSelector = (hasSelector: boolean, rows: any[]) : boolean => {
-      let issetId = false
-      if (
-        rows&&
-        rows.hasOwnProperty(0) &&
-        rows[0].hasOwnProperty('id')
-      ) {
-        issetId = true
-      }
-      return (hasSelector && issetId) ?? false
-
+const showSelector = (hasSelector: boolean, rows: any[]): boolean => {
+  let issetId = false
+  if (rows && rows.hasOwnProperty(0) && rows[0].hasOwnProperty('id')) {
+    issetId = true
+  }
+  return (hasSelector && issetId) ?? false
 }
 
 export default defineComponent({
@@ -133,19 +131,23 @@ export default defineComponent({
       return Math.max(0, perPage.value * (page.value - 1))
     })
     const columnsStyle = computed(() => {
-      const selectorWidth = showSelector(props.rowsSelector, rows.value) ? "min-content" : ""
-      const widths = props.headers?.map(h => {
-        if (!h.width) return "auto";
-        const w = h.width.toString()
-        if (w.endsWith("%") || w.match(/^[0-9]+(\.[0-9]*)?$/)) {
-          const widthNumber = parseFloat(w)
-          if (isNaN(widthNumber)) return "auto"
-          return "" + widthNumber + "fr"
-        }
-        return w
-      }).join(" ")
+      const selectorWidth = showSelector(props.rowsSelector, rows.value)
+        ? 'min-content'
+        : ''
+      const widths = props.headers
+        ?.map((h) => {
+          if (!h.width) return 'auto'
+          const w = h.width.toString()
+          if (w.endsWith('%') || w.match(/^[0-9]+(\.[0-9]*)?$/)) {
+            const widthNumber = parseFloat(w)
+            if (isNaN(widthNumber)) return 'auto'
+            return '' + widthNumber + 'fr'
+          }
+          return w
+        })
+        .join(' ')
       return {
-        "--of-table-columns": `${selectorWidth} ${widths}`,
+        '--of-table-columns': `${selectorWidth} ${widths}`,
       }
     })
     const rows = computed(() => {
@@ -164,8 +166,10 @@ export default defineComponent({
     const footerRows = computed(() => {
       return props.footerItems
     })
-    
-    const rowsSelector = computed(() => showSelector(props.rowsSelector, rows.value))
+
+    const rowsSelector = computed(() =>
+      showSelector(props.rowsSelector, rows.value)
+    )
 
     const rowsRecord: ComputedRef<FieldRecord> = computed(() => {
       let ids: any = { all: false }
@@ -214,11 +218,14 @@ export default defineComponent({
       selectRows(select)
     }
     const selectRowsItems = [
-      { text: 'Select Page', value: RowsSelectorValues.Page },
+      { text: 'Select Page', value: () => selectRows(RowsSelectorValues.Page) },
       { special: 'divider' },
-      { text: 'Select All', value: RowsSelectorValues.All },
+      { text: 'Select All', value: () => selectRows(RowsSelectorValues.All) },
       { special: 'divider' },
-      { text: 'Deselect All', value: RowsSelectorValues.DeselectAll },
+      {
+        text: 'Deselect All',
+        value: () => selectRows(RowsSelectorValues.DeselectAll),
+      },
     ]
 
     return {
