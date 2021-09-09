@@ -8,6 +8,23 @@
           :max="sliderMax"
           :step="5"
           v-model="sliderValue"
+          plain
+        ></of-slider-field>
+      </div>
+      <div class="row form-row">
+        <of-slider-field
+          :max="sliderMax"
+          :step="5"
+          v-model="sliderValue"
+          plain
+          variant="filled"
+        ></of-slider-field>
+      </div>
+      <div class="row form-row">
+        <of-slider-field
+          :max="sliderMax"
+          :step="5"
+          v-model="sliderValue"
           label="Slider input"
         ></of-slider-field>
       </div>

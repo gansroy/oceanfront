@@ -3,7 +3,26 @@
     <h1>Color Picker Inputs</h1>
     <of-highlight lang="html" :value="sampleCode" />
     <div class="demo-fields">
-      <of-color-field label="Color" v-model="colorValue" />
+      <div class="row form-row">
+        <of-color-field label="Color" v-model="colorValue" plain />
+      </div>
+      <div class="row form-row">
+        <of-color-field
+          label="Color"
+          v-model="colorValue"
+          plain
+          variant="filled"
+        />
+      </div>
+      <div class="row form-row">
+        <of-color-field label="Color" v-model="colorValue" />
+      </div>
+      <div class="row form-row">
+        <of-color-field label="Color" v-model="colorValue" variant="outlined" />
+      </div>
+      <div class="row form-row">
+        <of-color-field label="Color" v-model="colorValue" variant="filled" />
+      </div>
     </div>
   </div>
 </template>

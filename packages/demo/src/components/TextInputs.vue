@@ -5,6 +5,40 @@
     <div class="demo-fields">
       <div class="row form-row">
         <div class="column">
+          <of-text-field v-bind="textField" v-model="textValue" plain />
+        </div>
+        <div class="column">
+          <of-text-field
+            v-bind="textAreaField"
+            v-model="textAreaValue"
+            rows="3"
+            plain
+            multiline
+          />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
+          <of-text-field
+            v-bind="textField"
+            v-model="textValue"
+            plain
+            variant="filled"
+          />
+        </div>
+        <div class="column">
+          <of-text-field
+            v-bind="textAreaField"
+            v-model="textAreaValue"
+            rows="3"
+            plain
+            multiline
+            variant="filled"
+          />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
           <of-text-field
             v-bind="textField"
             v-model="textValue"
@@ -15,6 +49,7 @@
           <of-text-field
             multiline
             v-bind="textAreaField"
+            v-model="textAreaValue"
             rows="3"
             variant="basic"
           />
@@ -32,6 +67,7 @@
           <of-text-field
             multiline
             v-bind="textAreaField"
+            v-model="textAreaValue"
             rows="3"
             variant="outlined"
           />
@@ -49,6 +85,7 @@
           <of-text-field
             multiline
             v-bind="textAreaField"
+            v-model="textAreaValue"
             rows="3"
             variant="filled"
           />
@@ -179,6 +216,7 @@ const textAreaField = {
 export default defineComponent({
   /*async */ setup() {
     const textValue = ref('62.14')
+    const textAreaValue = ref('')
     const change = () => {
       textValue.value = new Date().getTime().toString()
     }
@@ -194,6 +232,7 @@ export default defineComponent({
       textField,
       textAreaField,
       textValue,
+      textAreaValue,
     }
   },
 })

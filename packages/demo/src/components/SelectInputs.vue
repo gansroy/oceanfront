@@ -8,6 +8,23 @@
           :format="{ items: testItems, type: 'select' }"
           label="Select input"
           model-value="Option 1"
+          plain
+        ></of-field>
+      </div>
+      <div class="row form-row">
+        <of-field
+          :format="{ items: testItems, type: 'select' }"
+          label="Select input"
+          model-value="Option 1"
+          plain
+          variant="filled"
+        ></of-field>
+      </div>
+      <div class="row form-row">
+        <of-field
+          :format="{ items: testItems, type: 'select' }"
+          label="Select input"
+          model-value="Option 1"
           variant="basic"
         ></of-field>
       </div>
