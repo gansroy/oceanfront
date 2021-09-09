@@ -4,19 +4,38 @@
     <h2>Date &amp; Time</h2>
     <of-highlight lang="html" :value="sampleCode" />
     <br />
-    <div class="row">
+    <div class="row form-row">
+      <div class="column md-8">
+        <of-date-field label="Date only" v-model="dateValue" plain />
+      </div>
+    </div>
+    <div class="row form-row">
+      <div class="column md-8">
+        <of-date-field
+          label="Date only"
+          v-model="dateValue"
+          plain
+          variant="filled"
+        />
+      </div>
+    </div>
+    <div class="row form-row">
       <div class="column md-8">
         <of-date-field label="Date only" v-model="dateValue" />
       </div>
     </div>
-    <div class="row">
+    <div class="row form-row">
       <div class="column md-8">
-        <of-datetime-field label="Date and time" v-model="dateTimeValue" />
+        <of-datetime-field
+          label="Date and time"
+          v-model="dateTimeValue"
+          variant="outlined"
+        />
       </div>
     </div>
-    <div class="row">
+    <div class="row form-row">
       <div class="column md-8">
-        <of-time-field label="Time" v-model="timeValue" />
+        <of-time-field label="Time" v-model="timeValue" variant="filled" />
       </div>
     </div>
   </div>

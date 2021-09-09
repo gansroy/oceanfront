@@ -82,8 +82,8 @@ const makeDragIn = (spec: FieldDragIn, flag: Ref<boolean>) => {
         if (evt.dataTransfer) {
           evt.dataTransfer.dropEffect =
             spec.dropEffect === 'none' ||
-              spec.dropEffect === 'link' ||
-              spec.dropEffect === 'move'
+            spec.dropEffect === 'link' ||
+            spec.dropEffect === 'move'
               ? spec.dropEffect
               : 'copy'
         }
@@ -124,6 +124,7 @@ export const OfField = defineComponent({
     label: String,
     loading: Boolean,
     locked: Boolean,
+    plain: Boolean,
     // messages
     maxlength: [Number, String],
     mode: String as PropType<'edit' | 'readonly' | 'view'>,
@@ -156,8 +157,8 @@ export const OfField = defineComponent({
         (fmt && typeof fmt === 'string'
           ? fmt
           : typeof fmt === 'object'
-            ? (fmt as any).fieldType || (fmt as any).type
-            : undefined)
+          ? (fmt as any).fieldType || (fmt as any).type
+          : undefined)
       )
     })
     const dragOver = ref(false)
@@ -281,8 +282,8 @@ export const OfField = defineComponent({
         const labelText = render.label ?? props.label
         const label = ctx.slots.label
           ? ctx.slots.label()
-          : labelText
-            ? h(
+          : !props.plain && labelText
+          ? h(
               'label',
               {
                 class: 'of-field-label',
@@ -290,19 +291,22 @@ export const OfField = defineComponent({
               },
               [labelText]
             )
-            : undefined
+          : undefined
+        const decor_cls = props.plain ? 'of--plain' : 'of--decorated'
         const cls = [
           'of-field',
           {
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
             'of--block': props.block,
             'of--blank': blank,
+            'of--decorated': !props.plain,
             'of--dragover': dragOver.value,
             'of--focused': showFocused,
             'of--invalid': render.invalid,
             'of--muted': props.muted,
             'of--loading': render.loading,
             'of--locked': locked.value,
+            'of--plain': props.plain,
             'of--updated': render.updated,
             // of--readonly: props.readonly,
             // of--disabled: props.disabled,
@@ -310,7 +314,8 @@ export const OfField = defineComponent({
           'of--cursor-' + (render.cursor || 'default'),
           'of--label-' + (label ? 'visible' : 'none'),
           'of--mode-' + mode.value,
-          'of--variant-' + variant.value,
+          decor_cls,
+          `${decor_cls}-${variant.value}`,
           render.class,
           props.class,
         ]

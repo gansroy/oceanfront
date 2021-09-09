@@ -5,6 +5,27 @@
     <div class="demo-fields">
       <div class="row form-row">
         <div class="column">
+          <of-field type="toggle" :format="testCheckField" plain />
+        </div>
+        <div class="column">
+          <of-toggle-field v-bind="testSwitchField" plain />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
+          <of-field
+            type="toggle"
+            :format="testCheckField"
+            plain
+            variant="filled"
+          />
+        </div>
+        <div class="column">
+          <of-toggle-field v-bind="testSwitchField" plain variant="filled" />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
           <of-field type="toggle" :format="testCheckField" variant="basic" />
         </div>
         <div class="column">

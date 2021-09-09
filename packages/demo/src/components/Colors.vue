@@ -58,7 +58,7 @@
               >
                 <h4>Preview</h4>
                 <div class="row form-row">
-                  <div class="of-field of--variant-basic of-text-field">
+                  <div class="of-field of--decorated-basic of-text-field">
                     <div class="of-field-body">
                       <div class="of-field-over">
                         <div class="of-field-label-wrap">
@@ -73,7 +73,9 @@
                     </div>
                   </div>
                   <div
-                    class="of-field of--variant-basic of-text-field of--focused"
+                    class="
+                      of-field of--decorated-basic of-text-field of--focused
+                    "
                   >
                     <div class="of-field-body">
                       <div class="of-field-over">
@@ -91,7 +93,13 @@
                 </div>
                 <div class="row form-row">
                   <div
-                    class="of-field of--active of--label-visible of--variant-filled of-text-field"
+                    class="
+                      of-field
+                      of--active
+                      of--label-visible
+                      of--decorated-filled
+                      of-text-field
+                    "
                   >
                     <div class="of-field-body">
                       <div class="of-field-over">
@@ -113,7 +121,14 @@
                   </div>
                   &nbsp;
                   <div
-                    class="of-field of--active of--label-visible of--variant-filled of-text-field of--focused"
+                    class="
+                      of-field
+                      of--active
+                      of--label-visible
+                      of--decorated-filled
+                      of-text-field
+                      of--focused
+                    "
                   >
                     <div class="of-field-body">
                       <div class="of-field-over">

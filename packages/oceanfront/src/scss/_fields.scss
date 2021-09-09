@@ -277,33 +277,34 @@
   }
 }
 
-.of--variant-basic {
-  margin: 0 0.3em;
+.of--plain {
   .of-field-body {
-    width: calc(var(--of-field-size) - 0.6em);
+    width: var(--of-field-size);
   }
+}
 
-  .of-field-over,
-  .of-field-footer {
-    min-height: 0.25em;
-  }
-
-  .of-field-label {
-    display: block;
-    font-size: 80%;
-    padding: 0 $pad-h-input;
-  }
+.of--plain,
+.of--decorated-basic {
   .of-field-input-label {
     min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
     pointer-events: none;
   }
 
+  &.of-text-field textarea {
+    padding: $pad-v-input $pad-h-input 0;
+    resize: vertical;
+  }
+}
+
+.of--plain-basic,
+.of--decorated-basic {
   .of-field-inner {
     background: $bg-field;
     border: $border-width-input solid $border-color-field;
     border-radius: $border-radius-input;
     box-shadow: $box-shadow-field-basic;
   }
+
   &:hover .of-field-inner {
     border-color: $border-color-field-hover;
     // color: $color-field-hover;
@@ -330,15 +331,29 @@
   &.of--invalid:not(.of--focused) .of-field-inner {
     border-color: $border-color-field-invalid;
   }
+}
 
-  &.of-text-field textarea {
-    padding: $pad-v-input $pad-h-input 0;
-    resize: vertical;
+.of--decorated-basic {
+  margin: 0 0.3em;
+
+  .of-field-body {
+    width: calc(var(--of-field-size) - 0.6em);
+  }
+
+  .of-field-over,
+  .of-field-footer {
+    min-height: 0.25em;
+  }
+
+  .of-field-label {
+    display: block;
+    font-size: 80%;
+    padding: 0 $pad-h-input;
   }
 }
 
-.of--variant-outlined .of-field-body,
-.of--variant-filled .of-field-body {
+.of--decorated-outlined .of-field-body,
+.of--decorated-filled .of-field-body {
   width: var(--of-field-size);
 
   .of-field-inner {
@@ -376,7 +391,7 @@
   }
 }
 
-.of--variant-outlined {
+.of--decorated-outlined {
   --cur-border: 1px solid #{$border-color-field};
 
   .of-field-over {
@@ -469,7 +484,8 @@
   }
 }
 
-.of--variant-filled {
+.of--plain-filled,
+.of--decorated-filled {
   .of-field-body {
     background: $bg-field-filled;
     border-radius: $border-radius-field $border-radius-field 0 0;
@@ -503,6 +519,28 @@
     transform: scaleX(1);
   }
 
+  &:hover .of-field-label {
+    color: $color-field-filled-hover;
+  }
+  .static .of-field-label {
+    color: $color-field-filled-label;
+  }
+  &.of--focused .of-field-label {
+    color: $color-field-filled-focus-label;
+  }
+
+  .of-field-inner {
+    border-bottom: 1px solid $border-color-field;
+  }
+  &:hover .of-field-inner {
+    border-bottom-color: $border-color-field-hover;
+  }
+  &.of--invalid:not(.of--focused) .of-field-inner {
+    border-bottom-color: $border-color-field-invalid;
+  }
+}
+
+.of--decorated-filled {
   .of-field-label-wrap {
     margin-left: var(--of-field-size-prepend, 0px);
     max-width: calc(
@@ -523,41 +561,22 @@
     backface-visibility: hidden; // avoid some jumping?
     // will-change: transform; // FIXME currently blurry in chrome
   }
-  &:hover .of-field-label {
-    color: $color-field-filled-hover;
-  }
-  .static .of-field-label {
-    color: $color-field-filled-label;
-  }
-  &.of--focused .of-field-label {
-    color: $color-field-filled-focus-label;
-  }
   &.of--focused,
   &.of--active {
     .of-field-label {
       transform: none;
     }
   }
-
-  .of-field-inner {
-    border-bottom: 1px solid $border-color-field;
+  &.of--label-visible .of-field-content {
+    margin-top: 1.1em;
   }
   .of-field-content {
     opacity: 0;
     transition: opacity 180ms;
     will-change: opacity;
   }
-  &.of--label-visible .of-field-content {
-    margin-top: 1.1em;
-  }
-  &:hover .of-field-inner {
-    border-bottom-color: $border-color-field-hover;
-  }
   &.of--active .of-field-content {
     opacity: 1;
-  }
-  &.of--invalid:not(.of--focused) .of-field-inner {
-    border-bottom-color: $border-color-field-invalid;
   }
 }
 

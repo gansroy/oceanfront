@@ -9,6 +9,25 @@
           label="Uploaded file"
           :model-value="{ name: 'myreport.pdf', size: 10204 }"
           size="30"
+          plain
+        />
+      </div>
+      <div class="row form-row">
+        <of-field
+          type="file"
+          label="Uploaded file"
+          :model-value="{ name: 'myreport.pdf', size: 10204 }"
+          size="30"
+          plain
+          variant="filled"
+        />
+      </div>
+      <div class="row form-row">
+        <of-field
+          type="file"
+          label="Uploaded file"
+          :model-value="{ name: 'myreport.pdf', size: 10204 }"
+          size="30"
           variant="basic"
         />
       </div>
