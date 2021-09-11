@@ -30,7 +30,7 @@ import OfPagination from './components/Pagination.vue'
 import OfButton from './components/Button.vue'
 import { OfColorField } from './components/ColorField'
 import OfDataType from './components/DataType/DataType'
-import OfOptionList from './components/OptionList'
+import { OfOptionList } from './components/OptionList'
 
 import { FileField } from './fields/File'
 import { SelectField } from './fields/Select'
