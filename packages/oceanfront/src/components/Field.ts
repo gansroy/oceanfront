@@ -144,6 +144,7 @@ export const OfField = defineComponent({
   },
   emits: {
     'update:modelValue': null,
+    'input': null,
   },
   setup(props, ctx: SetupContext) {
     const formatMgr = useFormats()
@@ -193,6 +194,9 @@ export const OfField = defineComponent({
       onUpdate(value: any) {
         if (props.name && record.value) record.value.value[props.name] = value
         else ctx.emit('update:modelValue', value)
+      },
+      onInput(input: any, value: any) {
+        ctx.emit('input', input, value)
       },
       ...extractRefs(props, [
         'block',

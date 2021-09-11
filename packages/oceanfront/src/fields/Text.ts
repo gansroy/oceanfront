@@ -162,14 +162,14 @@ export const TextField = defineFieldType({
         evt.stopPropagation()
       },
       onInput(evt: InputEvent) {
+        const inputElt = evt.target as
+          | HTMLInputElement
+          | HTMLTextAreaElement
         const fmt = formatter.value
         if (fmt?.handleInput) {
           const upd = fmt.handleInput(evt)
           if (upd) {
             if (!upd.updated) return
-            const inputElt = evt.target as
-              | HTMLInputElement
-              | HTMLTextAreaElement
             const iVal = upd.textValue ?? ''
             inputElt.value = iVal
             if (upd.selStart !== undefined) {
@@ -179,6 +179,7 @@ export const TextField = defineFieldType({
             pendingValue.value = upd.value
           }
         }
+        if (ctx.onInput) ctx.onInput(evt.data, inputElt.value)
       },
       onKeydown(evt: KeyboardEvent) {
         const fmt = formatter.value
