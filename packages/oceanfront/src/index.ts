@@ -167,4 +167,21 @@ export {
   calcStartRecord,
 } from './lib/paginator'
 
+export  {
+  ExtFieldRender,
+  FieldContext,
+  FieldDragIn,
+  FieldPopup,
+  FieldProps,
+  FieldRender,
+  FieldSetup,
+  FieldType,
+  FieldTypeConstructor,
+  FormatProp,
+  defineFieldType,
+  extendFieldFormat,
+  fieldRender,
+  newFieldId,
+}  from "./lib/fields"
+
 export default Oceanfront
