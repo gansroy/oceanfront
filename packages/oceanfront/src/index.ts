@@ -30,6 +30,7 @@ import OfPagination from './components/Pagination.vue'
 import OfButton from './components/Button.vue'
 import { OfColorField } from './components/ColorField'
 import OfDataType from './components/DataType/DataType'
+import OfOptionList from './components/OptionList'
 
 import { FileField } from './fields/File'
 import { SelectField } from './fields/Select'
@@ -83,6 +84,7 @@ export const components: Record<string, Component> = {
   OfColorField,
   OfDataType,
   OfBadge,
+  OfOptionList,
 }
 
 export const fieldTypes: Record<string, FieldTypeConstructor> = {
@@ -167,7 +169,7 @@ export {
   calcStartRecord,
 } from './lib/paginator'
 
-export  {
+export {
   ExtFieldRender,
   FieldContext,
   FieldDragIn,
@@ -182,6 +184,6 @@ export  {
   extendFieldFormat,
   fieldRender,
   newFieldId,
-}  from "./lib/fields"
+} from "./lib/fields"
 
 export default Oceanfront
