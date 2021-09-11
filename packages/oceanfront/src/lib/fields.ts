@@ -36,6 +36,7 @@ export interface FieldContext {
   record?: FieldRecord
   // onFocus, onBlur
   onUpdate?: (value: any) => void
+  onInput?: (input: any, value: any) => void
   // onInput? - watch inputValue
   required?: boolean
   value?: any
