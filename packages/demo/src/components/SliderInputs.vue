@@ -8,7 +8,7 @@
           :max="sliderMax"
           :step="5"
           v-model="sliderValue"
-          plain
+          frame="none"
         ></of-slider-field>
       </div>
       <div class="row form-row">
@@ -16,7 +16,7 @@
           :max="sliderMax"
           :step="5"
           v-model="sliderValue"
-          plain
+          frame="none"
           variant="filled"
         ></of-slider-field>
       </div>
@@ -26,6 +26,15 @@
           :step="5"
           v-model="sliderValue"
           label="Slider input"
+        ></of-slider-field>
+      </div>
+      <div class="row form-row">
+        <of-slider-field
+          :max="sliderMax"
+          :step="5"
+          v-model="sliderValue"
+          label="Slider input"
+          variant="filled"
         ></of-slider-field>
       </div>
       <div class="row form-row">
@@ -33,8 +42,8 @@
           :max="sliderMax"
           :step="10"
           v-model="sliderValue"
-          variant="outlined"
           label="Slider input"
+          frame="block"
         ></of-slider-field>
       </div>
       <div class="row form-row">
@@ -42,8 +51,9 @@
           :max="sliderMax"
           :step="15"
           v-model="sliderValue"
-          variant="filled"
           label="Slider input"
+          frame="block"
+          variant="filled"
         ></of-slider-field>
       </div>
       <div class="row form-row">

@@ -9,7 +9,7 @@
           label="Uploaded file"
           :model-value="{ name: 'myreport.pdf', size: 10204 }"
           size="30"
-          plain
+          frame="none"
         />
       </div>
       <div class="row form-row">
@@ -18,7 +18,7 @@
           label="Uploaded file"
           :model-value="{ name: 'myreport.pdf', size: 10204 }"
           size="30"
-          plain
+          frame="none"
           variant="filled"
         />
       </div>
@@ -28,14 +28,28 @@
           label="Uploaded file"
           :model-value="{ name: 'myreport.pdf', size: 10204 }"
           size="30"
-          variant="basic"
         />
       </div>
       <div class="row form-row">
-        <of-field type="file" label="Outlined" size="30" variant="outlined" />
+        <of-field
+          type="file"
+          label="Uploaded file"
+          :model-value="{ name: 'myreport.pdf', size: 10204 }"
+          size="30"
+          variant="filled"
+        />
       </div>
       <div class="row form-row">
-        <of-field type="file" label="New file" variant="filled" size="30" />
+        <of-field type="file" label="Outlined" size="30" frame="block" />
+      </div>
+      <div class="row form-row">
+        <of-field
+          type="file"
+          label="Filled"
+          frame="block"
+          variant="filled"
+          size="30"
+        />
       </div>
     </div>
   </div>

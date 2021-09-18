@@ -8,7 +8,7 @@
           :format="{ items: testItems, type: 'select' }"
           label="Select input"
           model-value="Option 1"
-          plain
+          frame="none"
         ></of-field>
       </div>
       <div class="row form-row">
@@ -16,7 +16,7 @@
           :format="{ items: testItems, type: 'select' }"
           label="Select input"
           model-value="Option 1"
-          plain
+          frame="none"
           variant="filled"
         ></of-field>
       </div>
@@ -25,7 +25,14 @@
           :format="{ items: testItems, type: 'select' }"
           label="Select input"
           model-value="Option 1"
-          variant="basic"
+        ></of-field>
+      </div>
+      <div class="row form-row">
+        <of-field
+          :format="{ items: testItems, type: 'select' }"
+          label="Select input"
+          model-value="Option 1"
+          variant="filled"
         ></of-field>
       </div>
       <div class="row form-row">
@@ -33,13 +40,14 @@
           :items="tzOpts"
           label="Select timezone"
           model-value="America/Vancouver"
-          variant="outlined"
+          frame="block"
         ></of-select-field>
       </div>
       <div class="row form-row">
         <of-select-field
           label="Select input"
           model-value="Selected"
+          frame="block"
           variant="filled"
         ></of-select-field>
       </div>

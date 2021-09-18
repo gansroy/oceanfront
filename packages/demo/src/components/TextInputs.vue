@@ -5,15 +5,15 @@
     <div class="demo-fields">
       <div class="row form-row">
         <div class="column">
-          <of-text-field v-bind="textField" v-model="textValue" plain />
+          <of-text-field v-bind="textField" v-model="textValue" frame="none" />
         </div>
         <div class="column">
           <of-text-field
             v-bind="textAreaField"
             v-model="textAreaValue"
             rows="3"
-            plain
             multiline
+            frame="none"
           />
         </div>
       </div>
@@ -22,7 +22,7 @@
           <of-text-field
             v-bind="textField"
             v-model="textValue"
-            plain
+            frame="none"
             variant="filled"
           />
         </div>
@@ -31,19 +31,15 @@
             v-bind="textAreaField"
             v-model="textAreaValue"
             rows="3"
-            plain
             multiline
+            frame="none"
             variant="filled"
           />
         </div>
       </div>
       <div class="row form-row">
         <div class="column">
-          <of-text-field
-            v-bind="textField"
-            v-model="textValue"
-            variant="basic"
-          />
+          <of-text-field v-bind="textField" v-model="textValue" />
         </div>
         <div class="column">
           <of-text-field
@@ -51,25 +47,6 @@
             v-bind="textAreaField"
             v-model="textAreaValue"
             rows="3"
-            variant="basic"
-          />
-        </div>
-      </div>
-      <div class="row form-row">
-        <div class="column">
-          <of-text-field
-            v-bind="textField"
-            v-model="textValue"
-            variant="outlined"
-          />
-        </div>
-        <div class="column">
-          <of-text-field
-            multiline
-            v-bind="textAreaField"
-            v-model="textAreaValue"
-            rows="3"
-            variant="outlined"
           />
         </div>
       </div>
@@ -87,6 +64,40 @@
             v-bind="textAreaField"
             v-model="textAreaValue"
             rows="3"
+            variant="filled"
+          />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
+          <of-text-field v-bind="textField" v-model="textValue" frame="block" />
+        </div>
+        <div class="column">
+          <of-text-field
+            multiline
+            v-bind="textAreaField"
+            v-model="textAreaValue"
+            rows="3"
+            frame="block"
+          />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
+          <of-text-field
+            v-bind="textField"
+            v-model="textValue"
+            frame="block"
+            variant="filled"
+          />
+        </div>
+        <div class="column">
+          <of-text-field
+            multiline
+            v-bind="textAreaField"
+            v-model="textAreaValue"
+            rows="3"
+            frame="block"
             variant="filled"
           />
         </div>
@@ -141,7 +152,6 @@
         <of-text-field
           placeholder="Password"
           input-type="password"
-          variant="basic"
           model-value="password"
         />
       </div>

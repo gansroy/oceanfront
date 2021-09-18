@@ -5,10 +5,10 @@
     <div class="demo-fields">
       <div class="row form-row">
         <div class="column">
-          <of-field type="toggle" :format="testCheckField" plain />
+          <of-field type="toggle" :format="testCheckField" frame="none" />
         </div>
         <div class="column">
-          <of-toggle-field v-bind="testSwitchField" plain />
+          <of-toggle-field v-bind="testSwitchField" frame="none" />
         </div>
       </div>
       <div class="row form-row">
@@ -16,28 +16,24 @@
           <of-field
             type="toggle"
             :format="testCheckField"
-            plain
+            frame="none"
             variant="filled"
           />
         </div>
         <div class="column">
-          <of-toggle-field v-bind="testSwitchField" plain variant="filled" />
+          <of-toggle-field
+            v-bind="testSwitchField"
+            frame="none"
+            variant="filled"
+          />
         </div>
       </div>
       <div class="row form-row">
         <div class="column">
-          <of-field type="toggle" :format="testCheckField" variant="basic" />
+          <of-toggle-field v-bind="testCheckField" />
         </div>
         <div class="column">
-          <of-toggle-field v-bind="testSwitchField" variant="basic" />
-        </div>
-      </div>
-      <div class="row form-row">
-        <div class="column">
-          <of-toggle-field v-bind="testCheckField" variant="outlined" />
-        </div>
-        <div class="column">
-          <of-toggle-field v-bind="testSwitchField" variant="outlined" />
+          <of-toggle-field v-bind="testSwitchField" />
         </div>
       </div>
       <div class="row form-row">
@@ -46,6 +42,30 @@
         </div>
         <div class="column">
           <of-toggle-field v-bind="testSwitchField" variant="filled" />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
+          <of-toggle-field v-bind="testCheckField" frame="block" />
+        </div>
+        <div class="column">
+          <of-toggle-field v-bind="testSwitchField" frame="block" />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
+          <of-toggle-field
+            v-bind="testCheckField"
+            frame="block"
+            variant="filled"
+          />
+        </div>
+        <div class="column">
+          <of-toggle-field
+            v-bind="testSwitchField"
+            frame="block"
+            variant="filled"
+          />
         </div>
       </div>
     </div>

@@ -4,13 +4,13 @@
     <of-highlight lang="html" :value="sampleCode" />
     <div class="demo-fields">
       <div class="row form-row">
-        <of-color-field label="Color" v-model="colorValue" plain />
+        <of-color-field label="Color" v-model="colorValue" frame="none" />
       </div>
       <div class="row form-row">
         <of-color-field
           label="Color"
           v-model="colorValue"
-          plain
+          frame="none"
           variant="filled"
         />
       </div>
@@ -18,10 +18,18 @@
         <of-color-field label="Color" v-model="colorValue" />
       </div>
       <div class="row form-row">
-        <of-color-field label="Color" v-model="colorValue" variant="outlined" />
+        <of-color-field label="Color" v-model="colorValue" variant="filled" />
       </div>
       <div class="row form-row">
-        <of-color-field label="Color" v-model="colorValue" variant="filled" />
+        <of-color-field label="Color" v-model="colorValue" frame="block" />
+      </div>
+      <div class="row form-row">
+        <of-color-field
+          label="Color"
+          v-model="colorValue"
+          frame="block"
+          variant="filled"
+        />
       </div>
     </div>
   </div>

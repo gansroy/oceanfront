@@ -48,6 +48,7 @@
               >DateTime Picker</of-list-item
             >
             <of-list-item to="/color-picker-inputs">Color Picker</of-list-item>
+            <of-list-item to="/group-inputs">Grouped Inputs</of-list-item>
             <of-list-item to="/records">Records</of-list-item>
             <of-list-item to="/formatters">Value Formatters</of-list-item>
           </of-list-group>
@@ -117,10 +118,8 @@ export default defineComponent({
           : sidebarDesktopActive.value
       },
       set(val: boolean) {
-        ;(isMobile.value
-          ? sidebarMobileActive
-          : sidebarDesktopActive
-        ).value = val
+        ;(isMobile.value ? sidebarMobileActive : sidebarDesktopActive).value =
+          val
       },
     })
     watch(baseFontSize, (size) => {

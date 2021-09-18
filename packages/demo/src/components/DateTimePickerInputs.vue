@@ -6,7 +6,7 @@
     <br />
     <div class="row form-row">
       <div class="column md-8">
-        <of-date-field label="Date only" v-model="dateValue" plain />
+        <of-date-field label="Date only" v-model="dateValue" frame="none" />
       </div>
     </div>
     <div class="row form-row">
@@ -14,7 +14,7 @@
         <of-date-field
           label="Date only"
           v-model="dateValue"
-          plain
+          frame="none"
           variant="filled"
         />
       </div>
@@ -26,11 +26,12 @@
     </div>
     <div class="row form-row">
       <div class="column md-8">
-        <of-datetime-field
-          label="Date and time"
-          v-model="dateTimeValue"
-          variant="outlined"
-        />
+        <of-date-field label="Date only" v-model="dateValue" variant="filled" />
+      </div>
+    </div>
+    <div class="row form-row">
+      <div class="column md-8">
+        <of-datetime-field label="Date and time" v-model="dateTimeValue" />
       </div>
     </div>
     <div class="row form-row">
