@@ -7,6 +7,7 @@ import OfDialog from './components/Dialog.vue'
 import OfDateTimePopup from './components/DateTimePopup.vue'
 import { OfIcon } from './components/Icon'
 import { OfField } from './components/Field'
+import OfFocusGroup from './components/FocusGroup.vue'
 import { OfFormat } from './components/Format'
 import { OfLink } from './components/Link'
 import { OfListItem } from './components/ListItem'
@@ -52,7 +53,11 @@ import { UrlFormatter } from './formats/Url'
 
 import './scss/index.scss'
 import { FieldTypeConstructor } from './lib/fields'
-import { DateTimeFormatter, DateFormatter, TimeFormatter } from './formats/DateTime'
+import {
+  DateTimeFormatter,
+  DateFormatter,
+  TimeFormatter,
+} from './formats/DateTime'
 
 export const components: Record<string, Component> = {
   OfConfig,
@@ -64,6 +69,7 @@ export const components: Record<string, Component> = {
   OfDialog,
   OfField,
   OfIcon,
+  OfFocusGroup,
   OfFormat,
   OfLink,
   OfListItem,
@@ -143,12 +149,8 @@ export {
   registerTextFormatter,
   useFormats,
 } from './lib/formats'
-
-export {
-  addDays, addMonths
-} from './lib/datetime'
-
-
+export { addDays, addMonths } from './lib/datetime'
+export { FocusGroup, provideFocusGroup, useFocusGroup } from './lib/focus'
 export { registerItemList, useItems } from './lib/items'
 export { setMobileBreakpoint, useLayout } from './lib/layout'
 export { useLocale } from './lib/locale'
