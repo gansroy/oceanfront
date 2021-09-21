@@ -133,12 +133,20 @@ export const OfOverlay = defineComponent({
       const outer = elt.value
       if (!outer) return // or not in document
       if (!targetElt) return // or make fixed/absolute
+
+      outer.style.setProperty('width', 'fit-content');
+
       const parentRect = relativeParentRect(outer)
+      const outerRect = outer.getBoundingClientRect()
       const targetRect = targetElt.getBoundingClientRect()
       if (!targetRect || !parentRect) return // or hide?
+
+      const neededWidth = outerRect.width + targetRect.left;
+      const offsetWidth = Math.max(neededWidth - parentRect.width, 0);
+         
       outer.style.setProperty(
-        '--overlay-dyn-pad-left',
-        Math.max(targetRect.left + parentRect.left, 0) + 'px'
+        '--overlay-dyn-margin-left',
+        Math.max((targetRect.left + parentRect.left) - offsetWidth, 0) + 'px'
       )
       outer.style.setProperty(
         '--overlay-dyn-pad-top',

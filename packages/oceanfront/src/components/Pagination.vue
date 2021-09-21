@@ -52,7 +52,7 @@
       >
         <slot name="custom-offset-popup" v-if="showCustomOffsetPopup">
           <form method="POST" action="#" @submit.prevent="updateOffsetParams()">
-            <div class="container" style="background: #f0f0f0; width: 250px">
+            <div class="container" style="background: #f0f0f0;">
               <div class="row">
                 <div class="column">
                   <of-text-field
