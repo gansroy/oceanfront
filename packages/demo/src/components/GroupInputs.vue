@@ -13,23 +13,13 @@
             <div class="of-field-group">
               <div class="of-field-row">
                 <div class="of-field-cell">
-                  <label class="of-field-label" for="pw">Password</label>
-                  <of-field
-                    id="pw"
-                    input-type="password"
-                    frame="none"
-                    size="15"
-                  />
+                  <of-field id="pw" input-type="password" label="Password" />
                 </div>
                 <div class="of-field-cell">
-                  <label class="of-field-label" for="cpw"
-                    >Confirm Password</label
-                  >
                   <of-field
                     id="cpw"
                     input-type="password"
-                    frame="none"
-                    size="15"
+                    label="Confirm Password"
                   />
                 </div>
               </div>

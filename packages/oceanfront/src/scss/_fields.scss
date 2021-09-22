@@ -61,6 +61,7 @@
   color: $color-field-label;
   // cursor: inherit;
   text-overflow: ellipsis;
+  transition: color 100ms;
   white-space: nowrap;
   word-wrap: break-word;
 
@@ -72,14 +73,7 @@
 .of-field-group {
   border-radius: 5px;
   border: 1px solid #ddd;
-  display: flex;
-  flex-flow: column nowrap;
-  padding: 0.3em;
-
-  .of-field-label {
-    font-size: 80%;
-    padding-left: 0.3em;
-  }
+  padding: 0.3em 0;
 }
 .of-field-group:focus-within {
   box-shadow: 0 0 1px 2px rgba(99, 131, 167, 0.5);
@@ -94,14 +88,11 @@
   display: grid;
   grid-gap: 0.5em;
   grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   max-width: 100%;
   + .of-field-row {
     margin-top: 0.5em;
   }
-}
-.of-field-cell {
-  display: flex;
-  flex-flow: column nowrap;
 }
 
 .of-field {
@@ -146,7 +137,12 @@
   flex-flow: column nowrap;
   outline: none;
   position: relative;
+  max-width: min(100%, var(--of-field-size));
+}
+
+.of--frame-none .of-field-body {
   max-width: 100%;
+  width: var(--of-field-size);
 }
 
 .of-field-inner {
@@ -315,12 +311,6 @@
   }
 }
 
-.of--frame-none {
-  .of-field-body {
-    width: var(--of-field-size);
-  }
-}
-
 .of--frame-none,
 .of--frame-normal.of--variant-normal {
   .of-field-input-label {
@@ -372,10 +362,11 @@
 }
 
 .of--frame-normal {
-  margin: 0 0.3em;
+  display: flex;
+  padding: 0 0.3em;
 
   .of-field-body {
-    width: calc(var(--of-field-size) - 0.6em);
+    max-width: min(100%, calc(var(--of-field-size) - 0.6em));
   }
 
   .of-field-over,
@@ -391,9 +382,7 @@
 }
 
 .of--frame-block {
-  .of-field-body {
-    width: var(--of-field-size);
-  }
+  display: flex;
 
   .of-field-inner {
     min-height: calc(3em + 2 * #{$pad-v-field});

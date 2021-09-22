@@ -4,52 +4,64 @@
     <of-highlight lang="html" :value="sampleCode" />
     <div class="demo-fields">
       <div class="row form-row">
-        <of-field
-          :format="{ items: testItems, type: 'select' }"
-          label="Select input"
-          model-value="Option 1"
-          frame="none"
-        ></of-field>
+        <div class="column">
+          <of-field
+            :format="{ items: testItems, type: 'select' }"
+            label="Select input"
+            model-value="Option 1"
+            frame="none"
+          ></of-field>
+        </div>
       </div>
       <div class="row form-row">
-        <of-field
-          :format="{ items: testItems, type: 'select' }"
-          label="Select input"
-          model-value="Option 1"
-          frame="none"
-          variant="filled"
-        ></of-field>
+        <div class="column">
+          <of-field
+            :format="{ items: testItems, type: 'select' }"
+            label="Select input"
+            model-value="Option 1"
+            frame="none"
+            variant="filled"
+          ></of-field>
+        </div>
       </div>
       <div class="row form-row">
-        <of-field
-          :format="{ items: testItems, type: 'select' }"
-          label="Select input"
-          model-value="Option 1"
-        ></of-field>
+        <div class="column">
+          <of-field
+            :format="{ items: testItems, type: 'select' }"
+            label="Select input"
+            model-value="Option 1"
+          ></of-field>
+        </div>
       </div>
       <div class="row form-row">
-        <of-field
-          :format="{ items: testItems, type: 'select' }"
-          label="Select input"
-          model-value="Option 1"
-          variant="filled"
-        ></of-field>
+        <div class="column">
+          <of-field
+            :format="{ items: testItems, type: 'select' }"
+            label="Select input"
+            model-value="Option 1"
+            variant="filled"
+          ></of-field>
+        </div>
       </div>
       <div class="row form-row">
-        <of-select-field
-          :items="tzOpts"
-          label="Select timezone"
-          model-value="America/Vancouver"
-          frame="block"
-        ></of-select-field>
+        <div class="column">
+          <of-select-field
+            :items="tzOpts"
+            label="Select timezone"
+            model-value="America/Vancouver"
+            frame="block"
+          ></of-select-field>
+        </div>
       </div>
       <div class="row form-row">
-        <of-select-field
-          label="Select input"
-          model-value="Selected"
-          frame="block"
-          variant="filled"
-        ></of-select-field>
+        <div class="column">
+          <of-select-field
+            label="Select input"
+            model-value="Selected"
+            frame="block"
+            variant="filled"
+          ></of-select-field>
+        </div>
       </div>
     </div>
   </div>
