@@ -175,7 +175,7 @@ export class NumberFormatter implements TextFormatter {
         )
         textValue = fmt.format(value)
       }
-    } catch (e) {
+    } catch (e: any) {
       error = e.toString()
     }
     return {

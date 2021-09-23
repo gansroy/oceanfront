@@ -57,6 +57,52 @@
   cursor: text;
 }
 
+.of-field-label {
+  align-self: center;
+  color: $color-field-label;
+  // cursor: inherit;
+  font-size: 0.8em;
+  text-overflow: ellipsis;
+  transition: color 100ms;
+  white-space: nowrap;
+  word-wrap: break-word;
+
+  &.of--focused {
+    color: $color-field-focus-label;
+  }
+}
+
+.of-group {
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  padding: 0.3em 0;
+}
+.of-group-label {
+  color: #666;
+  font-size: 90%;
+  padding-left: 0.7em;
+  margin-bottom: 0.3em;
+}
+.of-group:hover > .of-group-label {
+  color: $color-field-hover;
+}
+.of-group:focus-within,
+.of-group.of--focused {
+  box-shadow: 0 0 1px 2px rgba(99, 131, 167, 0.5);
+  > .of-group-label {
+    color: $color-field-focus-label;
+  }
+}
+.of-group-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  &.pad {
+    padding: 0 0.3em 0.3em;
+    grid-gap: 0.3em;
+  }
+}
+
 .of-field {
   // .input-icon {
   //   color: $color-field-icon;
@@ -74,19 +120,16 @@
   display: inline-flex;
   flex-flow: column nowrap;
   font-size: $font-size-input;
-  max-width: 100%;
+  max-width: min(100%, var(--of-field-size));
   outline: none;
   text-align: start;
   vertical-align: top;
   @include no-select;
 
-  .of-field-label {
-    color: $color-field-label;
-  }
   &:hover .of-field-label {
     color: $color-field-hover;
   }
-  .static .of-field-label {
+  &.static .of-field-label {
     color: $color-field-label;
   }
   &.of--focused {
@@ -96,19 +139,16 @@
   }
 }
 
+.of--frame-none {
+  width: var(--of-field-size);
+}
+
 .of-field-body {
   box-sizing: border-box;
   display: flex;
   flex-flow: column nowrap;
   outline: none;
   position: relative;
-}
-
-.of-field-label {
-  // cursor: inherit;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  word-wrap: break-word;
 }
 
 .of-field-inner {
@@ -277,14 +317,8 @@
   }
 }
 
-.of--plain {
-  .of-field-body {
-    width: var(--of-field-size);
-  }
-}
-
-.of--plain,
-.of--decorated-basic {
+.of--frame-none,
+.of--frame-normal.of--variant-normal {
   .of-field-input-label {
     min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
     pointer-events: none;
@@ -296,8 +330,8 @@
   }
 }
 
-.of--plain-basic,
-.of--decorated-basic {
+.of--frame-none.of--variant-normal,
+.of--frame-normal.of--variant-normal {
   .of-field-inner {
     background: $bg-field;
     border: $border-width-input solid $border-color-field;
@@ -333,12 +367,9 @@
   }
 }
 
-.of--decorated-basic {
-  margin: 0 0.3em;
-
-  .of-field-body {
-    width: calc(var(--of-field-size) - 0.6em);
-  }
+.of--frame-normal {
+  display: flex;
+  padding: 0 0.3em;
 
   .of-field-over,
   .of-field-footer {
@@ -347,14 +378,12 @@
 
   .of-field-label {
     display: block;
-    font-size: 80%;
     padding: 0 $pad-h-input;
   }
 }
 
-.of--decorated-outlined .of-field-body,
-.of--decorated-filled .of-field-body {
-  width: var(--of-field-size);
+.of--frame-block {
+  display: flex;
 
   .of-field-inner {
     min-height: calc(3em + 2 * #{$pad-v-field});
@@ -391,7 +420,7 @@
   }
 }
 
-.of--decorated-outlined {
+.of--frame-block.of--variant-normal {
   --cur-border: 1px solid #{$border-color-field};
 
   .of-field-over {
@@ -484,8 +513,58 @@
   }
 }
 
-.of--plain-filled,
-.of--decorated-filled {
+.of--frame-none.of--variant-filled,
+.of--frame-normal.of--variant-filled {
+  .of-field-inner {
+    background: $bg-field-filled;
+    border-bottom: 1px solid $border-color-field;
+    border-radius: $border-radius-field $border-radius-field 0 0;
+    color: $color-field-filled;
+  }
+  &:hover .of-field-inner {
+    background: $bg-field-filled-hover;
+    border-bottom-color: $border-color-field-hover;
+  }
+  &.of--focused .of-field-inner {
+    background: $bg-field-filled-focus;
+  }
+  &.of--invalid:not(.of--focused) .of-field-inner {
+    border-bottom-color: $border-color-field-invalid;
+  }
+
+  .of-field-over::after {
+    // ripple
+    background: $border-color-field-focus;
+    content: '';
+    height: 2px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: opacity 90ms, transform 150ms;
+    will-change: opacity, transform;
+    z-index: 1;
+  }
+  &.of--focused .of-field-over::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  &:hover .of-field-label {
+    color: $color-field-filled-hover;
+  }
+  &.static .of-field-label {
+    color: $color-field-filled-label;
+  }
+  &.of--focused .of-field-label {
+    color: $color-field-filled-focus-label;
+  }
+}
+
+.of--frame-block.of--variant-filled {
   .of-field-body {
     background: $bg-field-filled;
     border-radius: $border-radius-field $border-radius-field 0 0;
@@ -522,7 +601,7 @@
   &:hover .of-field-label {
     color: $color-field-filled-hover;
   }
-  .static .of-field-label {
+  &.static .of-field-label {
     color: $color-field-filled-label;
   }
   &.of--focused .of-field-label {
@@ -540,7 +619,7 @@
   }
 }
 
-.of--decorated-filled {
+.of--frame-block.of--variant-filled {
   .of-field-label-wrap {
     margin-left: var(--of-field-size-prepend, 0px);
     max-width: calc(

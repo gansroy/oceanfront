@@ -15,7 +15,7 @@ export class UrlFormatter implements TextFormatter {
       if (value != null) {
         textValue = this.fixUrl(value)
       }
-    } catch (e) {
+    } catch (e: any) {
       error = e.toString()
       console.error(error)
     }

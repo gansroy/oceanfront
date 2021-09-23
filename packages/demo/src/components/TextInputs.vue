@@ -5,15 +5,15 @@
     <div class="demo-fields">
       <div class="row form-row">
         <div class="column">
-          <of-text-field v-bind="textField" v-model="textValue" plain />
+          <of-text-field v-bind="textField" v-model="textValue" frame="none" />
         </div>
         <div class="column">
           <of-text-field
             v-bind="textAreaField"
             v-model="textAreaValue"
             rows="3"
-            plain
             multiline
+            frame="none"
           />
         </div>
       </div>
@@ -22,7 +22,7 @@
           <of-text-field
             v-bind="textField"
             v-model="textValue"
-            plain
+            frame="none"
             variant="filled"
           />
         </div>
@@ -31,19 +31,15 @@
             v-bind="textAreaField"
             v-model="textAreaValue"
             rows="3"
-            plain
             multiline
+            frame="none"
             variant="filled"
           />
         </div>
       </div>
       <div class="row form-row">
         <div class="column">
-          <of-text-field
-            v-bind="textField"
-            v-model="textValue"
-            variant="basic"
-          />
+          <of-text-field v-bind="textField" v-model="textValue" />
         </div>
         <div class="column">
           <of-text-field
@@ -51,25 +47,6 @@
             v-bind="textAreaField"
             v-model="textAreaValue"
             rows="3"
-            variant="basic"
-          />
-        </div>
-      </div>
-      <div class="row form-row">
-        <div class="column">
-          <of-text-field
-            v-bind="textField"
-            v-model="textValue"
-            variant="outlined"
-          />
-        </div>
-        <div class="column">
-          <of-text-field
-            multiline
-            v-bind="textAreaField"
-            v-model="textAreaValue"
-            rows="3"
-            variant="outlined"
           />
         </div>
       </div>
@@ -87,6 +64,40 @@
             v-bind="textAreaField"
             v-model="textAreaValue"
             rows="3"
+            variant="filled"
+          />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
+          <of-text-field v-bind="textField" v-model="textValue" frame="block" />
+        </div>
+        <div class="column">
+          <of-text-field
+            multiline
+            v-bind="textAreaField"
+            v-model="textAreaValue"
+            rows="3"
+            frame="block"
+          />
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="column">
+          <of-text-field
+            v-bind="textField"
+            v-model="textValue"
+            frame="block"
+            variant="filled"
+          />
+        </div>
+        <div class="column">
+          <of-text-field
+            multiline
+            v-bind="textAreaField"
+            v-model="textAreaValue"
+            rows="3"
+            frame="block"
             variant="filled"
           />
         </div>
@@ -96,94 +107,90 @@
 
   <div class="container">
     <div class="row demo-row">
-      <div class="demo-inline">
+      <div class="column">
         <of-text-field
           class="of--small"
           model-value="Small text input"
           style="width: 10em"
-        />
-      </div>
-      <div class="demo-inline">
-        <of-text-field model-value="Normal text input" style="width: 10em" />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
+        <of-text-field
+          model-value="Normal text input"
+          style="width: 10em"
+          frame="none"
+        />&nbsp;
         <of-text-field
           class="of--large"
           model-value="Large text input"
           style="width: 10em"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           readonly
           model-value="Read-only text"
           style="width: 10em"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           disabled
           model-value="Disabled text"
           style="width: 10em"
-        />
-      </div>
-      <div class="demo-inline">
-        <of-text-field placeholder="Placeholder" style="width: 10em" />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
+        <of-text-field
+          placeholder="Placeholder"
+          style="width: 10em"
+          frame="none"
+        />&nbsp;
         <of-text-field
           class="of--density-0"
           style="width: 10em"
           model-value="Compact"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           placeholder="Password"
           input-type="password"
-          variant="basic"
           model-value="password"
+          frame="none"
         />
       </div>
     </div>
     <div class="row demo-row">
-      <div class="demo-inline">
+      <div class="column">
         <of-text-field
           multiline
           class="of--small"
           style="width: 10em"
           model-value="Small text area"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           multiline
           style="width: 10em"
           model-value="Normal text area"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           multiline
           class="of--large"
           style="width: 10em"
           model-value="Large text area"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           multiline
           readonly
           style="width: 10em"
           model-value="Read-only text area"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           multiline
           disabled
           style="width: 10em"
           model-value="Disabled text area"
+          frame="none"
         />
       </div>
     </div>

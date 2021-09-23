@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+    <h1>Calendar</h1>
+
     <of-overlay
       :active="detailsVisible"
       :target="detailsTarget"
@@ -20,33 +22,47 @@
         {{ detailsEvent.name }}
       </div>
     </of-overlay>
-    <p>
-      <of-select-field
-        :items="types"
-        :record="state"
-        name="type"
-      ></of-select-field>
-      <of-select-field
-        :items="['columns', 'stack']"
-        :record="state"
-        name="layout"
-      ></of-select-field>
-      <of-toggle-field name="useSlots" label="Use slots" :record="state" />
-      <of-toggle-field
-        name="hideOtherMonths"
-        label="Hide adjacent months"
-        :record="state"
-      />
-      <of-toggle-field
-        name="customColors"
-        label="Custom colors"
-        :record="state"
-      />
-      <of-toggle-field name="limitHours" label="Limit hours" :record="state" />
-      <of-button rounded icon="refresh" @click="regenerateEvents"
-        >Regenerate events</of-button
-      >
-    </p>
+
+    <div class="of-group">
+      <div class="of-group-row">
+        <of-select-field
+          :items="types"
+          :record="state"
+          name="type"
+        ></of-select-field>
+        <of-select-field
+          :items="['columns', 'stack']"
+          :record="state"
+          name="layout"
+        ></of-select-field>
+      </div>
+      <div class="of-group-row">
+        <of-toggle-field name="useSlots" label="Use slots" :record="state" />
+        <of-toggle-field
+          name="hideOtherMonths"
+          label="Hide adjacent months"
+          :record="state"
+        />
+      </div>
+      <div class="of-group-row">
+        <of-toggle-field
+          name="customColors"
+          label="Custom colors"
+          :record="state"
+        />
+        <of-toggle-field
+          name="limitHours"
+          label="Limit hours"
+          :record="state"
+        />
+      </div>
+      <div class="of-group-row pad">
+        <of-button rounded icon="refresh" @click="regenerateEvents"
+          >Regenerate events</of-button
+        >
+      </div>
+    </div>
+    <br />
     <of-calendar
       fixed-row-height
       selectable
@@ -115,7 +131,6 @@
     </of-calendar>
   </div>
 </template>
-
 
 <script lang="ts">
 import { defineComponent, Ref, ref } from 'vue'
@@ -268,7 +283,7 @@ export default defineComponent({
 })
 </script>
 
-<style >
+<style>
 .of-calendar-event {
   font-size: 70%;
 }

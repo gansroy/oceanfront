@@ -112,6 +112,8 @@ export function defineFieldType<T extends FieldType>(f: T): T {
 
 export type FormatProp = string | Record<string, any>
 
+export type FrameProp = 'none' | 'normal' | 'block'
+
 export function extendFieldFormat(
   format: FormatProp | undefined,
   props: Record<string, any>
@@ -129,5 +131,5 @@ export type ExtFieldRender = {
 }
 export function fieldRender<T extends object>(props: T): FieldRender {
   // FIXME lies
-  return (readonly(props) as any) as FieldRender
+  return readonly(props) as any as FieldRender
 }
