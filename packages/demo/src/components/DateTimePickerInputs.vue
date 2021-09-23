@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <h1>Picker Inputs</h1>
-    <h2>Date &amp; Time</h2>
+    <h1>Date &amp; Time Inputs</h1>
     <of-highlight lang="html" :value="sampleCode" />
     <br />
     <div class="row form-row">

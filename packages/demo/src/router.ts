@@ -36,7 +36,7 @@ export const router = createRouter({
     { path: '/slider-inputs', component: SliderInputs },
     { path: '/text-inputs', component: TextInputs },
     { path: '/toggle-inputs', component: ToggleInputs },
-    { path: '/datetime-picker-inputs', component: DateTimePickerInputs },
+    { path: '/datetime-inputs', component: DateTimePickerInputs },
     { path: '/color-picker-inputs', component: ColorPickerInputs },
     { path: '/group-inputs', component: GroupInputs },
     { path: '/data-tables', component: DataTables },
