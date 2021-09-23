@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Input Groups</h1>
+    <h1>Grouped Inputs</h1>
     <!-- of-highlight lang="html" :value="sampleCode" / -->
 
     <div class="demo-fields">
@@ -10,64 +10,52 @@
             <of-field label="Simple input" />
           </div>
           <div class="of-block">
-            <div class="of-field-group">
-              <div class="of-field-row">
-                <div class="of-field-cell">
-                  <of-field id="pw" input-type="password" label="Password" />
-                </div>
-                <div class="of-field-cell">
-                  <of-field
-                    id="cpw"
-                    input-type="password"
-                    label="Confirm Password"
-                  />
-                </div>
+            <div class="of-group">
+              <div class="of-group-row">
+                <of-field id="pw" input-type="password" label="Password" />
+                <of-field
+                  id="cpw"
+                  input-type="password"
+                  label="Confirm Password"
+                />
               </div>
             </div>
           </div>
           <div class="of-block">
-            <div class="of-field-group">
+            <div class="of-group">
               <div class="of-group-label">Primary Address</div>
-              <div class="of-field-row">
-                <div class="of-field-cell">
-                  <label class="of-field-label" for="street">Street</label>
-                  <of-field
-                    type="text"
-                    frame="none"
-                    model-value="99 Street Ave."
-                    id="street"
-                    variant="filled"
-                  />
-                </div>
+              <div class="of-group-row">
+                <of-field
+                  type="text"
+                  label="Street"
+                  model-value="99 Street Ave."
+                  id="street"
+                  variant="filled"
+                  size="50"
+                />
               </div>
-              <div class="of-field-row">
-                <div class="of-field-cell">
-                  <label class="of-field-label" for="city">City</label>
-                  <of-field
-                    type="text"
-                    frame="none"
-                    model-value="Vancouver"
-                    variant="filled"
-                    id="city"
-                  />
-                </div>
-                <div class="of-field-cell">
-                  <label class="of-field-label" for="state">State</label>
-                  <of-field
-                    type="text"
-                    frame="none"
-                    model-value="BC"
-                    variant="filled"
-                    id="state"
-                  />
-                </div>
+              <div class="of-group-row">
+                <of-field
+                  type="text"
+                  label="City"
+                  model-value="Vancouver"
+                  variant="filled"
+                  id="city"
+                />
+                <of-field
+                  type="text"
+                  label="State"
+                  model-value="BC"
+                  variant="filled"
+                  id="state"
+                />
               </div>
             </div>
           </div>
           <div class="of-block">
-            <div class="of-field-group">
+            <div class="of-group">
               <div class="of-group-label">Phone Numbers</div>
-              <div class="of-field-row">
+              <div class="of-group-row pad">
                 <of-field
                   type="text"
                   frame="none"
@@ -75,9 +63,9 @@
                   variant="filled"
                   id="ph1"
                 />
-                <label class="of-input-attach" for="ph1">work</label>
+                <label class="of-group-label" for="ph1">work</label>
               </div>
-              <div class="of-field-row">
+              <div class="of-group-row pad">
                 <of-field
                   type="text"
                   frame="none"
@@ -85,9 +73,9 @@
                   variant="filled"
                   id="ph2"
                 />
-                <label class="of-input-attach" for="ph2">mobile</label>
+                <label class="of-group-label" for="ph2">mobile</label>
               </div>
-              <div class="of-field-row">
+              <div class="of-group-row pad">
                 <of-field
                   type="text"
                   frame="none"
@@ -95,7 +83,7 @@
                   variant="filled"
                   id="ph3"
                 />
-                <label class="of-input-attach" for="ph3">home</label>
+                <label class="of-group-label" for="ph3">home</label>
               </div>
             </div>
           </div>
