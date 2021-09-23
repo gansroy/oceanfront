@@ -134,8 +134,6 @@ export const OfOverlay = defineComponent({
       if (!outer) return // or not in document
       if (!targetElt) return // or make fixed/absolute
 
-      outer.style.setProperty('width', 'fit-content');
-
       const parentRect = relativeParentRect(outer)
       const outerRect = outer.getBoundingClientRect()
       const targetRect = targetElt.getBoundingClientRect()
@@ -193,6 +191,7 @@ export const OfOverlay = defineComponent({
         'of--overlay': state.value === 'overlay',
         'of--pad': props.pad,
         'of--shade': props.shade,
+        'of--fit-content': target.value,
       }
       if (state.value !== 'embed' && !target.value && props.align)
         (cls as any)['of--' + props.align] = true

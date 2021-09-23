@@ -44,6 +44,9 @@
 .of-overlay.of--pad {
   --overlay-pad: 24px;
 }
+.of-overlay.of--fit-content {
+  width: fit-content;
+}
 
 // default overlay transition
 .of--overlay.v-enter-active {
