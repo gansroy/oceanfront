@@ -170,7 +170,7 @@ export const OfField = defineComponent({
     const mode = computed(
       () => props.mode || (props.readonly ? 'readonly' : 'edit')
     )
-    // may inherit default value from context
+    // may inherit default value from context in future
     const frame = computed(() => props.frame || 'normal')
     const variant = computed(() => props.variant || 'normal')
 

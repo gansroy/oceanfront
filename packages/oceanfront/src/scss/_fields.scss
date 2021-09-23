@@ -112,7 +112,7 @@
   display: inline-flex;
   flex-flow: column nowrap;
   font-size: $font-size-input;
-  max-width: 100%;
+  max-width: min(100%, var(--of-field-size));
   outline: none;
   text-align: start;
   vertical-align: top;
@@ -131,18 +131,16 @@
   }
 }
 
+.of--frame-none {
+  width: var(--of-field-size);
+}
+
 .of-field-body {
   box-sizing: border-box;
   display: flex;
   flex-flow: column nowrap;
   outline: none;
   position: relative;
-  max-width: min(100%, var(--of-field-size));
-}
-
-.of--frame-none .of-field-body {
-  max-width: 100%;
-  width: var(--of-field-size);
 }
 
 .of-field-inner {
@@ -364,10 +362,6 @@
 .of--frame-normal {
   display: flex;
   padding: 0 0.3em;
-
-  .of-field-body {
-    max-width: min(100%, calc(var(--of-field-size) - 0.6em));
-  }
 
   .of-field-over,
   .of-field-footer {
