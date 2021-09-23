@@ -107,93 +107,90 @@
 
   <div class="container">
     <div class="row demo-row">
-      <div class="demo-inline">
+      <div class="column">
         <of-text-field
           class="of--small"
           model-value="Small text input"
           style="width: 10em"
-        />
-      </div>
-      <div class="demo-inline">
-        <of-text-field model-value="Normal text input" style="width: 10em" />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
+        <of-text-field
+          model-value="Normal text input"
+          style="width: 10em"
+          frame="none"
+        />&nbsp;
         <of-text-field
           class="of--large"
           model-value="Large text input"
           style="width: 10em"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           readonly
           model-value="Read-only text"
           style="width: 10em"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           disabled
           model-value="Disabled text"
           style="width: 10em"
-        />
-      </div>
-      <div class="demo-inline">
-        <of-text-field placeholder="Placeholder" style="width: 10em" />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
+        <of-text-field
+          placeholder="Placeholder"
+          style="width: 10em"
+          frame="none"
+        />&nbsp;
         <of-text-field
           class="of--density-0"
           style="width: 10em"
           model-value="Compact"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           placeholder="Password"
           input-type="password"
           model-value="password"
+          frame="none"
         />
       </div>
     </div>
     <div class="row demo-row">
-      <div class="demo-inline">
+      <div class="column">
         <of-text-field
           multiline
           class="of--small"
           style="width: 10em"
           model-value="Small text area"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           multiline
           style="width: 10em"
           model-value="Normal text area"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           multiline
           class="of--large"
           style="width: 10em"
           model-value="Large text area"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           multiline
           readonly
           style="width: 10em"
           model-value="Read-only text area"
-        />
-      </div>
-      <div class="demo-inline">
+          frame="none"
+        />&nbsp;
         <of-text-field
           multiline
           disabled
           style="width: 10em"
           model-value="Disabled text area"
+          frame="none"
         />
       </div>
     </div>
