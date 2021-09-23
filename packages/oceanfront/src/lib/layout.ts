@@ -80,7 +80,7 @@ export function themeStyle(config?: ThemeConfig): Record<string, string> {
     let primary
     try {
       primary = parseColor(config.primaryColor || '#000')!
-    } catch (e) {
+    } catch (e: any) {
       console.error(`Error parsing primary color: ${e.toString()}`)
       return {}
     }

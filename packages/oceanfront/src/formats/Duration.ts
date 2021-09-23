@@ -48,7 +48,7 @@ export class DurationFormatter implements TextFormatter {
       if (value != null) {
         textValue = this.minToDurationConvert(modelValue)
       }
-    } catch (e) {
+    } catch (e: any) {
       error = e.toString()
     }
     return {

@@ -9,7 +9,7 @@ export class ColorFormatter implements TextFormatter {
     try {
       value = loadColor(value)
       textValue = value || ''
-    } catch (e) {
+    } catch (e: any) {
       error = e.toString()
       console.error(error)
     }

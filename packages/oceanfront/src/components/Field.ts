@@ -17,7 +17,9 @@ import {
   Renderable,
   FormatProp,
   FieldTypeConstructor,
+  FrameProp,
 } from '../lib/fields'
+import { useFocusGroup } from 'src/lib/focus'
 import { useFormats } from '../lib/formats'
 import { FieldRecord, useRecords } from '../lib/records'
 import {
@@ -115,6 +117,7 @@ export const OfField = defineComponent({
     // density: {type: Number, default: undefined}
     // form
     format: [String, Object] as PropType<FormatProp>,
+    frame: String as PropType<FrameProp>,
     id: String,
     initialValue: {
       type: [String, Boolean, Number, Array, Object],
@@ -124,7 +127,6 @@ export const OfField = defineComponent({
     label: String,
     loading: Boolean,
     locked: Boolean,
-    plain: Boolean,
     // messages
     maxlength: [Number, String],
     mode: String as PropType<'edit' | 'readonly' | 'view'>,
@@ -145,9 +147,10 @@ export const OfField = defineComponent({
   },
   emits: {
     'update:modelValue': null,
-    'input': null,
+    input: null,
   },
   setup(props, ctx: SetupContext) {
+    const focusGrp = useFocusGroup()
     const formatMgr = useFormats()
     const recordMgr = useRecords()
 
@@ -167,7 +170,9 @@ export const OfField = defineComponent({
     const mode = computed(
       () => props.mode || (props.readonly ? 'readonly' : 'edit')
     )
-    const variant = computed(() => props.variant || 'basic')
+    // may inherit default value from context in future
+    const frame = computed(() => props.frame || 'normal')
+    const variant = computed(() => props.variant || 'normal')
 
     const record = computed(() => {
       return props.record || recordMgr.getCurrentRecord()
@@ -250,6 +255,7 @@ export const OfField = defineComponent({
     const handlers = {
       onBlur(_evt: FocusEvent) {
         focused.value = false
+        if (focusGrp) focusGrp.blur()
       },
       onClick(evt: MouseEvent) {
         // ctx.emit('click', evt)
@@ -259,6 +265,7 @@ export const OfField = defineComponent({
       },
       onFocus(_evt: FocusEvent) {
         focused.value = true
+        if (focusGrp) focusGrp.focus()
       },
       onMousedown(_evt: MouseEvent) {
         // ctx.emit('mousedown', evt)
@@ -286,7 +293,7 @@ export const OfField = defineComponent({
         const labelText = render.label ?? props.label
         const label = ctx.slots.label
           ? ctx.slots.label()
-          : !props.plain && labelText
+          : frame.value != 'none' && labelText
           ? h(
               'label',
               {
@@ -296,30 +303,27 @@ export const OfField = defineComponent({
               [labelText]
             )
           : undefined
-        const decor_cls = props.plain ? 'of--plain' : 'of--decorated'
         const cls = [
           'of-field',
           {
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
             'of--block': props.block,
             'of--blank': blank,
-            'of--decorated': !props.plain,
             'of--dragover': dragOver.value,
             'of--focused': showFocused,
             'of--invalid': render.invalid,
             'of--muted': props.muted,
             'of--loading': render.loading,
             'of--locked': locked.value,
-            'of--plain': props.plain,
             'of--updated': render.updated,
             // of--readonly: props.readonly,
             // of--disabled: props.disabled,
           },
           'of--cursor-' + (render.cursor || 'default'),
+          'of--frame-' + frame.value,
           'of--label-' + (label ? 'visible' : 'none'),
           'of--mode-' + mode.value,
-          decor_cls,
-          `${decor_cls}-${variant.value}`,
+          'of--variant-' + variant.value,
           render.class,
           props.class,
         ]

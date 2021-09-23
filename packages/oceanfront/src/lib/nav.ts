@@ -10,17 +10,15 @@ import {
   reactive,
   watch,
 } from 'vue'
-import { Config, ConfigManager } from './config'
-import { readonlyUnref } from './util'
 
-const NAV_GROUP = ('ofnavgrp' as unknown) as InjectionKey<NavGroup>
+const NAV_GROUP = 'ofnavgrp' as unknown as InjectionKey<NavGroup>
 
 export function provideNavGroup(grp: NavGroup | null): void {
   provide(NAV_GROUP, grp)
 }
 
 export function useNavGroup(): NavGroup | null {
-  const grp = inject(NAV_GROUP) || null
+  const grp = inject(NAV_GROUP, null) || null
   const inst = getCurrentInstance()
   if (grp && inst) {
     return new NavGroupProxy(grp, inst)
