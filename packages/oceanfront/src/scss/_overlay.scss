@@ -5,7 +5,7 @@
   top: 0;
   left: 0;
   bottom: 0;
-  padding: var(--overlay-pad, 0px) var(--overlay-pad, 0px) var(--overlay-pad, 0px) 0 ;
+  padding: var(--overlay-pad, 0px);
   margin: 0 var(--overlay-dyn-margin-right, 0px) 0 var(--overlay-dyn-margin-left, 0px);
   pointer-events: none;
   right: 0;
@@ -46,6 +46,7 @@
 }
 .of-overlay.of--fit-content {
   width: fit-content;
+  padding-left: 0;
 }
 
 // default overlay transition
