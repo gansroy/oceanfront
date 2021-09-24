@@ -286,7 +286,8 @@ export const OfField = defineComponent({
           overlayActive = render.popup.visible ?? true
           overlayBlur = render.popup.onBlur
         }
-        const showFocused = focused.value || dragOver.value || render.focused
+        const showFocused =
+          focused.value || dragOver.value || overlayActive || render.focused
         const blank = render.blank && !(showFocused || overlayActive)
         const labelText = render.label ?? props.label
         const label = ctx.slots.label
