@@ -1,7 +1,7 @@
 import { computed, defineComponent, h, ref, SetupContext, PropType } from 'vue'
 import { FieldContext, FieldRender } from '../lib/fields'
 import { FieldRecord, useRecords } from '../lib/records'
-import { extractRefs, readonlyUnrefs } from '../lib/util'
+import { readonlyUnrefs } from '../lib/util'
 import { useFormats } from '../lib/formats'
 
 export const OfToggle = defineComponent({
@@ -108,7 +108,6 @@ export const OfToggle = defineComponent({
             'of-toggle',
             {
               'of--active': true,
-              // 'of--block': props.block,
               'of--blank': render.blank,
               'of--focused': focused.value,
               'of--invalid': render.invalid,

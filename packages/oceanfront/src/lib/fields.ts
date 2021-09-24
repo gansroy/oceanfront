@@ -22,7 +22,6 @@ export type FieldSetup = (props: FieldProps, ctx: FieldContext) => FieldRender
 
 // FIXME 'items' currently redundant
 export interface FieldContext {
-  block?: boolean
   container?: string
   fieldType?: string // the resolved field type name
   id?: string

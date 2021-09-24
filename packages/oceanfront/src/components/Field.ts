@@ -112,7 +112,6 @@ export const OfField = defineComponent({
   inheritAttrs: false,
   props: {
     align: String,
-    block: Boolean,
     class: [String, Array, Object],
     // density: {type: Number, default: undefined}
     // form
@@ -205,7 +204,6 @@ export const OfField = defineComponent({
         ctx.emit('input', input, value)
       },
       ...extractRefs(props, [
-        'block',
         'id',
         'items',
         'label',
@@ -307,7 +305,6 @@ export const OfField = defineComponent({
           'of-field',
           {
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
-            'of--block': props.block,
             'of--blank': blank,
             'of--dragover': dragOver.value,
             'of--focused': showFocused,
