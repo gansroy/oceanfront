@@ -19,12 +19,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 
-const colorValue = ref({
-  h: 240,
-  s: 0.33,
-  v: 0.72,
-})
-
 export default defineComponent({
   setup() {
     const sampleCode = `
@@ -32,6 +26,7 @@ export default defineComponent({
   label="Color"
   v-model="colorValue"
 />`
+    const colorValue = ref('hsl(240, 33%, 72%)')
     return { sampleCode, colorValue }
   },
 })
