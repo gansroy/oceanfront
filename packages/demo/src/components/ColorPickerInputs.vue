@@ -21,8 +21,8 @@ import { defineComponent, ref } from 'vue'
 
 const colorValue = ref({
   h: 240,
-  s: 0.9,
-  v: 0.7,
+  s: 0.33,
+  v: 0.72,
 })
 
 export default defineComponent({

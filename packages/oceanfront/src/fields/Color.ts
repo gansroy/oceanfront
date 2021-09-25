@@ -9,7 +9,12 @@ import {
   fieldRender,
 } from '../lib/fields'
 
-import { hsvToRgb } from '../lib/colorpicker'
+import { hsvToRgb, hsvToHsl } from 'src/lib/color'
+
+const hexp = (val: number): string => {
+  const v = val.toString(16)
+  return v.length == 1 ? '0' + v : v
+}
 
 export const ColorField = defineFieldType({
   name: 'color',
@@ -33,10 +38,6 @@ export const ColorField = defineFieldType({
     const clickOpen = () => {
       opened.value = true
     }
-    const hexp = (val: number): string => {
-      const v = val.toString(16)
-      return v.length == 1 ? '0' + v : v
-    }
     const initialValue = computed(() => {
       let initial = ctx.initialValue
       if (initial === undefined) initial = props.defaultValue
@@ -56,12 +57,11 @@ export const ColorField = defineFieldType({
     const color = computed(() => {
       const val = stateValue.value || { h: 0, s: 0, v: 0 }
       const rgb = hsvToRgb(val.h, val.s, val.v)
+      const hsl = hsvToHsl(val.h, val.s, val.v)
+      hsl.s = Math.round(hsl.s * 100)
+      hsl.l = Math.round(hsl.l * 100)
       return {
-        hsl: {
-          h: val.h,
-          s: Math.round(val.s * 100),
-          l: Math.round(val.v * 100),
-        },
+        hsl,
         rgb,
         label: '#' + hexp(rgb.r) + hexp(rgb.g) + hexp(rgb.b),
       }
