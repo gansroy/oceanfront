@@ -47,7 +47,6 @@
               <of-slider-field
                 name="four"
                 label="Slider"
-                label-position="field"
                 :record="testRecord"
               />
             </div>
@@ -57,7 +56,6 @@
               <of-datetime-field
                 name="five"
                 label="Date and time picker"
-                label-position="field"
                 :record="testRecord"
               />
             </div>
@@ -68,7 +66,6 @@
                 name="six"
                 label="Date picker"
                 required
-                label-position="field"
                 :record="testRecord"
               />
             </div>
@@ -78,7 +75,6 @@
               <of-time-field
                 name="seven"
                 label="Time picker"
-                label-position="field"
                 :record="testRecord"
               />
             </div>
@@ -130,7 +126,7 @@ const testRecord = makeRecord({
   two: 'text',
   three: true,
   four: 25,
-  five: '',
+  five: '2021-03-14 15:45',
   six: '2021-02-15',
   seven: '12:00:00',
 })
