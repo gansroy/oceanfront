@@ -14,8 +14,8 @@ type ActiveItem = { text?: string; [key: string]: any }
 
 export const SelectField = defineFieldType({
   name: 'select',
-  setup(props: FieldProps, ctx: FieldContext) {
-    const itemMgr = useItems()
+  init(props: FieldProps, ctx: FieldContext) {
+    const itemMgr = useItems(ctx.config)
     const initialValue = computed(() => {
       let initial = ctx.initialValue
       if (initial === undefined) initial = props.defaultValue

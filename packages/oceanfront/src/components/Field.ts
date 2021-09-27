@@ -2,6 +2,7 @@ import {
   computed,
   defineComponent,
   h,
+  proxyRefs,
   ref,
   watch,
   PropType,
@@ -10,6 +11,9 @@ import {
   VNode,
   WatchStopHandle,
 } from 'vue'
+
+import { OfOverlay } from '../components/Overlay'
+import { useConfig } from '../lib/config'
 import {
   FieldContext,
   FieldDragIn,
@@ -19,18 +23,17 @@ import {
   FieldTypeConstructor,
   FrameProp,
 } from '../lib/fields'
-import { useFocusGroup } from 'src/lib/focus'
+import { useFocusGroup } from '../lib/focus'
 import { useFormats } from '../lib/formats'
+import { ItemList } from '../lib/items'
 import { FieldRecord, useRecords } from '../lib/records'
 import {
   extractRefs,
   extendReactive,
-  readonlyUnrefs,
   restrictProps,
   watchPosition,
   PositionObserver,
 } from '../lib/util'
-import { OfOverlay } from '../components/Overlay'
 
 const renderSlot = (
   container: Renderable[],
@@ -122,7 +125,7 @@ export const OfField = defineComponent({
       type: [String, Boolean, Number, Array, Object],
       default: undefined,
     },
-    items: [String, Array, Object],
+    items: [String, Array, Object] as PropType<string | any[] | ItemList>,
     label: String,
     loading: Boolean,
     locked: Boolean,
@@ -149,11 +152,12 @@ export const OfField = defineComponent({
     input: null,
   },
   setup(props, ctx: SetupContext) {
+    const config = useConfig()
     const focusGrp = useFocusGroup()
     const formatMgr = useFormats()
     const recordMgr = useRecords()
 
-    const fieldType = computed<string | object | undefined>(() => {
+    const fieldType = computed(() => {
       const fmt = props.format
       return (
         props.type ||
@@ -174,7 +178,7 @@ export const OfField = defineComponent({
     const variant = computed(() => props.variant || 'normal')
 
     const record = computed(() => {
-      return props.record || recordMgr.getCurrentRecord()
+      return props.record || recordMgr.getCurrentRecord() || undefined
     })
     const initialValue = computed(() =>
       props.name && record.value
@@ -188,7 +192,8 @@ export const OfField = defineComponent({
     )
     const locked = computed(() => props.locked || record.value?.locked)
 
-    const fctx: FieldContext = readonlyUnrefs({
+    const fctx: FieldContext = proxyRefs({
+      config,
       container: 'of-field',
       fieldType,
       initialValue,
@@ -196,11 +201,11 @@ export const OfField = defineComponent({
       mode,
       record,
       value,
-      onUpdate(value: any) {
+      onUpdate: (value: any) => {
         if (props.name && record.value) record.value.value[props.name] = value
         else ctx.emit('update:modelValue', value)
       },
-      onInput(input: any, value: any) {
+      onInput: (input: any, value: any) => {
         ctx.emit('input', input, value)
       },
       ...extractRefs(props, [
@@ -212,7 +217,7 @@ export const OfField = defineComponent({
         'name',
         'required',
       ]),
-    } as Record<string, any>)
+    })
 
     const rendered = ref<FieldRender>()
     watch(
@@ -232,7 +237,7 @@ export const OfField = defineComponent({
           // want a field type that just renders an error message
           throw new TypeError(`Unknown field type: ${ftype}`)
         }
-        rendered.value = found.setup(
+        rendered.value = found.init(
           extendReactive(
             extfmt,
             restrictProps(

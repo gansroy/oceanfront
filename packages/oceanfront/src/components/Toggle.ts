@@ -1,8 +1,17 @@
-import { computed, defineComponent, h, ref, SetupContext, PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  proxyRefs,
+  ref,
+  PropType,
+  SetupContext,
+} from 'vue'
+
+import { useConfig } from '../lib/config'
 import { FieldContext, FieldRender } from '../lib/fields'
-import { FieldRecord, useRecords } from '../lib/records'
-import { readonlyUnrefs } from '../lib/util'
 import { useFormats } from '../lib/formats'
+import { FieldRecord, useRecords } from '../lib/records'
 
 export const OfToggle = defineComponent({
   name: 'OfToggle',
@@ -27,10 +36,11 @@ export const OfToggle = defineComponent({
     'update:checked': null,
   },
   setup(props, ctx: SetupContext) {
+    const config = useConfig()
     const formatMgr = useFormats()
     const recordMgr = useRecords()
     const record = computed(() => {
-      return props.record || recordMgr.getCurrentRecord()
+      return props.record || recordMgr.getCurrentRecord() || undefined
     })
     const initialValue = computed(() =>
       props.name && record.value
@@ -48,7 +58,8 @@ export const OfToggle = defineComponent({
     const locked = computed(() => props.locked || record.value?.locked)
     const focused = ref(false)
 
-    const fctx: FieldContext = readonlyUnrefs({
+    const fctx: FieldContext = proxyRefs({
+      config,
       container: 'of-field',
       fieldType: 'toggle',
       initialValue,
@@ -56,7 +67,7 @@ export const OfToggle = defineComponent({
       mode,
       record,
       value,
-      onUpdate(value: any) {
+      onUpdate: (value: any) => {
         if (props.name && record.value) record.value.value[props.name] = value
         else ctx.emit('update:checked', value)
       },
@@ -68,14 +79,14 @@ export const OfToggle = defineComponent({
         'name',
         'required',
       ]),*/
-    } as Record<string, any>)
+    })
 
     const rendered = computed<FieldRender>(() => {
       const found = formatMgr.getFieldType('toggle', true)
       if (!found) {
         throw new TypeError(`Unknown field type: toggle`)
       }
-      return found.setup(
+      return found.init(
         {
           inputType: props.inputType || (props.switch ? 'switch' : 'checkbox'),
         },

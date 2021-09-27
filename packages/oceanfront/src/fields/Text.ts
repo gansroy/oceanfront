@@ -32,8 +32,8 @@ const _inputTypeFrom = (type?: string) => {
 
 export const TextField = defineFieldType({
   name: 'text',
-  setup(props: FieldProps, ctx: FieldContext) {
-    const formatMgr = useFormats()
+  init(props: FieldProps, ctx: FieldContext) {
+    const formatMgr = useFormats(ctx.config)
     const formatter = computed(() =>
       formatMgr.getTextFormatter(props.type, props.formatOptions)
     )
@@ -162,9 +162,7 @@ export const TextField = defineFieldType({
         evt.stopPropagation()
       },
       onInput(evt: InputEvent) {
-        const inputElt = evt.target as
-          | HTMLInputElement
-          | HTMLTextAreaElement
+        const inputElt = evt.target as HTMLInputElement | HTMLTextAreaElement
         const fmt = formatter.value
         if (fmt?.handleInput) {
           const upd = fmt.handleInput(evt)

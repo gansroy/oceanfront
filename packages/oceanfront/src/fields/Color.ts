@@ -1,27 +1,20 @@
 import { computed, h, ref, watch } from 'vue'
 import Saturation from '../components/Saturation'
 import Hue from '../components/Hue'
+import { hsvToHsl, hsvToRgb, loadColor, rgbToHsv, rgbToHex } from '../lib/color'
 import {
-  defineFieldType,
   FieldContext,
   FieldProps,
-  newFieldId,
+  defineFieldType,
   fieldRender,
+  newFieldId,
 } from '../lib/fields'
-
-import {
-  hsvToHsl,
-  loadColor,
-  rgbToHsv,
-  hsvToRgb,
-  rgbToHex,
-} from 'src/lib/color'
 
 export const ColorField = defineFieldType({
   name: 'color',
   class: 'of-color-field',
 
-  setup(props: FieldProps, ctx: FieldContext) {
+  init(props: FieldProps, ctx: FieldContext) {
     const opened = ref(false)
     const editable = computed(() => ctx.mode === 'edit' && !ctx.locked)
     let defaultFieldId: string

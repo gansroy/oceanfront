@@ -1,4 +1,5 @@
 import { ref, computed, VNode, watch, h } from 'vue'
+import { OfIcon } from '../components/Icon'
 import {
   defineFieldType,
   FieldContext,
@@ -6,13 +7,12 @@ import {
   newFieldId,
   fieldRender,
 } from '../lib/fields'
-import { OfIcon } from '../components/Icon'
 
 export const supportedTypes = new Set(['checkbox', 'switch'])
 
 export const ToggleField = defineFieldType({
   name: 'toggle',
-  setup(props: FieldProps, ctx: FieldContext) {
+  init(props: FieldProps, ctx: FieldContext) {
     const initialValue = computed(() => {
       let initial = ctx.initialValue
       if (initial === undefined) initial = props.defaultValue
