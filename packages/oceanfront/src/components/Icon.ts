@@ -17,10 +17,10 @@ const renderSvg = (paths: string[]): VNode => {
     paths.map((path, idx) => {
       const alt = idx == paths.length - 2
       const pri = idx == paths.length - 1
-      const attrs = ({
+      const attrs = {
         d: path, // FIXME? 'd' is not allowed by VNodeProps
         class: { pri, alt },
-      } as any) as VNodeProps
+      } as any as VNodeProps
       if (alt) (attrs as any)['opacity'] = '0.3'
       return h('path', attrs)
     })

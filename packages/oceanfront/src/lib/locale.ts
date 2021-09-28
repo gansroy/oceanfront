@@ -8,7 +8,7 @@ export interface LocaleNumberFormat {
 }
 
 export type LocaleDateFormat = {
-  placeholder?: any // LocaleDateFormat will be defined later. placeholder is here just to satisfy build 
+  placeholder?: any // LocaleDateFormat will be defined later. placeholder is here just to satisfy build
 }
 
 export interface LocaleState {
