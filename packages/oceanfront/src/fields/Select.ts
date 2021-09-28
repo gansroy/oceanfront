@@ -135,7 +135,7 @@ export const SelectField = defineFieldType({
       if (opened.value) {
         opened.value = false
         if (closing) clearTimeout(closing)
-        closing = setTimeout(() => {
+        closing = window.setTimeout(() => {
           closing = null
         }, 150)
         if (refocus) focus()
