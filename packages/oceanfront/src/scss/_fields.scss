@@ -118,6 +118,7 @@
   box-sizing: border-box;
   color: $color-field;
   display: inline-flex;
+  flex: 1 0 auto;
   flex-flow: column nowrap;
   font-size: $font-size-input;
   max-width: min(100%, var(--of-field-size));

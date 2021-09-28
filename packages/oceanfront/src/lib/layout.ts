@@ -1,6 +1,6 @@
-import { hsluvToHex, hexToHsluv } from 'hsluv'
+import { hsluvToHex, rgbToHsluv } from 'hsluv'
 import { readonly, ref } from 'vue'
-import { parseColor } from './color'
+import { hexToRgb } from './color'
 import { Config, ConfigManager } from './config'
 import { readonlyUnref } from './util'
 
@@ -79,12 +79,12 @@ export function themeStyle(config?: ThemeConfig): Record<string, string> {
   if (config.primaryColor) {
     let primary
     try {
-      primary = parseColor(config.primaryColor || '#000')!
+      primary = hexToRgb(config.primaryColor) || { r: 0, g: 0, b: 0 }
     } catch (e: any) {
       console.error(`Error parsing primary color: ${e.toString()}`)
       return {}
     }
-    const huv = hexToHsluv(primary)
+    const huv = rgbToHsluv([primary.r, primary.g, primary.b])
     primaryHue = huv[0]
     saturation = huv[1]
   } else {

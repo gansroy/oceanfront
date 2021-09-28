@@ -32,7 +32,7 @@ export interface TextFormatter {
 }
 
 export type TextFormatterConstructor = {
-  new(config?: Config, options?: any): TextFormatter
+  new (config?: Config, options?: any): TextFormatter
 }
 type TextFormatterFn = { (config?: Config, options?: any): TextFormatter }
 
@@ -74,7 +74,7 @@ class FormatManager implements FormatState {
       if (!ctor) ctor = this.fieldTypes[this.defaultFieldType]
     }
     if (ctor && typeof ctor === 'function') {
-      ctor = { setup: ctor }
+      ctor = { init: ctor }
     }
     return ctor
   }

@@ -1,16 +1,16 @@
 import { ref, computed, VNode, watch, h } from 'vue'
+import { OfIcon } from '../components/Icon'
 import {
-  defineFieldType,
   FieldContext,
   FieldProps,
-  newFieldId,
+  defineFieldType,
   fieldRender,
+  newFieldId,
 } from '../lib/fields'
-import { OfIcon } from '../components/Icon'
 
 export const FileField = defineFieldType({
   name: 'file',
-  setup(props: FieldProps, ctx: FieldContext) {
+  init(props: FieldProps, ctx: FieldContext) {
     const initialValue = computed(() => {
       let initial = ctx.initialValue
       if (initial === undefined) initial = props.defaultValue
@@ -64,7 +64,7 @@ export const FileField = defineFieldType({
     const handleUpdate = (files: FileList | null) => {
       let val = null
       if (files && files.length) {
-        val = files[0];
+        val = files[0]
       }
       // FIXME shouldn't need to set stateValue here
       stateValue.value = val

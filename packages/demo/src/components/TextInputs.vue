@@ -2,112 +2,24 @@
   <div class="container">
     <h1>Text Inputs</h1>
     <of-highlight lang="html" :value="sampleCode" />
-    <div class="demo-fields">
-      <div class="row form-row">
-        <div class="column">
-          <of-text-field v-bind="textField" v-model="textValue" frame="none" />
-        </div>
-        <div class="column">
-          <of-text-field
-            v-bind="textAreaField"
-            v-model="textAreaValue"
-            rows="3"
-            multiline
-            frame="none"
-          />
-        </div>
-      </div>
-      <div class="row form-row">
-        <div class="column">
-          <of-text-field
-            v-bind="textField"
-            v-model="textValue"
-            frame="none"
-            variant="filled"
-          />
-        </div>
-        <div class="column">
-          <of-text-field
-            v-bind="textAreaField"
-            v-model="textAreaValue"
-            rows="3"
-            multiline
-            frame="none"
-            variant="filled"
-          />
-        </div>
-      </div>
-      <div class="row form-row">
-        <div class="column">
-          <of-text-field v-bind="textField" v-model="textValue" />
-        </div>
-        <div class="column">
-          <of-text-field
-            multiline
-            v-bind="textAreaField"
-            v-model="textAreaValue"
-            rows="3"
-          />
-        </div>
-      </div>
-      <div class="row form-row">
-        <div class="column">
-          <of-text-field
-            v-bind="textField"
-            v-model="textValue"
-            variant="filled"
-          />
-        </div>
-        <div class="column">
-          <of-text-field
-            multiline
-            v-bind="textAreaField"
-            v-model="textAreaValue"
-            rows="3"
-            variant="filled"
-          />
-        </div>
-      </div>
-      <div class="row form-row">
-        <div class="column">
-          <of-text-field v-bind="textField" v-model="textValue" frame="block" />
-        </div>
-        <div class="column">
-          <of-text-field
-            multiline
-            v-bind="textAreaField"
-            v-model="textAreaValue"
-            rows="3"
-            frame="block"
-          />
-        </div>
-      </div>
-      <div class="row form-row">
-        <div class="column">
-          <of-text-field
-            v-bind="textField"
-            v-model="textValue"
-            frame="block"
-            variant="filled"
-          />
-        </div>
-        <div class="column">
-          <of-text-field
-            multiline
-            v-bind="textAreaField"
-            v-model="textAreaValue"
-            rows="3"
-            frame="block"
-            variant="filled"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="container">
-    <div class="row demo-row">
-      <div class="column">
+    <of-demo-field>
+      <template #default="props">
+        <of-text-field
+          placeholder="(placeholder)"
+          help="field help"
+          label="Text input"
+          v-model="textValue"
+          v-bind="{ ...props, ...customProps }"
+        />
+      </template>
+      <template #options>
+        <of-toggle-field label="Multi-line" v-model="customProps.multiline" />
+      </template>
+    </of-demo-field>
+
+    <div class="demo-fields">
+      <div class="row demo-row">
         <of-text-field
           class="of--small"
           model-value="Small text input"
@@ -155,9 +67,7 @@
           frame="none"
         />
       </div>
-    </div>
-    <div class="row demo-row">
-      <div class="column">
+      <div class="row demo-row">
         <of-text-field
           multiline
           class="of--small"
@@ -198,32 +108,11 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue'
-
-const textField = {
-  description: 'Field description',
-  help: 'field help',
-  hidden: false,
-  label: 'Text Input',
-  placeholder: 'placeholder',
-  readOnly: false,
-  required: true,
-}
-
-const textAreaField = {
-  description: 'Field description',
-  help: 'field help',
-  hidden: false,
-  label: 'Textarea Input',
-  placeholder: 'placeholder',
-  readOnly: false,
-  required: true,
-}
+import { reactive, ref, defineComponent } from 'vue'
 
 export default defineComponent({
-  /*async */ setup() {
-    const textValue = ref('62.14')
-    const textAreaValue = ref('')
+  setup() {
+    const textValue = ref('sample value')
     const change = () => {
       textValue.value = new Date().getTime().toString()
     }
@@ -231,16 +120,21 @@ export default defineComponent({
 <of-text-field
   label="Field Label"
   v-model="fieldValue"
-  variant="filled"
 />`
+    const customProps = reactive({ multiline: false })
     return {
       change,
+      customProps,
       sampleCode,
-      textField,
-      textAreaField,
       textValue,
-      textAreaValue,
     }
   },
 })
 </script>
+
+<style lang="scss">
+.demo-row {
+  grid-gap: 5px;
+  margin: 10px 0;
+}
+</style>

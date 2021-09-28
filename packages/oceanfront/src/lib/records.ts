@@ -30,7 +30,8 @@ export interface Lock {
 }
 
 class BasicRecord<T extends object = Record<string, any>>
-  implements FieldRecord {
+  implements FieldRecord
+{
   _initial: Ref<Readonly<T>>
   _required: Ref<Record<string, boolean>>
   _rules: Ref<((value: T) => boolean)[]>
