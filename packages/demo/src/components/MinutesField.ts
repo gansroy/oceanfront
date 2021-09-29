@@ -3,7 +3,7 @@ import { computed, h } from "vue";
 
 export default defineFieldType({
     name: "minutes",
-    setup(props, _ctx: FieldContext) {
+    init(props, _ctx: FieldContext) {
         const recordMgr = useRecords()
         const record = computed(() => {
             return props.record || recordMgr.getCurrentRecord()
@@ -23,10 +23,12 @@ export default defineFieldType({
                 | null
             if (!target) return
             const val = target.value
-            const hm = parseInt(val)
+            let hm = parseInt(val)
             if (!isNaN(hm)) {
-                record.value.value[props.name + "_hours"] = Math.floor((hm / 60)).toFixed(0)
-                record.value.value[props.name + "_minutes"] = (hm % 60).toFixed(0)
+                const sign = hm < 0 ? -1 : 1
+                hm *= sign
+                record.value.value[props.name + "_hours"] = (sign * Math.floor((hm / 60))).toFixed(0)
+                record.value.value[props.name + "_minutes"] = (sign * (hm % 60)).toFixed(0)
             }
         }
 
