@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { FieldRecord, makeRecord } from '../lib/records'
+import { FormContext, makeRecord } from '../lib/records'
 import {
   computed,
   defineComponent,
@@ -171,7 +171,7 @@ export default defineComponent({
       showSelector(props.rowsSelector, rows.value)
     )
 
-    const rowsRecord: ComputedRef<FieldRecord> = computed(() => {
+    const rowsRecord: ComputedRef<FormContext> = computed(() => {
       let ids: any = { all: false }
       if (rowsSelector.value) {
         for (const row of rows.value) {

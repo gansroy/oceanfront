@@ -171,6 +171,7 @@ export const TextField = defineFieldType({
             const iVal = upd.textValue ?? ''
             inputElt.value = iVal
             if (upd.selStart !== undefined) {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               inputElt.setSelectionRange(upd.selStart, upd.selEnd!)
             }
             lazyInputValue = iVal

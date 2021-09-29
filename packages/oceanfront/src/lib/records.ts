@@ -1,24 +1,37 @@
 import { Ref, reactive, ref, toRaw, markRaw, watchEffect } from 'vue'
 import { ConfigManager, Config } from './config'
+import { ItemList } from './items'
 import { looseEqual, readonlyUnref } from './util'
 
-interface FieldRecordState {
+export interface FieldRecordState {
   pending?: boolean
   invalid?: boolean
   locked?: boolean
   updated?: boolean
 }
 
-export interface FieldRecord {
+export interface FieldMetadata {
+  required?: string | undefined
+  label?: string | undefined
+  type?: string | undefined
+  readonly?: boolean | undefined
+  items?: string | any[] | ItemList
+  [key: string]: any
+}
+
+export type RecordMetadata = Record<string, FieldMetadata>
+
+export interface FormContext {
   initialValue: Record<string, any> | null
   invalid?: boolean
   lock(options?: LockOptions): Lock | null
   locked?: boolean
   pending?: boolean
-  required?: Record<string, boolean>
   reset(): void
   updated?: boolean
   value: Record<string, any>
+  metadata: Record<string, FieldMetadata>
+  mode?: 'edit' | 'readonly' | 'view'
 }
 
 export interface LockOptions {
@@ -30,21 +43,26 @@ export interface Lock {
 }
 
 class BasicRecord<T extends object = Record<string, any>>
-  implements FieldRecord
+  implements FormContext
 {
   _initial: Ref<Readonly<T>>
-  _required: Ref<Record<string, boolean>>
   _rules: Ref<((value: T) => boolean)[]>
   _state: Ref<FieldRecordState>
   _value: T
+  _metadata: RecordMetadata
+  _mode: 'edit' | 'readonly' | 'view' = 'edit'
+
+  public get metadata(): RecordMetadata {
+    return this._metadata
+  }
 
   constructor(initial?: T) {
     const init = toRaw(initial || {}) as T
     this._initial = ref(Object.assign({}, init)) as Ref<T>
-    this._required = ref({})
     this._rules = ref([])
     this._state = ref({ locked: false })
     this._value = reactive(init) as T
+    this._metadata = {}
     watchEffect(this._checkUpdated.bind(this))
   }
 
@@ -58,7 +76,7 @@ class BasicRecord<T extends object = Record<string, any>>
         invalid = true
       }
     }
-    for (const k in this._required.value) {
+    for (const k in this.metadata.required) {
       if (!vals[k as keyof T]) {
         invalid = true
       }
@@ -117,6 +135,14 @@ class BasicRecord<T extends object = Record<string, any>>
     }
     Object.assign(this._value, val)
   }
+
+  get mode() {
+    return this._mode
+  }
+
+  set mode(m: 'edit' | 'readonly' | 'view') {
+    this._mode = m
+  }
 }
 
 export const makeRecord = (initial?: Record<string, any>): BasicRecord => {
@@ -124,20 +150,20 @@ export const makeRecord = (initial?: Record<string, any>): BasicRecord => {
 }
 
 export interface RecordManagerState {
-  getCurrentRecord(): FieldRecord | null
+  getCurrentRecord(): FormContext | null
 }
 
 class RecordManager implements RecordManagerState {
-  currentRecord: FieldRecord | null = null
+  currentRecord: FormContext | null = null
 
-  getCurrentRecord(): FieldRecord | null {
+  getCurrentRecord(): FormContext | null {
     return this.currentRecord
   }
 }
 
 const configManager = new ConfigManager('ofrec', RecordManager)
 
-export function setCurrentRecord(record?: FieldRecord | null): void {
+export function setCurrentRecord(record?: FormContext | null): void {
   configManager.extendingManager.currentRecord = record || null
 }
 

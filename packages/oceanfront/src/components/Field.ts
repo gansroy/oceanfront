@@ -25,8 +25,8 @@ import {
 } from '../lib/fields'
 import { useFocusGroup } from '../lib/focus'
 import { useFormats } from '../lib/formats'
+import { FormContext, useRecords } from '../lib/records'
 import { ItemList } from '../lib/items'
-import { FieldRecord, useRecords } from '../lib/records'
 import {
   extractRefs,
   extendReactive,
@@ -140,7 +140,10 @@ export const OfField = defineComponent({
     name: String,
     placeholder: String,
     readonly: Boolean,
-    record: Object as PropType<FieldRecord>,
+    record: {
+      type: Object as PropType<FormContext>,
+      required: false,
+    },
     required: Boolean,
     size: { type: [Number, String], default: undefined },
     // style
@@ -157,7 +160,19 @@ export const OfField = defineComponent({
     const formatMgr = useFormats()
     const recordMgr = useRecords()
 
+    const record = computed(() => {
+      return props.record || recordMgr.getCurrentRecord() || undefined
+    })
+
+    const metadata = computed(() => {
+      return record.value?.metadata
+    })
+
     const fieldType = computed(() => {
+      if (props.name && record.value) {
+        const t = metadata.value?.[props.name]?.type
+        if (t) return t
+      }
       const fmt = props.format
       return (
         props.type ||
@@ -170,16 +185,19 @@ export const OfField = defineComponent({
     })
     const dragOver = ref(false)
     const focused = ref(false)
-    const mode = computed(
-      () => props.mode || (props.readonly ? 'readonly' : 'edit')
-    )
-    // may inherit default value from context in future
-    const frame = computed(() => props.frame || 'normal')
     const variant = computed(() => props.variant || 'normal')
 
-    const record = computed(() => {
-      return props.record || recordMgr.getCurrentRecord() || undefined
+    const mode = computed(() => {
+      if (record.value && props.name) {
+        return metadata.value?.[props.name]?.readonly
+          ? 'readonly'
+          : record.value?.mode
+      } else {
+        return props.mode || (props.readonly ? 'readonly' : 'edit')
+      }
     })
+    // may inherit default value from context in future
+    const frame = computed(() => props.frame || 'normal')
     const initialValue = computed(() =>
       props.name && record.value
         ? (record.value.initialValue || {})[props.name]
@@ -242,7 +260,15 @@ export const OfField = defineComponent({
             extfmt,
             restrictProps(
               props,
-              ['align', 'maxlength', 'placeholder', 'size'],
+              [
+                'align',
+                'maxlength',
+                'placeholder',
+                'size',
+                'name',
+                'record',
+                'items',
+              ],
               true
             )
           ),
@@ -294,7 +320,10 @@ export const OfField = defineComponent({
         const showFocused =
           focused.value || dragOver.value || overlayActive || render.focused
         const blank = render.blank && !(showFocused || overlayActive)
-        const labelText = render.label ?? props.label
+        const metaLabel = props.name
+          ? metadata.value?.[props.name]?.label
+          : undefined
+        const labelText = render.label ?? props.label ?? metaLabel
         const label = ctx.slots.label
           ? ctx.slots.label()
           : frame.value != 'none' && labelText

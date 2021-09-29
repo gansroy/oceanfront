@@ -3,7 +3,7 @@ import { extendConfig } from '../lib/config'
 import { registerIcons, setDefaultIconFont, IconMapping } from '../lib/icons'
 import { themeStyle, useLayout, ThemeConfig } from '../lib/layout'
 import { setLocale, useLocale } from '../lib/locale'
-import { FieldRecord, setCurrentRecord } from '../lib/records'
+import { FormContext, setCurrentRecord } from '../lib/records'
 
 export const OfConfig = defineComponent({
   name: 'OfConfig',
@@ -12,7 +12,7 @@ export const OfConfig = defineComponent({
     iconFont: String,
     icons: Object as PropType<IconMapping>,
     locale: String,
-    record: Object as PropType<FieldRecord>,
+    record: Object as PropType<FormContext>,
     theme: [String, Object],
   },
   setup(props, ctx) {

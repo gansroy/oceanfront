@@ -76,7 +76,9 @@ const fieldInit =
 
     const stateValue = ref()
     const opened = ref(false)
-    const editable = computed(() => ctx.mode === 'edit' && !ctx.locked)
+    const editable = computed(() => {
+      return ctx.mode === 'edit' && !ctx.locked
+    })
     let defaultFieldId: string
     const inputId = computed(() => {
       let id = ctx.id
