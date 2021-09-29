@@ -15,6 +15,7 @@ import TextInputs from './components/TextInputs.vue'
 import ToggleInputs from './components/ToggleInputs.vue'
 import ColorPickerInputs from './components/ColorPickerInputs.vue'
 import DateTimePickerInputs from './components/DateTimePickerInputs.vue'
+import GroupInputs from './components/GroupInputs.vue'
 import Tabs from './components/Tabs.vue'
 import Pagination from './components/Pagination.vue'
 import Calendar from './components/Calendar.vue'
@@ -37,8 +38,9 @@ export const router = createRouter({
     { path: '/slider-inputs', component: SliderInputs },
     { path: '/text-inputs', component: TextInputs },
     { path: '/toggle-inputs', component: ToggleInputs },
-    { path: '/datetime-picker-inputs', component: DateTimePickerInputs },
+    { path: '/datetime-inputs', component: DateTimePickerInputs },
     { path: '/color-picker-inputs', component: ColorPickerInputs },
+    { path: '/group-inputs', component: GroupInputs },
     { path: '/data-tables', component: DataTables },
     { path: '/tabs', component: Tabs },
     { path: '/pagination', component: Pagination },

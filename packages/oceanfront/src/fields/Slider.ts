@@ -12,8 +12,8 @@ import {
   defineFieldType,
   FieldContext,
   FieldProps,
-  newFieldId,
   fieldRender,
+  newFieldId,
 } from '../lib/fields'
 import { watchPosition } from '../lib/util'
 
@@ -26,7 +26,7 @@ function intoInt(val?: string | number): number | undefined {
 
 export const SliderField = defineFieldType({
   name: 'slider',
-  setup(props: FieldProps, ctx: FieldContext) {
+  init(props: FieldProps, ctx: FieldContext) {
     const initialValue = computed(() => {
       let initial = ctx.initialValue
       if (initial === undefined) initial = props.defaultValue

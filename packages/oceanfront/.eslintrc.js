@@ -7,15 +7,13 @@ module.exports = {
     'plugin:jest/recommended',
     'plugin:vue/vue3-recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
-    'prettier/vue',
+    'plugin:prettier/recommended',
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     '@typescript-eslint/ban-types': 'off', // temporary - allow 'object'
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-var-requires': 'off', // allow optional vue-router dependency
     '@typescript-eslint/no-unused-vars': [
       'warn',
       {
@@ -26,7 +24,6 @@ module.exports = {
     'vue/attributes-order': 'off',
     'vue/html-self-closing': 'off',
     'vue/max-attributes-per-line': 'off',
-    'vue/no-dupe-keys': 'off', // seems broken
     'vue/require-default-prop': 'off',
   },
   parser: 'vue-eslint-parser',

@@ -1,25 +1,20 @@
 import { computed, h, ref, watch } from 'vue'
 import Saturation from '../components/Saturation'
 import Hue from '../components/Hue'
+import { hsvToHsl, hsvToRgb, loadColor, rgbToHsv, rgbToHex } from '../lib/color'
 import {
-  defineFieldType,
   FieldContext,
   FieldProps,
-  newFieldId,
+  defineFieldType,
   fieldRender,
+  newFieldId,
 } from '../lib/fields'
-
-import { hsvToRgb } from '../lib/colorpicker'
 
 export const ColorField = defineFieldType({
   name: 'color',
   class: 'of-color-field',
 
-  setup(props: FieldProps, ctx: FieldContext) {
-    const stateValue = ref()
-    const hsl = ref()
-    const rgb = ref()
-    const label = ref()
+  init(props: FieldProps, ctx: FieldContext) {
     const opened = ref(false)
     const editable = computed(() => ctx.mode === 'edit' && !ctx.locked)
     let defaultFieldId: string
@@ -37,80 +32,75 @@ export const ColorField = defineFieldType({
     const clickOpen = () => {
       opened.value = true
     }
-    const hexp = (val: number): string => {
-      const v = val.toString(16)
-      return v.length == 1 ? '0' + v : v
-    }
-    watch(
-      () => stateValue.value,
-      (val) => {
-        hsl.value = {
-          h: val.h,
-          s: Math.round(val.s * 100),
-          l: Math.round(val.v * 100),
-        }
-        rgb.value = hsvToRgb(val.h, val.s, val.v)
-        label.value =
-          '#' + hexp(rgb.value.r) + hexp(rgb.value.g) + hexp(rgb.value.b)
-      },
-      { deep: true }
-    )
     const initialValue = computed(() => {
       let initial = ctx.initialValue
       if (initial === undefined) initial = props.defaultValue
       return initial ?? null
     })
-    stateValue.value = ctx.value
-    const onSaturationChange = (saturation: number, bright: number) => {
-      stateValue.value = {
-        h: stateValue.value.h,
-        s: saturation,
-        v: bright,
+    const stateValue = ref()
+    const compColor = computed(() => {
+      const hsv = stateValue.value || { h: 0, s: 0, v: 0 }
+      const rgb = hsvToRgb(hsv)
+      const hsl = hsvToHsl(hsv)
+      return {
+        hsv,
+        rgb: 'rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')',
+        hsl:
+          'hsl(' +
+          hsl.h +
+          ', ' +
+          Math.round(hsl.s * 100) +
+          '%, ' +
+          Math.round(hsl.l * 100) +
+          '%)',
+        hex: rgbToHex(rgb),
       }
-      onChange(stateValue)
-    }
-    const onHueChange = (hue: number) => {
-      stateValue.value = {
-        h: hue,
-        s: stateValue.value.s,
-        v: stateValue.value.v,
+    })
+    watch(
+      () => ctx.value,
+      (val) => {
+        try {
+          const rgb = val ? loadColor(val) : null
+          if (rgb) {
+            if (!stateValue.value || compColor.value.hex != rgbToHex(rgb)) {
+              // conditional to avoid clobbering the hue value
+              stateValue.value = rgbToHsv(rgb as any)
+            }
+          }
+        } catch (e) {
+          // ignore invalid color
+        }
+      },
+      {
+        immediate: true,
       }
-      onChange(stateValue)
+    )
+    const setHsv = (color: { h: number; s: number; v: number; a?: number }) => {
+      stateValue.value = color
+      onChange(compColor.value.hex)
     }
-    const onChange = (data: any): void => {
-      if (stateValue.value && ctx.onUpdate) ctx.onUpdate(data.value)
+    const onChange = (data: string): void => {
+      if (stateValue.value && ctx.onUpdate) ctx.onUpdate(data)
     }
     const renderPopup = () => {
+      const color = compColor.value
+      const hsv = color.hsv
       return h(
         'div',
         { class: 'of-menu of-colorpicker-popup' },
         h('div', { class: 'color-picker' }, [
           h(Saturation, {
-            saturation: stateValue.value.s,
-            hue: stateValue.value.h,
-            value: stateValue.value.v,
-            onChange: onSaturationChange,
+            saturation: hsv.s,
+            hue: hsv.h,
+            value: hsv.v,
+            onChange: (s: number, v: number) => setHsv({ ...hsv, s, v }),
           }),
           h(Hue, {
-            hue: stateValue.value.h,
-            onChange: onHueChange,
+            hue: hsv.h,
+            onChange: (h: number) => setHsv({ ...hsv, h }),
           }),
-          h(
-            'div',
-            {},
-            'hsl(' +
-              hsl.value.h +
-              ', ' +
-              hsl.value.s +
-              '%, ' +
-              hsl.value.l +
-              '%)'
-          ),
-          h(
-            'div',
-            {},
-            'rgb(' + rgb.value.r + ', ' + rgb.value.g + ', ' + rgb.value.b + ')'
-          ),
+          h('div', {}, color.hsl),
+          h('div', {}, color.rgb),
         ])
       )
     }
@@ -128,7 +118,7 @@ export const ColorField = defineFieldType({
             id: inputId.value,
             tabindex: 0,
           },
-          [label.value]
+          [compColor.value.hex]
         ),
       click: clickOpen,
       cursor: editable.value ? 'pointer' : 'default',
@@ -142,18 +132,11 @@ export const ColorField = defineFieldType({
         h('div', {
           class: 'of-color-swatch',
           style: {
-            backgroundColor:
-              'hsl(' +
-              hsl.value.h +
-              ', ' +
-              hsl.value.s +
-              '%, ' +
-              hsl.value.l +
-              '%)',
+            backgroundColor: compColor.value.hex,
           },
         }),
-      value: stateValue,
       updated: computed(() => initialValue.value !== stateValue.value),
+      value: stateValue,
     })
   },
 })

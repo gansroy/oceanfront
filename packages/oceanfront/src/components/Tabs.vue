@@ -5,8 +5,10 @@
         <div
           :class="{
             'of-tabs-navigation-header': true,
-            'of-tabs-navigation-header-show-next-navigation': ofTabsNavigationHeaderShowNextNavigation,
-            'of-tabs-navigation-header-show-previous-navigation': ofTabsNavigationHeaderShowPreviousNavigation,
+            'of-tabs-navigation-header-show-next-navigation':
+              ofTabsNavigationHeaderShowNextNavigation,
+            'of-tabs-navigation-header-show-previous-navigation':
+              ofTabsNavigationHeaderShowPreviousNavigation,
             'of-tabs-navigation-header-has-navigation': showNavigation,
           }"
         >
@@ -120,6 +122,7 @@ import {
   PropType,
   SetupContext,
   computed,
+  nextTick,
   watch,
   onBeforeUnmount,
 } from 'vue'
@@ -185,7 +188,7 @@ export default defineComponent({
   name: 'OfTabs',
   components: { OfOverlay },
   props: {
-    items: ({ type: [Object, Array] } as any) as PropType<ItemList>,
+    items: { type: [Object, Array] } as any as PropType<ItemList>,
     modelValue: Number,
     scrolling: { type: Boolean, default: false },
     overflowButton: { type: Boolean, default: false },
@@ -204,7 +207,7 @@ export default defineComponent({
       () => props.modelValue,
       (val) => {
         selectedTabKey.value = val
-        setTimeout(() => {
+        nextTick(() => {
           repositionLine()
         })
       }
@@ -303,7 +306,7 @@ export default defineComponent({
     })
 
     const init = function () {
-      setTimeout(() => {
+      nextTick(() => {
         setTabsWidth()
         hideOutsideTabs()
         repositionLine()
@@ -405,7 +408,7 @@ export default defineComponent({
           index++
         }
 
-        setTimeout(() => {
+        nextTick(() => {
           adjustTabsVisibility(tabsIndexes)
         })
       }
@@ -430,7 +433,7 @@ export default defineComponent({
 
       showOverflowButton.value = hasInvisibleTabs
 
-      setTimeout(() => {
+      nextTick(() => {
         repositionLine()
       })
     }
@@ -482,7 +485,7 @@ export default defineComponent({
         context.emit('update:modelValue', key)
         if (emitSelectEvent) context.emit('select-tab', selectedTab)
 
-        setTimeout(() => {
+        nextTick(() => {
           closeSubMenu()
           closeOverflowPopup()
           repositionLine()
@@ -498,7 +501,7 @@ export default defineComponent({
         context.emit('update:modelValue', key)
         context.emit('select-tab', selectedTab)
 
-        setTimeout(() => {
+        nextTick(() => {
           hideOutsideTabs()
         })
       }
@@ -535,11 +538,14 @@ export default defineComponent({
         const tab: Tab | undefined = getTab(key)
 
         if (tab && tab.subMenuItems) {
-          subMenuTimerId.value = setTimeout(() => {
-            subMenuTabsList.value = tab.subMenuItems
+          subMenuTimerId.value = window.setTimeout(
+            () => {
+              subMenuTabsList.value = tab.subMenuItems
               subMenuOuter.value = _evt?.target
               subMenuOpened.value = true
-          }, subMenuOpened.value ? 0 : 500)
+            },
+            subMenuOpened.value ? 0 : 500
+          )
         } else {
           closeSubMenu()
         }
@@ -558,7 +564,7 @@ export default defineComponent({
       if (!showSubMenu.value) return false
 
       subMenuClearTimeout()
-      subMenuTimerId.value = setTimeout(() => {
+      subMenuTimerId.value = window.setTimeout(() => {
         closeSubMenu()
       }, 500)
     }

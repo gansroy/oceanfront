@@ -1,11 +1,11 @@
 import {
   Ref,
-  ToRefs,
-  toRef,
-  unref,
-  triggerRef,
+  ToRef,
   shallowRef,
   shallowReadonly,
+  toRef,
+  triggerRef,
+  unref,
 } from 'vue'
 import { hasOwn } from '@vue/shared'
 
@@ -107,21 +107,21 @@ export function extendReactive<T extends object, U extends object>(
 export function extractRefs<T extends object, K extends keyof T>(
   props: T,
   names: K[]
-): ToRefs<T[K]> {
-  const ret: { [k in K]?: any } = {}
+): { [k in K]: ToRef<T[k]> } {
+  const ret: any = {}
   if (names) {
     for (const k of names) {
       ret[k] = toRef(props, k)
     }
   }
-  return ret as unknown as ToRefs<T[K]>
+  return ret as { [k in K]: ToRef<T[k]> }
 }
 
 export function restrictProps<T extends object, K extends keyof T>(
   base: T,
   names: K[],
   ifDefined?: boolean
-): { [k2 in K]: T[K] } {
+): { [k in K]: T[k] } {
   const props = new Set<any>(names)
   const limitProps = props.size > 0
   return new Proxy(base, {
@@ -219,30 +219,6 @@ export function readonlyUnref<T>(val: Ref<T>): T {
   return new Proxy(val, readonlyUnrefHandlers) as any as T
 }
 
-const readonlyUnrefsHandlers = {
-  get(target: object, key: string, _receiver: object): any {
-    return unref(Reflect.get(target, key))
-  },
-  set(_target: object, _key: string, _value: any, _receiver: object): boolean {
-    if (__DEV__) {
-      console.warn('Cannot assign to readonly ref')
-    }
-    return true
-  },
-  deleteProperty(_target: Ref, _key: string): boolean {
-    if (__DEV__) {
-      console.warn('Cannot delete property of readonly ref')
-    }
-    return true
-  },
-}
-
-export function readonlyUnrefs<T extends object>(
-  val: T
-): { [K in keyof T]: T[K] extends Ref<infer V> ? V : T[K] } {
-  return new Proxy(val, readonlyUnrefsHandlers) as any
-}
-
 type EltPos = { x: number; y: number; width: number; height: number }
 
 const eltPos = (elt: Element): EltPos => {
@@ -325,7 +301,7 @@ class PositionObserverImpl implements PositionObserver {
       triggerRef(this._positions)
     }
     if (elts.size > 0 && !this._native) {
-      this._polling = setTimeout(this._poll.bind(this), 1000)
+      this._polling = window.setTimeout(this._poll.bind(this), 1000)
     } else {
       this._polling = undefined
     }
@@ -336,7 +312,7 @@ class PositionObserverImpl implements PositionObserver {
       clearTimeout(this._polling)
     }
     if (this._positions.value.size > 0) {
-      this._polling = setTimeout(this._poll.bind(this), 0)
+      this._polling = window.setTimeout(this._poll.bind(this), 0)
       return true
     } else {
       return false
@@ -363,7 +339,7 @@ class PositionObserverImpl implements PositionObserver {
         this._native.observe(target, { box: 'border-box' })
       } else if (!this._polling) {
         // first timeout is short to handle initial re-layout
-        this._polling = setTimeout(this._poll.bind(this, 50))
+        this._polling = window.setTimeout(this._poll.bind(this, 50))
       }
       if (this._options.immediate) {
         triggerRef(this._positions)

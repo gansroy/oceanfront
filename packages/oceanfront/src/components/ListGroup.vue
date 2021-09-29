@@ -8,13 +8,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'OfListGroup',
   props: {
     modelValue: Boolean,
-    transition: String,
     value: [Boolean, String],
   },
   emits: ['update:modelValue'],
@@ -24,11 +23,9 @@ export default defineComponent({
       state.value = !state.value
       ctx.emit('update:modelValue', state.value)
     }
-    const transition = computed(() => props.transition)
     return {
       state,
       toggle,
-      transition,
     }
   },
 })

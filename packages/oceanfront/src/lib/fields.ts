@@ -1,4 +1,5 @@
 import { VNode, Ref, readonly } from 'vue'
+import { Config } from './config'
 import { ItemList } from './items'
 import { FormContext } from './records'
 import { extendReactive } from './util'
@@ -11,17 +12,17 @@ export const newFieldId = (): string => {
   return 'of-field-' + _fieldIndex++
 }
 
-export type FieldType = FieldTypeConstructor | FieldSetup
+export type FieldType = FieldTypeConstructor | FieldInit
 
 export interface FieldTypeConstructor {
   name?: string
-  setup: FieldSetup
+  init: FieldInit
 }
 
-export type FieldSetup = (props: FieldProps, ctx: FieldContext) => FieldRender
+export type FieldInit = (props: FieldProps, ctx: FieldContext) => FieldRender
 
 export interface FieldContext {
-  block?: boolean
+  config: Config
   container?: string
   fieldType?: string // the resolved field type name
   id?: string
@@ -34,9 +35,8 @@ export interface FieldContext {
   name?: string
   record?: FormContext
   // onFocus, onBlur
-  onUpdate?: (value: any) => void
   onInput?: (input: any, value: any) => void
-  // onInput? - watch inputValue
+  onUpdate?: (value: any) => void
   required?: boolean
   value?: any
 }
@@ -85,7 +85,6 @@ export interface FieldRender {
   // messages
   pendingValue?: any
   popup?: FieldPopup
-  // popupPosition
   prepend?: () => Renderable | undefined
   size?: number | string
   updated?: boolean
@@ -103,6 +102,7 @@ export interface FieldPopup {
   content?: () => Renderable | undefined
   visible?: boolean
   onBlur?: () => void
+  // position?
 }
 
 // helper to infer type
@@ -111,6 +111,8 @@ export function defineFieldType<T extends FieldType>(f: T): T {
 }
 
 export type FormatProp = string | Record<string, any>
+
+export type FrameProp = 'none' | 'normal' | 'block'
 
 export function extendFieldFormat(
   format: FormatProp | undefined,
@@ -129,5 +131,5 @@ export type ExtFieldRender = {
 }
 export function fieldRender<T extends object>(props: T): FieldRender {
   // FIXME lies
-  return (readonly(props) as any) as FieldRender
+  return readonly(props) as any as FieldRender
 }

@@ -2,53 +2,22 @@
   <div class="container">
     <h1>Select Inputs</h1>
     <of-highlight lang="html" :value="sampleCode" />
-    <div class="demo-fields">
-      <div class="row form-row">
-        <of-field
-          :format="{ items: testItems, type: 'select' }"
-          label="Select input"
-          model-value="Option 1"
-          plain
-        ></of-field>
-      </div>
-      <div class="row form-row">
-        <of-field
-          :format="{ items: testItems, type: 'select' }"
-          label="Select input"
-          model-value="Option 1"
-          plain
-          variant="filled"
-        ></of-field>
-      </div>
-      <div class="row form-row">
-        <of-field
-          :format="{ items: testItems, type: 'select' }"
-          label="Select input"
-          model-value="Option 1"
-          variant="basic"
-        ></of-field>
-      </div>
-      <div class="row form-row">
+
+    <of-demo-field>
+      <template #default="props">
         <of-select-field
           :items="tzOpts"
           label="Select timezone"
-          model-value="America/Vancouver"
-          variant="outlined"
+          v-model="tzValue"
+          v-bind="props"
         ></of-select-field>
-      </div>
-      <div class="row form-row">
-        <of-select-field
-          label="Select input"
-          model-value="Selected"
-          variant="filled"
-        ></of-select-field>
-      </div>
-    </div>
+      </template>
+    </of-demo-field>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   setup() {
@@ -57,7 +26,6 @@ export default defineComponent({
   label="Select input"
   :items="['apple', 'orange']"
   v-model="fieldValue"
-  variant="filled"
 />`
     const testItems = [
       { special: 'header', text: 'Test select items' },
@@ -443,6 +411,7 @@ export default defineComponent({
     ]
     timezones.sort()
     const tzOpts = { items: [] as Record<string, any>[] }
+    const tzValue = ref('America/Vancouver')
     let tzGrp = null
     for (const value of timezones) {
       const gPos = value.indexOf('/')
@@ -454,7 +423,7 @@ export default defineComponent({
       }
       tzOpts.items.push({ text, value })
     }
-    return { sampleCode, testItems, tzOpts }
+    return { sampleCode, testItems, tzOpts, tzValue }
   },
 })
 </script>

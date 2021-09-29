@@ -1,4 +1,4 @@
-import { loadColor } from '../lib/color'
+import { rgbToHex, loadColor } from '../lib/color'
 import { TextFormatter, TextFormatResult } from '../lib/formats'
 
 export class ColorFormatter implements TextFormatter {
@@ -8,8 +8,8 @@ export class ColorFormatter implements TextFormatter {
     let error
     try {
       value = loadColor(value)
-      textValue = value || ''
-    } catch (e) {
+      textValue = value ? rgbToHex(value) : ''
+    } catch (e: any) {
       error = e.toString()
       console.error(error)
     }
@@ -21,6 +21,7 @@ export class ColorFormatter implements TextFormatter {
   }
 
   unformat(input: string): string | null {
-    return loadColor(input)
+    const val = loadColor(input)
+    return val ? rgbToHex(val) : null
   }
 }

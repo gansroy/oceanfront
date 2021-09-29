@@ -10,12 +10,12 @@ import {
 } from '../lib/fields'
 import { useItems } from '../lib/items'
 
-type ActiveItem = { text?: string;[key: string]: any }
+type ActiveItem = { text?: string; [key: string]: any }
 
 export const SelectField = defineFieldType({
   name: 'select',
-  setup(props: FieldProps, ctx: FieldContext) {
-    const itemMgr = useItems()
+  init(props: FieldProps, ctx: FieldContext) {
+    const itemMgr = useItems(ctx.config)
     const initialValue = computed(() => {
       let initial = ctx.initialValue
       if (initial === undefined) initial = props.defaultValue
@@ -140,7 +140,7 @@ export const SelectField = defineFieldType({
       if (opened.value) {
         opened.value = false
         if (closing) clearTimeout(closing)
-        closing = setTimeout(() => {
+        closing = window.setTimeout(() => {
           closing = null
         }, 150)
         if (refocus) focus()
@@ -170,8 +170,11 @@ export const SelectField = defineFieldType({
           evt.stopPropagation()
         } else if (
           formatItems.value.length &&
-          (/(^Key([A-Z]$))/.test(evt.code) || /(^Digit([0-9]$))/.test(evt.code)) &&
-          (!evt.altKey && !evt.metaKey && !evt.ctrlKey)
+          (/(^Key([A-Z]$))/.test(evt.code) ||
+            /(^Digit([0-9]$))/.test(evt.code)) &&
+          !evt.altKey &&
+          !evt.metaKey &&
+          !evt.ctrlKey
         ) {
           searchText.value += evt.key
           for (let i = 0; i < formatItems.value.length; i++) {
@@ -227,7 +230,6 @@ export const SelectField = defineFieldType({
       click: clickOpen,
       cursor: computed(() => (canOpen.value ? 'pointer' : null)),
       focus,
-      focused: computed(() => focused.value || opened.value),
       // hovered,
       inputId,
       inputValue,
@@ -238,9 +240,9 @@ export const SelectField = defineFieldType({
         content: () =>
           opened.value
             ? h(OfOptionList, {
-              items: formatItems.value,
-              onClick: setValue,
-            })
+                items: formatItems.value,
+                onClick: setValue,
+              })
             : undefined,
         visible: opened,
         onBlur: closePopup,

@@ -2,42 +2,18 @@
   <div class="container">
     <h1>File Inputs</h1>
     <of-highlight lang="html" :value="sampleCode" />
-    <div class="demo-fields">
-      <div class="row form-row">
+
+    <of-demo-field>
+      <template #default="props">
         <of-field
           type="file"
           label="Uploaded file"
           :model-value="{ name: 'myreport.pdf', size: 10204 }"
           size="30"
-          plain
+          v-bind="props"
         />
-      </div>
-      <div class="row form-row">
-        <of-field
-          type="file"
-          label="Uploaded file"
-          :model-value="{ name: 'myreport.pdf', size: 10204 }"
-          size="30"
-          plain
-          variant="filled"
-        />
-      </div>
-      <div class="row form-row">
-        <of-field
-          type="file"
-          label="Uploaded file"
-          :model-value="{ name: 'myreport.pdf', size: 10204 }"
-          size="30"
-          variant="basic"
-        />
-      </div>
-      <div class="row form-row">
-        <of-field type="file" label="Outlined" size="30" variant="outlined" />
-      </div>
-      <div class="row form-row">
-        <of-field type="file" label="New file" variant="filled" size="30" />
-      </div>
-    </div>
+      </template>
+    </of-demo-field>
   </div>
 </template>
 
@@ -50,7 +26,6 @@ export default defineComponent({
 <of-file-field
   label="File input"
   :model-value="{name: 'Previous filename', size: 100}"
-  variant="filled"
 />`
 
     return { sampleCode }

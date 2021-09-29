@@ -15,64 +15,79 @@
       <div class="column">
         <div class="demo-form">
           <div class="row form-row">
-            <of-select-field
-              label="Select"
-              :items="[
-                { value: 'optionA', text: 'A' },
-                { value: 'optionB', text: 'B' },
-              ]"
-              :record="testRecord"
-              name="one"
-            ></of-select-field>
+            <div class="column">
+              <of-select-field
+                label="Select"
+                :items="[
+                  { value: 'optionA', text: 'A' },
+                  { value: 'optionB', text: 'B' },
+                ]"
+                :record="testRecord"
+                name="one"
+              ></of-select-field>
+            </div>
           </div>
           <div class="row form-row">
-            <of-text-field label="Text" name="two" :record="testRecord" />
+            <div class="column">
+              <of-text-field label="Text" name="two" :record="testRecord" />
+            </div>
           </div>
           <div class="row form-row">
-            <of-toggle-field
-              name="three"
-              label="Toggle"
-              label-position="field"
-              :record="testRecord"
-            />
+            <div class="column">
+              <of-toggle-field
+                name="three"
+                label="Toggle"
+                label-position="field"
+                :record="testRecord"
+              />
+            </div>
           </div>
           <div class="row form-row">
-            <of-slider-field
-              name="four"
-              label="Slider"
-              label-position="field"
-              :record="testRecord"
-            />
+            <div class="column">
+              <of-slider-field
+                name="four"
+                label="Slider"
+                :record="testRecord"
+              />
+            </div>
           </div>
           <div class="row form-row">
-            <of-datetime-field
-              name="five"
-              label="Date and time picker"
-              label-position="field"
-              :record="testRecord"
-            />
+            <div class="column">
+              <of-datetime-field
+                name="five"
+                label="Date and time picker"
+                :record="testRecord"
+              />
+            </div>
           </div>
           <div class="row form-row">
-            <of-date-field
-              name="six"
-              label="Date picker"
-              required
-              label-position="field"
-              :record="testRecord"
-            />
+            <div class="column">
+              <of-date-field
+                name="six"
+                label="Date picker"
+                required
+                :record="testRecord"
+              />
+            </div>
           </div>
           <div class="row form-row">
-            <of-time-field
-              name="seven"
-              label="Time picker"
-              label-position="field"
-              :record="testRecord"
-            />
+            <div class="column">
+              <of-time-field
+                name="seven"
+                label="Time picker"
+                :record="testRecord"
+              />
+            </div>
           </div>
           <div class="row form-row">
-            <button @click="testRecord.reset()" :disabled="testRecord.locked">
-              Reset
-            </button>
+            <div class="column">
+              <of-button
+                @click="testRecord.reset()"
+                :disabled="testRecord.locked"
+              >
+                Reset
+              </of-button>
+            </div>
           </div>
         </div>
       </div>
@@ -111,7 +126,7 @@ const testRecord = makeRecord({
   two: 'text',
   three: true,
   four: 25,
-  five: '',
+  five: '2021-03-14 15:45',
   six: '2021-02-15',
   seven: '12:00:00',
 })

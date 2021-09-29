@@ -2,6 +2,7 @@ import {
   computed,
   defineComponent,
   h,
+  proxyRefs,
   ref,
   watch,
   PropType,
@@ -10,6 +11,9 @@ import {
   VNode,
   WatchStopHandle,
 } from 'vue'
+
+import { OfOverlay } from '../components/Overlay'
+import { useConfig } from '../lib/config'
 import {
   FieldContext,
   FieldDragIn,
@@ -17,18 +21,19 @@ import {
   Renderable,
   FormatProp,
   FieldTypeConstructor,
+  FrameProp,
 } from '../lib/fields'
+import { useFocusGroup } from '../lib/focus'
 import { useFormats } from '../lib/formats'
 import { FormContext, useRecords } from '../lib/records'
+import { ItemList } from '../lib/items'
 import {
   extractRefs,
   extendReactive,
-  readonlyUnrefs,
   restrictProps,
   watchPosition,
   PositionObserver,
 } from '../lib/util'
-import { OfOverlay } from '../components/Overlay'
 
 const renderSlot = (
   container: Renderable[],
@@ -110,21 +115,20 @@ export const OfField = defineComponent({
   inheritAttrs: false,
   props: {
     align: String,
-    block: Boolean,
     class: [String, Array, Object],
     // density: {type: Number, default: undefined}
     // form
     format: [String, Object] as PropType<FormatProp>,
+    frame: String as PropType<FrameProp>,
     id: String,
     initialValue: {
       type: [String, Boolean, Number, Array, Object],
       default: undefined,
     },
-    items: [String, Array, Object],
+    items: [String, Array, Object] as PropType<string | any[] | ItemList>,
     label: String,
     loading: Boolean,
     locked: Boolean,
-    plain: Boolean,
     // messages
     maxlength: [Number, String],
     mode: String as PropType<'edit' | 'readonly' | 'view'>,
@@ -148,21 +152,23 @@ export const OfField = defineComponent({
   },
   emits: {
     'update:modelValue': null,
-    'input': null,
+    input: null,
   },
   setup(props, ctx: SetupContext) {
+    const config = useConfig()
+    const focusGrp = useFocusGroup()
     const formatMgr = useFormats()
     const recordMgr = useRecords()
 
     const record = computed(() => {
-      return props.record || recordMgr.getCurrentRecord()
+      return props.record || recordMgr.getCurrentRecord() || undefined
     })
 
     const metadata = computed(() => {
       return record.value?.metadata
     })
 
-    const fieldType = computed<string | object | undefined>(() => {
+    const fieldType = computed(() => {
       if (props.name && record.value) {
         const t = metadata.value?.[props.name]?.type
         if (t) return t
@@ -179,7 +185,7 @@ export const OfField = defineComponent({
     })
     const dragOver = ref(false)
     const focused = ref(false)
-    const variant = computed(() => props.variant || 'basic')
+    const variant = computed(() => props.variant || 'normal')
 
     const mode = computed(
       () => {
@@ -190,7 +196,8 @@ export const OfField = defineComponent({
         }
       }
     )
-
+    // may inherit default value from context in future
+    const frame = computed(() => props.frame || 'normal')
     const initialValue = computed(() =>
       props.name && record.value
         ? (record.value.initialValue || {})[props.name]
@@ -203,7 +210,8 @@ export const OfField = defineComponent({
     )
     const locked = computed(() => props.locked || record.value?.locked)
 
-    const fctx: FieldContext = readonlyUnrefs({
+    const fctx: FieldContext = proxyRefs({
+      config,
       container: 'of-field',
       fieldType,
       initialValue,
@@ -211,15 +219,14 @@ export const OfField = defineComponent({
       mode,
       record,
       value,
-      onUpdate(value: any) {
+      onUpdate: (value: any) => {
         if (props.name && record.value) record.value.value[props.name] = value
         else ctx.emit('update:modelValue', value)
       },
-      onInput(input: any, value: any) {
+      onInput: (input: any, value: any) => {
         ctx.emit('input', input, value)
       },
       ...extractRefs(props, [
-        'block',
         'id',
         'items',
         'label',
@@ -228,7 +235,7 @@ export const OfField = defineComponent({
         'name',
         'required',
       ]),
-    } as Record<string, any>)
+    })
 
     const rendered = ref<FieldRender>()
     watch(
@@ -248,7 +255,7 @@ export const OfField = defineComponent({
           // want a field type that just renders an error message
           throw new TypeError(`Unknown field type: ${ftype}`)
         }
-        rendered.value = found.setup(
+        rendered.value = found.init(
           extendReactive(
             extfmt,
             restrictProps(
@@ -269,6 +276,7 @@ export const OfField = defineComponent({
     const handlers = {
       onBlur(_evt: FocusEvent) {
         focused.value = false
+        if (focusGrp) focusGrp.blur()
       },
       onClick(evt: MouseEvent) {
         // ctx.emit('click', evt)
@@ -278,6 +286,7 @@ export const OfField = defineComponent({
       },
       onFocus(_evt: FocusEvent) {
         focused.value = true
+        if (focusGrp) focusGrp.focus()
       },
       onMousedown(_evt: MouseEvent) {
         // ctx.emit('mousedown', evt)
@@ -300,13 +309,14 @@ export const OfField = defineComponent({
           overlayActive = render.popup.visible ?? true
           overlayBlur = render.popup.onBlur
         }
-        const showFocused = focused.value || dragOver.value || render.focused
+        const showFocused =
+          focused.value || dragOver.value || overlayActive || render.focused
         const blank = render.blank && !(showFocused || overlayActive)
         const metaLabel = props.name ? metadata.value?.[props.name]?.label : undefined
         const labelText = render.label ?? props.label ?? metaLabel
         const label = ctx.slots.label
           ? ctx.slots.label()
-          : !props.plain && labelText
+          : frame.value != 'none' && labelText
             ? h(
               'label',
               {
@@ -316,30 +326,26 @@ export const OfField = defineComponent({
               [labelText]
             )
             : undefined
-        const decor_cls = props.plain ? 'of--plain' : 'of--decorated'
         const cls = [
           'of-field',
           {
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
-            'of--block': props.block,
             'of--blank': blank,
-            'of--decorated': !props.plain,
             'of--dragover': dragOver.value,
             'of--focused': showFocused,
             'of--invalid': render.invalid,
             'of--muted': props.muted,
             'of--loading': render.loading,
             'of--locked': locked.value,
-            'of--plain': props.plain,
             'of--updated': render.updated,
             // of--readonly: props.readonly,
             // of--disabled: props.disabled,
           },
           'of--cursor-' + (render.cursor || 'default'),
+          'of--frame-' + frame.value,
           'of--label-' + (label ? 'visible' : 'none'),
           'of--mode-' + mode.value,
-          decor_cls,
-          `${decor_cls}-${variant.value}`,
+          'of--variant-' + variant.value,
           render.class,
           props.class,
         ]

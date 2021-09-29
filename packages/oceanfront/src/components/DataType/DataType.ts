@@ -1,16 +1,19 @@
-import { PropType, defineComponent, h } from "vue"
+import { PropType, defineComponent, h } from 'vue'
 import { DataTypeValue } from '../../lib/datatype'
 
-import Currency from "./currency"
-import Link from "./link"
+import Currency from './currency'
+import Link from './link'
 
 export default defineComponent({
   name: 'OfDataType',
-  props: { 
-    value: { type: [String, Boolean, Number, Array, Object] as PropType<DataTypeValue>, default: null } ,
+  props: {
+    value: {
+      type: [String, Boolean, Number, Array, Object] as PropType<DataTypeValue>,
+      default: null,
+    },
   },
   render() {
-    if(this.$props.value && typeof(this.$props.value) === 'object') {
+    if (this.$props.value && typeof this.$props.value === 'object') {
       switch (this.$props.value.format) {
         case 'currency':
           return h(Currency, this.$props, this.$slots)
@@ -22,5 +25,5 @@ export default defineComponent({
     }
 
     return this.$props.value
-  }
+  },
 })

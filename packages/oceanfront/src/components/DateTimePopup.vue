@@ -32,7 +32,7 @@
           :onblur="() => editYear(false)"
           :onVnodeMounted="focusYearInput"
           :onkeydown="yearInputHandler"
-          :value="monthStart.getFullYear()"
+          :value="selMonthStart.getFullYear()"
         />
         <div class="of-datepicker-nav-button next" :onclick="nextMonth">
           <of-icon name="arrow-right" />
@@ -44,7 +44,7 @@
           class="picker-date"
           :class="{
             'other-month': cell.otherMonth,
-            'selected-date': isSelected?.(cell) || false,
+            'selected-date': checkSelected?.(cell) || false,
             today: cell.today,
           }"
           :onclick="cell.otherMonth ? null : () => selectDate(cell.date)"
@@ -113,8 +113,8 @@
       </div>
     </div>
     <div class="of-date-picker-buttons" v-if="useButtons">
-      <div class="of-date-picker-button accept" :onclick="accept">Accept</div>
-      <div class="of-date-picker-button cancel" :onclick="cancel">Cancel</div>
+      <div class="of-date-picker-button accept" :onclick="onAccept">Accept</div>
+      <div class="of-date-picker-button cancel" :onclick="onCancel">Cancel</div>
     </div>
   </div>
 </template>
@@ -138,16 +138,16 @@ export default defineComponent({
     id: String,
     withTime: Boolean,
     withDate: Boolean,
-    date: Object,
-    monthStart: Object,
+    date: Date,
+    monthStart: Date,
     isSelected: Function,
     accept: Function,
     withoutTitle: Boolean,
   },
   setup(props, _ctx: SetupContext) {
     let theNode: VNode | null
-    const selectedDate = ref((props.date ?? new Date()) as Date)
-    const monthStart = ref(props.monthStart as Date)
+    const selDate = ref(props.date ?? new Date())
+    const selMonthStart = ref(props.monthStart || selDate.value)
     const editingYear = ref(false)
 
     const formatMgr = useFormats()
@@ -166,13 +166,13 @@ export default defineComponent({
     })
 
     const selectDate = (selected: Date) => {
-      const date = new Date(selectedDate.value.valueOf())
+      const date = new Date(selDate.value.valueOf())
       date.setFullYear(
         selected.getFullYear(),
         selected.getMonth(),
         selected.getDate()
       )
-      if (props.withTime) selectedDate.value = date
+      if (props.withTime) selDate.value = date
       else props.accept?.(date)
     }
 
@@ -183,13 +183,13 @@ export default defineComponent({
     }
 
     const isSelected = (cell: MonthGridCell) =>
-      sameDate(selectedDate.value, cell.date)
+      sameDate(selDate.value, cell.date)
 
     const nextMonth = () => {
-      monthStart.value = _nextMonth(monthStart.value)
+      selMonthStart.value = _nextMonth(selMonthStart.value)
     }
     const prevMonth = () => {
-      monthStart.value = _prevMonth(monthStart.value)
+      selMonthStart.value = _prevMonth(selMonthStart.value)
     }
     const editYear = (on: boolean) => {
       editingYear.value = on
@@ -205,23 +205,23 @@ export default defineComponent({
         const el = e.target as HTMLInputElement
         const maybeYear = parseInt(el.value)
         if (isNaN(maybeYear) || maybeYear < 1) return
-        const date = new Date(monthStart.value.valueOf())
+        const date = new Date(selMonthStart.value.valueOf())
         date.setFullYear(maybeYear)
-        monthStart.value = date
+        selMonthStart.value = date
         editingYear.value = false
         if (theNode) theNode.el?.focus()
       }
     }
 
     const updateTime = (which: 'h' | 'm', delta: number) => {
-      const date = new Date(selectedDate.value.valueOf())
+      const date = new Date(selDate.value.valueOf())
       let value = which == 'h' ? date.getHours() : date.getMinutes()
       const limit = which == 'h' ? 23 : 59
       value += delta
       if (value < 0) value = limit
       if (value > limit) value = 0
       const _ = which == 'h' ? date.setHours(value) : date.setMinutes(value)
-      selectedDate.value = date
+      selDate.value = date
     }
 
     let timeout: number | undefined
@@ -232,7 +232,7 @@ export default defineComponent({
     }
     const initialTimeUpdate = (which: 'h' | 'm', delta: number) => () => {
       updateTime(which, delta)
-      interval = setInterval(periodicTimeUpdate(which, delta), 100)
+      interval = window.setInterval(periodicTimeUpdate(which, delta), 100)
     }
 
     const timeClickHandler = (which?: 'h' | 'm', delta?: number) => {
@@ -241,17 +241,15 @@ export default defineComponent({
       interval = timeout = undefined
       if (which == undefined || delta == undefined) return
       updateTime(which, delta)
-      timeout = setTimeout(initialTimeUpdate(which, delta), 500)
+      timeout = window.setTimeout(initialTimeUpdate(which, delta), 500)
     }
 
     return {
-      id: computed(() => props.id),
-      withTime: computed(() => props.withTime),
-      isSelected: computed(() => props.isSelected ?? isSelected),
-      monthStart,
+      selMonthStart,
       useButtons: props.withTime,
 
       selectDate,
+      checkSelected: computed(() => props.isSelected || isSelected),
       nextMonth,
       prevMonth,
       editYear,
@@ -259,29 +257,29 @@ export default defineComponent({
       timeClickHandler,
       focusYearInput,
       updateTime,
-      accept: () => props.accept?.(selectedDate.value),
-      cancel: () => props.accept?.(),
+      onAccept: () => props.accept?.(selDate.value),
+      onCancel: () => props.accept?.(),
 
-      title: computed(() => titleFormat?.format(selectedDate.value).textValue),
+      title: computed(() => titleFormat?.format(selDate.value).textValue),
       monthYear: computed(
-        () => monthFormat?.format(monthStart.value).textValue
+        () => monthFormat?.format(selMonthStart.value).textValue
       ),
-      hours: computed(() => expand(selectedDate.value.getHours(), 2)),
-      minutes: computed(() => expand(selectedDate.value.getMinutes(), 2)),
+      hours: computed(() => expand(selDate.value.getHours(), 2)),
+      minutes: computed(() => expand(selDate.value.getMinutes(), 2)),
       editingYear,
 
       cells: computed(() => {
-        const gridData = monthGrid(monthStart.value)
+        const gridData = monthGrid(selMonthStart.value)
         return gridData.grid.reduce((items, value) => {
           items.push(...value)
           return items
         }, [])
       }),
 
-      mounted(vnode: VNode) {
+      mounted: (vnode: VNode) => {
         theNode = vnode
       },
-      unmounted() {
+      unmounted: () => {
         theNode = null
       },
     }

@@ -12,42 +12,52 @@
                 <!-- bezier-editor v-model="curve" / -->
                 <div>
                   <div class="row form-row">
-                    <of-slider-field
-                      label="Primary Hue"
-                      min="0"
-                      max="359"
-                      v-model="hue"
-                    />
+                    <div class="column">
+                      <of-slider-field
+                        label="Primary Hue"
+                        min="0"
+                        max="359"
+                        v-model="hue"
+                      />
+                    </div>
                   </div>
                   <div class="row form-row">
-                    <of-slider-field
-                      label="Secondary Hue Offset"
-                      min="0"
-                      max="359"
-                      v-model="secondOffset"
-                    />
+                    <div class="column">
+                      <of-slider-field
+                        label="Secondary Hue Offset"
+                        min="0"
+                        max="359"
+                        v-model="secondOffset"
+                      />
+                    </div>
                   </div>
                   <div class="row form-row">
-                    <of-slider-field
-                      label="Background Hue Offset"
-                      min="0"
-                      max="359"
-                      v-model="bgOffset"
-                    />
+                    <div class="column">
+                      <of-slider-field
+                        label="Background Hue Offset"
+                        min="0"
+                        max="359"
+                        v-model="bgOffset"
+                      />
+                    </div>
                   </div>
                   <div class="row form-row">
-                    <of-slider-field
-                      label="Saturation"
-                      min="0"
-                      max="100"
-                      v-model="saturation"
-                    />
+                    <div class="column">
+                      <of-slider-field
+                        label="Saturation"
+                        min="0"
+                        max="100"
+                        v-model="saturation"
+                      />
+                    </div>
                   </div>
                   <!-- of-field type="color" v-model="color" variant="filled" / -->
                   <!-- of-field type="color" v-model="color" / -->
 
                   <div class="row form-row">
-                    <of-toggle-field label="Dark mode" v-model="dark" />
+                    <div class="column">
+                      <of-toggle-field label="Dark mode" v-model="dark" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -58,92 +68,109 @@
               >
                 <h4>Preview</h4>
                 <div class="row form-row">
-                  <div class="of-field of--decorated-basic of-text-field">
-                    <div class="of-field-body">
-                      <div class="of-field-over">
-                        <div class="of-field-label-wrap">
-                          <label class="of-field-label">Field label</label>
+                  <div class="column">
+                    <div
+                      class="
+                        of-field
+                        of--frame-normal
+                        of--variant-normal
+                        of-text-field
+                      "
+                    >
+                      <div class="of-field-body">
+                        <div class="of-field-over">
+                          <div class="of-field-label-wrap">
+                            <label class="of-field-label">Field label</label>
+                          </div>
                         </div>
-                      </div>
-                      <div class="of-field-inner">
-                        <div class="of-field-input-label">
-                          <label>Basic field</label>
+                        <div class="of-field-inner">
+                          <div class="of-field-input-label">
+                            <label>Basic field</label>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="
-                      of-field of--decorated-basic of-text-field of--focused
-                    "
-                  >
-                    <div class="of-field-body">
-                      <div class="of-field-over">
-                        <div class="of-field-label-wrap">
-                          <label class="of-field-label">Field label</label>
+                    <div
+                      class="
+                        of-field
+                        of--frame-normal
+                        of--variant-normal
+                        of-text-field
+                        of--focused
+                      "
+                    >
+                      <div class="of-field-body">
+                        <div class="of-field-over">
+                          <div class="of-field-label-wrap">
+                            <label class="of-field-label">Field label</label>
+                          </div>
                         </div>
-                      </div>
-                      <div class="of-field-inner">
-                        <div class="of-field-input-label">
-                          <label>Focused</label>
+                        <div class="of-field-inner">
+                          <div class="of-field-input-label">
+                            <label>Focused</label>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="row form-row">
-                  <div
-                    class="
-                      of-field
-                      of--active
-                      of--label-visible
-                      of--decorated-filled
-                      of-text-field
-                    "
-                  >
-                    <div class="of-field-body">
-                      <div class="of-field-over">
-                        <div class="of-field-label-wrap">
-                          <label class="of-field-label">Field label</label>
+                  <div class="column">
+                    <div
+                      class="
+                        of-field
+                        of--active
+                        of--label-visible
+                        of--frame-block
+                        of--variant-filled
+                        of-text-field
+                      "
+                    >
+                      <div class="of-field-body">
+                        <div class="of-field-over">
+                          <div class="of-field-label-wrap">
+                            <label class="of-field-label">Field label</label>
+                          </div>
                         </div>
-                      </div>
-                      <div class="of-field-inner">
-                        <div class="of-field-content">
-                          <input
-                            type="text"
-                            class="of-field-input"
-                            readonly
-                            value="Filled field"
-                          />
+                        <div class="of-field-inner">
+                          <div class="of-field-content">
+                            <input
+                              type="text"
+                              class="of-field-input"
+                              readonly
+                              value="Filled field"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  &nbsp;
-                  <div
-                    class="
-                      of-field
-                      of--active
-                      of--label-visible
-                      of--decorated-filled
-                      of-text-field
-                      of--focused
-                    "
-                  >
-                    <div class="of-field-body">
-                      <div class="of-field-over">
-                        <div class="of-field-label-wrap">
-                          <label class="of-field-label">Field label</label>
+                    <br />
+                    <div
+                      class="
+                        of-field
+                        of--active
+                        of--label-visible
+                        of--frame-block
+                        of--variant-filled
+                        of-text-field
+                        of--focused
+                      "
+                    >
+                      <div class="of-field-body">
+                        <div class="of-field-over">
+                          <div class="of-field-label-wrap">
+                            <label class="of-field-label">Field label</label>
+                          </div>
                         </div>
-                      </div>
-                      <div class="of-field-inner">
-                        <div class="of-field-content">
-                          <input
-                            type="text"
-                            class="of-field-input"
-                            readonly
-                            value="Focused"
-                          />
+                        <div class="of-field-inner">
+                          <div class="of-field-content">
+                            <input
+                              type="text"
+                              class="of-field-input"
+                              readonly
+                              value="Focused"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
