@@ -49,6 +49,7 @@
             >
             <of-list-item to="/color-picker-inputs">Color Picker</of-list-item>
             <of-list-item to="/records">Records</of-list-item>
+            <of-list-item to="/custom-records">Custom Records</of-list-item>
             <of-list-item to="/formatters">Value Formatters</of-list-item>
           </of-list-group>
           <of-list-group value="1">

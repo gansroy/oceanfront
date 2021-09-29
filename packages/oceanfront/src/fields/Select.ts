@@ -59,7 +59,12 @@ export const SelectField = defineFieldType({
         textKey: 'text',
         valueKey: 'value',
       }
-      const list = itemMgr.getItemList(ctx.items || props.items)
+      let items
+      if (props.name && props.record) {
+        items = props.record.metadata[props.name]?.items
+      }
+      if (!items) items = props.items
+      const list = itemMgr.getItemList(items)
       if (list) {
         Object.assign(result, list)
       }

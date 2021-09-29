@@ -19,7 +19,7 @@ import {
   FieldTypeConstructor,
 } from '../lib/fields'
 import { useFormats } from '../lib/formats'
-import { FieldRecord, useRecords } from '../lib/records'
+import { FormContext, useRecords } from '../lib/records'
 import {
   extractRefs,
   extendReactive,
@@ -82,8 +82,8 @@ const makeDragIn = (spec: FieldDragIn, flag: Ref<boolean>) => {
         if (evt.dataTransfer) {
           evt.dataTransfer.dropEffect =
             spec.dropEffect === 'none' ||
-            spec.dropEffect === 'link' ||
-            spec.dropEffect === 'move'
+              spec.dropEffect === 'link' ||
+              spec.dropEffect === 'move'
               ? spec.dropEffect
               : 'copy'
         }
@@ -136,7 +136,10 @@ export const OfField = defineComponent({
     name: String,
     placeholder: String,
     readonly: Boolean,
-    record: Object as PropType<FieldRecord>,
+    record: {
+      type: Object as PropType<FormContext>,
+      required: false,
+    },
     required: Boolean,
     size: { type: [Number, String], default: undefined },
     // style
@@ -151,27 +154,43 @@ export const OfField = defineComponent({
     const formatMgr = useFormats()
     const recordMgr = useRecords()
 
+    const record = computed(() => {
+      return props.record || recordMgr.getCurrentRecord()
+    })
+
+    const metadata = computed(() => {
+      return record.value?.metadata
+    })
+
     const fieldType = computed<string | object | undefined>(() => {
+      if (props.name && record.value) {
+        const t = metadata.value?.[props.name]?.type
+        if (t) return t
+      }
       const fmt = props.format
       return (
         props.type ||
         (fmt && typeof fmt === 'string'
           ? fmt
           : typeof fmt === 'object'
-          ? (fmt as any).fieldType || (fmt as any).type
-          : undefined)
+            ? (fmt as any).fieldType || (fmt as any).type
+            : undefined)
       )
     })
     const dragOver = ref(false)
     const focused = ref(false)
-    const mode = computed(
-      () => props.mode || (props.readonly ? 'readonly' : 'edit')
-    )
     const variant = computed(() => props.variant || 'basic')
 
-    const record = computed(() => {
-      return props.record || recordMgr.getCurrentRecord()
-    })
+    const mode = computed(
+      () => {
+        if (record.value && props.name) {
+          return metadata.value?.[props.name]?.readonly ? 'readonly' : record.value?.mode
+        } else {
+          return props.mode || (props.readonly ? 'readonly' : 'edit')
+        }
+      }
+    )
+
     const initialValue = computed(() =>
       props.name && record.value
         ? (record.value.initialValue || {})[props.name]
@@ -234,7 +253,7 @@ export const OfField = defineComponent({
             extfmt,
             restrictProps(
               props,
-              ['align', 'maxlength', 'placeholder', 'size'],
+              ['align', 'maxlength', 'placeholder', 'size', 'name', 'record', 'items'],
               true
             )
           ),
@@ -283,11 +302,12 @@ export const OfField = defineComponent({
         }
         const showFocused = focused.value || dragOver.value || render.focused
         const blank = render.blank && !(showFocused || overlayActive)
-        const labelText = render.label ?? props.label
+        const metaLabel = props.name ? metadata.value?.[props.name]?.label : undefined
+        const labelText = render.label ?? props.label ?? metaLabel
         const label = ctx.slots.label
           ? ctx.slots.label()
           : !props.plain && labelText
-          ? h(
+            ? h(
               'label',
               {
                 class: 'of-field-label',
@@ -295,7 +315,7 @@ export const OfField = defineComponent({
               },
               [labelText]
             )
-          : undefined
+            : undefined
         const decor_cls = props.plain ? 'of--plain' : 'of--decorated'
         const cls = [
           'of-field',

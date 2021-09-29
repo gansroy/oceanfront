@@ -159,7 +159,7 @@ export {
   provideNavGroup,
   useNavGroup,
 } from './lib/nav'
-export { makeRecord, setCurrentRecord, useRecords } from './lib/records'
+export { makeRecord, setCurrentRecord, useRecords, FormContext, FieldMetadata, RecordMetadata, FieldRecordState, Lock, LockOptions } from './lib/records'
 export { Tab } from './lib/tab'
 export {
   Paginator,

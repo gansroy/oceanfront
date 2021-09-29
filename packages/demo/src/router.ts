@@ -8,6 +8,7 @@ import Overview from './components/Overview.vue'
 import Buttons from './components/Buttons.vue'
 import FileInputs from './components/FileInputs.vue'
 import Records from './components/Records.vue'
+import CustomRecords from './components/CustomRecords.vue'
 import SelectInputs from './components/SelectInputs.vue'
 import SliderInputs from './components/SliderInputs.vue'
 import TextInputs from './components/TextInputs.vue'
@@ -28,6 +29,7 @@ export const router = createRouter({
     { path: '/colors', component: Colors },
     { path: '/icons', component: Icons },
     { path: '/records', component: Records },
+    { path: '/custom-records', component: CustomRecords },
     { path: '/formatters', component: Formatters },
     { path: '/buttons', component: Buttons },
     { path: '/file-inputs', component: FileInputs },

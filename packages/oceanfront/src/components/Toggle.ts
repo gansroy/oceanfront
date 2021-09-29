@@ -1,8 +1,8 @@
-import { computed, defineComponent, h, ref, SetupContext, PropType } from 'vue'
+import { computed, defineComponent, h, PropType, ref, SetupContext } from 'vue'
 import { FieldContext, FieldRender } from '../lib/fields'
-import { FieldRecord, useRecords } from '../lib/records'
-import { extractRefs, readonlyUnrefs } from '../lib/util'
 import { useFormats } from '../lib/formats'
+import { FormContext, useRecords } from '../lib/records'
+import { readonlyUnrefs } from '../lib/util'
 
 export const OfToggle = defineComponent({
   name: 'OfToggle',
@@ -18,7 +18,7 @@ export const OfToggle = defineComponent({
     muted: Boolean,
     name: String,
     readonly: { type: Boolean, default: false },
-    record: Object as PropType<FieldRecord>,
+    record: Object as PropType<FormContext>,
     required: Boolean,
     switch: Boolean,
     value: String,
