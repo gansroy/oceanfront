@@ -63,7 +63,7 @@ const fieldInit =
       try {
         const loadedValue = df.loadValue(value)
         if (loadedValue instanceof Date) value = loadedValue
-      } catch (e) { }
+      } catch (e) {}
       return value
     }
 
@@ -176,26 +176,26 @@ const fieldInit =
         return [
           withDate
             ? h(OfIcon, {
-              name: 'date',
-              size: 'input',
-            })
+                name: 'date',
+                size: 'input',
+              })
             : null,
           withTime && !withDate
             ? h(OfIcon, {
-              name: 'time',
-              size: 'input',
-            })
+                name: 'time',
+                size: 'input',
+              })
             : null,
           withClear
             ? h(OfIcon, {
-              name: 'circle-cross',
-              size: 'input',
-              onClick: (e: MouseEvent | TouchEvent) => {
-                e.stopPropagation()
-                e.preventDefault()
-                ctx.onUpdate?.('')
-              },
-            })
+                name: 'circle-cross',
+                size: 'input',
+                onClick: (e: MouseEvent | TouchEvent) => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                  ctx.onUpdate?.('')
+                },
+              })
             : null,
         ]
       },

@@ -2,9 +2,7 @@ import { computed, defineComponent, h, PropType, ref, SetupContext } from 'vue'
 import { FieldContext, FieldRender } from '../lib/fields'
 import { useFormats } from '../lib/formats'
 import { FormContext, useRecords } from '../lib/records'
-import {
-  proxyRefs,
-} from 'vue'
+import { proxyRefs } from 'vue'
 
 import { useConfig } from '../lib/config'
 

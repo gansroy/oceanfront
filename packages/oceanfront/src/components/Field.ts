@@ -87,8 +87,8 @@ const makeDragIn = (spec: FieldDragIn, flag: Ref<boolean>) => {
         if (evt.dataTransfer) {
           evt.dataTransfer.dropEffect =
             spec.dropEffect === 'none' ||
-              spec.dropEffect === 'link' ||
-              spec.dropEffect === 'move'
+            spec.dropEffect === 'link' ||
+            spec.dropEffect === 'move'
               ? spec.dropEffect
               : 'copy'
         }
@@ -179,23 +179,23 @@ export const OfField = defineComponent({
         (fmt && typeof fmt === 'string'
           ? fmt
           : typeof fmt === 'object'
-            ? (fmt as any).fieldType || (fmt as any).type
-            : undefined)
+          ? (fmt as any).fieldType || (fmt as any).type
+          : undefined)
       )
     })
     const dragOver = ref(false)
     const focused = ref(false)
     const variant = computed(() => props.variant || 'normal')
 
-    const mode = computed(
-      () => {
-        if (record.value && props.name) {
-          return metadata.value?.[props.name]?.readonly ? 'readonly' : record.value?.mode
-        } else {
-          return props.mode || (props.readonly ? 'readonly' : 'edit')
-        }
+    const mode = computed(() => {
+      if (record.value && props.name) {
+        return metadata.value?.[props.name]?.readonly
+          ? 'readonly'
+          : record.value?.mode
+      } else {
+        return props.mode || (props.readonly ? 'readonly' : 'edit')
       }
-    )
+    })
     // may inherit default value from context in future
     const frame = computed(() => props.frame || 'normal')
     const initialValue = computed(() =>
@@ -260,7 +260,15 @@ export const OfField = defineComponent({
             extfmt,
             restrictProps(
               props,
-              ['align', 'maxlength', 'placeholder', 'size', 'name', 'record', 'items'],
+              [
+                'align',
+                'maxlength',
+                'placeholder',
+                'size',
+                'name',
+                'record',
+                'items',
+              ],
               true
             )
           ),
@@ -312,12 +320,14 @@ export const OfField = defineComponent({
         const showFocused =
           focused.value || dragOver.value || overlayActive || render.focused
         const blank = render.blank && !(showFocused || overlayActive)
-        const metaLabel = props.name ? metadata.value?.[props.name]?.label : undefined
+        const metaLabel = props.name
+          ? metadata.value?.[props.name]?.label
+          : undefined
         const labelText = render.label ?? props.label ?? metaLabel
         const label = ctx.slots.label
           ? ctx.slots.label()
           : frame.value != 'none' && labelText
-            ? h(
+          ? h(
               'label',
               {
                 class: 'of-field-label',
@@ -325,7 +335,7 @@ export const OfField = defineComponent({
               },
               [labelText]
             )
-            : undefined
+          : undefined
         const cls = [
           'of-field',
           {

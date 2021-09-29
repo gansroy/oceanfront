@@ -30,7 +30,7 @@ export interface FormContext {
   reset(): void
   updated?: boolean
   value: Record<string, any>
-  metadata: Record<string, FieldMetadata>,
+  metadata: Record<string, FieldMetadata>
   mode?: 'edit' | 'readonly' | 'view'
 }
 
@@ -42,7 +42,9 @@ export interface Lock {
   release(): void
 }
 
-class BasicRecord<T extends object = Record<string, any>> implements FormContext {
+class BasicRecord<T extends object = Record<string, any>>
+  implements FormContext
+{
   _initial: Ref<Readonly<T>>
   _rules: Ref<((value: T) => boolean)[]>
   _state: Ref<FieldRecordState>
@@ -139,7 +141,7 @@ class BasicRecord<T extends object = Record<string, any>> implements FormContext
   }
 
   set mode(m: 'edit' | 'readonly' | 'view') {
-    this._mode = m;
+    this._mode = m
   }
 }
 
