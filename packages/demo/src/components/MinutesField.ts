@@ -3,7 +3,7 @@ import { computed, h } from "vue";
 
 export default defineFieldType({
     name: "minutes",
-    init(props, _ctx: FieldContext) {
+    init(props, ctx: FieldContext) {
         const recordMgr = useRecords()
         const record = computed(() => {
             return props.record || recordMgr.getCurrentRecord()
@@ -39,6 +39,7 @@ export default defineFieldType({
             content: () => {
                 return h('input', {
                     type: "number",
+                    readonly: ctx.mode === 'readonly' || ctx.locked || undefined,
                     class: [
                         'of-field-input',
                     ],
