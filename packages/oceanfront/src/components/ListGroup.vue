@@ -14,6 +14,7 @@ export default defineComponent({
   name: 'OfListGroup',
   props: {
     modelValue: Boolean,
+    transition: String,
     value: [Boolean, String],
   },
   emits: ['update:modelValue'],
