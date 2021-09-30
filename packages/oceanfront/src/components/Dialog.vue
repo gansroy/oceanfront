@@ -1,6 +1,6 @@
 <template>
   <of-overlay :active="active" @blur="hide">
-    <template #default="{ dlgActive }">
+    <template #default="{ active: dlgActive }">
       <transition :name="transition">
         <div class="of-dialog-outer">
           <div
