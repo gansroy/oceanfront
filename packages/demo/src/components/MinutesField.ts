@@ -47,11 +47,6 @@ export default defineFieldType({
                     value: value.value,
                 });
 
-                /*
-          return () => {
-              return h(OfField, { type: "number", 'onUpdate:modelValue': update, modelValue: value.value, label: props.label })
-          }
-          */
             }
         })
     }
