@@ -1,7 +1,7 @@
 import { VNode, Ref, readonly } from 'vue'
 import { Config } from './config'
 import { ItemList } from './items'
-import { FormContext } from './records'
+import { FormRecord } from './records'
 import { extendReactive } from './util'
 
 export type Renderable = VNode | VNode[] | string
@@ -33,7 +33,7 @@ export interface FieldContext {
   mode?: 'view' | 'edit' | 'readonly' // | 'disabled'
   muted?: boolean // if editable, reduce indicators
   name?: string
-  record?: FormContext
+  record?: FormRecord
   // onFocus, onBlur
   onInput?: (input: any, value: any) => void
   onUpdate?: (value: any) => void
@@ -51,7 +51,7 @@ export interface FieldProps {
   placeholder?: string
   size?: number | string //  defaultSize?
   type?: string
-  record?: FormContext
+  record?: FormRecord
   [key: string]: any
 }
 

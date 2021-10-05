@@ -21,7 +21,7 @@ export interface FieldMetadata {
 
 export type RecordMetadata = Record<string, FieldMetadata>
 
-export interface FormContext {
+export interface FormRecord {
   initialValue: Record<string, any> | null
   invalid?: boolean
   lock(options?: LockOptions): Lock | null
@@ -43,7 +43,7 @@ export interface Lock {
 }
 
 class BasicRecord<T extends object = Record<string, any>>
-  implements FormContext
+  implements FormRecord
 {
   _initial: Ref<Readonly<T>>
   _rules: Ref<((value: T) => boolean)[]>
@@ -150,20 +150,20 @@ export const makeRecord = (initial?: Record<string, any>): BasicRecord => {
 }
 
 export interface RecordManagerState {
-  getCurrentRecord(): FormContext | null
+  getCurrentRecord(): FormRecord | null
 }
 
 class RecordManager implements RecordManagerState {
-  currentRecord: FormContext | null = null
+  currentRecord: FormRecord | null = null
 
-  getCurrentRecord(): FormContext | null {
+  getCurrentRecord(): FormRecord | null {
     return this.currentRecord
   }
 }
 
 const configManager = new ConfigManager('ofrec', RecordManager)
 
-export function setCurrentRecord(record?: FormContext | null): void {
+export function setCurrentRecord(record?: FormRecord | null): void {
   configManager.extendingManager.currentRecord = record || null
 }
 

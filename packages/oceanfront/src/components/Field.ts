@@ -25,7 +25,7 @@ import {
 } from '../lib/fields'
 import { useFocusGroup } from '../lib/focus'
 import { useFormats } from '../lib/formats'
-import { FormContext, useRecords } from '../lib/records'
+import { FormRecord, useRecords } from '../lib/records'
 import { ItemList } from '../lib/items'
 import {
   extractRefs,
@@ -141,7 +141,7 @@ export const OfField = defineComponent({
     placeholder: String,
     readonly: Boolean,
     record: {
-      type: Object as PropType<FormContext>,
+      type: Object as PropType<FormRecord>,
       required: false,
     },
     required: Boolean,
