@@ -165,7 +165,7 @@ export {
   makeRecord,
   setCurrentRecord,
   useRecords,
-  FormContext,
+  FormRecord,
   FieldMetadata,
   RecordMetadata,
   FieldRecordState,

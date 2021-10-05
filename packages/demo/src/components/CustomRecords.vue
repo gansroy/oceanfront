@@ -76,10 +76,10 @@
 
 <script lang="ts">
 import { looseEqual } from '@vue/shared'
-import { FieldRecordState, FormContext, Lock, LockOptions, RecordMetadata } from 'oceanfront'
+import { FieldRecordState, FormRecord, Lock, LockOptions, RecordMetadata } from 'oceanfront'
 import { computed, defineComponent, markRaw, reactive, ref, Ref, toRaw, watchEffect } from 'vue'
 
-class CustomRecord<T extends object = Record<string, any>> implements FormContext {
+class CustomRecord<T extends object = Record<string, any>> implements FormRecord {
   _initial: Ref<Readonly<T>>
   _rules: Ref<((value: T) => boolean)[]>
   _state: Ref<FieldRecordState>
