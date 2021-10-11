@@ -79,7 +79,6 @@
                       {{ subTab.text }}
                     </div>
                   </div>
-                  <div class="of-list-divider"></div>
                 </div>
               </div>
             </div>
@@ -105,7 +104,6 @@
                 {{ tab.text }}
               </div>
             </div>
-            <div class="of-list-divider"></div>
           </div>
         </div>
       </div>
