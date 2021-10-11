@@ -127,6 +127,7 @@ import {
   onBeforeUnmount,
 } from 'vue'
 
+import { watchPosition } from '../lib/util'
 import { ItemList, useItems } from '../lib/items'
 import { OfOverlay } from './Overlay'
 import { Tab } from '../lib/tab'
@@ -221,6 +222,9 @@ export default defineComponent({
       }
     )
 
+    const targetPos = computed(() => watchPosition())
+    watch(targetPos.value.positions, () => repositionLine())
+
     const variant = computed(() => props.variant || 'standard')
     const cls = 'of--variant-' + variant.value
 
@@ -298,6 +302,7 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('resize', hideOutsideTabs)
+      targetPos.value.observe(ofTabsHeader.value)
       init()
     })
 
