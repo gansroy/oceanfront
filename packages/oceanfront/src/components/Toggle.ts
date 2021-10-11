@@ -15,11 +15,11 @@ export const OfToggle = defineComponent({
     inputType: String,
     label: String,
     loading: Boolean,
-    locked: { type: Boolean, default: false },
+    locked: Boolean,
     mode: String as PropType<FieldMode>,
     muted: Boolean,
     name: String,
-    readonly: { type: Boolean, default: false },
+    readonly: Boolean,
     record: Object as PropType<FormRecord>,
     required: Boolean,
     switch: Boolean,
@@ -49,11 +49,13 @@ export const OfToggle = defineComponent({
       () => props.mode || (props.readonly ? 'readonly' : 'normal')
     )
     const locked = computed(() => props.locked || record.value?.locked)
+    const editable = computed(() => mode.value === 'normal')
     const focused = ref(false)
 
     const fctx: FieldContext = proxyRefs({
       config,
       container: 'of-field',
+      editable,
       fieldType: 'toggle',
       initialValue,
       locked,
