@@ -17,6 +17,7 @@ import { useConfig } from '../lib/config'
 import {
   FieldContext,
   FieldDragIn,
+  FieldMode,
   FieldRender,
   Renderable,
   FormatProp,
@@ -117,7 +118,8 @@ export const OfField = defineComponent({
     align: String,
     class: [String, Array, Object],
     // density: {type: Number, default: undefined}
-    // form
+    disabled: Boolean,
+    fixed: Boolean,
     format: [String, Object] as PropType<FormatProp>,
     frame: String as PropType<FrameProp>,
     id: String,
@@ -125,13 +127,14 @@ export const OfField = defineComponent({
       type: [String, Boolean, Number, Array, Object],
       default: undefined,
     },
+    invalid: Boolean,
     items: [String, Array, Object] as PropType<string | any[] | ItemList>,
     label: String,
     loading: Boolean,
     locked: Boolean,
     // messages
     maxlength: [Number, String],
-    mode: String as PropType<'edit' | 'readonly' | 'view'>,
+    mode: String as PropType<FieldMode>,
     modelValue: {
       type: [String, Boolean, Number, Array, Object],
       default: undefined,
@@ -163,19 +166,15 @@ export const OfField = defineComponent({
     const record = computed(() => {
       return props.record || recordMgr.getCurrentRecord() || undefined
     })
-
-    const metadata = computed(() => {
-      return record.value?.metadata
-    })
+    const metadata = computed(() =>
+      props.name ? record.value?.metadata?.[props.name] : null
+    )
 
     const fieldType = computed(() => {
-      if (props.name && record.value) {
-        const t = metadata.value?.[props.name]?.type
-        if (t) return t
-      }
       const fmt = props.format
       return (
         props.type ||
+        metadata.value?.type ||
         (fmt && typeof fmt === 'string'
           ? fmt
           : typeof fmt === 'object'
@@ -187,15 +186,6 @@ export const OfField = defineComponent({
     const focused = ref(false)
     const variant = computed(() => props.variant || 'normal')
 
-    const mode = computed(() => {
-      if (record.value && props.name) {
-        return metadata.value?.[props.name]?.readonly
-          ? 'readonly'
-          : record.value?.mode
-      } else {
-        return props.mode || (props.readonly ? 'readonly' : 'edit')
-      }
-    })
     // may inherit default value from context in future
     const frame = computed(() => props.frame || 'normal')
     const initialValue = computed(() =>
@@ -208,23 +198,39 @@ export const OfField = defineComponent({
         ? record.value.value[props.name]
         : props.modelValue
     )
-    const locked = computed(() => props.locked || record.value?.locked)
+    const mode = computed(
+      () =>
+        props.mode ||
+        metadata.value?.mode ||
+        (props.fixed || metadata.value?.fixed
+          ? 'fixed'
+          : props.disabled || metadata.value?.disabled
+          ? 'disabled'
+          : props.readonly || metadata.value?.readonly
+          ? 'readonly'
+          : props.locked || record.value?.locked
+          ? 'locked'
+          : 'normal')
+    )
+    const editable = computed(() => mode.value === 'normal')
+    const interactive = computed(() => mode.value !== 'fixed')
 
     const fctx: FieldContext = proxyRefs({
       config,
       container: 'of-field',
+      editable,
       fieldType,
       initialValue,
-      locked,
+      interactive,
       mode,
       record,
       value,
+      onInput: (input: any, value: any) => {
+        ctx.emit('input', input, value)
+      },
       onUpdate: (value: any) => {
         if (props.name && record.value) record.value.value[props.name] = value
         else ctx.emit('update:modelValue', value)
-      },
-      onInput: (input: any, value: any) => {
-        ctx.emit('input', input, value)
       },
       ...extractRefs(props, [
         'id',
@@ -342,14 +348,13 @@ export const OfField = defineComponent({
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
             'of--blank': blank,
             'of--dragover': dragOver.value,
+            'of--editable': editable.value,
             'of--focused': showFocused,
-            'of--invalid': render.invalid,
+            'of--invalid': props.invalid || render.invalid,
+            'of--interactive': interactive.value,
             'of--muted': props.muted,
             'of--loading': render.loading,
-            'of--locked': locked.value,
             'of--updated': render.updated,
-            // of--readonly: props.readonly,
-            // of--disabled: props.disabled,
           },
           'of--cursor-' + (render.cursor || 'default'),
           'of--frame-' + frame.value,
@@ -409,7 +414,7 @@ export const OfField = defineComponent({
                 h(
                   'div',
                   {
-                    class: 'of-field-over',
+                    class: 'of-field-header',
                   },
                   label
                     ? h('div', { class: 'of-field-label-wrap' }, label)

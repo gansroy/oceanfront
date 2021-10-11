@@ -76,9 +76,6 @@ const fieldInit =
 
     const stateValue = ref()
     const opened = ref(false)
-    const editable = computed(() => {
-      return ctx.mode === 'edit' && !ctx.locked
-    })
     let defaultFieldId: string
     const inputId = computed(() => {
       let id = ctx.id
@@ -163,8 +160,8 @@ const fieldInit =
       updated: computed(() => {
         return initialValue.value !== stateValue.value
       }),
-      cursor: computed(() => (editable.value ? 'pointer' : 'default')),
-      click: computed(() => (editable.value ? clickOpen : null)),
+      cursor: computed(() => (ctx.editable ? 'pointer' : 'default')),
+      click: computed(() => (ctx.editable ? clickOpen : null)),
       inputId,
       popup: {
         content: renderPopup,
@@ -173,31 +170,32 @@ const fieldInit =
       },
       value: stateValue,
       append() {
-        return [
-          withDate
-            ? h(OfIcon, {
-                name: 'date',
-                size: 'input',
-              })
-            : null,
-          withTime && !withDate
-            ? h(OfIcon, {
-                name: 'time',
-                size: 'input',
-              })
-            : null,
-          withClear
-            ? h(OfIcon, {
-                name: 'circle-cross',
-                size: 'input',
-                onClick: (e: MouseEvent | TouchEvent) => {
-                  e.stopPropagation()
-                  e.preventDefault()
-                  ctx.onUpdate?.('')
-                },
-              })
-            : null,
-        ]
+        if (ctx.interactive)
+          return [
+            withDate
+              ? h(OfIcon, {
+                  name: 'date',
+                  size: 'input',
+                })
+              : null,
+            withTime && !withDate
+              ? h(OfIcon, {
+                  name: 'time',
+                  size: 'input',
+                })
+              : null,
+            withClear && (ctx.editable || ctx.mode === 'locked')
+              ? h(OfIcon, {
+                  name: 'circle-cross',
+                  size: 'input',
+                  onClick: (e: MouseEvent | TouchEvent) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    ctx.onUpdate?.('')
+                  },
+                })
+              : null,
+          ]
       },
     })
   }

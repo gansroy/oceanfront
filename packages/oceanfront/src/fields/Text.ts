@@ -199,6 +199,9 @@ export const TextField = defineFieldType({
       },
       content: () => {
         const fmt = formatter.value
+        if (!ctx.interactive) {
+          return h('div', { class: 'of-field-fixed-content' }, stateValue.value)
+        }
         return h(multiline.value ? 'textarea' : 'input', {
           class: [
             'of-field-input',
@@ -211,7 +214,7 @@ export const TextField = defineFieldType({
             maxlength: props.maxlength,
             name: ctx.name,
             placeholder: props.placeholder,
-            readonly: ctx.mode === 'readonly' || ctx.locked || undefined,
+            readonly: !ctx.editable || undefined,
             rows: props.rows,
             // size: props.size,  - need to implement at field level?
             type: inputType.value,
@@ -221,8 +224,8 @@ export const TextField = defineFieldType({
           // ctx.label as aria label
         })
       },
-      click: () => focus(ctx.mode !== 'readonly' && !ctx.locked),
-      cursor: 'text', // FIXME depends if editable
+      click: () => focus(ctx.editable),
+      cursor: computed(() => (ctx.editable ? 'text' : 'normal')),
       focus,
       focused,
       // hovered,

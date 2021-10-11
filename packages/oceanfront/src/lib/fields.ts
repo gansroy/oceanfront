@@ -21,16 +21,19 @@ export interface FieldTypeConstructor {
 
 export type FieldInit = (props: FieldProps, ctx: FieldContext) => FieldRender
 
+export type FieldMode = 'normal' | 'disabled' | 'readonly' | 'locked' | 'static'
+
 export interface FieldContext {
   config: Config
   container?: string
+  editable?: boolean
   fieldType?: string // the resolved field type name
   id?: string
   initialValue?: any // normally loaded from record
+  interactive?: boolean
   items?: string | any[] | ItemList
   label?: string
-  locked?: boolean // | Lock
-  mode?: 'view' | 'edit' | 'readonly' // | 'disabled'
+  mode?: FieldMode
   muted?: boolean // if editable, reduce indicators
   name?: string
   record?: FormRecord

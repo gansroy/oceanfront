@@ -126,12 +126,11 @@ export const SelectField = defineFieldType({
       return rows
     })
 
-    const canOpen = computed(() => ctx.mode !== 'readonly' && !ctx.locked)
     let closing: number | null = null
     const clickOpen = (_evt?: MouseEvent) => {
       if (opened.value) {
         closePopup()
-      } else if (canOpen.value && !closing) {
+      } else if (ctx.editable && !closing) {
         opened.value = true
       }
       return false
@@ -196,12 +195,14 @@ export const SelectField = defineFieldType({
     }
 
     return fieldRender({
-      append: () =>
-        h(OfIcon, {
-          class: 'of-select-icon',
-          name: opened.value ? 'bullet-select-close' : 'bullet-select',
-          size: 'input',
-        }),
+      append: () => {
+        if (ctx.editable || ctx.mode === 'locked')
+          return h(OfIcon, {
+            class: 'of-select-icon',
+            name: opened.value ? 'bullet-select-close' : 'bullet-select',
+            size: 'input',
+          })
+      },
       blank: computed(() => {
         if (!activeItem.value.item) return true
         const val = inputValue.value
@@ -228,7 +229,7 @@ export const SelectField = defineFieldType({
         ]
       },
       click: clickOpen,
-      cursor: computed(() => (canOpen.value ? 'pointer' : null)),
+      cursor: computed(() => (ctx.editable ? 'pointer' : null)),
       focus,
       // hovered,
       inputId,
