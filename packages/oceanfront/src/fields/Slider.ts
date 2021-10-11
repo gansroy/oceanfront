@@ -80,7 +80,6 @@ export const SliderField = defineFieldType({
     const focus = () => {
       inputElt.value?.focus()
     }
-    const readonly = computed(() => ctx.mode === 'readonly' || ctx.locked)
     const inputId = computed(() => {
       let id = ctx.id
       if (!id) {
@@ -110,7 +109,7 @@ export const SliderField = defineFieldType({
     const thumbHooks = {
       onMousedown(evt: MouseEvent) {
         const elt = thumbElt.value
-        if (!elt || readonly.value) return
+        if (!elt || !ctx.editable) return
         evt.stopPropagation()
         evt.preventDefault()
         focus()
@@ -125,7 +124,7 @@ export const SliderField = defineFieldType({
     const trackHooks = {
       onMousedown(evt: MouseEvent) {
         const tg = evt.target as HTMLDivElement | null
-        if (!tg || readonly.value) return
+        if (!tg || !ctx.editable) return
         const dims = tg.getBoundingClientRect()
         if (!dims.width) return
         evt.stopPropagation()
@@ -193,7 +192,7 @@ export const SliderField = defineFieldType({
         return h(
           'div',
           {
-            class: ['of-slider', { 'of--readonly': readonly.value }],
+            class: 'of-slider',
             onVnodeMounted: () => {
               // watch is not triggered on first render
               nextTick(() => triggerRef(trackElt))

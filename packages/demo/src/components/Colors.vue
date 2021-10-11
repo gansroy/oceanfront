@@ -72,13 +72,15 @@
                     <div
                       class="
                         of-field
+                        of--editable
+                        of--interactive
                         of--frame-normal
                         of--variant-normal
                         of-text-field
                       "
                     >
                       <div class="of-field-body">
-                        <div class="of-field-over">
+                        <div class="of-field-header">
                           <div class="of-field-label-wrap">
                             <label class="of-field-label">Field label</label>
                           </div>
@@ -93,6 +95,8 @@
                     <div
                       class="
                         of-field
+                        of--editable
+                        of--interactive
                         of--frame-normal
                         of--variant-normal
                         of-text-field
@@ -100,7 +104,7 @@
                       "
                     >
                       <div class="of-field-body">
-                        <div class="of-field-over">
+                        <div class="of-field-header">
                           <div class="of-field-label-wrap">
                             <label class="of-field-label">Field label</label>
                           </div>
@@ -119,6 +123,8 @@
                     <div
                       class="
                         of-field
+                        of--editable
+                        of--interactive
                         of--active
                         of--label-visible
                         of--frame-block
@@ -127,7 +133,7 @@
                       "
                     >
                       <div class="of-field-body">
-                        <div class="of-field-over">
+                        <div class="of-field-header">
                           <div class="of-field-label-wrap">
                             <label class="of-field-label">Field label</label>
                           </div>
@@ -148,6 +154,8 @@
                     <div
                       class="
                         of-field
+                        of--editable
+                        of--interactive
                         of--active
                         of--label-visible
                         of--frame-block
@@ -157,7 +165,7 @@
                       "
                     >
                       <div class="of-field-body">
-                        <div class="of-field-over">
+                        <div class="of-field-header">
                           <div class="of-field-label-wrap">
                             <label class="of-field-label">Field label</label>
                           </div>

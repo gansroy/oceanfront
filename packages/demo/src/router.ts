@@ -6,6 +6,7 @@ import Colors from './components/Colors.vue'
 import Icons from './components/Icons.vue'
 import Overview from './components/Overview.vue'
 import Buttons from './components/Buttons.vue'
+import FieldStates from './components/FieldStates.vue'
 import FileInputs from './components/FileInputs.vue'
 import Records from './components/Records.vue'
 import CustomRecords from './components/CustomRecords.vue'
@@ -29,6 +30,7 @@ export const router = createRouter({
     { path: '/', name: 'index', component: Overview },
     { path: '/colors', component: Colors },
     { path: '/icons', component: Icons },
+    { path: '/field-states', component: FieldStates },
     { path: '/records', component: Records },
     { path: '/custom-records', component: CustomRecords },
     { path: '/formatters', component: Formatters },

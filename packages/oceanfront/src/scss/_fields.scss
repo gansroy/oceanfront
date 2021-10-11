@@ -127,16 +127,17 @@
   vertical-align: top;
   @include no-select;
 
-  &:hover .of-field-label {
+  &.of--editable:hover .of-field-label {
     color: $color-field-hover;
   }
-  &.static .of-field-label {
-    color: $color-field-label;
+  &.of--interactive.of--focused .of-field-label {
+    color: $color-field-focus-label;
   }
-  &.of--focused {
-    .of-field-label {
-      color: $color-field-focus-label;
-    }
+  &.of--mode-disabled .of-field-label {
+    color: $color-field-disabled;
+  }
+  &.of--invalid .of-field-label {
+    color: $color-error;
   }
 }
 
@@ -188,7 +189,6 @@
   // caret-color
 
   // may want to restrict to certain variants:
-  -webkit-appearance: none;
   appearance: none;
   background: none;
   border: none;
@@ -202,7 +202,8 @@
 }
 
 .of-field-input,
-.of-field-input-label {
+.of-field-input-label,
+.of-field-fixed-content {
   box-sizing: border-box;
   // min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
   outline: none;
@@ -222,6 +223,367 @@
 }
 .of-field-append {
   padding-right: $pad-h-input;
+}
+
+.of--frame-none,
+.of--frame-normal.of--variant-normal {
+  .of-field-input-label {
+    min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
+    pointer-events: none;
+  }
+
+  &.of-text-field textarea {
+    padding: $pad-v-input $pad-h-input 0;
+    resize: vertical;
+  }
+}
+
+.of--frame-none.of--variant-normal,
+.of--frame-normal.of--variant-normal {
+  .of-field-inner {
+    border: $border-width-input solid transparent;
+  }
+  &.of--interactive .of-field-inner {
+    background: $bg-field;
+    border-color: $border-color-field;
+    border-radius: $border-radius-input;
+    box-shadow: $box-shadow-field-basic;
+  }
+  &.of--editable:hover .of-field-inner {
+    border-color: $border-color-field-hover;
+    // color: $color-field-hover;
+  }
+  &.of--interactive.of--focused .of-field-inner {
+    background: $bg-field-focus;
+    border-color: $border-color-field-focus;
+    box-shadow: $box-shadow-field-basic-focus;
+  }
+  &.of--mode-readonly,
+  &.of--mode-disabled {
+    .of-field-inner {
+      background: $bg-field-disabled;
+      border-color: $border-color-field-disabled;
+    }
+  }
+  &.of--mode-disabled .of-field-inner {
+    opacity: $opacity-input-disabled;
+    @include field-text-disabled;
+  }
+  &.of--invalid:not(.of--focused) .of-field-inner {
+    border-color: $border-color-field-invalid;
+  }
+}
+
+.of--frame-normal {
+  display: flex;
+  padding: 0 0.3em;
+
+  .of-field-header,
+  .of-field-footer {
+    min-height: 0.25em;
+  }
+
+  .of-field-label {
+    display: block;
+    padding: 0 $pad-h-input;
+  }
+}
+
+.of--frame-block {
+  display: flex;
+
+  .of-field-inner {
+    min-height: calc(3em + 2 * #{$pad-v-field});
+    // padding-top: calc(0.75em - 1px);
+  }
+
+  .of-field-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  .of-field-input-label {
+    // min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
+    pointer-events: none;
+  }
+  .of-field-input,
+  .of-field-input-label,
+  .of-field-fixed-content {
+    padding: $pad-v-input $pad-h-field;
+  }
+
+  &.of-text-field textarea {
+    margin: 0 1px 1px;
+    padding: $pad-v-input calc(#{$pad-h-field} - 1px) $pad-v-input;
+    resize: vertical;
+    vertical-align: bottom;
+  }
+}
+
+.of--frame-block.of--variant-normal {
+  --cur-border: 1px solid transparent;
+  &.of--interactive {
+    --cur-border: 1px solid #{$border-color-field};
+  }
+  &.of--mode-disabled {
+    --cur-border: 1px solid #{$border-color-field-disabled};
+  }
+
+  .of-field-header {
+    display: flex;
+    .of-field-label-wrap {
+      border-bottom: var(--cur-border);
+      border-top: var(--cur-border);
+      box-sizing: border-box;
+      padding: 0 4px;
+      transition: border-color 120ms;
+      label {
+        position: relative;
+        top: 0;
+      }
+    }
+  }
+
+  &.of--label-visible .of-field-header {
+    &::before {
+      border-radius: $border-radius-field 0 0 $border-radius-field;
+      border: var(--cur-border);
+      border-right: none;
+      box-sizing: border-box;
+      content: '';
+      flex: 0 0 calc(#{$pad-h-field} - 4px + var(--of-field-size-prepend, 0px));
+      transition: border-color 120ms;
+    }
+    &::after {
+      border-radius: 0 $border-radius-field $border-radius-field 0; // inherit?
+      border: var(--cur-border);
+      border-left: none;
+      content: '';
+      flex: auto;
+      transition: border-color 120ms;
+    }
+  }
+  &.of--label-none .of-field-header {
+    border-radius: $border-radius-field;
+    border: var(--cur-border);
+    transition: border-color 120ms;
+  }
+
+  &.of--editable:hover {
+    --cur-border: 1px solid #{$border-color-field-hover};
+  }
+  &.of--interactive.of--focused {
+    --cur-border: 2px solid #{$border-color-field-focus};
+    .of-field-label-wrap label {
+      top: -1px;
+    }
+  }
+  &.of--invalid:not(.of--focused) {
+    --cur-border: 1px solid #{$border-color-field-invalid};
+  }
+
+  .of-field-label-wrap {
+    max-width: calc(
+      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend, 0px) - var(--of-field-size-append, 0px)
+    );
+  }
+  .of-field-label {
+    display: block;
+    font-size: 0.75em;
+    transform: translateY(1.25em) scale(1.3333);
+    transform-origin: left top;
+    transition: transform 150ms;
+    backface-visibility: hidden; // avoid some jumping?
+    // will-change: transform; // FIXME currently blurry in chrome
+  }
+  &.of--interactive.of--focused,
+  &.of--active {
+    .of-field-label-wrap {
+      border-top-color: transparent;
+    }
+    .of-field-label {
+      transform: translateY(-0.75em);
+    }
+  }
+
+  &.of--mode-disabled .of-field-inner {
+    @include field-text-disabled;
+  }
+
+  .of-field-content {
+    opacity: 0;
+    transition: opacity 180ms;
+    will-change: opacity;
+  }
+  &.of--label-visible .of-field-content {
+    margin-top: 0.75em;
+  }
+  &.of--active .of-field-content {
+    opacity: 1;
+  }
+}
+
+.of--frame-none.of--variant-filled,
+.of--frame-normal.of--variant-filled {
+  // .of-field-inner {
+  //   border:
+  // }
+  &.of--editable .of-field-inner,
+  &.of--mode-locked .of-field-inner {
+    background: $bg-field-filled;
+  }
+  &.of--interactive .of-field-inner {
+    border-bottom: 1px solid $border-color-field;
+    border-radius: $border-radius-field $border-radius-field 0 0;
+    color: $color-field-filled;
+  }
+  &.of--editable:hover .of-field-inner {
+    background: $bg-field-filled-hover;
+    border-bottom-color: $border-color-field-hover;
+  }
+  &.of--mode-disabled .of-field-inner {
+    border-bottom-color: $border-color-field-disabled;
+    opacity: $opacity-input-disabled;
+    @include field-text-disabled;
+  }
+  &.of--interactive.of--focused .of-field-inner {
+    background: $bg-field-filled-focus;
+  }
+  &.of--invalid:not(.of--focused) .of-field-inner {
+    border-bottom-color: $border-color-field-invalid;
+  }
+
+  &.of--interactive .of-field-header::after {
+    // ripple
+    background: $border-color-field-focus;
+    content: '';
+    height: 2px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: opacity 90ms, transform 150ms;
+    will-change: opacity, transform;
+    z-index: 1;
+  }
+  &.of--interactive.of--focused .of-field-header::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  &.of--editable:hover .of-field-label {
+    color: $color-field-filled-hover;
+  }
+  &.of--interactive.of--focused .of-field-label {
+    color: $color-field-filled-focus-label;
+  }
+}
+
+.of--frame-block.of--variant-filled {
+  .of-field-label-wrap {
+    margin-left: var(--of-field-size-prepend, 0px);
+    max-width: calc(
+      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend, 0px) - var(--of-field-size-append, 0px)
+    );
+  }
+  .of-field-label {
+    color: $color-field-filled-label;
+    display: block;
+    overflow: hidden;
+    position: relative;
+    left: $pad-h-field;
+    top: $pad-v-input;
+    font-size: 0.75em;
+    transform: translateY(0.85em) scale(1.3333);
+    transform-origin: left top;
+    transition: transform 150ms;
+    backface-visibility: hidden; // avoid some jumping?
+    // will-change: transform; // FIXME currently blurry in chrome
+  }
+  &.of--editable:hover .of-field-label {
+    color: $color-field-filled-hover;
+  }
+  &.of--mode-disabled .of-field-label {
+    color: $color-field-disabled;
+  }
+  &.of--interactive.of--focused .of-field-label {
+    color: $color-field-filled-focus-label;
+  }
+  &.of--interactive.of--focused,
+  &.of--active .of-field-label {
+    transform: none;
+  }
+  &.of--label-visible .of-field-content {
+    margin-top: 1.1em;
+  }
+  .of-field-content {
+    opacity: 0;
+    transition: opacity 180ms;
+    will-change: opacity;
+  }
+  &.of--active .of-field-content {
+    opacity: 1;
+  }
+
+  &.of--editable .of-field-body,
+  &.of--mode-locked .of-field-body {
+    background: $bg-field-filled;
+  }
+  &.of--interactive .of-field-body {
+    border-radius: $border-radius-field $border-radius-field 0 0;
+    color: $color-field-filled;
+  }
+  &.of--editable:hover .of-field-body {
+    background: $bg-field-filled-hover;
+  }
+  &.of--interactive.of--focused .of-field-body {
+    background: $bg-field-filled-focus;
+  }
+
+  &.of--interactive .of-field-header::after {
+    // ripple
+    background: $border-color-field-focus;
+    content: '';
+    height: 2px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: opacity 90ms, transform 150ms;
+    will-change: opacity, transform;
+  }
+  &.of--interactive.of--focused .of-field-header::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  &.of--interactive .of-field-inner {
+    border-bottom: 1px solid $border-color-field;
+  }
+  &.of--editable:hover .of-field-inner {
+    border-bottom-color: $border-color-field-hover;
+  }
+  &.of--mode-disabled .of-field-inner {
+    border-bottom-color: $border-color-field-disabled;
+    opacity: $opacity-input-disabled;
+    @include field-text-disabled;
+  }
+  &.of--invalid:not(.of--focused) .of-field-inner {
+    border-bottom-color: $border-color-field-invalid;
+  }
+}
+
+.of-field.of--block {
+  display: flex;
+  width: auto;
 }
 
 .of-toggle-input,
@@ -316,353 +678,6 @@
       background: #888;
     }
   }
-}
-
-.of--frame-none,
-.of--frame-normal.of--variant-normal {
-  .of-field-input-label {
-    min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
-    pointer-events: none;
-  }
-
-  &.of-text-field textarea {
-    padding: $pad-v-input $pad-h-input 0;
-    resize: vertical;
-  }
-}
-
-.of--frame-none.of--variant-normal,
-.of--frame-normal.of--variant-normal {
-  .of-field-inner {
-    background: $bg-field;
-    border: $border-width-input solid $border-color-field;
-    border-radius: $border-radius-input;
-    box-shadow: $box-shadow-field-basic;
-  }
-
-  &:hover .of-field-inner {
-    border-color: $border-color-field-hover;
-    // color: $color-field-hover;
-  }
-  &.of--focused .of-field-inner {
-    background: $bg-field-focus;
-    border-color: $border-color-field-focus;
-    box-shadow: $box-shadow-field-basic-focus;
-  }
-  .static .of-field-inner {
-    border-color: $border-color-field;
-  }
-  &.of--readonly,
-  &.of--disabled {
-    .of-field-inner {
-      background: $bg-field-disabled;
-      border-color: $border-color-field-disabled;
-    }
-  }
-  &.of--disabled .of-field-inner {
-    opacity: $opacity-input-disabled;
-    @include field-text-disabled;
-  }
-  &.of--invalid:not(.of--focused) .of-field-inner {
-    border-color: $border-color-field-invalid;
-  }
-}
-
-.of--frame-normal {
-  display: flex;
-  padding: 0 0.3em;
-
-  .of-field-over,
-  .of-field-footer {
-    min-height: 0.25em;
-  }
-
-  .of-field-label {
-    display: block;
-    padding: 0 $pad-h-input;
-  }
-}
-
-.of--frame-block {
-  display: flex;
-
-  .of-field-inner {
-    min-height: calc(3em + 2 * #{$pad-v-field});
-    // padding-top: calc(0.75em - 1px);
-  }
-
-  .of-field-over {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    pointer-events: none;
-  }
-
-  // .of-field-footer {
-  // min-height: 0.25em;
-  // }
-
-  .of-field-input-label {
-    // min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
-    pointer-events: none;
-  }
-  .of-field-input,
-  .of-field-input-label {
-    padding: $pad-v-input $pad-h-field;
-  }
-
-  &.of-text-field textarea {
-    margin: 0 1px 1px;
-    padding: $pad-v-input calc(#{$pad-h-field} - 1px) $pad-v-input;
-    resize: vertical;
-    vertical-align: bottom;
-  }
-}
-
-.of--frame-block.of--variant-normal {
-  --cur-border: 1px solid #{$border-color-field};
-
-  .of-field-over {
-    display: flex;
-    .of-field-label-wrap {
-      border-bottom: var(--cur-border);
-      border-top: var(--cur-border);
-      box-sizing: border-box;
-      padding: 0 4px;
-      transition: border-color 120ms;
-      label {
-        position: relative;
-        top: 0;
-      }
-    }
-  }
-
-  &.of--label-visible .of-field-over {
-    &::before {
-      border-radius: $border-radius-field 0 0 $border-radius-field;
-      border: var(--cur-border);
-      border-right: none;
-      box-sizing: border-box;
-      content: '';
-      flex: 0 0 calc(#{$pad-h-field} - 4px + var(--of-field-size-prepend, 0px));
-      transition: border-color 120ms;
-    }
-    &::after {
-      border-radius: 0 $border-radius-field $border-radius-field 0; // inherit?
-      border: var(--cur-border);
-      border-left: none;
-      content: '';
-      flex: auto;
-      transition: border-color 120ms;
-    }
-  }
-  &.of--label-none .of-field-over {
-    border-radius: $border-radius-field;
-    border: var(--cur-border);
-    transition: border-color 120ms;
-  }
-
-  &:hover {
-    --cur-border: 1px solid #{$border-color-field-hover};
-  }
-  &.of--focused {
-    --cur-border: 2px solid #{$border-color-field-focus};
-    .of-field-label-wrap label {
-      top: -1px;
-    }
-  }
-  &.of--invalid:not(.of--focused) {
-    --cur-border: 1px solid #{$border-color-field-invalid};
-  }
-
-  .of-field-label-wrap {
-    max-width: calc(
-      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend, 0px) - var(--of-field-size-append, 0px)
-    );
-  }
-  .of-field-label {
-    display: block;
-    font-size: 0.75em;
-    transform: translateY(1.25em) scale(1.3333);
-    transform-origin: left top;
-    transition: transform 150ms;
-    backface-visibility: hidden; // avoid some jumping?
-    // will-change: transform; // FIXME currently blurry in chrome
-  }
-  &.of--focused,
-  &.of--active {
-    .of-field-label-wrap {
-      border-top-color: transparent;
-    }
-    .of-field-label {
-      transform: translateY(-0.75em);
-    }
-  }
-
-  .of-field-content {
-    opacity: 0;
-    transition: opacity 180ms;
-    will-change: opacity;
-  }
-  &.of--label-visible .of-field-content {
-    margin-top: 0.75em;
-  }
-  &.of--active .of-field-content {
-    opacity: 1;
-  }
-}
-
-.of--frame-none.of--variant-filled,
-.of--frame-normal.of--variant-filled {
-  .of-field-inner {
-    background: $bg-field-filled;
-    border-bottom: 1px solid $border-color-field;
-    border-radius: $border-radius-field $border-radius-field 0 0;
-    color: $color-field-filled;
-  }
-  &:hover .of-field-inner {
-    background: $bg-field-filled-hover;
-    border-bottom-color: $border-color-field-hover;
-  }
-  &.of--focused .of-field-inner {
-    background: $bg-field-filled-focus;
-  }
-  &.of--invalid:not(.of--focused) .of-field-inner {
-    border-bottom-color: $border-color-field-invalid;
-  }
-
-  .of-field-over::after {
-    // ripple
-    background: $border-color-field-focus;
-    content: '';
-    height: 2px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: opacity 90ms, transform 150ms;
-    will-change: opacity, transform;
-    z-index: 1;
-  }
-  &.of--focused .of-field-over::after {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-
-  &:hover .of-field-label {
-    color: $color-field-filled-hover;
-  }
-  &.static .of-field-label {
-    color: $color-field-filled-label;
-  }
-  &.of--focused .of-field-label {
-    color: $color-field-filled-focus-label;
-  }
-}
-
-.of--frame-block.of--variant-filled {
-  .of-field-body {
-    background: $bg-field-filled;
-    border-radius: $border-radius-field $border-radius-field 0 0;
-    color: $color-field-filled;
-  }
-
-  &:hover .of-field-body {
-    background: $bg-field-filled-hover;
-  }
-  &.of--focused .of-field-body {
-    background: $bg-field-filled-focus;
-  }
-
-  .of-field-over::after {
-    // ripple
-    background: $border-color-field-focus;
-    content: '';
-    height: 2px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: opacity 90ms, transform 150ms;
-    will-change: opacity, transform;
-  }
-  &.of--focused .of-field-over::after {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-
-  &:hover .of-field-label {
-    color: $color-field-filled-hover;
-  }
-  &.static .of-field-label {
-    color: $color-field-filled-label;
-  }
-  &.of--focused .of-field-label {
-    color: $color-field-filled-focus-label;
-  }
-
-  .of-field-inner {
-    border-bottom: 1px solid $border-color-field;
-  }
-  &:hover .of-field-inner {
-    border-bottom-color: $border-color-field-hover;
-  }
-  &.of--invalid:not(.of--focused) .of-field-inner {
-    border-bottom-color: $border-color-field-invalid;
-  }
-}
-
-.of--frame-block.of--variant-filled {
-  .of-field-label-wrap {
-    margin-left: var(--of-field-size-prepend, 0px);
-    max-width: calc(
-      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend, 0px) - var(--of-field-size-append, 0px)
-    );
-  }
-  .of-field-label {
-    color: $color-field-filled-label;
-    display: block;
-    overflow: hidden;
-    position: relative;
-    left: $pad-h-field;
-    top: $pad-v-input;
-    font-size: 0.75em;
-    transform: translateY(0.85em) scale(1.3333);
-    transform-origin: left top;
-    transition: transform 150ms;
-    backface-visibility: hidden; // avoid some jumping?
-    // will-change: transform; // FIXME currently blurry in chrome
-  }
-  &.of--focused,
-  &.of--active {
-    .of-field-label {
-      transform: none;
-    }
-  }
-  &.of--label-visible .of-field-content {
-    margin-top: 1.1em;
-  }
-  .of-field-content {
-    opacity: 0;
-    transition: opacity 180ms;
-    will-change: opacity;
-  }
-  &.of--active .of-field-content {
-    opacity: 1;
-  }
-}
-
-.of-field.of--block {
-  display: flex;
-  width: auto;
 }
 
 .of-slider {

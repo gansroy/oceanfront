@@ -16,7 +16,6 @@ export const ColorField = defineFieldType({
 
   init(props: FieldProps, ctx: FieldContext) {
     const opened = ref(false)
-    const editable = computed(() => ctx.mode === 'edit' && !ctx.locked)
     let defaultFieldId: string
     const inputId = computed(() => {
       let id = ctx.id
@@ -30,7 +29,7 @@ export const ColorField = defineFieldType({
       opened.value = false
     }
     const clickOpen = () => {
-      opened.value = true
+      if (ctx.editable) opened.value = true
     }
     const initialValue = computed(() => {
       let initial = ctx.initialValue
@@ -121,7 +120,7 @@ export const ColorField = defineFieldType({
           [compColor.value.hex]
         ),
       click: clickOpen,
-      cursor: editable.value ? 'pointer' : 'default',
+      cursor: computed(() => (ctx.editable ? 'pointer' : 'default')),
       inputId,
       popup: {
         content: () => (opened.value ? renderPopup() : undefined),

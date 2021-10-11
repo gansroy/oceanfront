@@ -1,5 +1,5 @@
 import { computed, defineComponent, h, PropType, ref, SetupContext } from 'vue'
-import { FieldContext, FieldRender } from '../lib/fields'
+import { FieldContext, FieldMode, FieldRender } from '../lib/fields'
 import { useFormats } from '../lib/formats'
 import { FormRecord, useRecords } from '../lib/records'
 import { proxyRefs } from 'vue'
@@ -16,7 +16,7 @@ export const OfToggle = defineComponent({
     label: String,
     loading: Boolean,
     locked: { type: Boolean, default: false },
-    mode: String as PropType<'edit' | 'readonly' | 'view'>,
+    mode: String as PropType<FieldMode>,
     muted: Boolean,
     name: String,
     readonly: { type: Boolean, default: false },
@@ -46,7 +46,7 @@ export const OfToggle = defineComponent({
         : props.checked
     )
     const mode = computed(
-      () => props.mode || (props.readonly ? 'readonly' : 'edit')
+      () => props.mode || (props.readonly ? 'readonly' : 'normal')
     )
     const locked = computed(() => props.locked || record.value?.locked)
     const focused = ref(false)

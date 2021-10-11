@@ -7,20 +7,27 @@
     </div>
     <div class="options">
       <of-field
-        v-model="options.frame"
+        v-model="params.frame"
         label="Frame Type"
         type="select"
         :items="frameOptions"
-        :disabled="options.all"
+        :disabled="params.all"
       />
       <of-field
-        v-model="options.variant"
+        v-model="params.variant"
         label="Variant Type"
         type="select"
         :items="variantOptions"
-        :disabled="options.all"
+        :disabled="params.all"
       />
-      <of-field v-model="options.all" label="Compare All" type="toggle" />
+      <of-field v-model="params.all" label="Compare all" type="toggle" />
+      <hr />
+      <of-field
+        v-model="params.mode"
+        label="Mode"
+        type="select"
+        :items="modeOptions"
+      />
       <slot name="options"></slot>
     </div>
   </div>
@@ -31,21 +38,25 @@ import { computed, reactive, defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {
-    const options = reactive({
+    const params = reactive({
       all: false,
       frame: 'normal',
+      mode: 'normal',
       variant: 'normal',
     })
     const frameOptions = ['none', 'normal', 'block']
     const variantOptions = ['normal', 'filled']
+    const modeOptions = ['normal', 'locked', 'readonly', 'disabled', 'fixed']
     const allOptions = computed(() => {
-      if (!options.all) {
-        return [{ frame: options.frame, variant: options.variant }]
+      if (!params.all) {
+        return [
+          { frame: params.frame, mode: params.mode, variant: params.variant },
+        ]
       } else {
         let ret = []
         for (const frame of frameOptions) {
           for (const variant of variantOptions) {
-            ret.push({ frame, variant })
+            ret.push({ frame, mode: params.mode, variant })
           }
         }
         return ret
@@ -54,8 +65,9 @@ export default defineComponent({
     return {
       allOptions,
       frameOptions,
+      modeOptions,
       variantOptions,
-      options,
+      params,
     }
   },
 })
@@ -88,6 +100,9 @@ export default defineComponent({
     flex: 0 0 16em;
     padding: 1em;
     overflow: hidden;
+  }
+  hr {
+    margin: 0.5em 1em;
   }
 }
 </style>

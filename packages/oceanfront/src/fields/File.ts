@@ -44,12 +44,14 @@ export const FileField = defineFieldType({
       elt.value?.focus()
     }
     const clickOpen = (_evt?: MouseEvent) => {
-      elt.value?.focus()
-      elt.value?.click()
+      if (ctx.editable) {
+        elt.value?.focus()
+        elt.value?.click()
+      }
       return false
     }
     const clickClear = (evt?: MouseEvent) => {
-      if (!elt.value) {
+      if (!elt.value || !ctx.editable) {
         return
       }
       elt.value.value = ''
@@ -100,7 +102,7 @@ export const FileField = defineFieldType({
 
     return fieldRender({
       append() {
-        if (stateValue.value)
+        if (stateValue.value && (ctx.editable || ctx.mode === 'locked'))
           return h(OfIcon, {
             name: 'circle-cross',
             size: 'input',
@@ -145,7 +147,7 @@ export const FileField = defineFieldType({
           h('input', {
             class: 'of-field-input',
             id: inputId.value,
-            // disabled: disabled.value,
+            disabled: !ctx.editable,
             name: ctx.name,
             type: 'file',
             ...hooks,
