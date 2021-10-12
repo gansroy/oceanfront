@@ -325,7 +325,9 @@ export const OfField = defineComponent({
         }
         const showFocused =
           focused.value || dragOver.value || overlayActive || render.focused
-        const blank = render.blank && !(showFocused || overlayActive)
+        const blank =
+          render.blank &&
+          !(showFocused || overlayActive || mode.value === 'fixed')
         const metaLabel = props.name ? metadata.value?.label : undefined
         const labelText = render.label ?? props.label ?? metaLabel
         const label = ctx.slots.label
