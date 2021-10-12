@@ -41,11 +41,8 @@ export const ToggleField = defineFieldType({
       }
       return id
     })
-    const labelPosition = computed(() => props.labelPosition || 'input') // FIXME fetch from config
     const inputLabel = computed(() =>
-      labelPosition.value === 'field'
-        ? undefined
-        : props.inputLabel ?? ctx.label
+      ctx.labelPosition === 'input' ? props.inputLabel ?? ctx.label : undefined
     )
     const inputType = computed(() => {
       const pi = props.inputType
@@ -135,9 +132,6 @@ export const ToggleField = defineFieldType({
       // hovered,
       inputId,
       // inputValue,
-      label: computed(() =>
-        labelPosition.value === 'input' ? '' : props.label
-      ),
       // loading
       // messages
       updated: computed(() => initialValue.value !== stateValue.value),

@@ -15,10 +15,7 @@
       <div class="column">
         <div class="demo-form">
           <div class="row form-row">
-            <of-field
-              :record="testRecord"
-              name="one"
-            ></of-field>
+            <of-field :record="testRecord" name="one"></of-field>
           </div>
           <div class="row form-row">
             <of-field
@@ -28,18 +25,10 @@
             ></of-field>
           </div>
           <div class="row form-row">
-            <of-field
-              :record="testRecord"
-              name="two"
-            ></of-field>
+            <of-field :record="testRecord" name="two"></of-field>
           </div>
           <div class="row form-row">
-            <of-field
-              name="four"
-              :record="testRecord"
-              class="of--large"
-            variant="filled"
-            ></of-field>
+            <of-field name="four" :record="testRecord"></of-field>
           </div>
           <div class="row form-row">
             <button @click="testRecord.reset()" :disabled="testRecord.locked">
@@ -76,10 +65,27 @@
 
 <script lang="ts">
 import { looseEqual } from '@vue/shared'
-import { FieldRecordState, FormRecord, Lock, LockOptions, RecordMetadata } from 'oceanfront'
-import { computed, defineComponent, markRaw, reactive, ref, Ref, toRaw, watchEffect } from 'vue'
+import {
+  FieldRecordState,
+  FormRecord,
+  Lock,
+  LockOptions,
+  RecordMetadata,
+} from 'oceanfront'
+import {
+  computed,
+  defineComponent,
+  markRaw,
+  reactive,
+  ref,
+  Ref,
+  toRaw,
+  watchEffect,
+} from 'vue'
 
-class CustomRecord<T extends object = Record<string, any>> implements FormRecord {
+class CustomRecord<T extends object = Record<string, any>>
+  implements FormRecord
+{
   _initial: Ref<Readonly<T>>
   _rules: Ref<((value: T) => boolean)[]>
   _state: Ref<FieldRecordState>
@@ -170,46 +176,48 @@ class CustomRecord<T extends object = Record<string, any>> implements FormRecord
     }
     Object.assign(this._value, val)
   }
-  
+
   get mode() {
-      return this._mode
-    }
+    return this._mode
+  }
 
   set mode(m: 'edit' | 'readonly' | 'view') {
-    this._mode = m;
+    this._mode = m
   }
 }
 
-const createContext = <T extends object = Record<string, any>>(initial:T, meta: RecordMetadata) => {
+const createContext = <T extends object = Record<string, any>>(
+  initial: T,
+  meta: RecordMetadata
+) => {
   return markRaw(new CustomRecord<T>(initial, meta))
 }
 
-const data =   {
-    one: 'optionA',
-    two: "2015-05-11",
-    four_hours: 1,
-    four_minutes: 15,
- }
- 
- const meta = reactive({
-    one: {
-      type: 'select',
-      label: "Select input (label from metadata)",
-      items: [
-        { value: 'optionA', text: 'A' },
-        { value: 'optionB', text: 'B' },
-      ],
-    },
-    two: {
-      type: 'date',
-      label: "Date",
-    },
-    four: {
-      type: "minutes",
-      label: "Minutes",
-    }
-  })
+const data = {
+  one: 'optionA',
+  two: '2015-05-11',
+  four_hours: 1,
+  four_minutes: 15,
+}
 
+const meta = reactive({
+  one: {
+    type: 'select',
+    label: 'Select input (label from metadata)',
+    items: [
+      { value: 'optionA', text: 'A' },
+      { value: 'optionB', text: 'B' },
+    ],
+  },
+  two: {
+    type: 'date',
+    label: 'Date',
+  },
+  four: {
+    type: 'minutes',
+    label: 'Minutes',
+  },
+})
 
 const testRecord = createContext(data, meta)
 

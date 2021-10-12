@@ -37,7 +37,7 @@
               <of-toggle-field
                 name="three"
                 label="Toggle"
-                label-position="field"
+                label-position="input"
                 :record="testRecord"
               />
             </div>

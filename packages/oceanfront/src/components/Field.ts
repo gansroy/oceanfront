@@ -130,6 +130,7 @@ export const OfField = defineComponent({
     invalid: Boolean,
     items: [String, Array, Object] as PropType<string | any[] | ItemList>,
     label: String,
+    labelPosition: String,
     loading: Boolean,
     locked: Boolean,
     // messages
@@ -214,6 +215,7 @@ export const OfField = defineComponent({
     )
     const editable = computed(() => mode.value === 'normal')
     const interactive = computed(() => mode.value !== 'fixed')
+    const labelPosition = computed(() => props.labelPosition || 'field')
 
     const fctx: FieldContext = proxyRefs({
       config,
@@ -222,6 +224,7 @@ export const OfField = defineComponent({
       fieldType,
       initialValue,
       interactive,
+      labelPosition,
       mode,
       record,
       value,
@@ -330,9 +333,11 @@ export const OfField = defineComponent({
           !(showFocused || overlayActive || mode.value === 'fixed')
         const metaLabel = props.name ? metadata.value?.label : undefined
         const labelText = render.label ?? props.label ?? metaLabel
+        const showLabel =
+          frame.value !== 'none' && labelPosition.value === 'field'
         const label = ctx.slots.label
           ? ctx.slots.label()
-          : frame.value != 'none' && labelText
+          : showLabel && labelText
           ? h(
               'label',
               {

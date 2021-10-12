@@ -33,6 +33,7 @@ export interface FieldContext {
   interactive?: boolean
   items?: string | any[] | ItemList
   label?: string
+  labelPosition?: string
   mode?: FieldMode
   muted?: boolean // if editable, reduce indicators
   name?: string
