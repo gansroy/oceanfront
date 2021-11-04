@@ -81,6 +81,7 @@ export const OfLink = defineComponent({
     href: { type: String, default: null },
     to: [String, Object] as PropType<LinkTo>,
   },
+  emits: ['click'],
   setup(props, ctx: SetupContext) {
     const inst = getCurrentInstance() as ComponentInternalInstance
     const focus = () => {
@@ -99,6 +100,7 @@ export const OfLink = defineComponent({
             {
               custom: true,
               to: props.to ?? '',
+              ...inst.attrs,
             },
             (customSlot || ((link: Link) => renderLink(link, inst))) as any
           )
