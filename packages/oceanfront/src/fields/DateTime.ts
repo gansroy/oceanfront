@@ -27,8 +27,8 @@ type RenderOpts = {
 
 export const renderDateTimePopup = (opts: RenderOpts): any => {
   return h(OfDateTimePopup, {
-    date: opts.selectedDate,
-    monthStart: opts.monthStart,
+    date: opts.selectedDate.value,
+    monthStart: opts.monthStart.value,
     withTime: opts.withTime,
     withDate: opts.withDate,
     accept: opts.close,
@@ -86,9 +86,9 @@ const fieldInit =
       return id
     })
 
-    const currentDate = ref(new Date())
-    const editableDate = ref(new Date())
-    const monthStart = ref(new Date())
+    const currentDate: Ref<Date> = ref(new Date())
+    const editableDate: Ref<Date> = ref(new Date())
+    const monthStart: Ref<Date> = ref(new Date())
 
     const closePopup = () => {
       opened.value = false
