@@ -1,6 +1,8 @@
+import { FormRecord } from './records'
 import { Config, ConfigManager } from './config'
-import { FieldType, FieldTypeConstructor } from './fields'
+import { FieldType, FieldTypeConstructor, Renderable } from './fields'
 import { readonlyUnref } from './util'
+import { VNode } from '@vue/runtime-core'
 
 export interface TextFormatResult {
   blank?: boolean
@@ -19,6 +21,7 @@ export interface TextInputResult extends TextFormatResult {
 export interface TextFormatter {
   align?: 'start' | 'center' | 'end'
   format(modelValue: any): TextFormatResult
+  formatFixed?(modelValue: any, context?: string): Renderable | undefined
   unformat(input: string): any
   handleInput?: (evt: InputEvent) => TextInputResult
   handleKeyDown?: (evt: KeyboardEvent) => void
@@ -32,9 +35,21 @@ export interface TextFormatter {
 }
 
 export type TextFormatterConstructor = {
-  new (config?: Config, options?: any): TextFormatter
+  new (
+    config?: Config,
+    options?: any,
+    fieldName?: string,
+    record?: FormRecord
+  ): TextFormatter
 }
-type TextFormatterFn = { (config?: Config, options?: any): TextFormatter }
+type TextFormatterFn = {
+  (
+    config?: Config,
+    options?: any,
+    fieldName?: string,
+    record?: FormRecord
+  ): TextFormatter
+}
 
 type TextFormatterDef =
   | TextFormatter
@@ -50,7 +65,9 @@ export interface FormatState {
 
   getTextFormatter(
     type?: string | TextFormatterDef,
-    options?: any
+    options?: any,
+    fieldName?: string,
+    record?: FormRecord
   ): TextFormatter | undefined
 }
 
@@ -81,7 +98,9 @@ class FormatManager implements FormatState {
 
   getTextFormatter(
     type?: TextFormatterProp,
-    options?: any
+    options?: any,
+    fieldName?: string,
+    record?: FormRecord
   ): TextFormatter | undefined {
     let def: TextFormatterDef | undefined
     if (typeof type === 'string') def = this.textFormats[type]
@@ -89,9 +108,14 @@ class FormatManager implements FormatState {
     if (def) {
       if (typeof def === 'function') {
         if ('format' in def.prototype) {
-          return new (def as TextFormatterConstructor)(this.config, options)
+          return new (def as TextFormatterConstructor)(
+            this.config,
+            options,
+            fieldName,
+            record
+          )
         }
-        return (def as TextFormatterFn)(this.config, options)
+        return (def as TextFormatterFn)(this.config, options, fieldName, record)
       }
     }
     return def

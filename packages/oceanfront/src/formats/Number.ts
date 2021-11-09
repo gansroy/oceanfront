@@ -1,11 +1,11 @@
-import { Ref, computed } from 'vue'
+import { computed, Ref, ref } from 'vue'
 import { Config } from '../lib/config'
-import { LocaleState, useLocale } from '../lib/locale'
 import {
-  TextFormatter,
   TextFormatResult,
+  TextFormatter,
   TextInputResult,
 } from '../lib/formats'
+import { LocaleState, useLocale } from '../lib/locale'
 import { isDigit } from '../lib/util'
 
 export interface NumberFormatterOptions {
@@ -54,7 +54,7 @@ export class NumberFormatter implements TextFormatter {
     return 'numeric'
   }
 
-  get options() {
+  get options(): NumberFormatterOptions {
     return this._options.value
   }
 
@@ -182,6 +182,7 @@ export class NumberFormatter implements TextFormatter {
       error,
       value,
       textValue,
+      fixedValue: ref(textValue),
       textClass: this.inputClass,
     }
   }
