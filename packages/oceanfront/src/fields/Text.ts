@@ -1,10 +1,10 @@
-import { VNode, ref, computed, watch, h } from 'vue'
+import { computed, h, ref, VNode, watch } from 'vue'
 import {
   defineFieldType,
   FieldContext,
   FieldProps,
-  newFieldId,
   fieldRender,
+  newFieldId,
 } from '../lib/fields'
 import { TextFormatter, useFormats } from '../lib/formats'
 import { removeEmpty } from '../lib/util'
@@ -35,7 +35,12 @@ export const TextField = defineFieldType({
   init(props: FieldProps, ctx: FieldContext) {
     const formatMgr = useFormats(ctx.config)
     const formatter = computed(() =>
-      formatMgr.getTextFormatter(props.type, props.formatOptions)
+      formatMgr.getTextFormatter(
+        props.type,
+        props.formatOptions,
+        ctx.name,
+        props.record
+      )
     )
     const initialValue = computed(() => {
       let initial = ctx.initialValue

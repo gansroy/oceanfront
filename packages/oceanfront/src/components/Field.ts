@@ -153,6 +153,7 @@ export const OfField = defineComponent({
     // style
     type: String,
     variant: String,
+    context: String,
   },
   emits: {
     'update:modelValue': null,
@@ -164,6 +165,16 @@ export const OfField = defineComponent({
     const formatMgr = useFormats()
     const recordMgr = useRecords()
 
+    const formatter = computed(() =>
+      formatMgr.getTextFormatter(
+        props.type,
+        typeof props.format === 'string'
+          ? undefined
+          : props.format?.formatOptions,
+        props.name,
+        props.record
+      )
+    )
     const record = computed(() => {
       return props.record || recordMgr.getCurrentRecord() || undefined
     })
@@ -216,7 +227,6 @@ export const OfField = defineComponent({
     const editable = computed(() => mode.value === 'normal')
     const interactive = computed(() => mode.value !== 'fixed')
     const labelPosition = computed(() => props.labelPosition || 'field')
-
     const fctx: FieldContext = proxyRefs({
       config,
       container: 'of-field',
@@ -247,6 +257,7 @@ export const OfField = defineComponent({
     })
 
     const rendered = ref<FieldRender>()
+    const context = computed(() => props.context)
     watch(
       () => [fieldType.value, props.format],
       ([ftype, fmt]) => {
@@ -277,6 +288,7 @@ export const OfField = defineComponent({
                 'name',
                 'record',
                 'items',
+                'context',
               ],
               true
             )
@@ -380,9 +392,18 @@ export const OfField = defineComponent({
           ctx.slots.prepend || render.prepend,
           'of-field-prepend'
         )
+        const fixedValue = interactive.value
+          ? undefined
+          : formatter.value?.formatFixed?.(value.value, context.value) ??
+            value.value
         renderSlot(
           inner,
-          ctx.slots.default || render.content,
+          ctx.slots.default ||
+            (interactive.value
+              ? render.content
+              : fixedValue
+              ? () => fixedValue
+              : render.content),
           'of-field-content'
         )
         renderSlot(inner, ctx.slots.append || render.append, 'of-field-append')

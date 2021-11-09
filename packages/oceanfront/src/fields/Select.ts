@@ -211,6 +211,7 @@ export const SelectField = defineFieldType({
       class: 'of-select-field',
       content: () => {
         const label = activeItem.value.item?.text || ''
+
         return [
           h(
             'div',
