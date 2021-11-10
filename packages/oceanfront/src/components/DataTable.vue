@@ -29,7 +29,11 @@
           {{ col.text }}
           <of-icon
             v-if="sortable"
-            :name="sort.order == 'desc' ? 'triangle-down' : 'triangle-up'"
+            :name="
+              sort.order == 'desc' && sort.column == col.value
+                ? 'triangle-down'
+                : 'triangle-up'
+            "
           />
         </span>
       </div>
@@ -135,6 +139,9 @@ export default defineComponent({
       for (const hdr of props.headers as DataTableHeader[]) {
         const align = hdr.align
         const cls = ['of--align-' + (align || 'start'), hdr.class]
+        if (hdr.sort) {
+          setSort(hdr.value, hdr.sort)
+        }
         cols.push(Object.assign({}, hdr, { align, class: cls }))
       }
       return cols
@@ -254,19 +261,25 @@ export default defineComponent({
       },
     ]
 
+    const setSort = function (column: string, order: string) {
+      sort.value.order = order
+      sort.value.column = column
+    }
+
     const onSort = function (column: string) {
       if (!props.sortable) {
         return false
       }
-      sort.value.order =
+
+      const order =
         sort.value.order == RowSortOrders.noOrder ||
         sort.value.column !== column
           ? RowSortOrders.asc
           : sort.value.order == RowSortOrders.asc
           ? RowSortOrders.desc
           : RowSortOrders.noOrder
-      sort.value.column = column
 
+      setSort(column, order)
       selectRows(RowsSelectorValues.DeselectAll)
       ctx.emit('rows-sorted', sort.value)
     }

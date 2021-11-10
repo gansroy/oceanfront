@@ -33,7 +33,7 @@ import { defineComponent, ref } from 'vue'
 export default defineComponent({
   setup() {
     const headers = [
-      { text: 'Name', value: 'name', divider: true, width: '150px' },
+      { text: 'Name', value: 'name', divider: true, width: '150px', sort: 'desc' },
       { text: 'Category', value: 'category' },
       { text: 'Size', value: 'size', align: 'end' },
     ]
@@ -109,7 +109,6 @@ export default defineComponent({
     const initialItems2 = [...items2.value]
     const footerItems = [{ size: 100.5 }]
     const onRowsSelected = function (values: any) {
-      console.log("onRowsSelected")
       console.log(values)
     }
 

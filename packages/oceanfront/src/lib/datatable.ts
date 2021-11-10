@@ -9,6 +9,6 @@ export interface DataTableHeader {
   class?: string | string[]
   width?: string | number
   filter?: (value: any, search: string, item: any) => boolean // provide via formatter?
-  sort?: (a: any, b: any) => number // provide via formatter?
+  sort?: 'asc' | 'desc' // provide via formatter?
   editable?: boolean | string
 }
