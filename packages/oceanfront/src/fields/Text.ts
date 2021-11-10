@@ -208,7 +208,7 @@ export const TextField = defineFieldType({
           return h(
             'div',
             { class: 'of-field-fixed-content' },
-            blank.value ? '—' : stateValue.value
+            blank.value ? '—' : inputValue.value
           )
         }
         return h(multiline.value ? 'textarea' : 'input', {

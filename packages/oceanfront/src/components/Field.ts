@@ -394,8 +394,7 @@ export const OfField = defineComponent({
         )
         const fixedValue = interactive.value
           ? undefined
-          : formatter.value?.formatFixed?.(value.value, context.value) ??
-            value.value
+          : formatter.value?.formatFixed?.(value.value, context.value)
         renderSlot(
           inner,
           ctx.slots.default ||
