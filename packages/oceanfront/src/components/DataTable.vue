@@ -14,8 +14,24 @@
         </slot>
         <slot name="header-first-cell" />
       </div>
-      <div v-for="(col, idx) of columns" :class="col.class" :key="idx">
-        <span>{{ col.text }}</span>
+      <div
+        v-for="(col, idx) of columns"
+        :class="[
+          col.class,
+          {
+            sortable,
+            [sort.order]: sort.column === col.value,
+          },
+        ]"
+        :key="idx"
+      >
+        <span @click="onSort(col.value)">
+          {{ col.text }}
+          <of-icon
+            v-if="sortable"
+            :name="sort.order == 'desc' ? 'triangle-down' : 'triangle-up'"
+          />
+        </span>
       </div>
     </div>
     <div
@@ -77,6 +93,12 @@ enum RowsSelectorValues {
   DeselectAll = 'deselect-all',
 }
 
+enum RowSortOrders {
+  asc = 'asc',
+  desc = 'desc',
+  noOrder = '',
+}
+
 const showSelector = (hasSelector: boolean, rows: any[]): boolean => {
   let issetId = false
   if (rows && rows.hasOwnProperty(0) && rows[0].hasOwnProperty('id')) {
@@ -99,11 +121,15 @@ export default defineComponent({
     page: [String, Number],
     rowsSelector: Boolean,
     resetSelection: Boolean,
+    sortable: { type: Boolean, default: true },
   },
   emits: {
     'rows-selected': null,
+    'rows-sorted': null,
   },
   setup(props, ctx: SetupContext) {
+    const sort = ref({ column: '', order: '' })
+
     const columns = computed(() => {
       const cols: any[] = []
       for (const hdr of props.headers as DataTableHeader[]) {
@@ -228,6 +254,23 @@ export default defineComponent({
       },
     ]
 
+    const onSort = function (column: string) {
+      if (!props.sortable) {
+        return false
+      }
+      sort.value.order =
+        sort.value.order == RowSortOrders.noOrder ||
+        sort.value.column !== column
+          ? RowSortOrders.asc
+          : sort.value.order == RowSortOrders.asc
+          ? RowSortOrders.desc
+          : RowSortOrders.noOrder
+      sort.value.column = column
+
+      selectRows(RowsSelectorValues.DeselectAll)
+      ctx.emit('rows-sorted', sort.value)
+    }
+
     return {
       columns,
       footerRows,
@@ -239,6 +282,8 @@ export default defineComponent({
       onUpdateHeaderRowsSelector,
       headerRowsSelectorChecked,
       columnsStyle,
+      onSort,
+      sort,
     }
   },
 })
