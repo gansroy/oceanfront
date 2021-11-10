@@ -2,7 +2,6 @@ import { FormRecord } from './records'
 import { Config, ConfigManager } from './config'
 import { FieldType, FieldTypeConstructor, Renderable } from './fields'
 import { readonlyUnref } from './util'
-import { VNode } from '@vue/runtime-core'
 
 export interface TextFormatResult {
   blank?: boolean
