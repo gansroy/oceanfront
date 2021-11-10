@@ -403,7 +403,7 @@ export const OfField = defineComponent({
               : fixedValue
               ? () => fixedValue
               : render.content),
-          'of-field-content'
+          interactive.value ? 'of-field-content' : 'of-field-fixed-content'
         )
         renderSlot(inner, ctx.slots.append || render.append, 'of-field-append')
         if (overlay) {
