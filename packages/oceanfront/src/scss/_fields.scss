@@ -211,6 +211,10 @@
   // letter-spacing
 }
 
+.of-field-fixed-content {
+    user-select: text;
+}
+
 .of-field-prepend,
 .of-field-append {
   align-self: center;
