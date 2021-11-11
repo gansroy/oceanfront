@@ -8,7 +8,6 @@
           :headers="headers"
           :items="items"
           :footer-items="footerItems"
-          :sortable="false"
         />
       </div>
     </div>
@@ -18,7 +17,7 @@
           rows-selector
           @rows-selected="onRowsSelected"
           @rows-sorted="onItems2Sorted"
-          :headers="headers"
+          :headers="headers2"
           :items="items2"
           :footer-items="footerItems"
         />
@@ -33,9 +32,9 @@ import { defineComponent, ref } from 'vue'
 export default defineComponent({
   setup() {
     const headers = [
-      { text: 'Name', value: 'name', divider: true, width: '150px', sort: 'desc' },
-      { text: 'Category', value: 'category' },
-      { text: 'Size', value: 'size', align: 'end' },
+      { text: 'Name', value: 'name', divider: true, width: '150px', sort: false },
+      { text: 'Category', value: 'category', sort: false },
+      { text: 'Size', value: 'size', align: 'end', sort: false },
     ]
     const items = [
       {
@@ -79,6 +78,11 @@ export default defineComponent({
       },
     ]
 
+    const headers2 = [
+      { text: 'Name', value: 'name', divider: true, width: '150px', sort: 'desc' },
+      { text: 'Category', value: 'category', sort: false },
+      { text: 'Size', value: 'size', align: 'end' },
+    ]
     const items2 = ref([
       {
         id: '1',
@@ -133,6 +137,7 @@ export default defineComponent({
 
     return {
       headers,
+      headers2,
       items,
       items2,
       footerItems,

@@ -19,16 +19,16 @@
         :class="[
           col.class,
           {
-            sortable,
+            sortable: col.sort !== false,
             [sort.order]: sort.column === col.value,
           },
         ]"
         :key="idx"
       >
-        <span @click="onSort(col.value)">
+        <span :onclick="col.sort == false ? null : () => onSort(col.value)">
           {{ col.text }}
           <of-icon
-            v-if="sortable"
+            v-if="col.sort !== false"
             :name="
               sort.order == 'desc' && sort.column == col.value
                 ? 'triangle-down'
@@ -125,7 +125,6 @@ export default defineComponent({
     page: [String, Number],
     rowsSelector: Boolean,
     resetSelection: Boolean,
-    sortable: { type: Boolean, default: true },
   },
   emits: {
     'rows-selected': null,
@@ -267,10 +266,6 @@ export default defineComponent({
     }
 
     const onSort = function (column: string) {
-      if (!props.sortable) {
-        return false
-      }
-
       const order =
         sort.value.order == RowSortOrders.noOrder ||
         sort.value.column !== column
