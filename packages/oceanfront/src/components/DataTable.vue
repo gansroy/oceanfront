@@ -138,7 +138,7 @@ export default defineComponent({
       for (const hdr of props.headers as DataTableHeader[]) {
         const align = hdr.align
         const cls = ['of--align-' + (align || 'start'), hdr.class]
-        if (hdr.sort) {
+        if (typeof hdr.sort === 'string') {
           setSort(hdr.value, hdr.sort)
         }
         cols.push(Object.assign({}, hdr, { align, class: cls }))
