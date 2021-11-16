@@ -164,7 +164,7 @@ const fieldInit =
       click: computed(() => (ctx.editable ? clickOpen : null)),
       inputId,
       popup: {
-        content: renderPopup,
+        content: () => (opened.value ? renderPopup() : null),
         visible: opened,
         onBlur: closePopup,
       },
