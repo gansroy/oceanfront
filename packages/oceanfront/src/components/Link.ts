@@ -80,6 +80,7 @@ export const OfLink = defineComponent({
     },
     href: { type: String, default: null },
     to: [String, Object] as PropType<LinkTo>,
+    beforeNavigate: { type: Array as PropType<Function[]>, default: null },
   },
   setup(props, ctx: SetupContext) {
     const inst = getCurrentInstance() as ComponentInternalInstance
@@ -99,6 +100,7 @@ export const OfLink = defineComponent({
             {
               custom: true,
               to: props.to ?? '',
+              beforeNavigate: props.beforeNavigate,
             },
             (customSlot || ((link: Link) => renderLink(link, inst))) as any
           )
