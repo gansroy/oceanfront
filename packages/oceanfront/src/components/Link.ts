@@ -35,7 +35,11 @@ function defaultLink(href: string | null) {
   }
 }
 
-function renderLink(link: Link, comp: ComponentInternalInstance) {
+function renderLink(
+  link: Link,
+  comp: ComponentInternalInstance,
+  beforeNavigate: Function[]
+) {
   return h(
     'a',
     {
@@ -47,7 +51,12 @@ function renderLink(link: Link, comp: ComponentInternalInstance) {
         'of--link': !!link.href,
       },
       href: link.href,
-      onClick: link.navigate,
+      onClick: (evt: Event) => {
+        if (beforeNavigate && beforeNavigate.length > 0) {
+          beforeNavigate.forEach((f: Function) => f())
+        }
+        return link.navigate(evt)
+      },
       ...comp.attrs,
     },
     comp.slots.default?.(link)
@@ -102,11 +111,15 @@ export const OfLink = defineComponent({
               to: props.to ?? '',
               beforeNavigate: props.beforeNavigate,
             },
-            (customSlot || ((link: Link) => renderLink(link, inst))) as any
+            (customSlot ||
+              ((link: Link) =>
+                renderLink(link, inst, props.beforeNavigate))) as any
           )
         } else {
           const link = defaultLink(props.href)
-          return customSlot ? customSlot(link) : renderLink(link, inst)
+          return customSlot
+            ? customSlot(link)
+            : renderLink(link, inst, props.beforeNavigate)
         }
       },
     }
