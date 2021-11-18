@@ -14,8 +14,28 @@
         </slot>
         <slot name="header-first-cell" />
       </div>
-      <div v-for="(col, idx) of columns" :class="col.class" :key="idx">
-        <span>{{ col.text }}</span>
+      <div
+        v-for="(col, idx) of columns"
+        :class="[
+          col.class,
+          {
+            sortable: col.sort !== false,
+            [sort.order]: sort.column === col.value,
+          },
+        ]"
+        :key="idx"
+      >
+        <span :onclick="col.sort == false ? null : () => onSort(col.value)">
+          {{ col.text }}
+          <of-icon
+            v-if="col.sort !== false"
+            :name="
+              sort.order == 'desc' && sort.column == col.value
+                ? 'triangle-down'
+                : 'triangle-up'
+            "
+          />
+        </span>
       </div>
     </div>
     <div
@@ -77,6 +97,12 @@ enum RowsSelectorValues {
   DeselectAll = 'deselect-all',
 }
 
+enum RowSortOrders {
+  asc = 'asc',
+  desc = 'desc',
+  noOrder = '',
+}
+
 const showSelector = (hasSelector: boolean, rows: any[]): boolean => {
   let issetId = false
   if (rows && rows.hasOwnProperty(0) && rows[0].hasOwnProperty('id')) {
@@ -102,13 +128,19 @@ export default defineComponent({
   },
   emits: {
     'rows-selected': null,
+    'rows-sorted': null,
   },
   setup(props, ctx: SetupContext) {
+    const sort = ref({ column: '', order: '' })
+
     const columns = computed(() => {
       const cols: any[] = []
       for (const hdr of props.headers as DataTableHeader[]) {
         const align = hdr.align
         const cls = ['of--align-' + (align || 'start'), hdr.class]
+        if (typeof hdr.sort === 'string') {
+          setSort(hdr.value, hdr.sort)
+        }
         cols.push(Object.assign({}, hdr, { align, class: cls }))
       }
       return cols
@@ -228,6 +260,25 @@ export default defineComponent({
       },
     ]
 
+    const setSort = function (column: string, order: string) {
+      sort.value.order = order
+      sort.value.column = column
+    }
+
+    const onSort = function (column: string) {
+      const order =
+        sort.value.order == RowSortOrders.noOrder ||
+        sort.value.column !== column
+          ? RowSortOrders.asc
+          : sort.value.order == RowSortOrders.asc
+          ? RowSortOrders.desc
+          : RowSortOrders.noOrder
+
+      setSort(column, order)
+      selectRows(RowsSelectorValues.DeselectAll)
+      ctx.emit('rows-sorted', sort.value)
+    }
+
     return {
       columns,
       footerRows,
@@ -239,6 +290,8 @@ export default defineComponent({
       onUpdateHeaderRowsSelector,
       headerRowsSelectorChecked,
       columnsStyle,
+      onSort,
+      sort,
     }
   },
 })

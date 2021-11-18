@@ -10,13 +10,7 @@ export default defineComponent({
       {
         href: this.$props.value.params.href || null,
         to: this.$props.value.params.to || null,
-        onClick: () => {
-          if (typeof this.$props.value.params.click === 'function') {
-            return this.$props.value.params.click()
-          } else {
-            return false
-          }
-        },
+        beforeNavigate: this.$props.value.params.beforeNavigate || null,
       },
       {
         default: () => this.$props.value.value,

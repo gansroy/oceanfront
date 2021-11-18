@@ -32,6 +32,28 @@
     }
   }
 
+  > .of-data-table-header > .sortable > span > i {
+    opacity: 0;
+    vertical-align: middle;
+  }
+
+  > .of-data-table-header > .sortable > span:hover > i {
+    opacity: 0.3;
+  }
+
+  > .of-data-table-header > .sortable {
+    &.asc,
+    &.desc {
+      span > i {
+        opacity: 1;
+      }
+    }
+  }
+
+  > .of-data-table-header > .sortable > span:hover {
+    cursor: pointer;
+  }
+
   > .of-data-table-row {
     > div {
       padding: 0.25rem 0.75rem;
