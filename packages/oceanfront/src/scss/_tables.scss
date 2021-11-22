@@ -32,9 +32,16 @@
     }
   }
 
+  > .of-data-table-header > .sortable > span {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  } 
+
   > .of-data-table-header > .sortable > span > i {
     opacity: 0;
     vertical-align: middle;
+    padding-left: 0.25rem;
   }
 
   > .of-data-table-header > .sortable > span:hover > i {

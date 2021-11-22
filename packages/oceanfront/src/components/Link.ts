@@ -109,7 +109,6 @@ export const OfLink = defineComponent({
             {
               custom: true,
               to: props.to ?? '',
-              beforeNavigate: props.beforeNavigate,
             },
             (customSlot ||
               ((link: Link) =>
