@@ -272,7 +272,7 @@ export default defineComponent({
           ? RowSortOrders.asc
           : sort.value.order == RowSortOrders.asc
           ? RowSortOrders.desc
-          : RowSortOrders.noOrder
+          : RowSortOrders.asc
 
       setSort(column, order)
       selectRows(RowsSelectorValues.DeselectAll)
