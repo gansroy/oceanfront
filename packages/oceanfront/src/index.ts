@@ -141,8 +141,6 @@ export const Oceanfront: Plugin = {
 export { extendConfig, useConfig, Config, ConfigFunction } from './lib/config'
 export { addDays, addMonths } from './lib/datetime'
 export {
-  defineFieldType,
-  extendFieldFormat,
   ExtFieldRender,
   FieldContext,
   FieldDragIn,
@@ -150,10 +148,14 @@ export {
   FieldPopup,
   FieldProps,
   FieldRender,
-  fieldRender,
   FieldType,
   FieldTypeConstructor,
-  FormatProp,
+  FieldFormatProp,
+  FieldMode,
+  FieldLabelPositionProp,
+  defineFieldType,
+  extendFieldFormat,
+  fieldRender,
   newFieldId,
 } from './lib/fields'
 export { FocusGroup, provideFocusGroup, useFocusGroup } from './lib/focus'

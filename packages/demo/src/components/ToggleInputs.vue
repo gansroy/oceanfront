@@ -22,6 +22,7 @@
       <template #options>
         <of-toggle-field
           label="Render as switch"
+          label-position="input"
           v-model="customProps.switch"
         />
       </template>

@@ -21,15 +21,34 @@ export interface FieldTypeConstructor {
 
 export type FieldInit = (props: FieldProps, ctx: FieldContext) => FieldRender
 
-export type FieldMode = 'normal' | 'disabled' | 'readonly' | 'locked' | 'static'
+export type FieldMode =
+  | 'editable'
+  | 'disabled'
+  | 'readonly'
+  | 'locked'
+  | 'static'
+
+export type FieldFormatProp = string | Record<string, any>
+
+export type FieldLabelPositionProp =
+  | 'default'
+  | 'none'
+  | 'frame'
+  | 'input'
+  | 'top'
+  | 'left'
+  | 'right'
 
 export interface FieldContext {
   config: Config
   container?: string
+  density?: number
   editable?: boolean
   fieldType?: string // the resolved field type name
   id?: string
   initialValue?: any // normally loaded from record
+  inputLabel?: string
+  inline?: boolean
   interactive?: boolean
   items?: string | any[] | ItemList
   label?: string
@@ -38,6 +57,7 @@ export interface FieldContext {
   muted?: boolean // if editable, reduce indicators
   name?: string
   record?: FormRecord
+  rounded?: boolean
   // onFocus, onBlur
   onInput?: (input: any, value: any) => void
   onUpdate?: (value: any) => void
@@ -114,12 +134,8 @@ export function defineFieldType<T extends FieldType>(f: T): T {
   return f
 }
 
-export type FormatProp = string | Record<string, any>
-
-export type FrameProp = 'none' | 'normal' | 'block'
-
 export function extendFieldFormat(
-  format: FormatProp | undefined,
+  format: FieldFormatProp | undefined,
   props: Record<string, any>
 ): Record<string, any> {
   if (typeof format === 'string' || typeof format === 'function') {

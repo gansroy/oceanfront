@@ -120,7 +120,7 @@ export const FileField = defineFieldType({
             'label',
             {
               class: [
-                'of-field-input-label',
+                'of-field-content-text',
                 'of--align-' + (props.align || 'start'),
               ],
               for: inputId.value,
@@ -133,7 +133,7 @@ export const FileField = defineFieldType({
             'label',
             {
               class: [
-                'of-field-input-label',
+                'of-field-content-text',
                 'of--align-' + (props.align || 'start'),
                 'of--text-placeholder',
               ],

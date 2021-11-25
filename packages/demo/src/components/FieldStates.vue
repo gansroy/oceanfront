@@ -3,13 +3,13 @@
     <h1>Field States</h1>
 
     <div class="row">
-      <of-toggle-field v-model="filled" label="Show filled inputs" />
+      <of-toggle-field v-model="filled" label="Show filled inputs" label-position="input" />
     </div>
     <br />
 
     <div class="attrs">
       <div class="row">
-        <div class="column state">Normal</div>
+        <div class="column state">Editable</div>
         <div class="column field">
           <of-field v-bind="fieldProps" v-model="fieldValue" />
         </div>
@@ -122,7 +122,7 @@ export default defineComponent({
     const filled = ref(false)
     const fieldProps = computed(() => ({
       label: 'Test input',
-      variant: filled.value ? 'filled' : 'normal',
+      variant: filled.value ? 'filled' : 'outlined',
     }))
     const fieldValue = ref('Field value')
 

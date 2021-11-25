@@ -14,7 +14,7 @@
         />
       </template>
       <template #options>
-        <of-toggle-field label="Multi-line" v-model="customProps.multiline" />
+        <of-field type="toggle" label="Multi-line" label-position="input" v-model="customProps.multiline" />
       </template>
     </of-demo-field>
 
@@ -25,41 +25,41 @@
           model-value="Small text input"
           style="width: 10em"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           model-value="Normal text input"
           style="width: 10em"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           class="of--large"
           model-value="Large text input"
           style="width: 10em"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           readonly
           model-value="Read-only text"
           style="width: 10em"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           disabled
           model-value="Disabled text"
           style="width: 10em"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           placeholder="Placeholder"
           style="width: 10em"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           class="of--density-0"
           style="width: 10em"
           model-value="Compact"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           placeholder="Password"
           input-type="password"
@@ -74,27 +74,27 @@
           style="width: 10em"
           model-value="Small text area"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           multiline
           style="width: 10em"
           model-value="Normal text area"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           multiline
           class="of--large"
           style="width: 10em"
           model-value="Large text area"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           multiline
           readonly
           style="width: 10em"
           model-value="Read-only text area"
           frame="none"
-        />&nbsp;
+        />
         <of-text-field
           multiline
           disabled
@@ -134,7 +134,7 @@ export default defineComponent({
 
 <style lang="scss">
 .demo-row {
-  grid-gap: 5px;
+  grid-gap: 10px;
   margin: 10px 0;
 }
 </style>

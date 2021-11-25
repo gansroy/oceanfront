@@ -205,7 +205,11 @@ export const TextField = defineFieldType({
       content: () => {
         const fmt = formatter.value
         if (!ctx.interactive) {
-          return blank.value ? '—' : inputValue.value
+          return h(
+            'div',
+            { class: 'of-field-content-text' },
+            blank.value ? '—' : inputValue.value
+          )
         }
         return h(multiline.value ? 'textarea' : 'input', {
           class: [

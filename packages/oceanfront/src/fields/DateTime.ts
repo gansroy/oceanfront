@@ -147,7 +147,7 @@ const fieldInit =
             'div',
             {
               class: [
-                'of-field-input-label',
+                'of-field-content-text',
                 'of--align-' + (props.align || 'start'),
               ],
               id: inputId.value,

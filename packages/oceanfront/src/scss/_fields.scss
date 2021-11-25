@@ -1,9 +1,3 @@
-@mixin field-text-disabled {
-  color: $color-field-disabled;
-  -webkit-text-fill-color: $color-field-disabled; // override needed for disabled state
-  text-shadow: $text-shadow-disabled;
-}
-
 @mixin field-text-base {
   font-family: $font-family-input;
   font-weight: $font-weight-input;
@@ -11,10 +5,6 @@
   line-height: $line-height-input;
 }
 
-.of--density-0 {
-  --pad-h-input: #{$pad-h-compact-input};
-  --pad-v-input: #{$pad-v-compact-input};
-}
 .of--small {
   --font-size-input: #{$font-size-input-sm};
 }
@@ -59,7 +49,7 @@
 
 .of-field-label {
   align-self: center;
-  color: $color-field-label;
+  color: var(--field-label-color, $color-field-label);
   // cursor: inherit;
   font-size: 0.8em;
   text-overflow: ellipsis;
@@ -104,75 +94,166 @@
 }
 
 .of-field {
-  // .input-icon {
-  //   color: $color-field-icon;
-  // }
+  --field-background: transparent;
+  --field-border-color: transparent;
+  --field-border-radius: #{$border-radius-input};
+  --field-border-style: solid;
+  --field-border-width: 1px;
+  --field-color: #{$color-field};
+  --field-label-color: #{$color-field-label};
+  --field-label-width: var(--of-field-label-width, 50%);
+  --field-input-height: calc(var(--field-line-height) * 1em);
+  --field-line-height: #{$line-height-input};
+  --field-h-pad: 0.5em;
+  --field-v-pad-base: 1.125em;
+  --field-v-pad: var(--field-v-pad-base);
+  --field-size: var(--of-field-size);
+  --field-size-append: 0px;
+  --field-size-prepend: 0px;
 
-  // .wait-icon,
-  // .wait-icon.dynamic {
-  //   height: 18px;
-  //   line-height: 18px;
-  //   vertical-align: top;
-  // }
+  &.of--interactive {
+    --field-border-color: #{$border-color-field};
+  }
+  &.of--mode-disabled {
+    --field-border-color: #{$border-color-field-disabled};
+    --field-color: #{$color-field-disabled};
+    --field-label-color: #{$color-field-disabled};
+
+    > .of-field-main {
+      opacity: $opacity-input-disabled;
+
+      > .of-field-inner {
+        -webkit-text-fill-color: var(--field-color); // override needed for disabled state
+        text-shadow: $text-shadow-disabled;    
+      }
+    }
+  }
+  &.of--mode-editable:hover {
+    --field-border-color: #{$border-color-field-hover};
+    --field-label-color: #{$color-field-hover};
+  }
+  &.of--interactive.of--focused {
+    --field-border-color: #{$border-color-field-focus};
+    --field-label-color: #{$color-field-focus-label};
+  }
+  &.of--invalid {
+    --field-label-color: #{$color-error};
+
+    &:not(.of--focused) {
+      --field-border-color: #{$border-color-field-invalid};
+    }
+  }
 
   box-sizing: border-box;
-  color: $color-field;
-  display: inline-flex;
-  flex: 1 0 auto;
+  color: var(--field-color);
+  display: flex;
+  flex: 1 0 auto; // var(--field-size);
   flex-flow: column nowrap;
   font-size: $font-size-input;
-  max-width: min(100%, var(--of-field-size));
+  line-height: normal;
+  max-width: 100%;
   outline: none;
   text-align: start;
+  // width: calc(min(100%, var(--field-size)));
   vertical-align: top;
   @include no-select;
 
-  &.of--editable:hover .of-field-label {
-    color: $color-field-hover;
+  &.of--inline {
+    display: inline-flex;
+    width: var(--field-size);
   }
-  &.of--interactive.of--focused .of-field-label {
-    color: $color-field-focus-label;
+
+  &.of--label-left, &.of--label-right {
+    display: grid;
+    grid-template-columns: var(--field-label-width) auto;
+
+    > .of-field-main-label {
+      align-items: center;
+      display: flex;
+      padding: 0 var(--field-h-pad);
+    }
+
+    &.of--inline {
+      display: inline-grid;
+    }
   }
-  &.of--mode-disabled .of-field-label {
-    color: $color-field-disabled;
+  &.of--label-left {
+    grid-template-areas: 'label main' 'label caption';
   }
-  &.of--invalid .of-field-label {
-    color: $color-error;
+  &.of--label-right {
+    grid-template-areas: 'main label' 'caption label';
+  }
+  &.of--label-top > .of-field-main-label {
+    margin-bottom: 0.25em;
+    padding-left: var(--field-h-pad);
+  }
+
+  &.of--rounded {
+    --field-border-radius: calc(var(--field-v-pad) + 0.5em + 2px);
+  }
+
+  > .of-field-main > .of-field-body > .of-field-inner > textarea {
+    box-sizing: border-box;
+    margin: 0 var(--field-border-width) 2px 0;
+    padding: var(--field-v-pad) var(--field-h-pad);
+    resize: vertical;
   }
 }
 
-.of--frame-none {
-  width: var(--of-field-size);
+.of-field.of--density-0 {
+  --field-v-pad-base: 1.125em;
+}
+.of-field.of--density-1 {
+  --field-v-pad-base: 0.875em;
+}
+.of-field.of--density-2 {
+  --field-v-pad-base: 0.625em;
+}
+.of-field.of--density-3 {
+  --field-v-pad-base: 0.375em;
 }
 
-.of-field-body {
+.of-field-main-label {
+  grid-area: label;
+}
+.of-field-main {
+  background: var(--field-background);
+  border: var(--field-border-width) var(--field-border-style) var(--field-border-color);
   box-sizing: border-box;
   display: flex;
   flex-flow: column nowrap;
+  grid-area: main;
+  min-height: calc(2 * var(--field-v-pad) + var(--field-input-height));
   outline: none;
   position: relative;
 }
+.of-field-caption {
+  grid-area: caption;
+}
 
-.of-field-inner {
+.of-field-body {
   align-items: flex-start;
   box-sizing: border-box;
-  color: $color-field;
   display: flex;
-  font-size: $font-size-input;
   overflow: hidden;
+  margin: calc(0px - var(--field-border-width));
+  min-height: calc(var(--field-v-pad) + var(--field-input-height));
   position: relative;
-  max-width: 100%; // don't extend past containing cell
-  // vertical-align: $vertical-align-input;
+  max-width: 100%;
 
   @include field-text-base;
 }
 
-.of-field-content {
+.of-field-inner {
   display: flex;
   width: 0; // allow element to resize smaller in firefox when nowrap is used
+
+  > *:not(.of--unpadded) {
+    padding: var(--field-v-pad) var(--field-h-pad);
+  }
 }
-.of-field-content,
-.of-field-input-label {
+.of-field-inner,
+.of-field-content-text {
   cursor: inherit;
   flex: auto;
   overflow: hidden;
@@ -180,13 +261,13 @@
 }
 
 .of-field-input {
+  // caret-color
   color: inherit;
+  display: block;
+  flex: auto;
   font-family: inherit;
   font-size: inherit;
-  font-weight: normal;
   line-height: inherit;
-  margin: 0;
-  // caret-color
 
   // may want to restrict to certain variants:
   appearance: none;
@@ -202,12 +283,11 @@
 }
 
 .of-field-input,
-.of-field-input-label,
-.of-field-fixed-content {
+.of-field-content-text {
   box-sizing: border-box;
-  // min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
+  font-weight: normal;
+  margin: 0;
   outline: none;
-  padding: $pad-v-input $pad-h-input;
   // letter-spacing
 }
 
@@ -223,251 +303,151 @@
   flex: none;
 }
 .of-field-prepend {
-  padding-left: $pad-h-input;
+  padding-left: var(--field-h-pad);
 }
 .of-field-append {
-  padding-right: $pad-h-input;
+  padding-right: var(--field-h-pad);
 }
 
-.of--frame-none,
-.of--frame-normal.of--variant-normal {
-  .of-field-input-label {
-    min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
-    pointer-events: none;
-  }
+.of-field.of--variant-outlined {
+  > .of-field-main {
+    border: var(--field-border-width) var(--field-border-style) var(--field-border-color);
+    border-radius: var(--field-border-radius);
 
-  &.of-text-field textarea {
-    padding: $pad-v-input $pad-h-input 0;
-    resize: vertical;
-  }
-}
-
-.of--frame-none.of--variant-normal,
-.of--frame-normal.of--variant-normal {
-  .of-field-inner {
-    border: $border-width-input solid transparent;
-  }
-  &.of--interactive .of-field-inner {
-    background: $bg-field;
-    border-color: $border-color-field;
-    border-radius: $border-radius-input;
-    box-shadow: $box-shadow-field-basic;
-  }
-  &.of--editable:hover .of-field-inner {
-    border-color: $border-color-field-hover;
-    // color: $color-field-hover;
-  }
-  &.of--interactive.of--focused .of-field-inner {
-    background: $bg-field-focus;
-    border-color: $border-color-field-focus;
-    box-shadow: $box-shadow-field-basic-focus;
-  }
-  &.of--mode-readonly,
-  &.of--mode-disabled {
-    .of-field-inner {
-      background: $bg-field-disabled;
-      border-color: $border-color-field-disabled;
+    > .of-field-inner {
+      margin-top: -1px;
     }
   }
-  &.of--mode-disabled .of-field-inner {
-    opacity: $opacity-input-disabled;
-    @include field-text-disabled;
-  }
-  &.of--invalid:not(.of--focused) .of-field-inner {
-    border-color: $border-color-field-invalid;
-  }
-}
 
-.of--frame-normal {
-  display: flex;
-  padding: 0 0.3em;
-
-  .of-field-header,
-  .of-field-footer {
-    min-height: 0.25em;
+  &.of--interactive.of--focused > .of-field-main {
+    box-shadow: $box-shadow-field-basic-focus;
   }
 
-  .of-field-label {
-    display: block;
-    padding: 0 $pad-h-input;
-  }
-}
+  &.of--label-frame {
+    --field-h-pad: 0.75em;
 
-.of--frame-block {
-  display: flex;
+    > .of-field-main {
+      border: none;
 
-  .of-field-inner {
-    min-height: calc(3em + 2 * #{$pad-v-field});
-    // padding-top: calc(0.75em - 1px);
-  }
+      > .of-field-body {
+        margin: 0;
 
-  .of-field-header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    pointer-events: none;
-  }
+        .of-field-inner {
+          opacity: 0;
+          transition: opacity 180ms;
+          will-change: opacity;
+        }
+      }
 
-  .of-field-input-label {
-    // min-height: calc(1em * #{$line-height-input} + 2 * #{$pad-v-input});
-    pointer-events: none;
-  }
-  .of-field-input,
-  .of-field-input-label,
-  .of-field-fixed-content {
-    padding: $pad-v-input $pad-h-field;
-  }
-
-  &.of-text-field textarea {
-    margin: 0 1px 1px;
-    padding: $pad-v-input calc(#{$pad-h-field} - 1px) $pad-v-input;
-    resize: vertical;
-    vertical-align: bottom;
-  }
-}
-
-.of--frame-block.of--variant-normal {
-  --cur-border: 1px solid transparent;
-  &.of--interactive {
-    --cur-border: 1px solid #{$border-color-field};
-  }
-  &.of--mode-disabled {
-    --cur-border: 1px solid #{$border-color-field-disabled};
-  }
-
-  .of-field-header {
-    display: flex;
-    .of-field-label-wrap {
-      border-bottom: var(--cur-border);
-      border-top: var(--cur-border);
-      box-sizing: border-box;
-      padding: 0 4px;
-      transition: border-color 120ms;
-      label {
-        position: relative;
+      > .of-field-header {
+        display: flex;
+        position: absolute;
         top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+
+        &::before {
+          border: var(--field-border-width) var(--field-border-style) var(--field-border-color);
+          border-radius: var(--field-border-radius) 0 0 var(--field-border-radius);
+          border-right: none;
+          box-sizing: border-box;
+          content: '';
+          flex: 0 0 calc(max(var(--field-h-pad), var(--field-border-radius)) - 0.25em);
+          transition: border-color 120ms;
+        }
+        &::after {
+          border: var(--field-border-width) var(--field-border-style) var(--field-border-color);
+          border-radius: 0 var(--field-border-radius) var(--field-border-radius) 0; // inherit?
+          border-left: none;
+          content: '';
+          flex: auto;
+          transition: border-color 120ms;
+        }
+
+        .of-field-header-label {
+          border-bottom: var(--field-border-width) var(--field-border-style) var(--field-border-color);
+          border-top: var(--field-border-width) var(--field-border-style) var(--field-border-color);
+          box-sizing: border-box;
+          max-width: calc(100% - 2 * var(--field-h-pad));
+          padding: 0 0.25em;
+          transition: border-color 120ms;
+
+          .of-field-label {
+            position: relative;
+            top: calc(0px - var(--field-border-width));
+            display: block;
+            font-size: 0.75em;
+            transform: translateX(var(--field-size-prepend)) scale(1.3333) translateY(var(--field-v-pad));
+            transform-origin: left top;
+            transition: transform 150ms;
+            backface-visibility: hidden; // avoid some jumping?
+            // will-change: transform; // FIXME currently blurry in chrome
+          }
+        }
+      }
+    }
+
+    &.of--interactive.of--focused {
+      --field-border-width: 2px;
+    }
+
+    &.of--interactive.of--focused,
+    &.of--active {
+      > .of-field-main {
+        box-shadow: none;
+
+        > .of-field-header {
+          .of-field-header-label {
+            border-top-color: transparent;
+      
+            .of-field-label {
+              transform: translateY(-0.675em);
+            }
+          }
+        }
+
+        > .of-field-body > .of-field-inner {
+          opacity: 1;
+        }
       }
     }
   }
-
-  &.of--label-visible .of-field-header {
-    &::before {
-      border-radius: $border-radius-field 0 0 $border-radius-field;
-      border: var(--cur-border);
-      border-right: none;
-      box-sizing: border-box;
-      content: '';
-      flex: 0 0 calc(#{$pad-h-field} - 4px + var(--of-field-size-prepend, 0px));
-      transition: border-color 120ms;
-    }
-    &::after {
-      border-radius: 0 $border-radius-field $border-radius-field 0; // inherit?
-      border: var(--cur-border);
-      border-left: none;
-      content: '';
-      flex: auto;
-      transition: border-color 120ms;
-    }
-  }
-  &.of--label-none .of-field-header {
-    border-radius: $border-radius-field;
-    border: var(--cur-border);
-    transition: border-color 120ms;
-  }
-
-  &.of--editable:hover {
-    --cur-border: 1px solid #{$border-color-field-hover};
-  }
-  &.of--interactive.of--focused {
-    --cur-border: 2px solid #{$border-color-field-focus};
-    .of-field-label-wrap label {
-      top: -1px;
-    }
-  }
-  &.of--invalid:not(.of--focused) {
-    --cur-border: 1px solid #{$border-color-field-invalid};
-  }
-
-  .of-field-label-wrap {
-    max-width: calc(
-      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend, 0px) - var(--of-field-size-append, 0px)
-    );
-  }
-  .of-field-label {
-    display: block;
-    font-size: 0.75em;
-    transform: translateY(1.25em) scale(1.3333);
-    transform-origin: left top;
-    transition: transform 150ms;
-    backface-visibility: hidden; // avoid some jumping?
-    // will-change: transform; // FIXME currently blurry in chrome
-  }
-  &.of--interactive.of--focused,
-  &.of--active {
-    .of-field-label-wrap {
-      border-top-color: transparent;
-    }
-    .of-field-label {
-      transform: translateY(-0.75em);
-    }
-  }
-
-  &.of--mode-disabled .of-field-inner {
-    @include field-text-disabled;
-  }
-
-  .of-field-content {
-    opacity: 0;
-    transition: opacity 180ms;
-    will-change: opacity;
-  }
-  &.of--label-visible .of-field-content {
-    margin-top: 0.75em;
-  }
-  &.of--active .of-field-content {
-    opacity: 1;
-  }
 }
 
-.of--frame-none.of--variant-filled,
-.of--frame-normal.of--variant-filled {
-  // .of-field-inner {
-  //   border:
-  // }
-  &.of--editable .of-field-inner,
-  &.of--mode-locked .of-field-inner {
-    background: $bg-field-filled;
-  }
-  &.of--interactive .of-field-inner {
-    border-bottom: 1px solid $border-color-field;
-    border-radius: $border-radius-field $border-radius-field 0 0;
-    color: $color-field-filled;
-  }
-  &.of--editable:hover .of-field-inner {
-    background: $bg-field-filled-hover;
-    border-bottom-color: $border-color-field-hover;
-  }
-  &.of--mode-disabled .of-field-inner {
-    border-bottom-color: $border-color-field-disabled;
-    opacity: $opacity-input-disabled;
-    @include field-text-disabled;
-  }
-  &.of--interactive.of--focused .of-field-inner {
-    background: $bg-field-filled-focus;
-  }
-  &.of--invalid:not(.of--focused) .of-field-inner {
-    border-bottom-color: $border-color-field-invalid;
+.of-field.of--variant-filled {
+  > .of-field-main {
+    border-color: transparent transparent var(--field-border-color) transparent;
   }
 
-  &.of--interactive .of-field-header::after {
+  &.of--mode-editable,
+  &.of--mode-locked {
+    --field-background: #{$bg-field-filled};
+  }
+  &.of--interactive {
+    --field-color: #{$color-field-filled};
+    > .of-field-main {
+      border-radius: var(--field-border-radius) var(--field-border-radius) 0 0;
+    }
+  }
+  &.of--mode-editable:hover {
+    --field-background: #{$bg-field-filled-hover};
+  }
+  &.of--interactive.of--focused {
+    --field-background: #{$bg-field-filled-focus};
+  }
+  &.of--mode-disabled {
+    --field-color: #{$color-field-disabled};
+    --field-border-style: dashed;
+  }
+
+  &.of--interactive > .of-field-main::after {
     // ripple
     background: $border-color-field-focus;
     content: '';
     height: 2px;
     position: absolute;
-    bottom: 0;
+    bottom: calc(0px - var(--field-border-width));
     left: 0;
     width: 100%;
     opacity: 0;
@@ -477,117 +457,50 @@
     will-change: opacity, transform;
     z-index: 1;
   }
-  &.of--interactive.of--focused .of-field-header::after {
+  &.of--interactive.of--focused > .of-field-main::after {
     opacity: 1;
     transform: scaleX(1);
   }
-  &.of--editable:hover .of-field-label {
-    color: $color-field-filled-hover;
+  &.of--mode-editable:hover {
+    --field-label-color: #{$color-field-filled-hover};
   }
-  &.of--interactive.of--focused .of-field-label {
-    color: $color-field-filled-focus-label;
-  }
-}
-
-.of--frame-block.of--variant-filled {
-  .of-field-label-wrap {
-    margin-left: var(--of-field-size-prepend, 0px);
-    max-width: calc(
-      100% - 2 * #{$pad-h-field} - 1em - var(--of-field-size-prepend, 0px) - var(--of-field-size-append, 0px)
-    );
-  }
-  .of-field-label {
-    color: $color-field-filled-label;
-    display: block;
-    overflow: hidden;
-    position: relative;
-    left: $pad-h-field;
-    top: $pad-v-input;
-    font-size: 0.75em;
-    transform: translateY(0.85em) scale(1.3333);
-    transform-origin: left top;
-    transition: transform 150ms;
-    backface-visibility: hidden; // avoid some jumping?
-    // will-change: transform; // FIXME currently blurry in chrome
-  }
-  &.of--editable:hover .of-field-label {
-    color: $color-field-filled-hover;
-  }
-  &.of--mode-disabled .of-field-label {
-    color: $color-field-disabled;
-  }
-  &.of--interactive.of--focused .of-field-label {
-    color: $color-field-filled-focus-label;
-  }
-  &.of--interactive.of--focused,
-  &.of--active .of-field-label {
-    transform: none;
-  }
-  &.of--label-visible .of-field-content {
-    margin-top: 1.1em;
-  }
-  .of-field-content {
-    opacity: 0;
-    transition: opacity 180ms;
-    will-change: opacity;
-  }
-  &.of--active .of-field-content {
-    opacity: 1;
+  &.of--interactive.of--focused {
+    --field-label-color: #{$color-field-filled-focus-label};
   }
 
-  &.of--editable .of-field-body,
-  &.of--mode-locked .of-field-body {
-    background: $bg-field-filled;
-  }
-  &.of--interactive .of-field-body {
-    border-radius: $border-radius-field $border-radius-field 0 0;
-    color: $color-field-filled;
-  }
-  &.of--editable:hover .of-field-body {
-    background: $bg-field-filled-hover;
-  }
-  &.of--interactive.of--focused .of-field-body {
-    background: $bg-field-filled-focus;
-  }
+  &.of--label-frame {
+    --field-h-pad: 0.75em;
+    --field-v-pad: calc(var(--field-v-pad-base) - 0.5em);
 
-  &.of--interactive .of-field-header::after {
-    // ripple
-    background: $border-color-field-focus;
-    content: '';
-    height: 2px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: opacity 90ms, transform 150ms;
-    will-change: opacity, transform;
-  }
-  &.of--interactive.of--focused .of-field-header::after {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-  &.of--interactive .of-field-inner {
-    border-bottom: 1px solid $border-color-field;
-  }
-  &.of--editable:hover .of-field-inner {
-    border-bottom-color: $border-color-field-hover;
-  }
-  &.of--mode-disabled .of-field-inner {
-    border-bottom-color: $border-color-field-disabled;
-    opacity: $opacity-input-disabled;
-    @include field-text-disabled;
-  }
-  &.of--invalid:not(.of--focused) .of-field-inner {
-    border-bottom-color: $border-color-field-invalid;
-  }
-}
+    > .of-field-main {
+      min-height: calc(1em + 2 * var(--field-v-pad) + var(--field-input-height));
+      padding: 0;
 
-.of-field.of--block {
-  display: flex;
-  width: auto;
+      > .of-field-header {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -1px;
+        margin: calc(0px - var(--field-border-width));
+
+        .of-field-header-label {
+          box-sizing: border-box;
+          line-height: 1;
+          padding: var(--field-v-pad) calc(var(--field-size-append) + var(--field-h-pad)) 0 calc(var(--field-size-prepend) + var(--field-h-pad));
+
+          .of-field-label {
+            font-size: 0.75em;
+          }
+        }
+      }
+
+      > .of-field-body {
+        > .of-field-inner {
+          margin-top: 1em;
+        }
+      }
+    }
+  }
 }
 
 .of-toggle-input,
@@ -622,10 +535,16 @@
   display: flex;
   flex: auto;
 
+  .of-field-inner > & {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   .of-toggle-input {
     align-self: center;
     flex: none;
-    padding: 0 $pad-h-input;
+    padding: 0 var(--field-h-pad, 0.4em);
+    margin: -2px 0;
     justify-content: center;
     position: relative;
     // --of-icon-scale-indiv: 1.15;
@@ -642,28 +561,27 @@
   align-items: center;
   box-sizing: border-box;
   display: inline-flex;
-  font-size: $font-size-input;
-  height: calc(1em * #{$line-height-input});
-  line-height: $line-height-input;
-  margin: $pad-v-input 0; // $pad-h-input;
-  padding: 0.15em 0.1em;
+  font-size: calc(#{$font-size-input} * 1.5);
+  height: 1em;
+  line-height: normal;
+  padding: 0.2em;
   position: relative;
   vertical-align: top;
-  width: calc(2em + 2px);
+  width: 2em;
 
   &-thumb {
     background-color: #555;
     // border: 1px solid #bbb;
-    border-radius: 1em;
+    border-radius: 50%;
     box-sizing: border-box;
     box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
     content: ' ';
-    height: calc(1em * #{$line-height-input});
+    height: 1em;
     left: 0;
     position: absolute;
     top: 0;
     transition: left 0.15s ease-in-out;
-    width: calc(1em * #{$line-height-input});
+    width: 1em;
   }
 
   &-track {
@@ -687,10 +605,15 @@
 .of-slider {
   align-items: center;
   display: flex;
-  height: 1.5em;
+  height: 1em;
   margin: 0.25em 0.9em;
   position: relative;
   width: 100%;
+
+  .of-field-inner > & {
+    padding-left: 0;
+    padding-right: 0;
+  }
 
   &-track {
     border-radius: 0.25em;
@@ -718,6 +641,7 @@
 .of-color-swatch {
   border: 1px solid $border-color-field;
   border-radius: 2px;
+  box-sizing: border-box;
   width: 2.5em;
-  height: 1.1em;
+  height: 1.2em;
 }

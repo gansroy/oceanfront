@@ -1,34 +1,41 @@
 <template>
   <div class="of-demo-field">
     <div class="content">
-      <div class="field" v-for="(opts, idx) in allOptions" :key="idx">
+      <div class="field" v-for="(opts, idx) in allParams" :key="idx">
         <slot v-bind="opts"></slot>
       </div>
     </div>
     <div class="options">
-      <of-field
-        v-model="params.frame"
-        label="Frame Type"
-        type="select"
-        :items="frameOptions"
-        :disabled="params.all"
-      />
-      <of-field
-        v-model="params.variant"
-        label="Variant Type"
-        type="select"
-        :items="variantOptions"
-        :disabled="params.all"
-      />
-      <of-field v-model="params.all" label="Compare all" type="toggle" />
+      <div class="options-fields">
+        <of-field
+          v-model="params.variant"
+          label="Variant Type"
+          type="select"
+          :items="variantOptions"
+        />
+        <of-field
+          v-model="params.labelPosition"
+          label="Label Position"
+          type="select"
+          :items="labelPosOptions"
+        />
+        <of-field
+          v-model="params.density"
+          label="Density"
+          type="select"
+          :items="densityOptions"
+        />
+      </div>
       <hr />
-      <of-field
-        v-model="params.mode"
-        label="Mode"
-        type="select"
-        :items="modeOptions"
-      />
-      <slot name="options"></slot>
+      <div class="options-fields">
+        <of-field
+          v-model="params.mode"
+          label="Mode"
+          type="select"
+          :items="modeOptions"
+        />
+        <slot name="options"></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -39,32 +46,29 @@ import { computed, reactive, defineComponent } from 'vue'
 export default defineComponent({
   setup() {
     const params = reactive({
-      all: false,
-      frame: 'normal',
-      mode: 'normal',
-      variant: 'normal',
+      density: 'default',
+      labelPosition: 'frame',
+      mode: 'editable',
+      variant: 'compare',
     })
-    const frameOptions = ['none', 'normal', 'block']
-    const variantOptions = ['normal', 'filled']
-    const modeOptions = ['normal', 'locked', 'readonly', 'disabled', 'fixed']
-    const allOptions = computed(() => {
-      if (!params.all) {
-        return [
-          { frame: params.frame, mode: params.mode, variant: params.variant },
-        ]
+    const densityOptions = ['default', '0', '1', '2', '3']
+    const labelPosOptions = ['default', 'none', 'frame', 'left', 'right', 'top']
+    const modeOptions = ['editable', 'locked', 'readonly', 'disabled', 'fixed']
+    const variantOptions = ['default', 'outlined', 'filled', 'compare']
+    const allParams = computed(() => {
+      let p: any = { ...params };
+      if (p.variant === 'default')
+        delete p.variant;
+      if (p.variant === 'compare') {
+        return [{ ...p, variant: "outlined" }, { ...p, variant: "filled" }]
       } else {
-        let ret = []
-        for (const frame of frameOptions) {
-          for (const variant of variantOptions) {
-            ret.push({ frame, mode: params.mode, variant })
-          }
-        }
-        return ret
+        return [p]
       }
     })
     return {
-      allOptions,
-      frameOptions,
+      allParams,
+      densityOptions,
+      labelPosOptions,
       modeOptions,
       variantOptions,
       params,
@@ -82,16 +86,19 @@ export default defineComponent({
   margin: 1em 0;
   .content {
     background: #e2f1fa;
+    box-sizing: border-box;
     display: flex;
     flex: auto;
     flex-flow: column wrap;
     justify-content: center;
     overflow: hidden;
-    padding: 0.5em 0;
+    padding: 0.25em 0.5em;
     .field {
+      box-sizing: border-box;
       display: flex;
+      flex: 0 1 auto;
       justify-content: center;
-      padding: 0.5em;
+      padding: 0.75em;
       width: 100%;
     }
   }
@@ -101,8 +108,14 @@ export default defineComponent({
     padding: 1em;
     overflow: hidden;
   }
+  .options-fields {
+    display: flex;
+    flex-flow: column nowrap;
+    grid-gap: 0.5em;
+  }
   hr {
-    margin: 0.5em 1em;
+    padding: 0;
+    margin: 0.75em;
   }
 }
 </style>

@@ -46,10 +46,10 @@ export const OfToggle = defineComponent({
         : props.checked
     )
     const mode = computed(
-      () => props.mode || (props.readonly ? 'readonly' : 'normal')
+      () => props.mode || (props.readonly ? 'readonly' : 'editable')
     )
     const locked = computed(() => props.locked || record.value?.locked)
-    const editable = computed(() => mode.value === 'normal')
+    const editable = computed(() => mode.value === 'editable')
     const focused = ref(false)
 
     const fctx: FieldContext = proxyRefs({
