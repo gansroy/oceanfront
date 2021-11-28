@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h, VNode, computed, PropType } from 'vue'
+import { defineComponent, computed, PropType } from 'vue'
 import { OfNavGroup } from '../components/NavGroup'
 import { OfListItem } from '../components/ListItem'
 const OfOptionList = defineComponent({
