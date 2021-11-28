@@ -139,12 +139,12 @@ export const OfOverlay = defineComponent({
       const targetRect = targetElt.getBoundingClientRect()
       if (!targetRect || !parentRect) return // or hide?
 
-      const neededWidth = outerRect.width + targetRect.left;
-      const offsetWidth = Math.max(neededWidth - parentRect.width, 0);
-         
+      const neededWidth = outerRect.width + targetRect.left
+      const offsetWidth = Math.max(neededWidth - parentRect.width, 0)
+
       outer.style.setProperty(
         '--overlay-dyn-margin-left',
-        Math.max((targetRect.left + parentRect.left) - offsetWidth, 0) + 'px'
+        Math.max(targetRect.left + parentRect.left - offsetWidth, 0) + 'px'
       )
       outer.style.setProperty(
         '--overlay-dyn-pad-top',
