@@ -1,5 +1,5 @@
 import { ref, computed, watch, h } from 'vue'
-import { OfOptionList } from '../components/OptionList'
+import OfOptionList from '../components/OptionList.vue'
 import { OfIcon } from '../components/Icon'
 import {
   defineFieldType,
