@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
-import { OfOptionList } from '../components/OptionList'
+import OfOptionList from './OptionList.vue'
 export default defineComponent({
   name: 'OfButton',
   components: { OfOptionList },
