@@ -86,27 +86,35 @@
         </of-overlay>
       </div>
 
-      <div
-        role="menu"
-        class="of-menu of-invisible-tabs"
-        v-show="outsideTabsOpened"
+      <of-overlay
+        :active="outsideTabsOpened"
+        :shade="false"
+        :capture="false"
+        :target="overflowButtonEl"
+        @blur="closeOverflowPopup"
       >
-        <div class="of-list-outer">
-          <div
-            class="of-list-item of--enabled"
-            :key="tab.key"
-            v-for="tab in invisibleTabsList"
-            @click="selectInvisibleTab(tab.key)"
-          >
-            <div class="of-list-item-inner">
-              <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
-              <div class="of-list-item-content">
-                {{ tab.text }}
+        <div
+          role="menu"
+          class="of-menu of-invisible-tabs"
+          v-show="outsideTabsOpened"
+        >
+          <div class="of-list-outer">
+            <div
+              class="of-list-item of--enabled"
+              :key="tab.key"
+              v-for="tab in invisibleTabsList"
+              @click="selectInvisibleTab(tab.key)"
+            >
+              <div class="of-list-item-inner">
+                <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
+                <div class="of-list-item-content">
+                  {{ tab.text }}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </of-overlay>
     </div>
   </transition>
 </template>
@@ -114,6 +122,7 @@
 <script lang="ts">
 import {
   ref,
+  Ref,
   defineComponent,
   onMounted,
   onBeforeMount,
@@ -226,19 +235,31 @@ export default defineComponent({
     const variant = computed(() => props.variant || 'standard')
     const cls = 'of--variant-' + variant.value
 
-    const overflowButton = computed(() => props.overflowButton || false)
+    const overflowButtonEnabled = computed(() => props.overflowButton || false)
     let showOverflowButton = ref(false)
 
     const ofTabsNavigationHeaderShowNextNavigation = computed(() => {
-      return props.scrolling && variant.value !== 'osx' && !overflowButton.value
+      return (
+        props.scrolling &&
+        variant.value !== 'osx' &&
+        !overflowButtonEnabled.value
+      )
     })
 
     const ofTabsNavigationHeaderShowPreviousNavigation = computed(() => {
-      return props.scrolling && variant.value !== 'osx' && !overflowButton.value
+      return (
+        props.scrolling &&
+        variant.value !== 'osx' &&
+        !overflowButtonEnabled.value
+      )
     })
 
     const showNavigation = computed(() => {
-      return props.scrolling && variant.value !== 'osx' && !overflowButton.value
+      return (
+        props.scrolling &&
+        variant.value !== 'osx' &&
+        !overflowButtonEnabled.value
+      )
     })
 
     const itemMgr = useItems()
@@ -373,7 +394,7 @@ export default defineComponent({
     }
 
     const setTabsWidth = function () {
-      if (overflowButton.value && !showNavigation.value) {
+      if (overflowButtonEnabled.value && !showNavigation.value) {
         tabsWidth.value = []
 
         for (let item of ofTabsHeader.value.childNodes) {
@@ -385,7 +406,7 @@ export default defineComponent({
     }
 
     const hideOutsideTabs = function () {
-      if (overflowButton.value && !showNavigation.value) {
+      if (overflowButtonEnabled.value && !showNavigation.value) {
         closeOverflowPopup()
 
         const selectedTab: Tab | undefined = getTab(selectedTabKey.value)
@@ -514,7 +535,11 @@ export default defineComponent({
 
     const outsideTabsOpened = ref(false)
 
+    const overflowButtonEl = ref()
     const switchOverflowPopupVisibility = () => {
+      overflowButtonEl.value = tabs.value?.querySelector(
+        '.of-tab-header-item.overflow-button'
+      )
       outsideTabsOpened.value = !outsideTabsOpened.value
     }
 
@@ -529,7 +554,7 @@ export default defineComponent({
 
     const subMenuOpened = ref(false)
     const subMenuOuter = ref()
-    const subMenuTabsList = ref()
+    const subMenuTabsList: Ref<Tab[]> = ref([])
     const subMenuTimerId = ref()
 
     const openSubMenu = (key: number, _evt?: MouseEvent) => {
@@ -543,7 +568,7 @@ export default defineComponent({
         if (tab && tab.subMenuItems) {
           subMenuTimerId.value = window.setTimeout(
             () => {
-              subMenuTabsList.value = tab.subMenuItems
+              subMenuTabsList.value = tab.subMenuItems ?? []
               subMenuOuter.value = _evt?.target
               subMenuOpened.value = true
             },
@@ -586,6 +611,7 @@ export default defineComponent({
     return {
       tabsList,
       selectedTabKey,
+      overflowButtonEl,
 
       showNavigation,
       navigateHeader,
