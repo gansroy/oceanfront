@@ -256,48 +256,44 @@ export const OfField = defineComponent({
       ]),
     })
 
-    const rendered = ref<FieldRender>()
     const context = computed(() => props.context)
-    watch(
-      () => [fieldType.value, props.format],
-      ([ftype, fmt]) => {
-        const extfmt = fmt
-          ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
-            ? { type: fmt }
-            : (fmt as object)
-          : { type: ftype }
-        const found =
-          typeof ftype === 'object' && 'setup' in ftype // raw FieldType
-            ? (ftype as FieldTypeConstructor)
-            : formatMgr.getFieldType(ftype as string, true)
-        if (!found) {
-          // FIXME should always resolve something, but might
-          // want a field type that just renders an error message
-          throw new TypeError(`Unknown field type: ${ftype}`)
-        }
-        rendered.value = found.init(
-          extendReactive(
-            extfmt,
-            restrictProps(
-              props,
-              [
-                'align',
-                'maxlength',
-                'placeholder',
-                'size',
-                'name',
-                'record',
-                'items',
-                'context',
-              ],
-              true
-            )
-          ),
-          fctx
-        )
-      },
-      { immediate: true }
-    )
+    const rendered = computed(() => {
+      const [ftype, fmt] = [fieldType.value, props.format]
+      const extfmt = fmt
+        ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
+          ? { type: fmt }
+          : (fmt as object)
+        : { type: ftype }
+      const found =
+        typeof ftype === 'object' && 'setup' in ftype // raw FieldType
+          ? (ftype as FieldTypeConstructor)
+          : formatMgr.getFieldType(ftype as string, true)
+      if (!found) {
+        // FIXME should always resolve something, but might
+        // want a field type that just renders an error message
+        throw new TypeError(`Unknown field type: ${ftype}`)
+      }
+      return found.init(
+        extendReactive(
+          extfmt,
+          restrictProps(
+            props,
+            [
+              'align',
+              'maxlength',
+              'placeholder',
+              'size',
+              'name',
+              'record',
+              'items',
+              'context',
+            ],
+            true
+          )
+        ),
+        fctx
+      )
+    })
 
     const padState = { listen: watchPosition() }
     const checkPad = (node: VNode) => calcPadding(node, padState)
