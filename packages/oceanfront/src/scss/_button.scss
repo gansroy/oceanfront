@@ -23,7 +23,9 @@
   margin: 0 var(--button-margin-right) var(--button-margin-bottom);
 
   button {
-    min-height: calc(1em + 2 * var(--button-v-pad) + var(--button-input-height));
+    min-height: calc(
+      1em + 2 * var(--button-v-pad) + var(--button-input-height)
+    );
     font-family: inherit;
     line-height: inherit;
     border: none;
@@ -113,6 +115,15 @@
     }
     &:hover {
       box-shadow: none;
+    }
+    &--outlined {
+      &.is-active {
+        button {
+          border-width: 1px;
+          border-color: var(--of-button-outlined-color-label);
+          background-color: var(--of-button-outlined-color-bg-hover);
+        }
+      }
     }
   }
   .of-button:last-of-type {

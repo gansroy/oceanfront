@@ -58,7 +58,7 @@
             <of-button :density="params.density" variant="outlined"
               >1</of-button
             >
-            <of-button :density="params.density" variant="outlined"
+            <of-button :density="params.density" variant="outlined" class="is-active"
               >2</of-button
             >
             <of-button :density="params.density" variant="outlined"
@@ -66,7 +66,7 @@
             >
             <of-button :density="params.density" variant="outlined"
               >4</of-button
-            >
+            > 
             <of-button :density="params.density" variant="outlined"
               >5</of-button
             >

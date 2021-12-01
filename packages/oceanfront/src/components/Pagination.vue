@@ -14,7 +14,7 @@
               v-for="item in pages"
               :key="item"
               :class="{
-                active: page === item,
+                'is-active': page === item,
               }"
               variant="outlined"
               @click="onSelectPage(item)"
