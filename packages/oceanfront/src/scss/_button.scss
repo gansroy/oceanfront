@@ -1,67 +1,94 @@
 .of-button {
-  display: inline-flex;
-  color: #000;
-  margin-right: .5rem;
+  &.of--density-0 {
+    --button-v-pad-base: 0.825em;
+  }
+  &.of--density-1 {
+    --button-v-pad-base: 0.675em;
+  }
+  &.of--density-2 {
+    --button-v-pad-base: 0.525em;
+  }
+  &.of--density-3 {
+    --button-v-pad-base: 0.375em;
+  }
+  --button-margin-right: 0.25em;
+  --button-margin-bottom: 0.5em;
+  --button-border-radius: 2rem;
+  --button-icon-h-pad: 0.55rem;
+  --button-expand-h-pad: 0.55rem;
+  --button-h-pad: 1.55rem;
+  --button-v-pad: var(--button-v-pad-base);
+  --of-icon-scale-indiv: 1.2;
+  display: inline-block;
+  margin: 0 var(--button-margin-right) var(--button-margin-bottom);
+
   button {
-    border-width: 0;
-    border-style: solid;
-    border-color:#c9c9c9;
+    min-height: calc(1em + 2 * var(--button-v-pad) + var(--button-input-height));
+    font-family: inherit;
+    line-height: inherit;
+    border: none;
     cursor: pointer;
-    padding: .5rem .3rem;
-    &:first-of-type,
-    &:last-of-type {
-      border-top-width: 1px;
-      border-bottom-width: 1px;
-      border-right-width: 1px;
-    }
-    &:first-of-type {
-      border-left-width: 1px;
-      padding: .5rem .8rem;
-    }
+    color: var(--of-button-color-label);
+    padding: var(--button-v-pad) var(--button-h-pad);
+    white-space: nowrap;
     &:disabled {
-      opacity: 0.5;
       cursor: default;
+      background-color: var(--of-button-color-bg-disabled);
+      color: var(--of-button-color-label-disabled);
+      opacity: 0.9;
     }
-    &:hover {
-      background-color: #c9c9c9;
+    &.expand-split {
+      padding: var(--button-v-pad) var(--button-icon-h-pad);
     }
-    > i {
-      vertical-align: middle;
-      padding-right: .3rem; 
-      --of-icon-scale-indiv: 1.2;
-    }
-  }
-  &--expand {
-    .expand {
-      padding: 0 0 0 .9rem !important;
-    }
-  }
-  &--split {
-    .expand {
-      padding-right: 0 !important;
-    }
-  }
-  &--rounded {
-    button {
-      &:first-of-type {
-        border-top-left-radius: 2rem;
-        border-bottom-left-radius: 2rem;
+    &.expand-menu {
+      .expand-down {
+        padding-left: var(--button-icon-h-pad) !important;
       }
-      &:last-of-type {
-        border-top-right-radius: 2rem;
-        border-bottom-right-radius: 2rem;
-      }
+    }
+    .button-icon:not(.icon-only) {
+      padding-right: var(--button-icon-h-pad) !important;
     }
   }
   &--solid {
     button {
-      background-color: #f0f0f0;
+      background-color: var(--of-button-color-bg);
+      &:not(:disabled):hover {
+        background-color: var(--of-button-color-bg-hover);
+      }
+    }
+    &:hover:not(.of-button--disabled) {
+      transition: box-shadow 50ms;
+      box-shadow: var(--of-button-color-shadow) 0 3px 1px -2px,
+        var(--of-button-color-shadow) 0 2px 2px 0,
+        var(--of-button-color-shadow) 0 1px 5px 0;
+    }
+  }
+  &--rounded {
+    border-radius: var(--button-border-radius);
+    button {
+      &:first-of-type {
+        border-top-left-radius: var(--button-border-radius);
+        border-bottom-left-radius: var(--button-border-radius);
+      }
+      &:last-of-type {
+        border-top-right-radius: var(--button-border-radius);
+        border-bottom-right-radius: var(--button-border-radius);
+      }
     }
   }
   &--outlined,
   &--text {
     button {
       background-color: transparent;
+      color: var(--of-button-outlined-color-label);
+    }
+  }
+  &--outlined {
+    button {
+      border: 1px solid var(--of-button-outlined-color);
+      &:hover {
+        background-color: var(--of-button-outlined-color-bg-hover);
+      }
     }
   }
   &--text {
@@ -72,28 +99,34 @@
       }
     }
   }
+  i {
+    vertical-align: middle;
+  }
 }
 .of-buttonset {
+  display: flex;
   .of-button {
-    margin-right: 0;
+    margin: 0 0 var(--of-button-m-bottom);
     button {
-      border-right: none;
-      border-left: none;
+      border-right-width: 0;
       border-radius: 0;
+    }
+    &:hover {
+      box-shadow: none;
     }
   }
   .of-button:last-of-type {
     button {
-      border-top-right-radius: 2rem;
-      border-bottom-right-radius: 2rem;
-      border-right-width: 1px;
+      border-top-right-radius: var(--button-border-radius);
+      border-bottom-right-radius: var(--button-border-radius);
+      border-right-width: 1px !important;
     }
   }
   .of-button:first-of-type {
     button {
-      border-top-left-radius: 2rem;
-      border-bottom-left-radius: 2rem;
-      border-left-width: 1px;
+      border-top-left-radius: var(--button-border-radius);
+      border-bottom-left-radius: var(--button-border-radius);
+      border-left-width: 1px !important;
     }
   }
 }

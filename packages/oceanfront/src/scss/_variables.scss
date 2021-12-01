@@ -1,8 +1,10 @@
 $base-color-active: #68d !default;
 $base-color-active-text: #fff;
 $base-color-active-border: darken($base-color-active, 10%) !default;
-$base-color-button: #ededed !default;
-$base-color-button-focus: #368;
+$base-color-button: #29e !default;
+$base-color-button-shadow: #000000 !default;
+$base-color-button-neutral: #000000 !default;
+$base-color-button-label: #ffffff !default;
 $base-color-disabled: #888 !default;
 $base-color-field-border: #000 !default;
 $base-color-field-filled: #ddd !default;
@@ -65,6 +67,15 @@ $base-color-text: #333;
   --of-color-field-placeholder: #{$base-color-field-placeholder};
   --of-color-sheet: #{$base-color-text};
   --of-field-size: 26ch;
+  --of-button-color-bg: #{rgba($base-color-button, 1)};
+  --of-button-color-bg-hover: #{lighten($base-color-button, 10%)};
+  --of-button-color-shadow: #{rgba($base-color-button-shadow, 0.15)};
+  --of-button-color-label: #{rgba($base-color-button-label, 1)};
+  --of-button-color-bg-disabled: #{lighten($base-color-button-neutral, 90%)};
+  --of-button-color-label-disabled: #{lighten($base-color-button-neutral, 60%)};
+  --of-button-outlined-color-label: #{rgba($base-color-button, 1)};
+  --of-button-outlined-color: #{rgba($base-color-button-neutral, 10%)};
+  --of-button-outlined-color-bg-hover: #{rgba($base-color-button, 10%)};
 }
 
 $bg-active: var(
@@ -78,41 +89,41 @@ $bg-active: var(
 $bg-badge: var(--bg-badge, $base-color-field-bg);
 $bg-bullet-down: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTUgMTEiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxLjQxNDIxOyI+PGcgaWQ9InBvbHlnb24xNzMiIHRyYW5zZm9ybT0ibWF0cml4KDEuOTQzNDQsMCwwLDEuNzI4MjMsLTYwMC43OTgsLTM2Ljg0MTUpIj48cGF0aCBkPSJNMzA5LjUsMjJMMzE2LjUsMjJMMzEzLDI3TDMwOS41LDIyWiIgc3R5bGU9ImZpbGw6cmdiKDY4LDY4LDY4KTtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+);
 // $bg-button: var(--bg-button, $base-color-button);
-$bg-button: var(
-  --bg-button,
-  linear-gradient(
-    to bottom,
-    mix(white, $base-color-button, 30%) 30%,
-    mix(black, $base-color-button, 4%)
-  )
-);
+// $bg-button: var(
+//   --bg-button,
+//   linear-gradient(
+//     to bottom,
+//     mix(white, $base-color-button, 30%) 30%,
+//     mix(black, $base-color-button, 4%)
+//   )
+// );
 // $bg-button-active: var(--bg-button-active, $base-color-field-muted-bg);
-$bg-button-active: var(
-  --bg-button-active,
-  linear-gradient(
-    to bottom,
-    lighten($base-color-field-muted-bg, 5%) 30%,
-    lighten($base-color-field-muted-bg, 10%)
-  )
-);
+// $bg-button-active: var(
+//   --bg-button-active,
+//   linear-gradient(
+//     to bottom,
+//     lighten($base-color-field-muted-bg, 5%) 30%,
+//     lighten($base-color-field-muted-bg, 10%)
+//   )
+// );
 // $bg-button-disabled: var(--bg-button-disabled, $base-color-field-muted-bg);
-$bg-button-disabled: var(
-  --bg-button-disabled,
-  linear-gradient(
-    to bottom,
-    #{darken($base-color-field-muted-bg, 5%)} 30%,
-    #{$base-color-field-muted-bg}
-  )
-);
+// $bg-button-disabled: var(
+//   --bg-button-disabled,
+//   linear-gradient(
+//     to bottom,
+//     #{darken($base-color-field-muted-bg, 5%)} 30%,
+//     #{$base-color-field-muted-bg}
+//   )
+// );
 // $bg-button-focus: var(--bg-button-focus, $base-color-field-muted-bg);
-$bg-button-focus: var(
-  --bg-button-focus,
-  linear-gradient(
-    to bottom,
-    darken($base-color-field-muted-bg, 5%) 30%,
-    lighten($base-color-field-muted-bg, 5%)
-  )
-);
+// $bg-button-focus: var(
+//   --bg-button-focus,
+//   linear-gradient(
+//     to bottom,
+//     darken($base-color-field-muted-bg, 5%) 30%,
+//     lighten($base-color-field-muted-bg, 5%)
+//   )
+// );
 $bg-field: var(--of-bg-field);
 $bg-field-active: var(--of-bg-field-active);
 $bg-field-disabled: var(--of-bg-field-disabled);
@@ -161,10 +172,12 @@ $box-shadow-field-basic: var(--of-box-shadow-field-basic);
 $box-shadow-field-basic-focus: var(--of-box-shadow-field-basic-focus);
 $color-active: var(--of-color-active);
 $color-badge: var(--color-badge, #{$base-color-muted});
-$color-button: var(--color-button, #{$base-color-field-text});
-$color-button-active: var(--of-color-button-active);
-$color-button-focus: var(--color-button-focus, #{$base-color-button-focus});
-$color-button-icon: var(--color-button-icon, #{$base-color-field-icon});
+
+//$color-button: var(--color-button, #{$base-color-field-text});
+// $color-button-active: var(--of-color-button-active);
+// $color-button-focus: var(--color-button-focus, #{$base-color-button-focus});
+// $color-button-icon: var(--color-button-icon, #{$base-color-field-icon});
+
 $color-error: var(--of-color-error);
 $color-field: var(--of-color-field);
 $color-field-active: var(--of-color-field-active);
