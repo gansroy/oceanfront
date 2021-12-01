@@ -19,7 +19,10 @@ export interface FieldMetadata {
   [key: string]: any
 }
 
-export type RecordMetadata = Record<string, FieldMetadata>
+export type RecordMetadata = {
+  fields?: FieldMetadata
+  [k: string]: any
+}
 
 export interface FormRecord {
   initialValue: Record<string, any> | null
