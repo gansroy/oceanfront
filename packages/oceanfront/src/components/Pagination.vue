@@ -3,46 +3,42 @@
     <div class="of-pagination" ref="pagination">
       <div :class="cls">
         <div class="of-pagination-header" ref="ofPaginationHeader">
-          <div
-            v-if="showGoToFirst"
-            class="of-pagination-header-item"
-            @click="goToFirst()"
-          >
-            <of-icon :name="'page first'" :title="'Go to first'" size="sm" />
-          </div>
-          <div
-            :key="item"
-            @click="onSelectPage(item)"
-            v-for="item in pages"
-            :class="{
-              'is-active': page === item,
-              'of-pagination-header-item': true,
-            }"
-          >
-            {{ item }}
-          </div>
-          <div
-            v-if="showGoToLast"
-            class="of-pagination-header-item"
-            @click="goToLast()"
-          >
-            <of-icon :name="'page last'" :title="'Go to last'" size="sm" />
-          </div>
-          <div
-            id="offsetPopupOuter"
-            v-if="showCustomOffsetPopup"
-            class="of-pagination-header-item"
-            @click="openOffsetPopup()"
-          >
-            <of-icon
-              :name="'bullet down'"
-              :title="'Open settings'"
-              size="sm"
-            />
-          </div>
+          <span class="of-buttonset">
+            <of-button
+              v-if="showGoToFirst"
+              icon="page first"
+              variant="outlined"
+              @click="goToFirst()"
+            ></of-button>
+            <of-button
+              v-for="item in pages"
+              :key="item"
+              :class="{
+                active: page === item,
+              }"
+              variant="outlined"
+              @click="onSelectPage(item)"
+            >
+              {{ item }}
+            </of-button>
+            <of-button
+              v-if="showGoToLast"
+              icon="page last"
+              variant="outlined"
+              @click="goToLast()"
+            >
+            </of-button>
+            <of-button
+              v-if="showCustomOffsetPopup"
+              id="offsetPopupOuter"
+              icon="bullet down"
+              variant="outlined"
+              @click="openOffsetPopup()"
+            >
+            </of-button>
+          </span>
         </div>
       </div>
-
       <of-overlay
         :active="offsetPopupOpened"
         :capture="false"
