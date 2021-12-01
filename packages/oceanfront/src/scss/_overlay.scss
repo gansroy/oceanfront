@@ -6,7 +6,8 @@
   left: 0;
   bottom: 0;
   padding: var(--overlay-pad, 0px);
-  margin: 0 var(--overlay-dyn-margin-right, 0px) 0 var(--overlay-dyn-margin-left, 0px);
+  margin: 0 var(--overlay-dyn-margin-right, 0px) 0
+    var(--overlay-dyn-margin-left, 0px);
   pointer-events: none;
   right: 0;
   z-index: 200;
@@ -17,6 +18,9 @@
   &::after {
     content: '';
     flex: 0 1 calc(var(--overlay-dyn-pad-bottom, 0px) - var(--overlay-pad, 0px));
+  }
+  &:focus {
+    outline: none;
   }
 }
 .of-overlay > * {
