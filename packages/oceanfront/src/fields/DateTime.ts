@@ -186,7 +186,7 @@ const fieldInit =
               : null,
             withClear && (ctx.editable || ctx.mode === 'locked')
               ? h(OfIcon, {
-                  name: 'circle-cross',
+                  name: 'cancel circle',
                   size: 'input',
                   onClick: (e: MouseEvent | TouchEvent) => {
                     e.stopPropagation()

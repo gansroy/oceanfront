@@ -104,7 +104,7 @@ export const FileField = defineFieldType({
       append() {
         if (stateValue.value && (ctx.editable || ctx.mode === 'locked'))
           return h(OfIcon, {
-            name: 'circle-cross',
+            name: 'cancel circle',
             size: 'input',
             onClick: clickClear,
           })

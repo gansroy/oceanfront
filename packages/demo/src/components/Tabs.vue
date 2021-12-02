@@ -102,13 +102,13 @@ export default defineComponent({
       'Tab 1',
       'Tab 2',
       'Tab 3',
-      { text: 'Tab 4', icon: 'led-red' },
+      { text: 'Tab 4', icon: 'led red' },
       'Tab 5',
       { text: 'Tab 6' },
       'Tab 7',
       'Tab 8',
       'Tab 9',
-      { text: 'Tab 10', icon: 'led-blue' },
+      { text: 'Tab 10', icon: 'led blue' },
     ]
 
     const testItems4 = [
@@ -123,8 +123,8 @@ export default defineComponent({
       {
         text: 'Tab 1',
         subMenuItems: [
-          { text: 'SubMenu Tab11', icon: 'led-blue' },
-          { text: 'SubMenu Tab12', icon: 'led-red' },
+          { text: 'SubMenu Tab11', icon: 'led blue' },
+          { text: 'SubMenu Tab12', icon: 'led red' },
         ],
       },
       {

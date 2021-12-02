@@ -14,7 +14,7 @@
     <div class="of-datepicker-selectors" @selectstart.prevent="">
       <div class="of-datepicker-grid" v-if="withDate">
         <div class="of-datepicker-nav-button prev" :onclick="prevMonth">
-          <of-icon name="arrow-left" />
+          <of-icon name="arrow left" />
         </div>
         <div
           v-if="!editingYear"
@@ -35,7 +35,7 @@
           :value="selMonthStart.getFullYear()"
         />
         <div class="of-datepicker-nav-button next" :onclick="nextMonth">
-          <of-icon name="arrow-right" />
+          <of-icon name="arrow right" />
         </div>
 
         <div
@@ -64,7 +64,7 @@
           @mousedown="timeClickHandler('h', 1)"
           @mouseup="timeClickHandler()"
           @mouseleave="timeClickHandler()"
-          name="triangle-up"
+          name="bullet up"
           size="lg"
           class="time-picker-arrow"
         />
@@ -73,7 +73,7 @@
           @mousedown="timeClickHandler('m', 1)"
           @mouseup="timeClickHandler()"
           @mouseleave="timeClickHandler()"
-          name="triangle-up"
+          name="bullet up"
           size="lg"
           class="time-picker-arrow"
         />
@@ -90,7 +90,7 @@
           @mousedown="timeClickHandler('h', -1)"
           @mouseup="timeClickHandler()"
           @mouseleave="timeClickHandler()"
-          name="triangle-down"
+          name="bullet down"
           size="lg"
           class="time-picker-arrow"
         />
@@ -99,7 +99,7 @@
           @mousedown="timeClickHandler('m', -1)"
           @mouseup="timeClickHandler()"
           @mouseleave="timeClickHandler()"
-          name="triangle-down"
+          name="bullet down"
           size="lg"
           class="time-picker-arrow"
         />

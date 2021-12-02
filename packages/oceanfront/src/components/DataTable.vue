@@ -31,8 +31,8 @@
             v-if="col.sort !== false"
             :name="
               sort.order == 'desc' && sort.column == col.value
-                ? 'triangle-down'
-                : 'triangle-up'
+                ? 'bullet down'
+                : 'bullet up'
             "
           />
         </span>
@@ -250,12 +250,10 @@ export default defineComponent({
       selectRows(select)
     }
     const selectRowsItems = [
-      { text: 'Select Page', value: () => selectRows(RowsSelectorValues.Page) },
-      { special: 'divider' },
-      { text: 'Select All', value: () => selectRows(RowsSelectorValues.All) },
-      { special: 'divider' },
+      { key: 'page', text: 'Select Page', value: () => selectRows(RowsSelectorValues.Page) },
+      { key: 'all', text: 'Select All', value: () => selectRows(RowsSelectorValues.All) },
       {
-        text: 'Deselect All',
+        key: 'clear', text: 'Deselect All',
         value: () => selectRows(RowsSelectorValues.DeselectAll),
       },
     ]
