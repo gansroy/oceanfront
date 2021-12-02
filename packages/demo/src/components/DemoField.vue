@@ -47,7 +47,7 @@ export default defineComponent({
   setup() {
     const params = reactive({
       density: 'default',
-      labelPosition: 'frame',
+      labelPosition: 'default',
       mode: 'editable',
       variant: 'compare',
     })

@@ -7,11 +7,8 @@
       <div class="row form-row">
         <div class="column filled">
           <div class="of-block">
-            <of-field label="Simple input" />
-          </div>
-          <div class="of-block">
             <div class="of-group">
-              <div class="of-group-row">
+              <div class="of-group-row of--pad">
                 <of-field id="pw" input-type="password" label="Password" />
                 <of-field
                   id="cpw"
@@ -24,7 +21,7 @@
           <div class="of-block">
             <div class="of-group">
               <div class="of-group-label">Primary Address</div>
-              <div class="of-group-row">
+              <div class="of-group-row of--pad">
                 <of-field
                   type="text"
                   label="Street"
@@ -34,7 +31,7 @@
                   size="50"
                 />
               </div>
-              <div class="of-group-row">
+              <div class="of-group-row of--pad">
                 <of-field
                   type="text"
                   label="City"
@@ -55,7 +52,7 @@
           <div class="of-block">
             <div class="of-group">
               <div class="of-group-label">Phone Numbers</div>
-              <div class="of-group-row pad">
+              <div class="of-group-row of--pad">
                 <of-field
                   type="text"
                   frame="none"
@@ -65,7 +62,7 @@
                 />
                 <label class="of-group-label" for="ph1">work</label>
               </div>
-              <div class="of-group-row pad">
+              <div class="of-group-row of--pad">
                 <of-field
                   type="text"
                   frame="none"
@@ -75,7 +72,7 @@
                 />
                 <label class="of-group-label" for="ph2">mobile</label>
               </div>
-              <div class="of-group-row pad">
+              <div class="of-group-row of--pad">
                 <of-field
                   type="text"
                   frame="none"

@@ -63,15 +63,16 @@
 }
 
 .of-group {
+  --group-pad: calc(0.5em - 1px);
   border-radius: 5px;
   border: 1px solid #ddd;
-  padding: 0.3em 0;
+  padding: var(--group-pad) 0;
 }
 .of-group-label {
   color: #666;
   font-size: 90%;
   padding-left: 0.7em;
-  margin-bottom: 0.3em;
+  margin-bottom: var(--group-pad);
 }
 .of-group:hover > .of-group-label {
   color: $color-field-hover;
@@ -87,9 +88,9 @@
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
-  &.pad {
-    padding: 0 0.3em 0.3em;
-    grid-gap: 0.3em;
+  &.of--pad {
+    padding: 0 var(--group-pad) var(--group-pad);
+    grid-gap: var(--group-pad);
   }
 }
 

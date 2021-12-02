@@ -24,7 +24,7 @@
     </of-overlay>
 
     <div class="of-group">
-      <div class="of-group-row">
+      <div class="of-group-row of--pad">
         <of-select-field
           :items="types"
           :record="state"
@@ -36,7 +36,7 @@
           name="layout"
         ></of-select-field>
       </div>
-      <div class="of-group-row">
+      <div class="of-group-row of--pad">
         <of-toggle-field name="useSlots" label="Use slots" :record="state" />
         <of-toggle-field
           name="hideOtherMonths"
@@ -44,7 +44,7 @@
           :record="state"
         />
       </div>
-      <div class="of-group-row">
+      <div class="of-group-row of--pad">
         <of-toggle-field
           name="customColors"
           label="Custom colors"
@@ -56,7 +56,7 @@
           :record="state"
         />
       </div>
-      <div class="of-group-row pad">
+      <div class="of-group-row of--pad">
         <of-button rounded icon="refresh" @click="regenerateEvents"
           >Regenerate events</of-button
         >
