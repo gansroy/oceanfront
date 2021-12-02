@@ -18,7 +18,7 @@
             @click="navigateHeader('prev')"
           >
             <of-icon
-              :name="'nav-previous'"
+              name="page previous"
               :title="'Previous tab'"
               size="input"
             />
@@ -46,7 +46,7 @@
             class="of-tabs-navigation of-tabs-navigation-next"
             @click="navigateHeader('next')"
           >
-            <of-icon :name="'nav-next'" :title="'Next tab'" size="input" />
+            <of-icon name="page next" :title="'Next tab'" size="input" />
           </div>
         </div>
         <of-overlay

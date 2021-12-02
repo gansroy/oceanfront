@@ -3,7 +3,7 @@ $base-color-active-text: #fff;
 $base-color-active-border: darken($base-color-active, 10%) !default;
 $base-color-button: #ededed !default;
 $base-color-button-focus: #368;
-$base-color-disabled: rgba(160, 160, 160, 0.8) !default;
+$base-color-disabled: #888 !default;
 $base-color-field-border: #000 !default;
 $base-color-field-filled: #ddd !default;
 $base-color-focus-border: #479;
@@ -52,7 +52,7 @@ $base-color-text: #333;
   --of-color-error: #{$base-color-field-error};
   --of-color-field: #{$base-color-field-text};
   --of-color-field-active: #{$base-color-field-active-text};
-  --of-color-field-disabled: #{$base-color-muted};
+  --of-color-field-disabled: #{$base-color-disabled};
   --of-color-field-filled: var(--of-color-field);
   --of-color-field-filled-hover: var(--of-color-field-hover);
   --of-color-field-filled-label: var(--of-color-field-label);
@@ -194,7 +194,7 @@ $font-weight-badge: var(--font-weight-badge, bold);
 $font-weight-input: var(--font-weight-input, normal);
 $letter-spacing-input: var(--letter-spacing-input, 0);
 $line-height-badge: var(--line-height-badge, 1);
-$line-height-input: var(--line-height-input, 1.125); // 18/16
+$line-height-input: var(--line-height-input, 1.25); // 20/16
 $line-height-form-label: var(--line-height-form-label, 1.7);
 $line-height-menu-option: var(--line-height-menu-option, 1.35);
 $opacity-input-disabled: var(--opacity-input-disabled, 0.85);

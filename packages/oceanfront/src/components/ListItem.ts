@@ -66,7 +66,7 @@ export const OfListItem = defineComponent({
       if (expand.value !== null) {
         result.push(
           h(OfIcon, {
-            name: expand.value ? 'expand-up' : 'expand-down',
+            name: expand.value ? 'expand up' : 'expand down',
           })
         )
       }

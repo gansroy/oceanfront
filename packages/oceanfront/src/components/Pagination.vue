@@ -8,7 +8,7 @@
             class="of-pagination-header-item"
             @click="goToFirst()"
           >
-            <of-icon :name="'nav-first'" :title="'Go to first'" size="sm" />
+            <of-icon :name="'page first'" :title="'Go to first'" size="sm" />
           </div>
           <div
             :key="item"
@@ -26,7 +26,7 @@
             class="of-pagination-header-item"
             @click="goToLast()"
           >
-            <of-icon :name="'nav-last'" :title="'Go to last'" size="sm" />
+            <of-icon :name="'page last'" :title="'Go to last'" size="sm" />
           </div>
           <div
             id="offsetPopupOuter"
@@ -35,7 +35,7 @@
             @click="openOffsetPopup()"
           >
             <of-icon
-              :name="'triangle-down'"
+              :name="'bullet down'"
               :title="'Open settings'"
               size="sm"
             />

@@ -199,7 +199,7 @@ export const SelectField = defineFieldType({
         if (ctx.editable || ctx.mode === 'locked')
           return h(OfIcon, {
             class: 'of-select-icon',
-            name: opened.value ? 'bullet-select-close' : 'bullet-select',
+            name: opened.value ? 'bullet up' : 'bullet down',
             size: 'input',
           })
       },
@@ -217,7 +217,7 @@ export const SelectField = defineFieldType({
             'div',
             {
               class: [
-                'of-field-input-label',
+                'of-field-content-text',
                 'of--align-' + (props.align || 'start'),
               ],
               id: inputId.value,

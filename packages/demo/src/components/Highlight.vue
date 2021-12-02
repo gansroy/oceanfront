@@ -36,7 +36,7 @@ export default defineComponent({
   setup(props, _ctx) {
     const result = computed(() =>
       props.lang && props.value
-        ? formatLines(hljs.highlight(props.lang, props.value).value)
+        ? formatLines(hljs.highlight(props.value, {language: props.lang}).value)
         : undefined
     )
     return {

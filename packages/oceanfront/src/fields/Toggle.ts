@@ -41,9 +41,6 @@ export const ToggleField = defineFieldType({
       }
       return id
     })
-    const inputLabel = computed(() =>
-      ctx.labelPosition === 'input' ? props.inputLabel ?? ctx.label : undefined
-    )
     const inputType = computed(() => {
       const pi = props.inputType
       return pi && supportedTypes.has(pi) ? pi : 'checkbox'
@@ -84,18 +81,19 @@ export const ToggleField = defineFieldType({
         return { 'of-toggle-field': true, 'of--checked': !!stateValue.value }
       }),
       content: () => {
-        const label = inputLabel.value
+        const inputLabel = ctx.inputLabel
+        const label = inputLabel
           ? h(
               'label',
               {
                 class: [
-                  'of-field-input-label',
+                  'of-field-content-text',
                   'of--align-' + (props.align || 'start'),
                 ],
                 for: inputId.value,
                 onClick: (evt: MouseEvent) => evt.stopPropagation(),
               },
-              [inputLabel.value]
+              [inputLabel]
             )
           : undefined
         const inner = [
@@ -122,7 +120,7 @@ export const ToggleField = defineFieldType({
                 }),
           ]),
         ]
-        if (label) inner.unshift(label)
+        if (label) inner.push(label)
         return [h('div', { class: 'of-toggle-wrapper' }, inner)]
       },
       click: clickToggle,

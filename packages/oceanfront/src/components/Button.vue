@@ -17,7 +17,7 @@
     <button v-if="items" @click="toggleMenu($event)" @mouseleave="menuLeave()">
       <of-icon v-if="icon && !split" :name="icon" />
       <slot v-if="!split">&nbsp;</slot>
-      <of-icon name="expand-down" class="expand" />
+      <of-icon name="expand down" class="expand" />
     </button>
     <of-overlay
       v-if="items"

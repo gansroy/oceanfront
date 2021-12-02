@@ -20,9 +20,9 @@ import {
   FieldMode,
   FieldRender,
   Renderable,
-  FormatProp,
+  FieldFormatProp,
+  FieldLabelPositionProp,
   FieldTypeConstructor,
-  FrameProp,
 } from '../lib/fields'
 import { useFocusGroup } from '../lib/focus'
 import { useFormats } from '../lib/formats'
@@ -74,8 +74,8 @@ const calcPadding = (
         appsize = Math.ceil(pos.width)
       }
     }
-    outer.style.setProperty('--of-field-size-prepend', presize + 'px')
-    outer.style.setProperty('--of-field-size-append', appsize + 'px')
+    outer.style.setProperty('--field-size-prepend', presize + 'px')
+    outer.style.setProperty('--field-size-append', appsize + 'px')
   })
 }
 
@@ -117,20 +117,21 @@ export const OfField = defineComponent({
   props: {
     align: String,
     class: [String, Array, Object],
-    // density: {type: Number, default: undefined}
+    density: { type: [String, Number], default: undefined },
     disabled: Boolean,
     fixed: Boolean,
-    format: [String, Object] as PropType<FormatProp>,
-    frame: String as PropType<FrameProp>,
+    format: [String, Object] as PropType<FieldFormatProp>,
     id: String,
     initialValue: {
       type: [String, Boolean, Number, Array, Object],
       default: undefined,
     },
+    inline: Boolean,
+    inputLabel: String,
     invalid: Boolean,
     items: [String, Array, Object] as PropType<string | any[] | ItemList>,
     label: String,
-    labelPosition: String,
+    labelPosition: String as PropType<FieldLabelPositionProp>,
     loading: Boolean,
     locked: Boolean,
     // messages
@@ -149,6 +150,7 @@ export const OfField = defineComponent({
       required: false,
     },
     required: Boolean,
+    rounded: Boolean,
     size: { type: [Number, String], default: undefined },
     // style
     type: String,
@@ -196,10 +198,9 @@ export const OfField = defineComponent({
     })
     const dragOver = ref(false)
     const focused = ref(false)
-    const variant = computed(() => props.variant || 'normal')
+    const variant = computed(() => props.variant || 'outlined')
 
     // may inherit default value from context in future
-    const frame = computed(() => props.frame || 'normal')
     const initialValue = computed(() =>
       props.name && record.value
         ? (record.value.initialValue || {})[props.name]
@@ -222,17 +223,44 @@ export const OfField = defineComponent({
           ? 'readonly'
           : props.locked || record.value?.locked
           ? 'locked'
-          : 'normal')
+          : 'editable')
     )
-    const editable = computed(() => mode.value === 'normal')
+    const editable = computed(() => mode.value === 'editable')
     const interactive = computed(() => mode.value !== 'fixed')
-    const labelPosition = computed(() => props.labelPosition || 'field')
+    const labelPosition = computed(() => {
+      let p = props.labelPosition
+      if (!p || p === 'default') {
+        p = props.variant === 'filled' ? 'frame' : 'top'
+      }
+      return p
+    })
+    const density = computed(() => {
+      let d = props.density
+      if (d === 'default') {
+        d = undefined
+      } else if (typeof d === 'string') {
+        d = parseInt(d, 10)
+        if (isNaN(d)) d = undefined
+      }
+      if (typeof d !== 'number') {
+        d = labelPosition.value === 'frame' ? 0 : 2
+      }
+      return Math.max(0, Math.min(3, d || 0))
+    })
+    const inputLabel = computed(
+      () =>
+        props.inputLabel ??
+        (labelPosition.value === 'input' ? props.label : undefined)
+    )
+
     const fctx: FieldContext = proxyRefs({
       config,
       container: 'of-field',
+      density,
       editable,
       fieldType,
       initialValue,
+      inputLabel,
       interactive,
       labelPosition,
       mode,
@@ -247,12 +275,14 @@ export const OfField = defineComponent({
       },
       ...extractRefs(props, [
         'id',
+        'inline',
         'items',
         'label',
         'loading',
         'muted',
         'name',
         'required',
+        'rounded',
       ]),
     })
 
@@ -341,16 +371,16 @@ export const OfField = defineComponent({
           !(showFocused || overlayActive || mode.value === 'fixed')
         const metaLabel = props.name ? metadata.value?.label : undefined
         const labelText = render.label ?? props.label ?? metaLabel
-        const showLabel =
-          frame.value !== 'none' && labelPosition.value === 'field'
         const label = ctx.slots.label
           ? ctx.slots.label()
-          : showLabel && labelText
+          : labelPosition.value !== 'none' &&
+            labelPosition.value !== 'input' &&
+            labelText
           ? h(
               'label',
               {
                 class: 'of-field-label',
-                /*, for: render.inputId: triggering double click events */
+                /*, for: render.inputId: triggering duplicate click events */
               },
               [labelText]
             )
@@ -361,17 +391,18 @@ export const OfField = defineComponent({
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
             'of--blank': blank,
             'of--dragover': dragOver.value,
-            'of--editable': editable.value,
             'of--focused': showFocused,
+            'of--inline': props.inline,
             'of--invalid': props.invalid || render.invalid,
             'of--interactive': interactive.value,
             'of--muted': props.muted,
             'of--loading': render.loading,
+            'of--rounded': props.rounded,
             'of--updated': render.updated,
           },
           'of--cursor-' + (render.cursor || 'default'),
-          'of--frame-' + frame.value,
-          'of--label-' + (label ? 'visible' : 'none'),
+          'of--density-' + density.value,
+          'of--label-' + (label ? labelPosition.value : 'none'),
           'of--mode-' + mode.value,
           'of--variant-' + variant.value,
           render.class,
@@ -380,7 +411,7 @@ export const OfField = defineComponent({
         const size = render.size || props.size // FIXME fetch from config
         const style: Record<string, string> = {}
         if (size) {
-          style['--of-field-size'] = `${size}ch`
+          style['--field-size'] = `${size}ch`
         }
         const inner: VNode | VNode[] = []
         renderSlot(
@@ -397,9 +428,9 @@ export const OfField = defineComponent({
             (interactive.value
               ? render.content
               : fixedValue
-              ? () => fixedValue
+              ? () => h('div', { class: 'of-field-content-text' }, fixedValue)
               : render.content),
-          interactive.value ? 'of-field-content' : 'of-field-fixed-content'
+          'of-field-inner'
         )
         renderSlot(inner, ctx.slots.append || render.append, 'of-field-append')
         if (overlay) {
@@ -426,10 +457,16 @@ export const OfField = defineComponent({
             ...dragIn?.handlers,
           },
           [
+            label &&
+            labelPosition.value !== 'frame' &&
+            labelPosition.value !== 'input' &&
+            labelPosition.value !== 'none'
+              ? h('div', { class: 'of-field-main-label' }, label)
+              : undefined,
             h(
               'div',
               {
-                class: 'of-field-body',
+                class: 'of-field-main',
               },
               [
                 h(
@@ -437,14 +474,14 @@ export const OfField = defineComponent({
                   {
                     class: 'of-field-header',
                   },
-                  label
-                    ? h('div', { class: 'of-field-label-wrap' }, label)
+                  label && labelPosition.value === 'frame'
+                    ? h('div', { class: 'of-field-header-label' }, label)
                     : undefined
                 ),
-                h('div', { class: 'of-field-inner' }, inner),
+                h('div', { class: 'of-field-body' }, inner),
               ]
             ),
-            h('div', { class: 'of-field-footer' }), // custom slots.below or messages
+            h('div', { class: 'of-field-caption' }), // FIXME support custom slot
             overlay,
           ]
         )

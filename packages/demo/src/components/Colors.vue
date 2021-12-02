@@ -7,7 +7,7 @@
         <div class="row">
           <div class="column">
             <div class="row">
-              <div class="column">
+              <div class="column" style="padding: 0 1em 1em">
                 <h4>Settings</h4>
                 <!-- bezier-editor v-model="curve" / -->
                 <div>
@@ -56,7 +56,7 @@
 
                   <div class="row form-row">
                     <div class="column">
-                      <of-toggle-field label="Dark mode" v-model="dark" />
+                      <of-field type="toggle" label="Dark mode" label-position="input" v-model="dark" />
                     </div>
                   </div>
                 </div>
@@ -67,121 +67,16 @@
                 :style="themeStyle"
               >
                 <h4>Preview</h4>
-                <div class="row form-row">
+                <div class="row form-row samples">
                   <div class="column">
-                    <div
-                      class="
-                        of-field
-                        of--editable
-                        of--interactive
-                        of--frame-normal
-                        of--variant-normal
-                        of-text-field
-                      "
-                    >
-                      <div class="of-field-body">
-                        <div class="of-field-header">
-                          <div class="of-field-label-wrap">
-                            <label class="of-field-label">Field label</label>
-                          </div>
-                        </div>
-                        <div class="of-field-inner">
-                          <div class="of-field-input-label">
-                            <label>Basic field</label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="
-                        of-field
-                        of--editable
-                        of--interactive
-                        of--frame-normal
-                        of--variant-normal
-                        of-text-field
-                        of--focused
-                      "
-                    >
-                      <div class="of-field-body">
-                        <div class="of-field-header">
-                          <div class="of-field-label-wrap">
-                            <label class="of-field-label">Field label</label>
-                          </div>
-                        </div>
-                        <div class="of-field-inner">
-                          <div class="of-field-input-label">
-                            <label>Focused</label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <of-field label="Field label" model-value="Outlined field" variant="outlined" />
+                    <of-field label="Field label" model-value="Focused" variant="outlined" class="of--focused" />
                   </div>
                 </div>
-                <div class="row form-row">
+                <div class="row form-row samples">
                   <div class="column">
-                    <div
-                      class="
-                        of-field
-                        of--editable
-                        of--interactive
-                        of--active
-                        of--label-visible
-                        of--frame-block
-                        of--variant-filled
-                        of-text-field
-                      "
-                    >
-                      <div class="of-field-body">
-                        <div class="of-field-header">
-                          <div class="of-field-label-wrap">
-                            <label class="of-field-label">Field label</label>
-                          </div>
-                        </div>
-                        <div class="of-field-inner">
-                          <div class="of-field-content">
-                            <input
-                              type="text"
-                              class="of-field-input"
-                              readonly
-                              value="Filled field"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <br />
-                    <div
-                      class="
-                        of-field
-                        of--editable
-                        of--interactive
-                        of--active
-                        of--label-visible
-                        of--frame-block
-                        of--variant-filled
-                        of-text-field
-                        of--focused
-                      "
-                    >
-                      <div class="of-field-body">
-                        <div class="of-field-header">
-                          <div class="of-field-label-wrap">
-                            <label class="of-field-label">Field label</label>
-                          </div>
-                        </div>
-                        <div class="of-field-inner">
-                          <div class="of-field-content">
-                            <input
-                              type="text"
-                              class="of-field-input"
-                              readonly
-                              value="Focused"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <of-field label="Field label" model-value="Filled field" variant="filled" />
+                    <of-field label="Field label" model-value="Focused" variant="filled" class="of--focused" />
                   </div>
                 </div>
               </div>
@@ -205,6 +100,15 @@
     </of-config>
   </div>
 </template>
+
+<style>
+  h4 {
+    margin-top: 0.5em;
+  }
+  .samples .column > * {
+    margin-bottom: 0.5em;
+  }
+</style>
 
 <script lang="ts">
 import { ref, defineComponent, computed } from 'vue'

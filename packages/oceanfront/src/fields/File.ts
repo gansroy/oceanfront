@@ -104,7 +104,7 @@ export const FileField = defineFieldType({
       append() {
         if (stateValue.value && (ctx.editable || ctx.mode === 'locked'))
           return h(OfIcon, {
-            name: 'circle-cross',
+            name: 'cancel circle',
             size: 'input',
             onClick: clickClear,
           })
@@ -120,7 +120,7 @@ export const FileField = defineFieldType({
             'label',
             {
               class: [
-                'of-field-input-label',
+                'of-field-content-text',
                 'of--align-' + (props.align || 'start'),
               ],
               for: inputId.value,
@@ -133,7 +133,7 @@ export const FileField = defineFieldType({
             'label',
             {
               class: [
-                'of-field-input-label',
+                'of-field-content-text',
                 'of--align-' + (props.align || 'start'),
                 'of--text-placeholder',
               ],

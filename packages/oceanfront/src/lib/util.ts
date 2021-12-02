@@ -263,11 +263,18 @@ class PositionObserverImpl implements PositionObserver {
     if (typeof ResizeObserver !== 'undefined') {
       this._native = new ResizeObserver((entries) => {
         for (const entry of entries) {
+          const estyle = window.getComputedStyle(entry.target, null)
           pos.value.set(entry.target, {
             x: entry.contentRect.x,
             y: entry.contentRect.y,
-            width: entry.contentRect.left + entry.contentRect.width,
-            height: entry.contentRect.top + entry.contentRect.height,
+            width:
+              entry.contentRect.width +
+              parseInt(estyle.paddingLeft, 10) +
+              parseInt(estyle.paddingRight, 10),
+            height:
+              entry.contentRect.height +
+              parseInt(estyle.paddingTop, 10) +
+              parseInt(estyle.paddingBottom, 10),
           })
         }
         triggerRef(pos)
