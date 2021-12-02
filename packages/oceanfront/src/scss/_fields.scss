@@ -6,10 +6,10 @@
 }
 
 .of--small {
-  --font-size-input: #{$font-size-input-sm};
+  --field-font-size: #{$font-size-input-sm};
 }
 .of--large {
-  --font-size-input: #{$font-size-input-lg};
+  --field-font-size: #{$font-size-input-lg};
 }
 
 .of--text-numeric {
@@ -101,6 +101,7 @@
   --field-border-style: solid;
   --field-border-width: 1px;
   --field-color: #{$color-field};
+  --field-font-size: #{$font-size-input};
   --field-label-color: #{$color-field-label};
   --field-label-width: var(--of-field-label-width, 50%);
   --field-input-height: calc(var(--field-line-height) * 1em);
@@ -150,7 +151,7 @@
   display: flex;
   flex: 1 0 auto; // var(--field-size);
   flex-flow: column nowrap;
-  font-size: $font-size-input;
+  font-size: var(--field-font-size);
   line-height: normal;
   max-width: 100%;
   outline: none;
@@ -562,7 +563,7 @@
   align-items: center;
   box-sizing: border-box;
   display: inline-flex;
-  font-size: calc(#{$font-size-input} * 1.5);
+  font-size: calc(var(--field-font-size, 1em) * 1.5);
   height: 1em;
   line-height: normal;
   padding: 0.2em;
