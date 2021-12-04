@@ -287,7 +287,20 @@ export const OfField = defineComponent({
     })
 
     const context = computed(() => props.context)
+    let rerender = true
+    let renderedMemo: any
+    watch(
+      () => [fieldType.value, props.format],
+      () => {
+        rerender = true
+      }
+    )
     const rendered = computed(() => {
+      if (!rerender) {
+        return renderedMemo
+      }
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      rerender = false
       const [ftype, fmt] = [fieldType.value, props.format]
       const extfmt = fmt
         ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
@@ -303,7 +316,8 @@ export const OfField = defineComponent({
         // want a field type that just renders an error message
         throw new TypeError(`Unknown field type: ${ftype}`)
       }
-      return found.init(
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      renderedMemo = found.init(
         extendReactive(
           extfmt,
           restrictProps(
@@ -323,6 +337,7 @@ export const OfField = defineComponent({
         ),
         fctx
       )
+      return renderedMemo
     })
 
     const padState = { listen: watchPosition() }
