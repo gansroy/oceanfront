@@ -287,7 +287,30 @@ export const OfField = defineComponent({
     })
 
     const context = computed(() => props.context)
+
+    /**
+     * AD: `rendered` should ideally be a Ref that changes within a watch of
+     * fieldType.value and props.format. The problem here is that inside watch
+     * we cannot call inject(), and that is needed by many field types. Simply
+     * converting `rendered` into computed value does not work well because that
+     * causes many unnecessary rerenders, and also makes problems with popups.
+     *  The remedy that, I memoize the rendered value and recalculate it only
+     *  if fieldType.value or props.format has changed
+     */
+    const rerender = ref(true)
+    let renderedMemo: any
+    watch(
+      () => [fieldType.value, props.format],
+      () => {
+        rerender.value = true
+      }
+    )
     const rendered = computed(() => {
+      if (!rerender.value) {
+        return renderedMemo
+      }
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      rerender.value = false
       const [ftype, fmt] = [fieldType.value, props.format]
       const extfmt = fmt
         ? typeof fmt === 'string' || typeof fmt === 'function' // format name or text formatter
@@ -303,7 +326,8 @@ export const OfField = defineComponent({
         // want a field type that just renders an error message
         throw new TypeError(`Unknown field type: ${ftype}`)
       }
-      return found.init(
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      renderedMemo = found.init(
         extendReactive(
           extfmt,
           restrictProps(
@@ -323,6 +347,7 @@ export const OfField = defineComponent({
         ),
         fctx
       )
+      return renderedMemo
     })
 
     const padState = { listen: watchPosition() }
