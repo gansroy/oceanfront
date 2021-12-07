@@ -74,7 +74,7 @@ $base-color-text: #333;
   --of-button-color-bg-disabled: #{lighten($base-color-button-neutral, 90%)};
   --of-button-color-label-disabled: #{lighten($base-color-button-neutral, 60%)};
   --of-button-outlined-color-label: #{rgba($base-color-button, 1)};
-  --of-button-outlined-color: #{rgba($base-color-button-neutral, 10%)};
+  --of-button-outlined-color: #{rgba($base-color-button, 30%)};
   --of-button-outlined-color-bg-hover: #{rgba($base-color-button, 10%)};
 }
 

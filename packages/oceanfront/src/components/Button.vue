@@ -72,7 +72,7 @@ export default defineComponent({
         if (isNaN(d)) d = undefined
       }
       if (typeof d !== 'number') {
-        d = 3
+        d = 2
       }
       return Math.max(0, Math.min(3, d || 0))
     })

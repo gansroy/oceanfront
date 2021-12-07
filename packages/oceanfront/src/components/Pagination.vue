@@ -1,44 +1,47 @@
 <template>
   <transition>
     <div class="of-pagination" ref="pagination">
-      <div :class="cls">
-        <div class="of-pagination-header" ref="ofPaginationHeader">
-          <span class="of-buttonset">
-            <of-button
-              v-if="showGoToFirst"
-              icon="page first"
-              variant="outlined"
-              @click="goToFirst()"
-            ></of-button>
-            <of-button
-              v-for="item in pages"
-              :key="item"
-              :class="{
-                'is-active': page === item,
-              }"
-              variant="outlined"
-              @click="onSelectPage(item)"
-            >
-              {{ item }}
-            </of-button>
-            <of-button
-              v-if="showGoToLast"
-              icon="page last"
-              variant="outlined"
-              @click="goToLast()"
-            >
-            </of-button>
-            <of-button
-              v-if="showCustomOffsetPopup"
-              id="offsetPopupOuter"
-              icon="bullet down"
-              variant="outlined"
-              @click="openOffsetPopup()"
-            >
-            </of-button>
-          </span>
-        </div>
+      <div class="of-pagination-header" ref="ofPaginationHeader">
+        <span class="of-buttonset">
+          <of-button
+            v-if="showGoToFirst"
+            icon="page first"
+            :variant="variant"
+            :density="density"
+            @click="goToFirst()"
+          ></of-button>
+          <of-button
+            v-for="item in pages"
+            :key="item"
+            :class="{
+              'is-active': page === item,
+            }"
+            :variant="variant"
+            :density="density"
+            @click="onSelectPage(item)"
+          >
+            {{ item }}
+          </of-button>
+          <of-button
+            v-if="showGoToLast"
+            icon="page last"
+            :variant="variant"
+            :density="density"
+            @click="goToLast()"
+          >
+          </of-button>
+          <of-button
+            v-if="showCustomOffsetPopup"
+            id="offsetPopupOuter"
+            icon="bullet down"
+            :variant="variant"
+            :density="density"
+            @click="openOffsetPopup"
+          >
+          </of-button>
+        </span>
       </div>
+
       <of-overlay
         :active="offsetPopupOpened"
         :capture="false"
@@ -48,7 +51,7 @@
       >
         <slot name="custom-offset-popup" v-if="showCustomOffsetPopup">
           <form method="POST" action="#" @submit.prevent="updateOffsetParams()">
-            <div class="container" style="background: #f0f0f0;">
+            <div class="container" style="background: #f0f0f0">
               <div class="row">
                 <div class="column">
                   <of-text-field
@@ -103,6 +106,7 @@ export default defineComponent({
     totalPages: { type: Number, required: true },
     totalVisible: Number,
     variant: String,
+    density: { type: [String, Number], default: null },
     customOffsetPopup: [Boolean, String],
     startRecord: Number,
     perPage: Number,
@@ -112,8 +116,8 @@ export default defineComponent({
     let page: Ref<number> = computed(() => props.modelValue || 1)
     const totalVisible: Ref<number> = computed(() => props.totalVisible || 5)
 
-    const variant = computed(() => props.variant || 'standard')
-    const cls = 'of--variant-' + variant.value
+    const variant = computed(() => props.variant || 'solid')
+    const density = computed(() => props.density || 'default')
 
     const getStartPageNum = function (): number {
       if (props.totalPages <= totalVisible.value) {
@@ -217,10 +221,10 @@ export default defineComponent({
       () => props.customOffsetPopup || false
     )
     const offsetPopupOpened = ref(false)
-    const offsetPopupOuter = ref()
+    const offsetPopupOuter: Ref<any> = ref(null)
 
-    const openOffsetPopup = () => {
-      offsetPopupOuter.value = '#offsetPopupOuter'
+    const openOffsetPopup = (e: Event) => {
+      offsetPopupOuter.value = e.target
       offsetPopupOpened.value = true
     }
 
@@ -271,7 +275,8 @@ export default defineComponent({
     }
 
     return {
-      cls,
+      variant,
+      density,
       page,
       pages,
 

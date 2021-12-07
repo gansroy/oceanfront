@@ -1,10 +1,8 @@
 .of-pagination {
-  .of--variant-standard {
-    .of-pagination-header {
-      -webkit-user-select: none;
-      &::-webkit-scrollbar {
-        display: none;
-      }
+  .of-pagination-header {
+    -webkit-user-select: none;
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 }

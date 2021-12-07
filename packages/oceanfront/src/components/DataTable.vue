@@ -3,7 +3,7 @@
     <div class="of-data-table-header">
       <div v-if="rowsSelector" class="of-data-table-rows-selector">
         <slot name="header-rows-selector">
-          <of-button split :items="selectRowsItems" variant="text">
+          <of-button split :items="selectRowsItems">
             <of-toggle
               type="toggle"
               variant="basic"
@@ -250,10 +250,19 @@ export default defineComponent({
       selectRows(select)
     }
     const selectRowsItems = [
-      { key: 'page', text: 'Select Page', value: () => selectRows(RowsSelectorValues.Page) },
-      { key: 'all', text: 'Select All', value: () => selectRows(RowsSelectorValues.All) },
       {
-        key: 'clear', text: 'Deselect All',
+        key: 'page',
+        text: 'Select Page',
+        value: () => selectRows(RowsSelectorValues.Page),
+      },
+      {
+        key: 'all',
+        text: 'Select All',
+        value: () => selectRows(RowsSelectorValues.All),
+      },
+      {
+        key: 'clear',
+        text: 'Deselect All',
         value: () => selectRows(RowsSelectorValues.DeselectAll),
       },
     ]
