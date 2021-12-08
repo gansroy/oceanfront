@@ -381,6 +381,7 @@ export const OfField = defineComponent({
         const render = rendered.value
         if (!render) return
         const outerId = render.inputId ? render.inputId + '-outer' : props.id
+        const mainId = render.inputId ? render.inputId + '-main' : props.id
         let overlay, overlayActive, overlayBlur
         // if(ctx.slots.overlay) overlay = ctx.slots.overlay(); else
         const dragIn = render.dragIn && makeDragIn(render.dragIn, dragOver)
@@ -465,7 +466,7 @@ export const OfField = defineComponent({
               active: overlayActive,
               capture: false,
               shade: false,
-              target: outerId ? '#' + outerId : '',
+              target: mainId ? '#' + mainId : '',
               onBlur: overlayBlur,
             },
             overlay
@@ -492,6 +493,7 @@ export const OfField = defineComponent({
               'div',
               {
                 class: 'of-field-main',
+                id: mainId,
               },
               [
                 h(
