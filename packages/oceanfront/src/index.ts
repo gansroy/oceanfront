@@ -31,6 +31,7 @@ import { OfTimeField } from './components/TimeField'
 import { OfToggle } from './components/Toggle'
 import { OfToggleField } from './components/ToggleField'
 import Hue from './components/Hue'
+import Saturation from './components/Saturation'
 import { ColorField } from './fields/Color'
 import { DateField, DateTimeField, TimeField } from './fields/DateTime'
 import { FileField } from './fields/File'
@@ -162,7 +163,7 @@ export {
   fieldRender,
   newFieldId,
 } from './lib/fields'
-export { Hue }
+export { Hue, Saturation }
 export { FocusGroup, provideFocusGroup, useFocusGroup } from './lib/focus'
 export {
   FormatState,
