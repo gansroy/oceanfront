@@ -23,6 +23,7 @@
   margin: 0 var(--button-margin-right) var(--button-margin-bottom);
 
   button {
+    flex: auto;
     min-height: calc(1em + 2 * var(--button-v-pad));
     font-family: inherit;
     border: none;
