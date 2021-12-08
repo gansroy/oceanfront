@@ -92,7 +92,7 @@ export const ColorField = defineFieldType({
       const hsv = color.hsv
       return h(
         'div',
-        { class: 'of-menu of-colorpicker-popup' },
+        { class: 'of-menu of-colorpicker-popup', tabindex: '0' },
         h('div', { class: 'color-picker' }, [
           h(Saturation, {
             saturation: hsv.s,
