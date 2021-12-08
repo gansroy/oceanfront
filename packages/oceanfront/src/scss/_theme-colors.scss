@@ -1,0 +1,26 @@
+$pal_colors: (189 47%) (15 83%) (34 97%) (0 75%) (80 15%) (191 8%);
+$pal_names: "primary"  "secondary" "tertiary" "error" "neutral" "neutral-variant";
+
+@mixin shades($dark) {
+  @each $pal in $pal_names {
+    $idx: index($pal_names, $pal);
+    $color: nth($pal_colors, $idx);
+    @each $a in (0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 70 72 78 80 82 88 90 92 98 100) {
+      @if $dark {
+        --of-pal-#{$pal}-#{$a}: hsl(#{$color} #{(100 - $a) * 1%});
+      } @else {
+        --of-pal-#{$pal}-#{$a}: hsl(#{$color} #{$a * 1%});
+      }
+    }
+  }
+}
+
+:root {
+  @include shades(false);
+}
+
+.-of-theme-dark {
+  @include shades(true);
+}
+
+

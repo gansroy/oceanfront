@@ -9,14 +9,18 @@
 
 .of-code {
   border-radius: 5px;
-  background: #444a55;
+  background: var(--of-pal-neutral-90);
   color: #f6f6f6;
   font-family: monospace;
   padding: 1ch;
 }
 
+h1 {
+  color: var(--of-pal-primary-22);
+}
+
 h2 {
-  color: #339988;
+  color: var(--of-pal-primary-30);
   margin: 0.4em 0;
 }
 
@@ -40,8 +44,8 @@ h4 {
 }
 
 .demo-form {
-  background: #eee;
-  border: 1px solid #aaa;
+  background: var(--of-pal-primary-98);
+  border: 1px solid var(--of-pal-primary-72);
   border-radius: 0.25rem;
   margin: 0.5rem;
   padding: 1rem;

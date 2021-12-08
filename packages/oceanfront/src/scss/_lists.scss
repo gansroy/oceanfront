@@ -14,7 +14,7 @@
   }
 }
 .of-list-item {
-  color: $color-field;
+  color: $color-item-text;
   cursor: pointer;
   display: block;
   outline: none;
@@ -22,15 +22,15 @@
   text-decoration: none;
   transition: color 200ms;
   &.of--disabled {
-    color: $color-field-disabled;
+    color: $color-item-disabled;
     cursor: default;
   }
-  &:not(.of--disabled) {
+  &:not(.of--disabled):not(.of--active) {
     &.of-list-item:hover {
-      color: $color-field-hover;
+      color: $color-item-hover-text;
     }
     &:hover > .of-list-item-inner {
-      background: $bg-label;
+      background: $color-item-hover;
     }
   }
 }
@@ -42,18 +42,20 @@
   display: flex;
   padding: 0.3em 0.8em;
   transition: background-color 200ms;
-  .of-list-item.of--focused & {
-    border-color: $color-field-hover;
+  .of-list-item.of--focused:not(.of--disabled) & {
+    border-color: $color-item-hover;
   }
 }
 .of-list-item-content {
   flex: auto;
 }
-.of--active > .of-list-item-inner {
-  background: #c6e6f6;
+
+.of--active:not(.of--disabled) > .of-list-item-inner {
+  background: $color-item-active;
 }
-.of--active:hover > .of-list-item-inner {
-  background: #c0e0f0;
+.of-list-item.of--active:not(.of--disabled) {
+  color: $color-item-active-text;
+  font-weight: 500;
 }
 
 .of-list-outer {
@@ -62,8 +64,8 @@
 }
 
 .of-list-header {
-  background: #eee;
-  color: #555;
+  background: $color-item-header;
+  color: $color-item-header-text;
   cursor: default;
   font-size: 80%;
   overflow: hidden;

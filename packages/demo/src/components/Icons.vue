@@ -146,15 +146,15 @@ export default defineComponent({
   border-radius: 2px;
   // font-size: 1.75rem;
   // line-height: 1;
-  border: 1px solid #eee;
-  background: #fffefd;
-  color: #444;
-  box-shadow: 0 1px 0 #ccc;
+  border: 1px solid var(--of-pal-primary-92);
+  background: var(--of-pal-primary-98);
+  color: var(--of-pal-primary-8);
+  box-shadow: 0 1px 0 var(--of-pal-primary-80);
   cursor: default;
   margin: 2px;
   text-align: center;
   &:hover {
-    color: #111;
+    color: var(--of-pal-primary-20);
   }
 }
 </style>

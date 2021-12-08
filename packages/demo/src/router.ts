@@ -22,6 +22,7 @@ import Pagination from './components/Pagination.vue'
 import Calendar from './components/Calendar.vue'
 import Popups from './components/Popups.vue'
 import Badges from './components/Badges.vue'
+import Test from './components/Test.vue'
 
 export const routerHistory = createWebHashHistory('/ofdocs')
 export const router = createRouter({
@@ -49,5 +50,6 @@ export const router = createRouter({
     { path: '/calendar', component: Calendar },
     { path: '/popups', component: Popups },
     { path: '/badges', component: Badges },
+    { path: '/test', component: Test },
   ],
 })

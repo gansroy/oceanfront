@@ -44,6 +44,9 @@
 }
 .of-overlay.of--shade {
   background-color: rgba(0, 0, 0, 0.4);
+  .-of-theme-dark & {
+    background-color: rgba(255, 255, 255, 0.16);
+  }
 }
 .of-overlay.of--pad {
   --overlay-pad: 24px;
@@ -73,7 +76,7 @@
 
 .of-dialog {
   border-radius: 5px;
-  background: #fff;
+  background: var(--of-pal-neutral-98);
   min-height: 200px;
   min-width: 100%;
   box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.2);
@@ -114,7 +117,7 @@
 }
 
 .of-sidebar {
-  background: #fff;
+  background: var(--of-pal-primary-98);
   box-shadow: 2px 2px 4px 1px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   height: 100%;
@@ -126,11 +129,11 @@
 }
 
 .of-menu {
-  border: 1px solid #ccc;
+  border: 1px solid $color-menu-border;
   border-radius: 4px;
-  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px 1px $color-menu-shadow;
   box-sizing: border-box;
-  background: #fff;
+  background: $color-menu-bg;
   max-height: 100%;
   max-width: 400px;
   min-width: 200px;

@@ -1,59 +1,68 @@
-$base-color-active: #68d !default;
-$base-color-active-text: #fff;
-$base-color-active-border: darken($base-color-active, 10%) !default;
+$base-color-active: var(--of-pal-primary-70) !default;
+$base-color-active-text: var(--of-pal-primary-98);
+$base-color-active-border: var(--of-pal-primary-60) !default;
 $base-color-button: #29e !default;
 $base-color-button-shadow: #000000 !default;
 $base-color-button-neutral: #000000 !default;
 $base-color-button-label: #ffffff !default;
-$base-color-disabled: #888 !default;
-$base-color-field-border: #000 !default;
-$base-color-field-filled: #ddd !default;
-$base-color-focus-border: #479;
-$base-color-hover: #58b !default;
-$base-color-field-active-text: #3c68d4 !default;
-$base-color-field-bg: #fff !default;
-$base-color-field-error: #930000 !default;
-$base-color-field-icon: #666 !default; // fixme use alpha
-$base-color-field-muted-bg: #e3e3e3 !default; // fixme use alpha
-$base-color-field-placeholder: #999 !default; // fixme use alpha
-$base-color-field-text: #3b3b3b !default;
-$base-color-label-bg: #e6e6e6 !default; // fixme use alpha
-$base-color-label-border: #aaa !default;
-$base-color-label-text: #555 !default;
-$base-color-menu-header: #dedede !default;
-$base-color-muted: #888 !default; // fixme use alpha
-$base-color-quiet: #f6f6f6 !default; // fixme use alpha
-$base-color-sheet-bg: #fff;
-$base-color-soft: #dadada !default; // fixme use alpha
-$base-color-text: #333;
+
+$base-color-disabled: var(--of-pal-neutral-50) !default;
+$base-color-field-border: var(--of-pal-neutral-10) !default;
+$base-color-hover: var(--of-pal-primary-50) !default;
+$base-color-highlight: var(--of-pal-primary-80) !default;
+
+$base-color-field-filled: var(--of-pal-primary-30) !default;
+$base-color-focus-border: var(--of-pal-secondary-50);
+$base-color-field-bg: var(--of-pal-primary-40) !default;
+$base-color-field-error: var(--of-pal-error-38) !default;
+$base-color-field-icon: var(--of-pal-primary-30) !default; // fixme use alpha
+$base-color-field-placeholder: var(--of-pal-primary-68) !default; // fixme use alpha
+$base-color-field-text: var(--of-pal-primary-18) !default;
+$base-color-label-bg:  var(--of-pal-primary-38) !default; // fixme use alpha
+$base-color-label-border: var(--of-pal-neutral-70) !default;
+$base-color-label-text: var(--of-pal-neutral-30) !default;
+$base-color-menu-header: var(--of-pal-primary-80) !default;
+$base-color-muted: var(--of-pal-primary-68) !default; // fixme use alpha
+$base-color-quiet: var(--of-pal-primary-88) !default; // fixme use alpha
+$base-color-sheet-bg: var(--of-pal-primary-98);
+$base-color-soft: var(--of-pal-primary-80) !default; // fixme use alpha
+$base-color-text: var(--of-pal-primary-28);
+
+$base-color-item-text: var(--of-pal-primary-30);
+$base-color-item-disabled: var(--of-pal-primary-60);
+$base-color-item-active: var(--of-pal-primary-52);
+$base-color-item-active-text: var(--of-pal-primary-100);
+$base-color-item-hover: var(--of-pal-primary-70);
+$base-color-item-hover-text: var(--of-pal-primary-12);
+$base-color-item-header: var(--of-pal-primary-80);
+$base-color-item-header-text: var(--of-pal-primary-28);
+
+$base-color-menu-bg: var(--of-pal-primary-98);
+$base-color-menu-border: var(--of-pal-primary-72);
+$base-color-menu-shadow: var(--of-pal-primary-92);
+
+$color-slider: var(--of-color-slider, var(--of-pal-neutral-50));
 
 :root {
   --of-bg-field: #{$base-color-field-bg};
-  --of-bg-field-active: var(--of-bg-field);
   --of-bg-field-disabled: #{$base-color-quiet};
   --of-bg-field-focus: var(--of-bg-field);
-  --of-bg-field-filled: #{rgba($base-color-field-filled, 0.6)};
-  --of-bg-field-filled-hover: #{rgba($base-color-field-filled, 0.7)};
-  --of-bg-field-filled-focus: #{rgba($base-color-field-filled, 0.8)};
+  --of-bg-field-filled: var(--of-pal-primary-78);
+  --of-bg-field-filled-hover: var(--of-pal-primary-80);
+  --of-bg-field-filled-focus: var(--of-pal-primary-82);
   --of-bg-sheet: #{$base-color-sheet-bg};
-  --of-border-color-field: #{rgba($base-color-field-border, 0.42)};
+  --of-border-color-field: var(--of-pal-neutral-70);
+  --of-border-color-field-hover: var(--of-pal-neutral-60);
   --of-border-color-field-active: #{$base-color-active-border};
-  --of-border-color-field-disabled: #{lighten($base-color-disabled, 10%)};
+  --of-border-color-field-disabled: var(--of-pal-neutral-60);
   --of-border-color-field-focus: #{$base-color-focus-border};
-  --of-border-color-field-hover: #{rgba($base-color-field-border, 0.7)};
-  --of-border-color-field-invalid: #{lighten($base-color-field-error, 10%)};
-  --of-box-shadow-field-basic: inset 1px 2px 8px #{rgba(
-      $base-color-field-border,
-      0.1
-    )};
-  --of-box-shadow-field-basic-focus: 0 0 0 0.2rem #{rgba(
-      $base-color-focus-border,
-      0.25
-    )};
+  --of-border-color-field-invalid: var(--of-pal-error-70);
+  --of-box-shadow-field-basic: inset 1px 2px 8px var(--of-box-shadow-field-basic-color,  var(--of-pal-neutral-8));
+  --of-box-shadow-field-basic-focus: 0 0 0 0.2rem var(--of-box-shadow-field-basic-focus-color, var(--of-pal-secondary-90));
+
   --of-color-active: #{$base-color-active-text};
   --of-color-error: #{$base-color-field-error};
   --of-color-field: #{$base-color-field-text};
-  --of-color-field-active: #{$base-color-field-active-text};
   --of-color-field-disabled: #{$base-color-disabled};
   --of-color-field-filled: var(--of-color-field);
   --of-color-field-filled-hover: var(--of-color-field-hover);
@@ -78,54 +87,30 @@ $base-color-text: #333;
   --of-button-outlined-color-bg-hover: #{rgba($base-color-button, 10%)};
 }
 
+$color-item-text: var(--of-color-item-text, $base-color-item-text);
+$color-item-disabled: var(--of-color-item-disabled, $base-color-item-disabled);
+$color-item-active: var(--of-color-item-active, $base-color-item-active);
+$color-item-active-text: var(--of-color-item-active-text, $base-color-item-active-text);
+$color-item-hover: var(--of-color-item-hover, $base-color-item-hover);
+$color-item-hover-text: var(--of-color-item-hover-text, $base-color-item-hover-text);
+$color-item-header: var(--of-color-item-header, $base-color-item-header);
+$color-item-header-text: var(--of-color-item-header-text, $base-color-item-header-text);
+
+$color-menu-bg :var(--of-color-menu-bg, $base-color-menu-bg);
+$color-menu-border: var(--of-color-menu-border, $base-color-menu-border);
+$color-menu-shadow: var(--of-color-menu-shadow, $base-color-menu-shadow);
+
 $bg-active: var(
   --bg-active,
   linear-gradient(
     to bottom,
-    darken($base-color-active, 5%) 30%,
-    lighten($base-color-active, 5%)
+    var(--of-pal-primary-68) 30%,
+    var(--of-pal-primary-72)
   )
 );
 $bg-badge: var(--bg-badge, $base-color-field-bg);
 $bg-bullet-down: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTUgMTEiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxLjQxNDIxOyI+PGcgaWQ9InBvbHlnb24xNzMiIHRyYW5zZm9ybT0ibWF0cml4KDEuOTQzNDQsMCwwLDEuNzI4MjMsLTYwMC43OTgsLTM2Ljg0MTUpIj48cGF0aCBkPSJNMzA5LjUsMjJMMzE2LjUsMjJMMzEzLDI3TDMwOS41LDIyWiIgc3R5bGU9ImZpbGw6cmdiKDY4LDY4LDY4KTtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+);
-// $bg-button: var(--bg-button, $base-color-button);
-// $bg-button: var(
-//   --bg-button,
-//   linear-gradient(
-//     to bottom,
-//     mix(white, $base-color-button, 30%) 30%,
-//     mix(black, $base-color-button, 4%)
-//   )
-// );
-// $bg-button-active: var(--bg-button-active, $base-color-field-muted-bg);
-// $bg-button-active: var(
-//   --bg-button-active,
-//   linear-gradient(
-//     to bottom,
-//     lighten($base-color-field-muted-bg, 5%) 30%,
-//     lighten($base-color-field-muted-bg, 10%)
-//   )
-// );
-// $bg-button-disabled: var(--bg-button-disabled, $base-color-field-muted-bg);
-// $bg-button-disabled: var(
-//   --bg-button-disabled,
-//   linear-gradient(
-//     to bottom,
-//     #{darken($base-color-field-muted-bg, 5%)} 30%,
-//     #{$base-color-field-muted-bg}
-//   )
-// );
-// $bg-button-focus: var(--bg-button-focus, $base-color-field-muted-bg);
-// $bg-button-focus: var(
-//   --bg-button-focus,
-//   linear-gradient(
-//     to bottom,
-//     darken($base-color-field-muted-bg, 5%) 30%,
-//     lighten($base-color-field-muted-bg, 5%)
-//   )
-// );
 $bg-field: var(--of-bg-field);
-$bg-field-active: var(--of-bg-field-active);
 $bg-field-disabled: var(--of-bg-field-disabled);
 $bg-field-focus: var(--of-bg-field-focus);
 $bg-field-filled: var(--of-bg-field-filled);
@@ -138,8 +123,8 @@ $bg-label: var(--bg-label, #{$base-color-label-bg});
     to bottom,
     lighten($base-color-label-bg, 2%) 20%,
     darken($base-color-label-bg, 3%)
-  )
-);*/
+    )
+    );*/
 $bg-menu-header: var(--bg-menu-header, #{$base-color-menu-header});
 $border-color-active: var(--of-border-color-active);
 $border-color-button: var(--border-color-button, #{$base-color-field-border});
@@ -172,15 +157,8 @@ $box-shadow-field-basic: var(--of-box-shadow-field-basic);
 $box-shadow-field-basic-focus: var(--of-box-shadow-field-basic-focus);
 $color-active: var(--of-color-active);
 $color-badge: var(--color-badge, #{$base-color-muted});
-
-//$color-button: var(--color-button, #{$base-color-field-text});
-// $color-button-active: var(--of-color-button-active);
-// $color-button-focus: var(--color-button-focus, #{$base-color-button-focus});
-// $color-button-icon: var(--color-button-icon, #{$base-color-field-icon});
-
 $color-error: var(--of-color-error);
 $color-field: var(--of-color-field);
-$color-field-active: var(--of-color-field-active);
 $color-field-disabled: var(--of-color-field-disabled);
 $color-field-filled: var(--of-color-field-filled);
 $color-field-filled-hover: var(--of-color-field-filled-hover);
@@ -245,10 +223,13 @@ $border-radius-field: var(--border-radius-field, 4px);
 $pad-h-field: calc(var(--font-size-input, 1rem) * 0.75);
 $pad-v-field: 0.25em;
 $pad-v-field-inner: 0.75rem;
-// $color-field-border: rgba(#000, 0.38)
 
 @mixin no-select {
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
   user-select: none;
 }
+
+//$base-color-button-focus: #368;
+//$color-button-focus: var(--color-button-focus, #{$base-color-button-focus});
+// $color-field-border: rgba(#000, 0.38)

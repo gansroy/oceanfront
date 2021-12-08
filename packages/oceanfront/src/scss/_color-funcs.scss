@@ -1,0 +1,19 @@
+
+@function theme-color($pal_light) {
+    $pal: nth($pal_light, 1);
+    $light: nth($pal_light, 2);
+    @return hsl(var(--of-pal-#{$pal}-hue), calc( var(--of-light-offset) -  var(--of-light-neg) *  $light));
+}
+
+@function lighter($pal_light, $amount) {
+    $pal: nth($pal_light, 1);
+    $light: nth($pal_light, 2);
+    @return ($pal, $light * (1 + $amount / 100));
+}
+
+@function darker($pal_light, $amount) {
+    $pal: nth($pal_light, 1);
+    $light: nth($pal_light, 2);
+    @return ($pal, $light * (1 - $amount / 100));
+}
+

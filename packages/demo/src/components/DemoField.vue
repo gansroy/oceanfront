@@ -79,13 +79,13 @@ export default defineComponent({
 
 <style lang="scss">
 .of-demo-field {
-  border: 2px solid #888;
+  border: 2px solid var(--of-pal-primary-72);
   border-radius: 4px;
   display: flex;
   flex-flow: row nowrap;
   margin: 1em 0;
   .content {
-    background: #e2f1fa;
+    background: var(--of-pal-primary-90);
     box-sizing: border-box;
     display: flex;
     flex: auto;
@@ -103,7 +103,7 @@ export default defineComponent({
     }
   }
   .options {
-    background: #ccc;
+    background: var(--of-pal-primary-92);
     flex: 0 0 16em;
     padding: 1em;
     overflow: hidden;
