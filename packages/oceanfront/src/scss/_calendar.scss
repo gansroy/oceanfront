@@ -1,4 +1,5 @@
 .of-datepicker-grid {
+  color: var(--of-pal-primary-20);
   display: grid;
   margin: 8px;
   width: 194px;
@@ -21,25 +22,25 @@
     }
 
     &.today {
-      border-color: teal;
+      border-color: var(--of-pal-primary-40);
     }
 
     &.selected-date {
-      border-color: teal;
-      background-color: teal;
-      color: white;
+      border-color: var(--of-pal-primary-40);
+      background-color: var(--of-pal-primary-40);
+      color: var(--of-pal-primary-98);
     }
 
     &.other-month {
-      color: #ccc;
+      opacity: 0.4;
       cursor: default;
     }
   }
 }
 
 .of-date-picker-title {
-  background-color: teal;
-  color: white;
+  background-color: var(--of-pal-primary-40);
+  color: var(--of-pal-primary-90);
   font-size: 110%;
   padding-left: 8px;
 }
@@ -87,6 +88,7 @@ div.of-date-picker-cur-year {
 }
 
 .of-time-selector {
+  color: var(--of-pal-primary-20);
   display: grid;
   width: 100%;
   grid-template-columns: 1fr 30px 8px 30px 1fr;
@@ -124,13 +126,13 @@ div.of-date-picker-cur-year {
   padding-top: 8px;
   padding-bottom: 8px;
   &.accept {
-    color: teal;
+    color: var(--of-pal-primary-20);
   }
   &.cancel {
-    color: red;
+    color: var(--of-pal-error-50);
   }
   &:hover {
-    background-color: #eee;
+    background-color: var(--of-pal-primary-92);
   }
 }
 

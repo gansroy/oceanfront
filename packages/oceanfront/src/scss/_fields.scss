@@ -572,7 +572,7 @@
   width: 2em;
 
   &-thumb {
-    background-color: #555;
+    background-color: $color-slider;
     // border: 1px solid #bbb;
     border-radius: 50%;
     box-sizing: border-box;
@@ -625,7 +625,7 @@
     background: $border-color-field;
   }
   &-thumb {
-    background-color: #555;
+    background-color: $color-slider;
     border-radius: 50%;
     box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
     box-sizing: border-box;
