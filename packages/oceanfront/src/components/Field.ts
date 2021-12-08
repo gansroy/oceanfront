@@ -2,38 +2,36 @@ import {
   computed,
   defineComponent,
   h,
+  PropType,
   proxyRefs,
   ref,
-  watch,
-  PropType,
   Ref,
   SetupContext,
   VNode,
+  watch,
   WatchStopHandle,
 } from 'vue'
-
 import { OfOverlay } from '../components/Overlay'
 import { useConfig } from '../lib/config'
 import {
   FieldContext,
   FieldDragIn,
-  FieldMode,
-  FieldRender,
-  Renderable,
   FieldFormatProp,
   FieldLabelPositionProp,
+  FieldMode,
   FieldTypeConstructor,
+  Renderable,
 } from '../lib/fields'
 import { useFocusGroup } from '../lib/focus'
 import { useFormats } from '../lib/formats'
-import { FormRecord, useRecords } from '../lib/records'
 import { ItemList } from '../lib/items'
+import { FormRecord, useRecords } from '../lib/records'
 import {
-  extractRefs,
   extendReactive,
+  extractRefs,
+  PositionObserver,
   restrictProps,
   watchPosition,
-  PositionObserver,
 } from '../lib/util'
 
 const renderSlot = (
