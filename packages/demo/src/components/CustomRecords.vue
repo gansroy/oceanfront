@@ -31,9 +31,9 @@
             <of-field name="four" :record="testRecord"></of-field>
           </div>
           <div class="row form-row">
-            <button @click="testRecord.reset()" :disabled="testRecord.locked">
+            <of-button @click="testRecord.reset()" :disabled="testRecord.locked">
               Reset
-            </button>
+            </of-button>
           </div>
         </div>
       </div>
