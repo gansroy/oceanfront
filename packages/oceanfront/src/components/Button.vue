@@ -3,21 +3,26 @@
     :class="[
       {
         'of-button--rounded': rounded,
-        'of-button--expand': !split && items,
-        'of-button--split': split,
+        'of-button--disabled': disabled,
       },
+      'of--density-' + density,
       'of-button',
       'of-button--' + variant,
     ]"
   >
     <button v-if="split || !items" :disabled="disabled" @click="onClickMenu">
-      <of-icon v-if="icon" :name="icon" />
-      <slot>&nbsp;</slot>
+      <of-icon v-if="icon" :name="icon" :class="iconCls" />
+      <slot></slot>
     </button>
-    <button v-if="items" @click="toggleMenu($event)" @mouseleave="menuLeave()">
-      <of-icon v-if="icon && !split" :name="icon" />
-      <slot v-if="!split">&nbsp;</slot>
-      <of-icon name="expand down" class="expand" />
+    <button
+      v-if="items"
+      @click="toggleMenu($event)"
+      @mouseleave="menuLeave()"
+      :class="{ 'expand-split': split, 'expand-menu': !split && items }"
+    >
+      <of-icon v-if="icon && !split" :name="icon" :class="iconCls" />
+      <slot v-if="!split"></slot>
+      <of-icon name="expand down" class="expand-down" />
     </button>
     <of-overlay
       v-if="items"
@@ -48,14 +53,30 @@ export default defineComponent({
     rounded: Boolean,
     disabled: Boolean,
     split: Boolean,
+    density: { type: [String, Number], default: undefined },
     items: [String, Array, Object],
     onClickMenu: Function,
   },
-  setup(props) {
+  setup(props, ctx) {
     const variant = computed(() => props.variant || 'solid')
     const menuShown = ref(false)
     const menuOuter = ref()
     const menuTimerId = ref()
+    const iconCls = [{ 'icon-only': !ctx.slots.default }, 'button-icon']
+    const density = computed(() => {
+      let d = props.density
+      if (d === 'default') {
+        d = undefined
+      } else if (typeof d === 'string') {
+        d = parseInt(d, 10)
+        if (isNaN(d)) d = undefined
+      }
+      if (typeof d !== 'number') {
+        d = 2
+      }
+      return Math.max(0, Math.min(3, d || 0))
+    })
+
     const onClickItem = (val: any) => {
       if (typeof val === 'function') val.call(this)
       closeMenu()
@@ -80,6 +101,7 @@ export default defineComponent({
     const menuClearTimeout = () => {
       clearTimeout(menuTimerId.value)
     }
+
     return {
       onClickItem,
       onClickMenu,
@@ -88,6 +110,8 @@ export default defineComponent({
       menuShown,
       menuOuter,
       variant,
+      density,
+      iconCls,
       menuLeave,
       menuClearTimeout,
     }

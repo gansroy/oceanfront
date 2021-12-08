@@ -66,17 +66,17 @@
 /*.state-neutral {
 	.state-mixin(@state-color-neutral, @bg-color-neutral, @border-color-neutral);
 }*/
-.state-label {
-  @include state-mixin($color-label, $bg-label, $border-color-label);
-  text-shadow: $text-shadow-label;
-}
-.state-button {
-  @include state-mixin($color-button, $bg-button, $border-color-button);
-  text-shadow: $text-shadow-button;
-}
-.state-active {
-  @include state-mixin($color-active, $bg-active, $border-color-active);
-}
+// .state-label {
+//   @include state-mixin($color-label, $bg-label, $border-color-label);
+//   text-shadow: $text-shadow-label;
+// }
+// .state-button {
+//   @include state-mixin($color-button, $bg-button, $border-color-button);
+//   text-shadow: $text-shadow-button;
+// }
+// .state-active {
+//   @include state-mixin($color-active, $bg-active, $border-color-active);
+// }
 /*.state-selected {
 	color: @state-color-selected;
 	border-color: @border-color-selected;
