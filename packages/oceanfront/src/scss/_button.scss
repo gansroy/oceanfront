@@ -25,6 +25,7 @@
   button {
     flex: auto;
     min-height: calc(1em + 2 * var(--button-v-pad));
+    font-weight: 500;
     font-family: inherit;
     border: none;
     cursor: pointer;
@@ -33,9 +34,7 @@
     white-space: nowrap;
     &:disabled {
       cursor: default;
-      background-color: var(--of-button-color-bg-disabled);
-      color: var(--of-button-color-label-disabled);
-      opacity: 0.9;
+      opacity: 0.6;
     }
     &.expand-split {
       padding: var(--button-v-pad) var(--button-icon-h-pad);
