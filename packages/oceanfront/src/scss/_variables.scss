@@ -1,10 +1,7 @@
 $base-color-active: var(--of-pal-primary-70) !default;
 $base-color-active-text: var(--of-pal-primary-98);
 $base-color-active-border: var(--of-pal-primary-60) !default;
-$base-color-button: #29e !default;
-$base-color-button-shadow: #000000 !default;
-$base-color-button-neutral: #000000 !default;
-$base-color-button-label: #ffffff !default;
+$base-color-button: var(--of-pal-primary-30) !default;
 
 $base-color-disabled: var(--of-pal-neutral-50) !default;
 $base-color-field-border: var(--of-pal-neutral-10) !default;
@@ -76,15 +73,15 @@ $color-slider: var(--of-color-slider, var(--of-pal-neutral-50));
   --of-color-field-placeholder: #{$base-color-field-placeholder};
   --of-color-sheet: #{$base-color-text};
   --of-field-size: 26ch;
-  --of-button-color-bg: #{rgba($base-color-button, 1)};
-  --of-button-color-bg-hover: #{lighten($base-color-button, 10%)};
-  --of-button-color-shadow: #{rgba($base-color-button-shadow, 0.15)};
-  --of-button-color-label: #{rgba($base-color-button-label, 1)};
-  --of-button-color-bg-disabled: #{lighten($base-color-button-neutral, 90%)};
-  --of-button-color-label-disabled: #{lighten($base-color-button-neutral, 60%)};
-  --of-button-outlined-color-label: #{rgba($base-color-button, 1)};
-  --of-button-outlined-color: #{rgba($base-color-button, 30%)};
-  --of-button-outlined-color-bg-hover: #{rgba($base-color-button, 10%)};
+  --of-button-color-bg: var(--of-pal-primary-30);
+  --of-button-color-bg-hover: var(--of-pal-primary-38);
+  --of-button-color-shadow: hsla(var(--of-pal-primary-huesat), var(--of-light-10), 0.15);
+  --of-button-color-label: var(--of-pal-primary-90);
+  --of-button-color-bg-disabled: var(--of-pal-primary-60);
+  --of-button-color-label-disabled: var(--of-pal-primary-20);
+  --of-button-outlined-color-label: #{$base-color-button};
+  --of-button-outlined-color: hsla(var(--of-pal-primary-huesat), var(--of-light-30), 0.3);
+  --of-button-outlined-color-bg-hover: hsla(var(--of-pal-primary-huesat), var(--of-light-30), 0.1);
 }
 
 $color-item-text: var(--of-color-item-text, $base-color-item-text);
@@ -229,7 +226,3 @@ $pad-v-field-inner: 0.75rem;
   -moz-user-select: -moz-none;
   user-select: none;
 }
-
-//$base-color-button-focus: #368;
-//$color-button-focus: var(--color-button-focus, #{$base-color-button-focus});
-// $color-field-border: rgba(#000, 0.38)
