@@ -41,6 +41,8 @@ const fieldInit =
     const withDate = type == 'datetime' || type == 'date'
     const withClear = !ctx.required
     const formatMgr = useFormats()
+    const elt = ref<HTMLElement | undefined>()
+    const focused = ref(false)
     const formatter = computed(() => {
       switch (type) {
         case 'date':
@@ -90,8 +92,13 @@ const fieldInit =
     const editableDate: Ref<Date> = ref(new Date())
     const monthStart: Ref<Date> = ref(new Date())
 
-    const closePopup = () => {
+    const focus = () => {
+      elt.value?.focus()
+    }
+
+    const closePopup = (refocus?: boolean) => {
       opened.value = false
+      if (refocus) focus()
     }
 
     watch(
@@ -137,6 +144,21 @@ const fieldInit =
       })
     }
 
+    const hooks = {
+      onBlur(_evt: FocusEvent) {
+        focused.value = false
+      },
+      onFocus(_evt: FocusEvent) {
+        focused.value = true
+      },
+      onKeydown(evt: KeyboardEvent) {
+        if (evt.key == ' ' || evt.key == 'ArrowUp' || evt.key == 'ArrowDown') {
+          clickOpen()
+          evt.preventDefault()
+          evt.stopPropagation()
+        }
+      },
+    }
     return fieldRender({
       content: () => {
         const value = stateValue.value
@@ -152,11 +174,14 @@ const fieldInit =
               ],
               id: inputId.value,
               tabindex: 0,
+              ref: elt,
+              ...hooks,
             },
             value
           ),
         ]
       },
+      focused,
       updated: computed(() => {
         return initialValue.value !== stateValue.value
       }),

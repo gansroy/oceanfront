@@ -232,6 +232,7 @@ export const SelectField = defineFieldType({
       click: clickOpen,
       cursor: computed(() => (ctx.editable ? 'pointer' : null)),
       focus,
+      focused,
       // hovered,
       inputId,
       inputValue,
