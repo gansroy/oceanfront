@@ -1,8 +1,8 @@
 @import 'page';
 
 ::selection {
-  background-color: #9bc;
-  color: #334;
+  background-color: var(--of-pal-primary-50);
+  color: var(--of-pal-primary-98);
 }
 
 @import 'oceanfront/dist/oceanfront.css';
@@ -33,7 +33,7 @@ h4 {
 }
 
 .demo-fields {
-  border: 1px solid #aaa;
+  border: 1px solid var(--of-pal-primary-68);
   border-radius: 0.25rem;
   margin-top: 2rem;
   padding: 1rem;
