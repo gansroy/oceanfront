@@ -75,7 +75,6 @@ const ColorSchemeEditor = defineComponent({
     watch(
       colors,
       (colors) => {
-        debugger
         let style = ''
         Object.keys(colors).forEach((name) => {
           const color = colors[name]
