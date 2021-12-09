@@ -6,9 +6,7 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/vue3-recommended',
-    'prettier',
-    'prettier/vue',
-    'prettier/@typescript-eslint',
+    'plugin:prettier/recommended',
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -35,6 +33,7 @@ module.exports = {
   parser: 'vue-eslint-parser',
   parserOptions: {
     parser: '@typescript-eslint/parser',
+    extraFileExtensions: ['.vue'],
   },
   overrides: [
     {
