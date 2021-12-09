@@ -1,7 +1,11 @@
 @import 'page';
 
 ::selection {
-  background-color: var(--of-pal-primary-50);
+  /**
+  Using 99% opacity here because with 100% opacity, some browsers will not use
+  the exact intended color for selection background.
+  */
+  background-color: hsl(var(--of-pal-primary-huesat), var(--of-light-30), 0.99);
   color: var(--of-pal-primary-98);
 }
 
