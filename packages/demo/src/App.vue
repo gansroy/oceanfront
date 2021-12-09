@@ -35,8 +35,8 @@
       >
         <svg
           v-if="!dark"
-          width="24"
-          height="24"
+          width="0.9em"
+          height="0.9em"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -49,8 +49,8 @@
         </svg>
         <svg
           v-if="dark"
-          width="24"
-          height="24"
+          width="0.9em"
+          height="0.9em"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -116,7 +116,7 @@
           <of-list-item to="/tabs">Tabs</of-list-item>
           <of-list-item to="/popups">Popups and Dialogs</of-list-item>
           <of-list-item to="/badges">Badges</of-list-item>
-          <of-list-item to="/test">Test</of-list-item>
+          <of-list-item to="/color-scheme">Color Scheme</of-list-item>
         </of-nav-group>
       </of-sidebar>
       <main class="app-main">
