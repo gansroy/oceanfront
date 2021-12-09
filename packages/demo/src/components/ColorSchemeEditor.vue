@@ -21,7 +21,7 @@
               :key="idx"
               :style="{
                 height: '20px',
-                width: '20px',
+                width: '12px',
                 background: cl.color,
                 color: cl.isDark ? '#fff' : '#000',
                 'align-items': 'center',
