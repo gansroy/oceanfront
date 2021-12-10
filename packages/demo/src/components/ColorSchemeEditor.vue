@@ -90,71 +90,83 @@ const ColorSchemeEditor = defineComponent({
       Object.keys(pallettes.value).forEach((name) => {
         const pal = pallettes.value[name]
         Object.entries(pal).forEach(([_, _col]) => {
-          //style += `--of-palette-${name}-${col.l}: ${col.color};`
+          //style += `--of-color-${name}-${col.l}: ${col.color};`
         })
       })
 
-      style += `--of-palette-primary: ${pallettes.value['primary'][40].color};\n`
-      style += `--of-palette-primary-container: ${pallettes.value['primary'][90].color};\n`
-      style += `--of-palette-on-primary: ${pallettes.value['primary'][100].color};\n`
-      style += `--of-palette-on-primary-container: ${pallettes.value['primary'][10].color};\n`
+      style += `--of-color-primary-light: ${pallettes.value['primary'][40].color};\n`
+      style += `--of-color-primary-container-light: ${pallettes.value['primary'][90].color};\n`
+      style += `--of-color-on-primary-light: ${pallettes.value['primary'][100].color};\n`
+      style += `--of-color-on-primary-container-light: ${pallettes.value['primary'][10].color};\n`
 
-      style += `--of-palette-secondary: ${pallettes.value['secondary'][40].color};\n`
-      style += `--of-palette-secondary-container: ${pallettes.value['secondary'][90].color};\n`
-      style += `--of-palette-on-secondary: ${pallettes.value['secondary'][100].color};\n`
-      style += `--of-palette-on-secondary-container: ${pallettes.value['secondary'][10].color};\n`
+      style += `--of-color-secondary-light: ${pallettes.value['secondary'][40].color};\n`
+      style += `--of-color-secondary-container-light: ${pallettes.value['secondary'][90].color};\n`
+      style += `--of-color-on-secondary-light: ${pallettes.value['secondary'][100].color};\n`
+      style += `--of-color-on-secondary-container-light: ${pallettes.value['secondary'][10].color};\n`
 
-      style += `--of-palette-tertiary: ${pallettes.value['tertiary'][40].color};\n`
-      style += `--of-palette-tertiary-container: ${pallettes.value['tertiary'][90].color};\n`
-      style += `--of-palette-on-tertiary: ${pallettes.value['tertiary'][100].color};\n`
-      style += `--of-palette-on-tertiary-container: ${pallettes.value['tertiary'][10].color};\n`
+      style += `--of-color-tertiary-light: ${pallettes.value['tertiary'][40].color};\n`
+      style += `--of-color-tertiary-container-light: ${pallettes.value['tertiary'][90].color};\n`
+      style += `--of-color-on-tertiary-light: ${pallettes.value['tertiary'][100].color};\n`
+      style += `--of-color-on-tertiary-container-light: ${pallettes.value['tertiary'][10].color};\n`
 
-      style += `--of-palette-error: #ba1b1b;\n`
-      style += `--of-palette-on-error: #ffffff;\n`
-      style += `--of-palette-error-container: #ffdad4;\n`
-      style += `--of-palette-on-error-container: #410001;\n`
-      style += `--of-palette-background: ${pallettes.value['neutral'][98].color};\n`
-      style += `--of-palette-on-background: ${pallettes.value['neutral'][10].color};\n`
-      style += `--of-palette-outline: ${pallettes.value['neutral-variant'][50].color};\n`
-      style += `--of-palette-surface: ${pallettes.value['neutral'][98].color};\n`
-      style += `--of-palette-on-surface: ${pallettes.value['neutral'][10].color};\n`
-      style += `--of-palette-surface-variant: ${pallettes.value['neutral-variant'][90].color};\n`
-      style += `--of-palette-on-surface-variant: ${pallettes.value['neutral-variant'][30].color};\n`
+      style += `--of-color-error-light: #ba1b1b;\n`
+      style += `--of-color-on-error-light: #ffffff;\n`
+      style += `--of-color-error-container-light: #ffdad4;\n`
+      style += `--of-color-on-error-container-light: #410001;\n`
+
+      style += `--of-color-background-light: ${pallettes.value['neutral'][98].color};\n`
+      style += `--of-color-on-background-light: ${pallettes.value['neutral'][10].color};\n`
+
+      style += `--of-color-outline-light: ${pallettes.value['neutral-variant'][50].color};\n`
+      style += `--of-color-shadow-light: ${pallettes.value['neutral'][0].color};\n`
+
+      style += `--of-color-surface-light: ${pallettes.value['neutral'][98].color};\n`
+      style += `--of-color-on-surface-light: ${pallettes.value['neutral'][10].color};\n`
+
+      style += `--of-color-surface-variant-light: ${pallettes.value['neutral-variant'][90].color};\n`
+      style += `--of-color-on-surface-variant-light: ${pallettes.value['neutral-variant'][30].color};\n`
+
+      style += `--of-color-inverse-surface-light: ${pallettes.value['neutral'][20].color};\n`
+      style += `--of-color-inverse-on-surface-light: ${pallettes.value['neutral'][95].color};\n`
+      style += `--of-color-inverse-primary-light: ${pallettes.value['primary'][80].color};\n`
 
       /******************************************************* */
-      style += `--of-palette-primary-dark: ${pallettes.value['primary'][80].color};\n`
-      style += `--of-palette-primary-container-dark: ${pallettes.value['primary'][30].color};\n`
-      style += `--of-palette-on-primary-dark: ${pallettes.value['primary'][20].color};\n`
-      style += `--of-palette-on-primary-container-dark: ${pallettes.value['primary'][90].color};\n`
+      style += `--of-color-primary-dark: ${pallettes.value['primary'][80].color};\n`
+      style += `--of-color-primary-container-dark: ${pallettes.value['primary'][30].color};\n`
+      style += `--of-color-on-primary-dark: ${pallettes.value['primary'][20].color};\n`
+      style += `--of-color-on-primary-container-dark: ${pallettes.value['primary'][90].color};\n`
 
-      style += `--of-palette-secondary-dark: ${pallettes.value['secondary'][80].color};\n`
-      style += `--of-palette-on-secondary-dark: ${pallettes.value['secondary'][30].color};\n`
-      style += `--of-palette-secondary-container-dark: ${pallettes.value['secondary'][20].color};\n`
-      style += `--of-palette-on-secondary-container-dark: ${pallettes.value['secondary'][90].color};\n`
+      style += `--of-color-secondary-dark: ${pallettes.value['secondary'][80].color};\n`
+      style += `--of-color-on-secondary-dark: ${pallettes.value['secondary'][30].color};\n`
+      style += `--of-color-secondary-container-dark: ${pallettes.value['secondary'][20].color};\n`
+      style += `--of-color-on-secondary-container-dark: ${pallettes.value['secondary'][90].color};\n`
 
-      style += `--of-palette-tertiary-dark: ${pallettes.value['tertiary'][80].color};\n`
-      style += `--of-palette-on-tertiary-dark: ${pallettes.value['tertiary'][30].color};\n`
-      style += `--of-palette-tertiary-container-dark: ${pallettes.value['tertiary'][20].color};\n`
-      style += `--of-palette-on-tertiary-container-dark: ${pallettes.value['tertiary'][90].color};\n`
+      style += `--of-color-tertiary-dark: ${pallettes.value['tertiary'][80].color};\n`
+      style += `--of-color-on-tertiary-dark: ${pallettes.value['tertiary'][30].color};\n`
+      style += `--of-color-tertiary-container-dark: ${pallettes.value['tertiary'][20].color};\n`
+      style += `--of-color-on-tertiary-container-dark: ${pallettes.value['tertiary'][90].color};\n`
 
-      style += `--of-palette-error-dark: #ffb4a9;\n`
-      style += `--of-palette-on-error-dark: #680003;\n`
-      style += `--of-palette-error-container-dark: #930006;\n`
-      style += `--of-palette-on-error-container-dark: #ffdad4;\n`
-      style += `--of-palette-background-dark: ${pallettes.value['neutral'][10].color};\n`
-      style += `--of-palette-on-background-dark: ${pallettes.value['neutral'][90].color};\n`
-      style += `--of-palette-outline-dark: ${pallettes.value['neutral-variant'][60].color};\n`
-      style += `--of-palette-surface-dark: ${pallettes.value['neutral'][10].color};\n`
-      style += `--of-palette-on-surface-dark: ${pallettes.value['neutral'][90].color};\n`
-      style += `--of-palette-surface-variant-dark: ${pallettes.value['neutral-variant'][30].color};\n`
-      style += `--of-palette-on-surface-variant-dark: ${pallettes.value['neutral-variant'][80].color};\n`
+      style += `--of-color-error-dark: #ffb4a9;\n`
+      style += `--of-color-on-error-dark: #680003;\n`
+      style += `--of-color-error-container-dark: #930006;\n`
+      style += `--of-color-on-error-container-dark: #ffdad4;\n`
+      style += `--of-color-background-dark: ${pallettes.value['neutral'][10].color};\n`
+      style += `--of-color-on-background-dark: ${pallettes.value['neutral'][90].color};\n`
+      style += `--of-color-outline-dark: ${pallettes.value['neutral-variant'][60].color};\n`
+      style += `--of-color-shadow-dark: ${pallettes.value['neutral'][0].color};\n`
+      style += `--of-color-surface-dark: ${pallettes.value['neutral'][10].color};\n`
+      style += `--of-color-on-surface-dark: ${pallettes.value['neutral'][90].color};\n`
+      style += `--of-color-surface-variant-dark: ${pallettes.value['neutral-variant'][30].color};\n`
+      style += `--of-color-on-surface-variant-dark: ${pallettes.value['neutral-variant'][80].color};\n`
+      style += `--of-color-inverse-surface-dark: ${pallettes.value['neutral'][90].color};\n`
+      style += `--of-color-inverse-on-surface-dark: ${pallettes.value['neutral'][20].color};\n`
+      style += `--of-color-inverse-primary-dark: ${pallettes.value['primary'][40].color};\n`
 
-      /*
-        const htmlEl = document.body.parentElement
-        if (htmlEl) {
-          htmlEl.setAttribute('style', style)
-        }
-        */
+      const htmlEl = document.body.parentElement
+      if (htmlEl) {
+        htmlEl.setAttribute('style', style)
+      }
+
       return style
     })
     const colors2 = computed(() => {
