@@ -3,8 +3,8 @@
     <h1>Icons</h1>
     <p>
       The library will support a customizable mapping from standard named icons
-      to theme-specific versions, with support for Material icons by default, along
-      with any others that applications choose to include.
+      to theme-specific versions, with support for Material icons by default,
+      along with any others that applications choose to include.
     </p>
 
     <of-config :icon-font="iconFont">
@@ -12,6 +12,16 @@
         <div class="demo-inline" v-for="(iconset, idx) of icons" :key="idx">
           <div class="demo-icon" v-for="(desc, icon) of iconset" :key="icon">
             <of-icon :name="icon" :title="desc" size="input" />
+          </div>
+        </div>
+      </div>
+
+      <div v-if="highDpi">
+        <div class="row demo-row">
+          <div class="demo-inline" v-for="(iconset, idx) of icons" :key="idx">
+            <div class="demo-icon" v-for="(desc, icon) of iconset" :key="icon">
+              <of-icon :name="icon" :title="desc" size="12" />
+            </div>
           </div>
         </div>
       </div>
@@ -33,13 +43,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
+import { useLayout } from 'oceanfront'
 
 import OfIconPreview from './iconedit/Preview.vue'
 
 export default defineComponent({
   components: { OfIconPreview },
   setup(_props, _ctx) {
+    const layout = useLayout()
     const iconFont = ref('')
     const fontOpts = [
       { value: '', text: 'Default' },
@@ -49,6 +61,7 @@ export default defineComponent({
     return {
       iconFont,
       fontOpts,
+      highDpi: computed(() => layout.isHighDpi),
       icons: [
         {
           accept: 'accept',

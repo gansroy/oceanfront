@@ -67,6 +67,7 @@ $base-color-text: #333;
   --of-color-field-placeholder: #{$base-color-field-placeholder};
   --of-color-sheet: #{$base-color-text};
   --of-field-size: 26ch;
+  --of-icon-size: 24px;
   --of-button-color-bg: #{rgba($base-color-button, 1)};
   --of-button-color-bg-hover: #{lighten($base-color-button, 10%)};
   --of-button-color-shadow: #{rgba($base-color-button-shadow, 0.15)};
@@ -221,10 +222,6 @@ $pad-v-input: var(--pad-v-input, 0.5em);
 $pad-h-menu-option: var(--pad-h-menu-option, 0.4em);
 $pad-v-menu-option: var(--pad-v-menu-option, 0.3em);
 $pad-inline-button: var(--pad-inline-button, 0.2rem);
-$scale-bullet: var(--of-icon-scale-bullet, 0.75);
-$scale-icon: calc(
-  var(--of-icon-scale-global, 1) * var(--of-icon-scale-indiv, 1)
-);
 $text-shadow-badge: var(--text-shadow-badge, 0 1px 0 rgba(180, 180, 180, 0.1));
 $text-shadow-button: var(
   --text-shadow-button,

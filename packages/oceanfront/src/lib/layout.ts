@@ -27,6 +27,9 @@ const windowRect = ref<WindowRect>({
   width: 0,
   height: 0,
 })
+const isHighDpi = window.matchMedia(
+  '(-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2), (min-resolution: 192dpi))'
+).matches
 
 function initEvents() {
   function onScroll() {
@@ -45,6 +48,7 @@ let inited = false
 
 export interface LayoutState {
   readonly isMobile: boolean
+  readonly isHighDpi: boolean
   readonly mobileBreakpoint: number
   readonly lastScroll: Date
   readonly windowRect: WindowRect
@@ -52,6 +56,10 @@ export interface LayoutState {
 
 class LayoutManager implements LayoutState {
   mobileBreakpoint = 1024
+
+  get isHighDpi() {
+    return isHighDpi
+  }
 
   get isMobile() {
     return windowRect.value.width < this.mobileBreakpoint

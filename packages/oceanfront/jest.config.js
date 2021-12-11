@@ -9,4 +9,5 @@ module.exports = {
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(js|ts)$',
   moduleFileExtensions: ['vue', 'js', 'ts'],
   collectCoverageFrom: ['src/**/*.ts', 'src/**/*.vue'],
+  setupFiles: ["./jest.setup.js"]
 }
