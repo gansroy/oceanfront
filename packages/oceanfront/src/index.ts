@@ -1,6 +1,6 @@
 import { App, Component, Directive, Plugin } from 'vue'
 import OfBadge from './components/Badge.vue'
-import OfButton from './components/Button.vue'
+import { OfButton } from './components/Button'
 import OfCalendar from './components/Calendar/Calendar'
 import { OfColorField } from './components/ColorField'
 import { OfConfig } from './components/Config'

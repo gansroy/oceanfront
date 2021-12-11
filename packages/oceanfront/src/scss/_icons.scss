@@ -1,7 +1,8 @@
 .of-icon {
+  --icon-size: var(--of-icon-size);
+
   display: inline-flex; // allow scaling of contents
-  font-size: inherit;
-  transform: scale($scale-icon, $scale-icon);
+  font-size: var(--icon-size);
   &.left {
     margin-right: 0.25em;
   }
@@ -9,47 +10,29 @@
   svg {
     aspect-ratio: 1;
     fill: currentColor;
-    width: 1em;
+    width: var(--of-icon-size);
     height: auto;
   }
 }
 
-.of--icon-inherit {
-  font-size: inherit;
+.of--icon-size-inherit {
+  --icon-size: 1em;
 }
 
-.of--icon-input {
-  font-size: calc(var(--font-size-input, 1em) * 1.5);
-  line-height: normal;
-  vertical-align: middle;
-}
-
-.of--icon-sm {
-  font-size: 20px;
+.of--icon-size-sm {
+  --icon-size: 20px;
 }
 
 .of--icon-md {
-  font-size: 24px;
+  --icon-size: 24px;
 }
 
 .of--icon-lg {
-  font-size: 28px;
+  --icon-size: 28px;
 }
 
 .of--icon-xl {
-  font-size: 32px;
-}
-
-.of-icon-scale-sm {
-  --of-icon-scale-indiv: 0.8;
-}
-
-.of-icon-scale-lg {
-  --of-icon-scale-indiv: 1.33;
-}
-
-.of-icon.of-icon-flip-horiz {
-  transform: scale(calc(0 - #{$scale-icon}), $scale-icon);
+  --icon-size: 32px;
 }
 
 .of--led-grey {

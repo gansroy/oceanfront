@@ -32,24 +32,31 @@ export const OfIcon = defineComponent({
   props: {
     class: String,
     name: String,
-    size: String,
+    size: [Number, String],
   },
   setup(props, ctx) {
     const mgr = useIcons()
     const icon = computed(() => mgr.resolve(props.name))
     return () => {
       const iconVal = icon.value
+      const sz = props.size
+      const numSz = !isNaN(parseInt(sz as string))
       if (!iconVal) return
       return h(
         'i',
         {
           'aria-hidden': 'true',
           class: [
-            { 'of-icon': true, 'of--icon-svg': !!iconVal.svg },
-            props.size ? 'of--icon-' + props.size : undefined,
+            {
+              'of-icon': true,
+              'of--icon-svg': !!iconVal.svg,
+            },
+            props.size && !numSz ? 'of--icon-size-' + props.size : undefined,
             props.class,
             iconVal.class,
           ],
+          'data-name': props.name,
+          style: numSz ? { '--icon-size': sz } : undefined,
           ...ctx.attrs,
         },
         ctx.slots.default

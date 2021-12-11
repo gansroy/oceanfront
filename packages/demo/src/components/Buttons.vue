@@ -13,68 +13,42 @@
     </div>
     <div class="demo-fields">
       <div class="row">
-        <div class="column">
-          <of-button :density="params.density">Submit</of-button>
-          <of-button :density="params.density" disabled>Disabled</of-button>
-          <of-button :density="params.density" icon="gear">Gear</of-button>
-          <of-button :density="params.density" rounded>Rounded</of-button>
-          <of-button
-            :density="params.density"
-            split
-            :items="testItems"
-            :on-click-menu="menuClick"
+        <div class="column spaced">
+          <of-button v-bind="params">Submit</of-button>
+          <of-button v-bind="params" disabled>Disabled</of-button>
+          <of-button v-bind="params" icon="gear">Gear</of-button>
+          <of-button v-bind="params" rounded>Rounded</of-button>
+          <of-button v-bind="params" split :items="testItems" @click="menuClick"
             >Split</of-button
           >
-          <of-button
-            :density="params.density"
-            icon="gear"
-            rounded
-            :items="testItems"
+          <of-button v-bind="params" icon="gear" rounded :items="testItems"
             >Menu</of-button
           >
         </div>
       </div>
       <div class="row">
         <div class="column">
-          <h4>Set</h4>
+          <h4>Button Sets</h4>
           <span class="of-buttonset">
-            <of-button :density="params.density" icon="accept">Save</of-button>
-            <of-button :density="params.density" icon="refresh" disabled
+            <of-button v-bind="params" icon="accept">Save</of-button>
+            <of-button v-bind="params" icon="refresh" disabled
               >Refresh</of-button
             >
-            <of-button
-              :density="params.density"
-              icon="gear"
-              rounded
-              :items="testItems"
+            <of-button v-bind="params" icon="gear" rounded :items="testItems"
               >Menu</of-button
             >
-            <of-button :density="params.density" icon="cancel"
-              >Cancel</of-button
-            >
+            <of-button v-bind="params" icon="cancel">Cancel</of-button>
           </span>
           <br />
           <span class="of-buttonset">
-            <of-button :density="params.density" variant="outlined"
-              >1</of-button
+            <of-button v-bind="params" variant="outlined">1</of-button>
+            <of-button v-bind="params" variant="outlined" active>2</of-button
             >
+            <of-button v-bind="params" variant="outlined">3</of-button>
+            <of-button v-bind="params" variant="outlined">4</of-button>
+            <of-button v-bind="params" variant="outlined">5</of-button>
             <of-button
-              :density="params.density"
-              variant="outlined"
-              class="is-active"
-              >2</of-button
-            >
-            <of-button :density="params.density" variant="outlined"
-              >3</of-button
-            >
-            <of-button :density="params.density" variant="outlined"
-              >4</of-button
-            >
-            <of-button :density="params.density" variant="outlined"
-              >5</of-button
-            >
-            <of-button
-              :density="params.density"
+              v-bind="params"
               icon="page last"
               variant="outlined"
             ></of-button>
@@ -84,24 +58,31 @@
       <div class="row">
         <div class="column md-2 sm-4">
           <h4>Solid</h4>
-          <of-button rounded :density="params.density">Submit</of-button>
+          <of-button rounded v-bind="params">Submit</of-button>
         </div>
         <div class="column md-2 sm-4">
           <h4>Outlined</h4>
-          <of-button rounded :density="params.density" variant="outlined"
+          <of-button rounded v-bind="params" variant="outlined"
             >Submit</of-button
           >
         </div>
         <div class="column md-2 sm-4">
           <h4>Text</h4>
-          <of-button rounded :density="params.density" variant="text"
-            >Submit</of-button
-          >
+          <of-button rounded v-bind="params" variant="text">Submit</of-button>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style lang="scss">
+.spaced {
+  > * {
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+  }
+}
+</style>
 
 <script lang="ts">
 import { defineComponent, reactive } from 'vue'
@@ -115,7 +96,7 @@ export default defineComponent({
 <of-button disabled>Disabled</of-button>
 <of-button icon="gear">With Icon</of-button>
 <of-button rounded>Rounded</of-button>
-<of-button split :items="testItems" :on-click-menu="menuClick">Split</of-button>
+<of-button split :items="testItems" @click="menuClick">Split</of-button>
 <of-button icon="gear" rounded :items="testItems">Menu</of-button>
 <!-- Set -->
 <span class="of-buttonset">
@@ -132,7 +113,7 @@ export default defineComponent({
       console.log('Menu item 2 selected')
     }
     const menuClick = () => {
-      console.log('Menu click')
+      console.log('Button click')
     }
 
     const testItems = [

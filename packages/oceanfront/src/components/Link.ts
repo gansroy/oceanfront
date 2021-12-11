@@ -103,7 +103,7 @@ export const OfLink = defineComponent({
       focus,
       doRender() {
         const customSlot = ctx.slots.custom
-        if (RouterLink && (props.to || !props.href)) {
+        if (RouterLink && props.to && !props.href) {
           return h(
             RouterLink,
             {
