@@ -52,6 +52,7 @@
     "eslint-plugin-promise": "^5.1",
     "eslint-plugin-vue": "^7.18",
     "jest": "^26.6",
+    "jest-matchmedia-mock": "1.1",
     "minimist": "^1.2.5",
     "postcss": "^8.3",
     "postcss-import": "^14.0",
