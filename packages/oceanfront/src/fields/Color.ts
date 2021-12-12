@@ -92,7 +92,7 @@ export const ColorField = defineFieldType({
       const hsv = color.hsv
       return h(
         'div',
-        { class: 'of-menu of-colorpicker-popup', tabindex: '0' },
+        { class: 'of-menuof-color-swatch of-colorpicker-popup', tabindex: '0' },
         h('div', { class: 'color-picker' }, [
           h(Saturation, {
             saturation: hsv.s,
@@ -152,12 +152,16 @@ export const ColorField = defineFieldType({
         onBlur: closePopup,
       },
       prepend: () =>
-        h('div', {
-          class: 'of-color-swatch',
-          style: {
-            backgroundColor: compColor.value.hex,
+        h(
+          'div',
+          {
+            class: 'of-color-swatch',
+            style: {
+              backgroundColor: compColor.value.hex,
+            },
           },
-        }),
+          h('div', { class: 'of-color-swatch-border' })
+        ),
       updated: computed(() => initialValue.value !== stateValue.value),
       value: stateValue,
     })

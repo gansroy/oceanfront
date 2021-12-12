@@ -2,12 +2,15 @@
   --field-background: transparent;
   --field-background-opacity: 0%;
   --field-border-color: transparent;
+  --field-border-opacity: 100%;
   --field-border-radius: #{$border-radius-input};
   --field-border-style: solid;
   --field-border-width: 1px;
-  --field-color: #{$color-field};
+  --field-color: #{state-color(field-color)};
+  --field-opacity: #{state-opacity(field-color)};
   --field-font-size: #{$font-size-input};
-  --field-label-color: #{$color-field-label};
+  --field-label-color: #{state-color(field-label)};
+  --field-label-opacity: #{state-opacity(field-label)};
   --field-label-width: var(--of-field-label-width, 50%);
   --field-input-height: calc(var(--field-line-height) * 1em);
   --field-line-height: #{$line-height-input};
@@ -30,26 +33,36 @@
   }
 
   &.of--interactive {
-    --field-border-color: #{$border-color-field};
+    --field-border-color: #{state-color(field-border)};
+    --field-border-opacity: #{state-opacity(field-border)};
   }
   &.of--mode-disabled {
-    --field-border-color: #{$border-color-field-disabled};
-    --field-color: #{$color-field-disabled};
-    --field-label-color: #{$color-field-disabled};
+    --field-border-color: #{state-color(field-border, disabled)};
+    --field-border-opacity: #{state-opacity(field-border, disabled)};
+    --field-color: #{state-color(field-color, disabled)};
+    --field-opacity: #{state-opacity(field-color, disabled)};
+    --field-label-color: #{state-color(field-label, disabled)};
+    --field-label-opacity: #{state-opacity(field-label, disabled)};
   }
   &.of--mode-editable:hover {
-    --field-border-color: #{$border-color-field-hover};
-    --field-label-color: #{$color-field-hover};
+    --field-border-color: #{state-color(field-border, hover)};
+    --field-border-opacity: #{state-opacity(field-border, hover)};
+    --field-label-color: #{state-color(field-label, hover)};
+    --field-label-opacity: #{state-opacity(field-label, hover)};
   }
   &.of--interactive.of--focused {
-    --field-border-color: #{$border-color-field-focus};
-    --field-label-color: #{$color-field-focus-label};
+    --field-border-color: #{state-color(field-border, focus)};
+    --field-border-opacity: #{state-opacity(field-border, focus)};
+    --field-label-color: #{state-color(field-label, focus)};
+    --field-label-opacity: #{state-opacity(field-label, focus)};
   }
   &.of--invalid {
-    --field-label-color: #{$color-error};
+    --field-label-color: #{state-color(field-label, invalid)};
+    --field-label-opacity: #{state-opacity(field-label, invalid)};
 
     &:not(.of--focused) {
-      --field-border-color: #{$border-color-field-invalid};
+      --field-border-color: #{state-color(field-border, invalid)};
+      --field-border-opacity: #{state-opacity(field-border, invalid)};
     }
   }
 
@@ -140,6 +153,7 @@
 }
 
 .of-field-body {
+  opacity: var(--field-opacity);
   align-items: flex-start;
   box-sizing: border-box;
   display: flex;
@@ -185,8 +199,8 @@
   // height: 100%;
   width: 100%;
   &::placeholder {
-    color: $color-field-placeholder;
-    opacity: 1;
+    color: #{state-color(field-color, placeholder)};
+    opacity: #{state-opacity(field-color, placeholder)};
   }
 }
 
@@ -227,6 +241,7 @@
 
   &:not(.of--label-frame) .of--layer-brd {
     border-color: var(--field-border-color);
+    opacity: var(--field-border-opacity);
   }
   > .of-field-inner {
     margin-top: -1px;
@@ -259,6 +274,7 @@
         &::before {
           border: var(--field-border-width) var(--field-border-style)
             var(--field-border-color);
+          opacity: var(--field-border-opacity);
           border-radius: var(--field-border-radius) 0 0
             var(--field-border-radius);
           border-right: none;
@@ -271,6 +287,7 @@
         &::after {
           border: var(--field-border-width) var(--field-border-style)
             var(--field-border-color);
+          opacity: var(--field-border-opacity);
           border-radius: 0 var(--field-border-radius) var(--field-border-radius)
             0; // inherit?
           border-left: none;
@@ -284,6 +301,7 @@
             var(--field-border-color);
           border-top: var(--field-border-width) var(--field-border-style)
             var(--field-border-color);
+          opacity: var(--field-border-opacity);
           box-sizing: border-box;
           max-width: calc(100% - 2 * var(--field-h-pad));
           padding: 0 0.25em;
@@ -337,35 +355,42 @@
     border: var(--field-border-width) var(--field-border-style)
       var(--field-border-color);
     border-color: transparent transparent var(--field-border-color) transparent;
+    opacity: var(--field-border-opacity);
   }
 
   &.of--mode-editable,
   &.of--mode-locked {
-    --field-background: #{$bg-field-filled};
-    --field-background-opacity: #{$bg-field-filled-opacity};
+    --field-background: #{state-color(field-filled-bg)};
+    --field-background-opacity: #{state-opacity(field-filled-bg)};
   }
   &.of--interactive {
-    --field-color: #{$color-field-filled};
+    --field-color: #{state-color(field-filled-color)};
+    --field-opacity: #{state-opacity(field-filled-color)};
     .of--layer {
       border-radius: var(--field-border-radius) var(--field-border-radius) 0 0;
     }
   }
   &.of--mode-editable:hover {
-    --field-background: #{$bg-field-filled-hover};
-    --field-background-opacity: #{$bg-field-filled-hover-opacity};
-  }
-  &.of--interactive.of--focused {
-    --field-background: #{$bg-field-filled-focus};
-    --field-background-opacity: #{$bg-field-filled-focus-opacity};
+    --field-background: #{state-color(field-filled-bg, hover)};
+    --field-background-opacity: #{state-opacity(field-filled-bg, hover)};
   }
   &.of--mode-disabled {
-    --field-color: #{$color-field-disabled};
+    --field-color: #{state-color(field-filled-color, disabled)};
+    --field-opacity: #{state-opacity(field-filled-color, disabled)};
     --field-border-style: dashed;
+    --field-label-color: #{state-color(field-filled-label, disabled)};
+    --field-label-opacity: #{state-opacity(field-filled-label, disabled)};
+  }
+  &.of--interactive.of--focused {
+    --field-background: #{state-color(field-filled-bg, focus)};
+    --field-background-opacity: #{state-opacity(field-filled-bg, focus)};
+    --field-label-color: #{state-color(field-filled-label, focus)};
+    --field-label-opacity: #{state-opacity(field-filled-label, focus)};
   }
 
   &.of--interactive > .of-field-main::after {
     // ripple
-    background: $border-color-field-focus;
+    background: #{state-color(field-border, focus)};
     content: '';
     height: 2px;
     position: absolute;
@@ -379,15 +404,26 @@
     will-change: opacity, transform;
     z-index: 1;
   }
+  &.of--interactive.of--invalid > .of-field-main::after {
+    background: #{state-color(field-border, invalid)};
+  }
   &.of--interactive.of--focused > .of-field-main::after {
-    opacity: 1;
+    opacity: #{state-opacity(field-border, focus)};
     transform: scaleX(1);
   }
   &.of--mode-editable:hover {
-    --field-label-color: #{$color-field-filled-hover};
+    --field-label-color: #{state-color(field-filled-label, hover)};
+    --field-label-opacity: #{state-opacity(field-filled-label, hover)};
   }
+
+  &.of--mode-disabled {
+    --field-label-color: #{state-color(field-filled-label, disabled)};
+    --field-label-opacity: #{state-opacity(field-filled-label, disabled)};
+  }
+
   &.of--interactive.of--focused {
-    --field-label-color: #{$color-field-filled-focus-label};
+    --field-label-color: #{state-color(field-filled-label, focus)};
+    --field-label-opacity: #{state-opacity(field-filled-label, focus)};
   }
 
   &.of--label-frame {
@@ -427,4 +463,16 @@
       }
     }
   }
+}
+
+.of-field-label {
+  align-self: center;
+  color: var(--field-label-color);
+  opacity: var(--field-label-opacity);
+  // cursor: inherit;
+  font-size: 0.8em;
+  text-overflow: ellipsis;
+  transition: color 100ms;
+  white-space: nowrap;
+  word-wrap: break-word;
 }

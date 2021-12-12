@@ -1,6 +1,9 @@
 $pal_colors: (189 47%) (15 83%) (34 97%) (0 75%) (80 15%) (191 8%);
-$pal_names: "primary"  "secondary" "tertiary" "error" "neutral" "neutral-variant";
-$lighness_values: (0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 70 72 78 80 82 88 90 92 98 100);
+$pal_names: 'primary' 'secondary' 'tertiary' 'error' 'neutral' 'neutral-variant';
+$lighness_values: (
+  0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 70 72 78 80 82 88
+    90 92 98 100
+);
 
 :root {
   @each $pal in $pal_names {
@@ -12,7 +15,10 @@ $lighness_values: (0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 7
     --of-pal-#{$pal}-sat: #{$sat};
     --of-pal-#{$pal}-huesat: #{$hue}, #{$sat};
     @each $a in $lighness_values {
-        --of-pal-#{$pal}-#{$a}: hsl(var(--of-pal-#{$pal}-huesat), var(--of-light-#{$a}));
+      --of-pal-#{$pal}-#{$a}: hsl(
+        var(--of-pal-#{$pal}-huesat),
+        var(--of-light-#{$a})
+      );
     }
   }
   @each $a in $lighness_values {
@@ -35,14 +41,17 @@ $lighness_values: (0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 7
   --of-color-on-error-light: #ffffff;
   --of-color-error-container-light: #ffdad4;
   --of-color-on-error-container-light: #410001;
-  --of-color-background-light: #fff8f8;
-  --of-color-on-background-light: #400202;
+  --of-color-background-light: #f6fceb;
+  --of-color-on-background-light: #191d12;
   --of-color-outline-light: #6a7a7d;
   --of-color-shadow-light: #000000;
-  --of-color-surface-light: #fff8f8;
-  --of-color-on-surface-light: #400202;
+  --of-color-surface-light: #f6fceb;
+  --of-color-on-surface-light: #191d12;
   --of-color-surface-variant-light: #d6e5e9;
   --of-color-on-surface-variant-light: #3f484b;
+  --of-color-inverse-surface-light: #2d3223;
+  --of-color-inverse-on-surface-light: #e7f7c8;
+  --of-color-inverse-primary-light: #58d7ed;
   --of-color-primary-dark: #58d7ed;
   --of-color-primary-container-dark: #1b4d56;
   --of-color-on-primary-dark: #10353c;
@@ -59,14 +68,17 @@ $lighness_values: (0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 7
   --of-color-on-error-dark: #680003;
   --of-color-error-container-dark: #930006;
   --of-color-on-error-container-dark: #ffdad4;
-  --of-color-background-dark: #400202;
-  --of-color-on-background-dark: #fedada;
+  --of-color-background-dark: #191d12;
+  --of-color-on-background-dark: #d6eaae;
   --of-color-outline-dark: #819498;
   --of-color-shadow-dark: #000000;
-  --of-color-surface-dark: #400202;
-  --of-color-on-surface-dark: #fedada;
+  --of-color-surface-dark: #191d12;
+  --of-color-on-surface-dark: #d6eaae;
   --of-color-surface-variant-dark: #3f484b;
   --of-color-on-surface-variant-dark: #b2cbd1;
+  --of-color-inverse-surface-dark: #d6eaae;
+  --of-color-inverse-on-surface-dark: #2d3223;
+  --of-color-inverse-primary-dark: #266772;
 
   --of-color-primary: var(--of-color-primary-light);
   --of-color-primary-container: var(--of-color-primary-container-light);
@@ -75,7 +87,9 @@ $lighness_values: (0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 7
   --of-color-secondary: var(--of-color-secondary-light);
   --of-color-secondary-container: var(--of-color-secondary-container-light);
   --of-color-on-secondary: var(--of-color-on-secondary-light);
-  --of-color-on-secondary-container: var(--of-color-on-secondary-container-light);
+  --of-color-on-secondary-container: var(
+    --of-color-on-secondary-container-light
+  );
   --of-color-tertiary: var(--of-color-tertiary-light);
   --of-color-tertiary-container: var(--of-color-tertiary-container-light);
   --of-color-on-tertiary: var(--of-color-on-tertiary-light);
@@ -92,14 +106,14 @@ $lighness_values: (0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 7
   --of-color-on-surface: var(--of-color-on-surface-light);
   --of-color-surface-variant: var(--of-color-surface-variant-light);
   --of-color-on-surface-variant: var(--of-color-on-surface-variant-light);
- --of-color-inverse-surface: var(--of-color-inverse-surface-light);
- --of-color-inverse-on-surface: var(--of-color-inverse-on-surface-light);
- --of-color-inverse-primary: var(--of-color-inverse-primary-light);
+  --of-color-inverse-surface: var(--of-color-inverse-surface-light);
+  --of-color-inverse-on-surface: var(--of-color-inverse-on-surface-light);
+  --of-color-inverse-primary: var(--of-color-inverse-primary-light);
 }
 
 .-of-theme-dark {
   @each $a in $lighness_values {
-      --of-light-#{$a}: #{(100 - $a) * 1%};
+    --of-light-#{$a}: #{(100 - $a) * 1%};
   }
   --of-color-primary: var(--of-color-primary-dark);
   --of-color-primary-container: var(--of-color-primary-container-dark);
@@ -108,7 +122,9 @@ $lighness_values: (0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 7
   --of-color-secondary: var(--of-color-secondary-dark);
   --of-color-secondary-container: var(--of-color-secondary-container-dark);
   --of-color-on-secondary: var(--of-color-on-secondary-dark);
-  --of-color-on-secondary-container: var(--of-color-on-secondary-container-dark);
+  --of-color-on-secondary-container: var(
+    --of-color-on-secondary-container-dark
+  );
   --of-color-tertiary: var(--of-color-tertiary-dark);
   --of-color-tertiary-container: var(--of-color-tertiary-container-dark);
   --of-color-on-tertiary: var(--of-color-on-tertiary-dark);
@@ -128,6 +144,4 @@ $lighness_values: (0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 7
   --of-color-inverse-surface: var(--of-color-inverse-surface-dark);
   --of-color-inverse-on-surface: var(--of-color-inverse-on-surface-dark);
   --of-color-inverse-primary: var(--of-color-inverse-primary-dark);
- }
-
-
+}

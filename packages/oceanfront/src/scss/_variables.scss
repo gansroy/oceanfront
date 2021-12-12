@@ -1,30 +1,145 @@
-$base-color-active: var(--of-color-primary) !default;
-$base-color-active-text: var(--of-pal-primary-98);
-$base-color-active-border: var(--of-pal-primary-60) !default;
-$base-color-button: var(--of-pal-primary-30) !default;
+$vars: ();
 
-$base-color-disabled: var(--of-pal-neutral-50) !default;
+@function color-names($vars, $_categories, $_states) {
+  @each $_cat in $_categories {
+    $vars: map-merge(
+      $vars,
+      (
+        #{$_cat}-color: var(--of-#{$_cat}-color),
+        #{$_cat}-opacity: var(--of-#{$_cat}-opacity)
+      )
+    );
+    @each $_st in $_states {
+      @debug $_cat;
+      @debug $_st;
+      $vars: map-merge(
+        $vars,
+        (
+          #{$_cat}-color-#{$_st}: var(--of-#{$_cat}-color-#{$_st}),
+          #{$_cat}-opacity-#{$_st}: var(--of-#{$_cat}-opacity-#{$_st})
+        )
+      );
+    }
+  }
+  @return $vars;
+}
+
+@mixin state-vars($cat, $default, $spec) {
+  @debug $spec;
+  --of-#{$cat}-color: #{nth($default, 1)};
+  --of-#{$cat}-opacity: #{nth($default, 2)};
+  @each $_name, $_s in $spec {
+    $_color: nth($_s, 1);
+    $_opa: nth($_s, 2);
+    --of-#{$cat}-color-#{$_name}: #{$_color};
+    --of-#{$cat}-opacity-#{$_name}: #{$_opa};
+  }
+}
+
+$base-color-disabled: var(--of-color-neutral) !default;
+$base-color-focus-border: var(--of-color-primary);
+$base-opacity-focus-border: 100%;
+
+$vars: color-names(
+  $vars,
+  (field-border, field-label, field-filled-label, field-bg),
+  (active, disabled, focus, hover, invalid)
+);
+
+$vars: color-names($vars, (field-filled-bg), (focus, hover));
+$vars: color-names(
+  $vars,
+  (field-color, field-filled-color),
+  (disabled, placeholder)
+);
+
+@function state-color($cat, $state: false) {
+  @if $state {
+    @return map-get($vars, #{$cat}-color-#{$state});
+  } @else {
+    @return map-get($vars, #{$cat}-color);
+  }
+}
+
+@function state-opacity($cat, $state: false) {
+  @if $state {
+    @return map-get($vars, #{$cat}-opacity-#{$state});
+  } @else {
+    @return map-get($vars, #{$cat}-opacity);
+  }
+}
+
+/// REMOVE       !!!!!!!!!!!!!!!!!!!!!!!!
+$border-color-field: var(--of-border-color-field);
+/// REMOVE END   !!!!!!!!!!!!!!!!!!!!!!!!
+
+$border-radius-input: var(--border-radius-input, 5px);
+
+:root {
+  @include state-vars(
+    field-border,
+    (var(--of-color-primary), 20%),
+    (
+      hover: var(--of-color-primary) 30%,
+      disabled: var(--of-color-primary) 30%,
+      focus: var(--of-color-primary) 100%,
+      invalid: var(--of-color-error) 100%,
+    )
+  );
+  @include state-vars(
+    field-label,
+    (var(--of-color-primary), 80%),
+    (
+      hover: var(--of-color-primary) 90%,
+      disabled: var(--of-color-primary) 38%,
+      focus: var(--of-color-primary) 100%,
+      invalid: var(--of-color-error) 100%,
+    )
+  );
+  @include state-vars(
+    field-filled-label,
+    (var(--of-color-primary), 80%),
+    (
+      hover: var(--of-color-primary) 90%,
+      disabled: var(--of-color-primary) 38%,
+      focus: var(--of-color-primary) 100%,
+      invalid: var(--of-color-error) 100%,
+    )
+  );
+  @include state-vars(
+    field-filled-bg,
+    (var(--of-color-on-surface), 4%),
+    (
+      hover: var(--of-color-on-surface) 6%,
+      focus: var(--of-color-on-surface) 8%,
+    )
+  );
+  @include state-vars(
+    field-color,
+    (var(--of-color-on-surface), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+      placeholder: var(--of-color-on-surface) 55%,
+    )
+  );
+  @include state-vars(
+    field-filled-color,
+    (var(--of-color-on-surface), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+      placeholder: var(--of-color-on-surface) 55%,
+    )
+  );
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 $base-color-field-border: var(--of-pal-neutral-10) !default;
-$base-color-hover: var(--of-pal-primary-50) !default;
-$base-color-highlight: var(--of-pal-primary-80) !default;
-
-$base-color-field-filled: var(--of-pal-primary-30) !default;
-$base-color-focus-border: var(--of-pal-secondary-50);
-$base-color-field-bg: var(--of-pal-primary-40) !default;
-$base-color-field-error: var(--of-pal-error-38) !default;
-$base-color-field-icon: var(--of-pal-primary-30) !default; // fixme use alpha
-$base-color-field-placeholder: var(
-  --of-pal-primary-68
-) !default; // fixme use alpha
+$base-color-field-bg: #fff !default;
+$base-color-highlight: var(--of-color-primary-80) !default;
 $base-color-field-text: var(--of-pal-primary-18) !default;
-$base-color-label-bg: var(--of-pal-primary-38) !default; // fixme use alpha
-$base-color-label-border: var(--of-pal-neutral-70) !default;
-$base-color-label-text: var(--of-pal-neutral-30) !default;
-$base-color-menu-header: var(--of-pal-primary-80) !default;
 $base-color-muted: var(--of-pal-primary-68) !default; // fixme use alpha
-$base-color-quiet: var(--of-pal-primary-88) !default; // fixme use alpha
 $base-color-sheet-bg: var(--of-pal-primary-98);
-$base-color-soft: var(--of-pal-primary-80) !default; // fixme use alpha
 $base-color-text: var(--of-pal-primary-28);
 
 $base-color-item-text: var(--of-pal-primary-30);
@@ -39,12 +154,11 @@ $base-color-item-header-text: var(--of-pal-primary-28);
 $base-color-menu-bg: var(--of-pal-primary-98);
 $base-color-menu-border: var(--of-pal-primary-72);
 $base-color-menu-shadow: var(--of-pal-primary-92);
-
 $color-slider: var(--of-color-slider, var(--of-pal-neutral-50));
 
+//////////////////////////////////////////////////////////////////////////
+
 :root {
-  --of-bg-field: #{$base-color-field-bg};
-  --of-bg-field-disabled: #{$base-color-quiet};
   --of-bg-field-focus: var(--of-bg-field);
   --of-bg-field-filled: var(--of-color-on-surface);
   --of-bg-field-filled-opacity: 4%;
@@ -52,33 +166,13 @@ $color-slider: var(--of-color-slider, var(--of-pal-neutral-50));
   --of-bg-field-filled-hover-opacity: 6%;
   --of-bg-field-filled-focus: var(--of-color-on-surface);
   --of-bg-field-filled-focus-opacity: 8%;
-  --of-bg-sheet: #{$base-color-sheet-bg};
-  --of-border-color-field: var(--of-color-primary);
-  --of-border-color-field-hover: var(--of-pal-neutral-60);
-  --of-border-color-field-active: #{$base-color-active-border};
-  --of-border-color-field-disabled: var(--of-pal-neutral-60);
-  --of-border-color-field-focus: #{$base-color-focus-border};
-  --of-border-color-field-invalid: var(--of-pal-error-70);
   --of-box-shadow-field-basic: inset 1px 2px 8px
     var(--of-box-shadow-field-basic-color, var(--of-pal-neutral-8));
   --of-box-shadow-field-basic-focus: 0 0 3px 0.1rem
     var(--of-box-shadow-field-basic-focus-color, var(--of-color-on-surface));
   --of-box-shadow-field-basic-focus-opacity: 30%;
 
-  --of-color-active: #{$base-color-active-text};
-  --of-color-error: #{$base-color-field-error};
-  --of-color-field: #{$base-color-field-text};
-  --of-color-field-disabled: #{$base-color-disabled};
-  --of-color-field-filled: var(--of-color-field);
-  --of-color-field-filled-hover: var(--of-color-field-hover);
-  --of-color-field-filled-label: var(--of-color-field-label);
-  --of-color-field-filled-focus-label: var(--of-color-field-focus-label);
-  --of-color-field-focus: var(--of-color-field);
-  --of-color-field-label: #{rgba($base-color-text, 0.8)};
-  --of-color-field-focus-label: var(--of-border-color-field-focus);
-  --of-color-field-hover: #{$base-color-hover};
-  --of-color-field-icon: #{$base-color-field-icon};
-  --of-color-field-placeholder: #{$base-color-field-placeholder};
+  --of-bg-sheet: #{$base-color-sheet-bg};
   --of-color-sheet: #{$base-color-text};
   --of-field-size: 26ch;
   --of-button-color-bg: var(--of-pal-primary-40);
@@ -91,7 +185,6 @@ $color-slider: var(--of-color-slider, var(--of-pal-neutral-50));
   --of-button-color-label: var(--of-pal-primary-90);
   --of-button-color-bg-disabled: var(--of-pal-primary-60);
   --of-button-color-label-disabled: var(--of-pal-primary-20);
-  --of-button-outlined-color-label: #{$base-color-button};
   --of-button-outlined-color: hsla(
     var(--of-pal-primary-huesat),
     var(--of-light-30),
@@ -127,18 +220,9 @@ $color-menu-bg: var(--of-color-menu-bg, $base-color-menu-bg);
 $color-menu-border: var(--of-color-menu-border, $base-color-menu-border);
 $color-menu-shadow: var(--of-color-menu-shadow, $base-color-menu-shadow);
 
-$bg-active: var(
-  --bg-active,
-  linear-gradient(
-    to bottom,
-    var(--of-pal-primary-68) 30%,
-    var(--of-pal-primary-72)
-  )
-);
 $bg-badge: var(--bg-badge, $base-color-field-bg);
 $bg-bullet-down: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTUgMTEiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxLjQxNDIxOyI+PGcgaWQ9InBvbHlnb24xNzMiIHRyYW5zZm9ybT0ibWF0cml4KDEuOTQzNDQsMCwwLDEuNzI4MjMsLTYwMC43OTgsLTM2Ljg0MTUpIj48cGF0aCBkPSJNMzA5LjUsMjJMMzE2LjUsMjJMMzEzLDI3TDMwOS41LDIyWiIgc3R5bGU9ImZpbGw6cmdiKDY4LDY4LDY4KTtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+);
 $bg-field: var(--of-bg-field);
-$bg-field-disabled: var(--of-bg-field-disabled);
 $bg-field-focus: var(--of-bg-field-focus);
 $bg-field-filled: var(--of-bg-field-filled);
 $bg-field-filled-opacity: var(--of-bg-field-filled-opacity);
@@ -146,37 +230,11 @@ $bg-field-filled-hover: var(--of-bg-field-filled-hover);
 $bg-field-filled-hover-opacity: var(--of-bg-field-filled-hover-opacity);
 $bg-field-filled-focus: var(--of-bg-field-filled-focus);
 $bg-field-filled-focus-opacity: var(--of-bg-field-filled-focus-opacity);
-$bg-label: var(--bg-label, #{$base-color-label-bg});
-/*$bg-label: var(
-  --bg-label,
-  linear-gradient(
-    to bottom,
-    lighten($base-color-label-bg, 2%) 20%,
-    darken($base-color-label-bg, 3%)
-    )
-    );*/
-$bg-menu-header: var(--bg-menu-header, #{$base-color-menu-header});
 $border-color-active: var(--of-border-color-active);
 $border-color-button: var(--border-color-button, #{$base-color-field-border});
-$border-color-button-active: var(
-  --border-color-button-active,
-  #{$base-color-active-border}
-);
-$border-color-field: var(--of-border-color-field);
-$border-color-field-active: var(--of-border-color-field-active);
-$border-color-field-disabled: var(--of-border-color-field-disabled);
-$border-color-field-focus: var(--of-border-color-field-focus);
-$border-color-field-hover: var(--of-border-color-field-hover);
-$border-color-field-invalid: var(--of-border-color-field-invalid);
-$border-color-label: var(--border-color-label, #{$base-color-label-border});
-$border-color-menu-header: var(
-  --border-menu-header,
-  #{$base-color-menu-header}
-);
-$border-color-progress: var(--border-color-progress, #{$base-color-soft});
+
 $border-radius-badge: 0.5em;
 $border-radius-button: var(--border-radius-button, 5px);
-$border-radius-input: var(--border-radius-input, 5px);
 $border-radius-menu-current: var(--border-radius-menu-current, 2px);
 $border-radius-progress: var(--border-radius-progress, 3px);
 $border-width-badge: 1px !default;
@@ -185,22 +243,9 @@ $border-width-input: 1px !default;
 $border-width-tab: 1px !default;
 $box-shadow-field-basic: var(--of-box-shadow-field-basic);
 $box-shadow-field-basic-focus: var(--of-box-shadow-field-basic-focus);
-$color-active: var(--of-color-active);
 $color-badge: var(--color-badge, #{$base-color-muted});
-$color-error: var(--of-color-error);
-$color-field: var(--of-color-field);
-$color-field-disabled: var(--of-color-field-disabled);
-$color-field-filled: var(--of-color-field-filled);
-$color-field-filled-hover: var(--of-color-field-filled-hover);
-$color-field-filled-label: var(--of-color-field-filled-label);
-$color-field-filled-focus-label: var(--of-color-field-filled-focus-label);
-$color-field-focus: var(--of-color-field-focus);
-$color-field-hover: var(--of-color-field-hover);
-$color-field-icon: var(--of-color-field-icon);
-$color-field-placeholder: var(--of-color-field-placeholder);
 $color-field-label: var(--of-color-field-label);
 $color-field-focus-label: var(--of-color-field-focus-label);
-$color-label: var(--color-label, #{$base-color-label-text});
 $color-menu-option: var(--color-menu-option, #{$base-color-field-text});
 $font-family-input: var(--font-family-input, inherit);
 $font-size-badge: var(--font-size-badge, 0.8rem);

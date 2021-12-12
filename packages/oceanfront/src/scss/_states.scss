@@ -74,14 +74,6 @@
 .state-current {
 	border-color: @border-color-current;
 }*/
-.state-disabled {
-  @include state-mixin(
-    $color-field-disabled,
-    $bg-field-disabled,
-    $border-color-field-disabled
-  );
-  text-shadow: $text-shadow-disabled;
-}
 .state-success {
   @include state-mixin-grad(#595, rgba(255, 255, 255, 0.8), #6b6);
 }
