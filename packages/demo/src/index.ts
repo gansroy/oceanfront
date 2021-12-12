@@ -6,13 +6,13 @@ import './index.scss'
 import './theme/demo.scss'
 import { Oceanfront, registerFieldType, showMissingIcons } from 'oceanfront'
 import 'highlight.js/styles/vs2015.css'
-import MinutesField from "./components/MinutesField"
+import MinutesField from './components/MinutesField'
 
 createApp(App)
   .use(Oceanfront, {
     config: () => {
       showMissingIcons()
-      registerFieldType("minutes", MinutesField);
+      registerFieldType('minutes', MinutesField)
     },
   })
   .use(demo)

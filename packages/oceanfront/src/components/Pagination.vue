@@ -1,7 +1,7 @@
 <template>
   <transition>
-    <div class="of-pagination" ref="pagination">
-      <div class="of-pagination-header" ref="ofPaginationHeader">
+    <div :id="outerId" class="of-pagination">
+      <div class="of-pagination-header">
         <span class="of-buttonset">
           <of-button
             v-if="showGoToFirst"
@@ -13,9 +13,7 @@
           <of-button
             v-for="item in pages"
             :key="item"
-            :class="{
-              'is-active': page === item,
-            }"
+            :active="page === item"
             :variant="variant"
             :density="density"
             @click="onSelectPage(item)"
@@ -32,7 +30,7 @@
           </of-button>
           <of-button
             v-if="showCustomOffsetPopup"
-            id="offsetPopupOuter"
+            :id="outerId + '-expand'"
             icon="bullet down"
             :variant="variant"
             :density="density"
@@ -46,44 +44,40 @@
         :active="offsetPopupOpened"
         :capture="false"
         :shade="false"
-        :target="offsetPopupOuter"
+        :target="'#' + outerId + '-expand'"
         @blur="closeOffsetPopup()"
       >
         <slot name="custom-offset-popup" v-if="showCustomOffsetPopup">
-          <form method="POST" action="#" @submit.prevent="updateOffsetParams()">
-            <div class="container" style="background: #f0f0f0">
-              <div class="row">
-                <div class="column">
-                  <of-text-field
-                    v-bind="startAtField"
-                    v-model.number="startAtValue"
-                    input-type="number"
-                    variant="basic"
-                  />
-                </div>
-                <div class="column">
-                  <of-text-field
-                    v-bind="perPageField"
-                    v-model.number="perPageValue"
-                    input-type="number"
-                    variant="basic"
-                  />
-                </div>
+          <div role="menu" class="of-menu of-pagination-offset">
+            <form class="of-group" method="POST" action="#" @submit.prevent="updateOffsetParams()">
+              <div class="of-group-row of--pad">
+                <of-text-field
+                  v-bind="startAtField"
+                  v-model.number="startAtValue"
+                  input-type="number"
+                />
+                <of-text-field
+                  v-bind="perPageField"
+                  v-model.number="perPageValue"
+                  input-type="number"
+                />
               </div>
-              <div class="row">
-                <div class="column">
-                  <button type="button" @click="updateOffsetParams()">
-                    Update
-                  </button>
-                </div>
+              <div class="of-group-row of--pad">
+                <of-button icon="accept" @click="updateOffsetParams()">Update</of-button>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </slot>
       </of-overlay>
     </div>
   </transition>
 </template>
+
+<style lang="scss">
+  .of-pagination-offset {
+    width: 10rem;
+  }
+</style>
 
 <script lang="ts">
 import {
@@ -98,10 +92,13 @@ import {
 import { OfOverlay } from './Overlay'
 import { Paginator } from '../lib/paginator'
 
+let sysPaginationIndex = 0
+
 export default defineComponent({
   name: 'OfPagination',
   components: { OfOverlay },
   props: {
+    id: String,
     modelValue: { type: Number, required: true },
     totalPages: { type: Number, required: true },
     totalVisible: Number,
@@ -116,6 +113,17 @@ export default defineComponent({
     let page: Ref<number> = computed(() => props.modelValue || 1)
     const totalVisible: Ref<number> = computed(() => props.totalVisible || 5)
 
+    let autoId: string
+    const outerId = computed(() => {
+      let id = props.id
+      if(! id) {
+        if(! autoId) {
+          autoId = 'of-pagination-' + (++ sysPaginationIndex);
+        }
+        id = autoId
+      }
+      return id
+    })
     const variant = computed(() => props.variant || 'solid')
     const density = computed(() => props.density || 'default')
 
@@ -221,10 +229,8 @@ export default defineComponent({
       () => props.customOffsetPopup || false
     )
     const offsetPopupOpened = ref(false)
-    const offsetPopupOuter: Ref<any> = ref(null)
 
     const openOffsetPopup = (e: Event) => {
-      offsetPopupOuter.value = e.target
       offsetPopupOpened.value = true
     }
 
@@ -279,6 +285,7 @@ export default defineComponent({
       density,
       page,
       pages,
+      outerId,
 
       showGoToFirst,
       showGoToLast,
@@ -289,7 +296,6 @@ export default defineComponent({
 
       showCustomOffsetPopup,
       offsetPopupOpened,
-      offsetPopupOuter,
       openOffsetPopup,
       closeOffsetPopup,
       startAtValue,
