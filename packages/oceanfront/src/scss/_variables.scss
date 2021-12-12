@@ -1,4 +1,4 @@
-$base-color-active: var(--of-pal-primary-70) !default;
+$base-color-active: var(--of-color-primary) !default;
 $base-color-active-text: var(--of-pal-primary-98);
 $base-color-active-border: var(--of-pal-primary-60) !default;
 $base-color-button: var(--of-pal-primary-30) !default;
@@ -13,9 +13,11 @@ $base-color-focus-border: var(--of-pal-secondary-50);
 $base-color-field-bg: var(--of-pal-primary-40) !default;
 $base-color-field-error: var(--of-pal-error-38) !default;
 $base-color-field-icon: var(--of-pal-primary-30) !default; // fixme use alpha
-$base-color-field-placeholder: var(--of-pal-primary-68) !default; // fixme use alpha
+$base-color-field-placeholder: var(
+  --of-pal-primary-68
+) !default; // fixme use alpha
 $base-color-field-text: var(--of-pal-primary-18) !default;
-$base-color-label-bg:  var(--of-pal-primary-38) !default; // fixme use alpha
+$base-color-label-bg: var(--of-pal-primary-38) !default; // fixme use alpha
 $base-color-label-border: var(--of-pal-neutral-70) !default;
 $base-color-label-text: var(--of-pal-neutral-30) !default;
 $base-color-menu-header: var(--of-pal-primary-80) !default;
@@ -44,18 +46,24 @@ $color-slider: var(--of-color-slider, var(--of-pal-neutral-50));
   --of-bg-field: #{$base-color-field-bg};
   --of-bg-field-disabled: #{$base-color-quiet};
   --of-bg-field-focus: var(--of-bg-field);
-  --of-bg-field-filled: var(--of-pal-primary-78);
-  --of-bg-field-filled-hover: var(--of-pal-primary-80);
-  --of-bg-field-filled-focus: var(--of-pal-primary-82);
+  --of-bg-field-filled: var(--of-color-on-surface);
+  --of-bg-field-filled-opacity: 4%;
+  --of-bg-field-filled-hover: var(--of-color-on-surface);
+  --of-bg-field-filled-hover-opacity: 6%;
+  --of-bg-field-filled-focus: var(--of-color-on-surface);
+  --of-bg-field-filled-focus-opacity: 8%;
   --of-bg-sheet: #{$base-color-sheet-bg};
-  --of-border-color-field: var(--of-pal-neutral-70);
+  --of-border-color-field: var(--of-color-primary);
   --of-border-color-field-hover: var(--of-pal-neutral-60);
   --of-border-color-field-active: #{$base-color-active-border};
   --of-border-color-field-disabled: var(--of-pal-neutral-60);
   --of-border-color-field-focus: #{$base-color-focus-border};
   --of-border-color-field-invalid: var(--of-pal-error-70);
-  --of-box-shadow-field-basic: inset 1px 2px 8px var(--of-box-shadow-field-basic-color,  var(--of-pal-neutral-8));
-  --of-box-shadow-field-basic-focus: 0 0 0 0.2rem var(--of-box-shadow-field-basic-focus-color, var(--of-pal-secondary-90));
+  --of-box-shadow-field-basic: inset 1px 2px 8px
+    var(--of-box-shadow-field-basic-color, var(--of-pal-neutral-8));
+  --of-box-shadow-field-basic-focus: 0 0 3px 0.1rem
+    var(--of-box-shadow-field-basic-focus-color, var(--of-color-on-surface));
+  --of-box-shadow-field-basic-focus-opacity: 30%;
 
   --of-color-active: #{$base-color-active-text};
   --of-color-error: #{$base-color-field-error};
@@ -75,25 +83,46 @@ $color-slider: var(--of-color-slider, var(--of-pal-neutral-50));
   --of-field-size: 26ch;
   --of-button-color-bg: var(--of-pal-primary-40);
   --of-button-color-bg-hover: var(--of-pal-primary-48);
-  --of-button-color-shadow: hsla(var(--of-pal-primary-huesat), var(--of-light-10), 0.15);
+  --of-button-color-shadow: hsla(
+    var(--of-pal-primary-huesat),
+    var(--of-light-10),
+    0.15
+  );
   --of-button-color-label: var(--of-pal-primary-90);
   --of-button-color-bg-disabled: var(--of-pal-primary-60);
   --of-button-color-label-disabled: var(--of-pal-primary-20);
   --of-button-outlined-color-label: #{$base-color-button};
-  --of-button-outlined-color: hsla(var(--of-pal-primary-huesat), var(--of-light-30), 0.3);
-  --of-button-outlined-color-bg-hover: hsla(var(--of-pal-primary-huesat), var(--of-light-30), 0.1);
+  --of-button-outlined-color: hsla(
+    var(--of-pal-primary-huesat),
+    var(--of-light-30),
+    0.3
+  );
+  --of-button-outlined-color-bg-hover: hsla(
+    var(--of-pal-primary-huesat),
+    var(--of-light-30),
+    0.1
+  );
 }
 
 $color-item-text: var(--of-color-item-text, $base-color-item-text);
 $color-item-disabled: var(--of-color-item-disabled, $base-color-item-disabled);
 $color-item-active: var(--of-color-item-active, $base-color-item-active);
-$color-item-active-text: var(--of-color-item-active-text, $base-color-item-active-text);
+$color-item-active-text: var(
+  --of-color-item-active-text,
+  $base-color-item-active-text
+);
 $color-item-hover: var(--of-color-item-hover, $base-color-item-hover);
-$color-item-hover-text: var(--of-color-item-hover-text, $base-color-item-hover-text);
+$color-item-hover-text: var(
+  --of-color-item-hover-text,
+  $base-color-item-hover-text
+);
 $color-item-header: var(--of-color-item-header, $base-color-item-header);
-$color-item-header-text: var(--of-color-item-header-text, $base-color-item-header-text);
+$color-item-header-text: var(
+  --of-color-item-header-text,
+  $base-color-item-header-text
+);
 
-$color-menu-bg :var(--of-color-menu-bg, $base-color-menu-bg);
+$color-menu-bg: var(--of-color-menu-bg, $base-color-menu-bg);
 $color-menu-border: var(--of-color-menu-border, $base-color-menu-border);
 $color-menu-shadow: var(--of-color-menu-shadow, $base-color-menu-shadow);
 
@@ -111,8 +140,11 @@ $bg-field: var(--of-bg-field);
 $bg-field-disabled: var(--of-bg-field-disabled);
 $bg-field-focus: var(--of-bg-field-focus);
 $bg-field-filled: var(--of-bg-field-filled);
+$bg-field-filled-opacity: var(--of-bg-field-filled-opacity);
 $bg-field-filled-hover: var(--of-bg-field-filled-hover);
+$bg-field-filled-hover-opacity: var(--of-bg-field-filled-hover-opacity);
 $bg-field-filled-focus: var(--of-bg-field-filled-focus);
+$bg-field-filled-focus-opacity: var(--of-bg-field-filled-focus-opacity);
 $bg-label: var(--bg-label, #{$base-color-label-bg});
 /*$bg-label: var(
   --bg-label,
@@ -185,7 +217,7 @@ $line-height-badge: var(--line-height-badge, 1);
 $line-height-input: var(--line-height-input, 1.25); // 20/16
 $line-height-form-label: var(--line-height-form-label, 1.7);
 $line-height-menu-option: var(--line-height-menu-option, 1.35);
-$opacity-input-disabled: var(--opacity-input-disabled, 0.85);
+$opacity-input-disabled: var(--opacity-input-disabled, 38%);
 $pad-h-badge: var(--pad-h-badge, 0.5em);
 $pad-v-badge: var(--pad-v-badge, 0.5em);
 $pad-v-compact-badge: var(--pad-v-compact-badge, 0.2em);

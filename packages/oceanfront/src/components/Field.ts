@@ -494,6 +494,9 @@ export const OfField = defineComponent({
                 id: mainId,
               },
               [
+                h('div', { class: 'of--layer of--layer-bg' }),
+                h('div', { class: 'of--layer of--layer-brd' }),
+                h('div', { class: 'of--layer of--layer-outl' }),
                 h(
                   'div',
                   {

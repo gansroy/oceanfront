@@ -1,0 +1,433 @@
+.of-field {
+  --field-background: transparent;
+  --field-background-opacity: 0%;
+  --field-border-color: transparent;
+  --field-border-radius: #{$border-radius-input};
+  --field-border-style: solid;
+  --field-border-width: 1px;
+  --field-color: #{$color-field};
+  --field-font-size: #{$font-size-input};
+  --field-label-color: #{$color-field-label};
+  --field-label-width: var(--of-field-label-width, 50%);
+  --field-input-height: calc(var(--field-line-height) * 1em);
+  --field-line-height: #{$line-height-input};
+  --field-h-pad: 0.5em;
+  --field-v-pad-base: 1.125em;
+  --field-v-pad: var(--field-v-pad-base);
+  --field-size: var(--of-field-size);
+  --field-size-append: 0px;
+  --field-size-prepend: 0px;
+
+  .of--layer-bg {
+    border: var(--field-border-width) var(--field-border-style)
+      var(--field-border-color);
+    background-color: var(--field-background);
+    opacity: var(--field-background-opacity);
+  }
+
+  &.of--interactive {
+    --field-border-color: #{$border-color-field};
+  }
+  &.of--mode-disabled {
+    --field-border-color: #{$border-color-field-disabled};
+    --field-color: #{$color-field-disabled};
+    --field-label-color: #{$color-field-disabled};
+
+    > .of-field-main {
+      > .of-field-inner {
+        -webkit-text-fill-color: var(
+          --field-color
+        ); // override needed for disabled state
+        text-shadow: $text-shadow-disabled;
+      }
+    }
+  }
+  &.of--mode-editable:hover {
+    --field-border-color: #{$border-color-field-hover};
+    --field-label-color: #{$color-field-hover};
+  }
+  &.of--interactive.of--focused {
+    --field-border-color: #{$border-color-field-focus};
+    --field-label-color: #{$color-field-focus-label};
+  }
+  &.of--invalid {
+    --field-label-color: #{$color-error};
+
+    &:not(.of--focused) {
+      --field-border-color: #{$border-color-field-invalid};
+    }
+  }
+
+  box-sizing: border-box;
+  color: var(--field-color);
+  display: flex;
+  flex: 1 0 auto; // var(--field-size);
+  flex-flow: column nowrap;
+  font-size: var(--field-font-size);
+  line-height: normal;
+  max-width: 100%;
+  outline: none;
+  text-align: start;
+  // width: calc(min(100%, var(--field-size)));
+  vertical-align: top;
+  @include no-select;
+
+  &.of--inline {
+    display: inline-flex;
+    width: var(--field-size);
+  }
+
+  &.of--label-left,
+  &.of--label-right {
+    display: grid;
+    grid-template-columns: var(--field-label-width) auto;
+
+    > .of-field-main-label {
+      align-items: center;
+      display: flex;
+      padding: 0 var(--field-h-pad);
+    }
+
+    &.of--inline {
+      display: inline-grid;
+    }
+  }
+  &.of--label-left {
+    grid-template-areas: 'label main' 'label caption';
+  }
+  &.of--label-right {
+    grid-template-areas: 'main label' 'caption label';
+  }
+  &.of--label-top > .of-field-main-label {
+    margin-bottom: 0.25em;
+    padding-left: var(--field-h-pad);
+  }
+
+  &.of--rounded {
+    --field-border-radius: calc(var(--field-v-pad) + 0.5em + 2px);
+  }
+
+  > .of-field-main > .of-field-body > .of-field-inner > textarea {
+    box-sizing: border-box;
+    margin: 0 var(--field-border-width) 2px 0;
+    padding: var(--field-v-pad) var(--field-h-pad);
+    resize: vertical;
+  }
+}
+
+.of-field.of--density-0 {
+  --field-v-pad-base: 1.125em;
+}
+.of-field.of--density-1 {
+  --field-v-pad-base: 0.875em;
+}
+.of-field.of--density-2 {
+  --field-v-pad-base: 0.625em;
+}
+.of-field.of--density-3 {
+  --field-v-pad-base: 0.375em;
+}
+
+.of-field-main-label {
+  grid-area: label;
+}
+.of-field-main {
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column nowrap;
+  grid-area: main;
+  min-height: calc(2 * var(--field-v-pad) + var(--field-input-height));
+  outline: none;
+  position: relative;
+}
+.of-field-caption {
+  grid-area: caption;
+}
+
+.of-field-body {
+  align-items: flex-start;
+  box-sizing: border-box;
+  display: flex;
+  overflow: hidden;
+  margin: calc(0px - var(--field-border-width));
+  min-height: calc(var(--field-v-pad) + var(--field-input-height));
+  position: relative;
+  max-width: 100%;
+
+  @include field-text-base;
+}
+
+.of-field-inner {
+  display: flex;
+  width: 0; // allow element to resize smaller in firefox when nowrap is used
+
+  > *:not(.of--unpadded) {
+    padding: var(--field-v-pad) var(--field-h-pad);
+  }
+}
+.of-field-inner,
+.of-field-content-text {
+  cursor: inherit;
+  flex: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.of-field-input {
+  // caret-color
+  color: inherit;
+  display: block;
+  flex: auto;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+
+  // may want to restrict to certain variants:
+  appearance: none;
+  background: none;
+  border: none;
+  border-radius: 0;
+  // height: 100%;
+  width: 100%;
+  &::placeholder {
+    color: $color-field-placeholder;
+    opacity: 1;
+  }
+}
+
+.of-field-input,
+.of-field-content-text {
+  box-sizing: border-box;
+  font-weight: normal;
+  margin: 0;
+  outline: none;
+  // letter-spacing
+}
+
+.of-field-fixed-content {
+  user-select: text;
+}
+
+.of-field-prepend,
+.of-field-append {
+  align-self: center;
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+}
+.of-field-prepend {
+  padding-left: var(--field-h-pad);
+}
+.of-field-append {
+  padding-right: var(--field-h-pad);
+}
+
+.of-field.of--variant-outlined {
+  > .of-field-main {
+    border: var(--field-border-width) var(--field-border-style)
+      var(--field-border-color);
+    border-radius: var(--field-border-radius);
+
+    > .of-field-inner {
+      margin-top: -1px;
+    }
+  }
+
+  &.of--interactive.of--focused > .of-field-main {
+    box-shadow: $box-shadow-field-basic-focus;
+  }
+
+  &.of--label-frame {
+    --field-h-pad: 0.75em;
+
+    > .of-field-main {
+      border: none;
+
+      > .of-field-body {
+        margin: 0;
+
+        .of-field-inner {
+          opacity: 0;
+          transition: opacity 180ms;
+          will-change: opacity;
+        }
+      }
+
+      > .of-field-header {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+
+        &::before {
+          border: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          border-radius: var(--field-border-radius) 0 0
+            var(--field-border-radius);
+          border-right: none;
+          box-sizing: border-box;
+          content: '';
+          flex: 0 0
+            calc(max(var(--field-h-pad), var(--field-border-radius)) - 0.25em);
+          transition: border-color 1200ms;
+        }
+        &::after {
+          border: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          border-radius: 0 var(--field-border-radius) var(--field-border-radius)
+            0; // inherit?
+          border-left: none;
+          content: '';
+          flex: auto;
+          transition: border-color 1200ms;
+        }
+
+        .of-field-header-label {
+          border-bottom: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          border-top: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          box-sizing: border-box;
+          max-width: calc(100% - 2 * var(--field-h-pad));
+          padding: 0 0.25em;
+          transition: border-color 1200ms;
+
+          .of-field-label {
+            position: relative;
+            top: calc(0px - var(--field-border-width));
+            display: block;
+            font-size: 0.75em;
+            transform: translateX(var(--field-size-prepend)) scale(1.3333)
+              translateY(var(--field-v-pad));
+            transform-origin: left top;
+            transition: transform 150ms;
+            backface-visibility: hidden; // avoid some jumping?
+            // will-change: transform; // FIXME currently blurry in chrome
+          }
+        }
+      }
+    }
+
+    &.of--interactive.of--focused {
+      --field-border-width: 2px;
+    }
+
+    &.of--interactive.of--focused,
+    &.of--active {
+      > .of-field-main {
+        box-shadow: none;
+
+        > .of-field-header {
+          .of-field-header-label {
+            border-top-color: transparent;
+
+            .of-field-label {
+              transform: translateY(-0.675em);
+            }
+          }
+        }
+
+        > .of-field-body > .of-field-inner {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+.of-field.of--variant-filled {
+  > .of-field-main {
+    border-color: transparent transparent var(--field-border-color) transparent;
+  }
+
+  &.of--mode-editable,
+  &.of--mode-locked {
+    --field-background: #{$bg-field-filled};
+    --field-background-opacity: #{$bg-field-filled-opacity};
+  }
+  &.of--interactive {
+    --field-color: #{$color-field-filled};
+    > .of-field-main {
+      border-radius: var(--field-border-radius) var(--field-border-radius) 0 0;
+    }
+  }
+  &.of--mode-editable:hover {
+    --field-background: #{$bg-field-filled-hover};
+    --field-background-opacity: #{$bg-field-filled-hover-opacity};
+  }
+  &.of--interactive.of--focused {
+    --field-background: #{$bg-field-filled-focus};
+    --field-background-opacity: #{$bg-field-filled-focus-opacity};
+  }
+  &.of--mode-disabled {
+    --field-color: #{$color-field-disabled};
+    --field-border-style: dashed;
+  }
+
+  &.of--interactive > .of-field-main::after {
+    // ripple
+    background: $border-color-field-focus;
+    content: '';
+    height: 2px;
+    position: absolute;
+    bottom: calc(0px - var(--field-border-width));
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: opacity 90ms, transform 150ms;
+    will-change: opacity, transform;
+    z-index: 1;
+  }
+  &.of--interactive.of--focused > .of-field-main::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  &.of--mode-editable:hover {
+    --field-label-color: #{$color-field-filled-hover};
+  }
+  &.of--interactive.of--focused {
+    --field-label-color: #{$color-field-filled-focus-label};
+  }
+
+  &.of--label-frame {
+    --field-h-pad: 0.75em;
+    --field-v-pad: calc(var(--field-v-pad-base) - 0.5em);
+
+    > .of-field-main {
+      min-height: calc(
+        1em + 2 * var(--field-v-pad) + var(--field-input-height)
+      );
+      padding: 0;
+
+      > .of-field-header {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -1px;
+        margin: calc(0px - var(--field-border-width));
+
+        .of-field-header-label {
+          box-sizing: border-box;
+          line-height: 1;
+          padding: var(--field-v-pad)
+            calc(var(--field-size-append) + var(--field-h-pad)) 0
+            calc(var(--field-size-prepend) + var(--field-h-pad));
+
+          .of-field-label {
+            font-size: 0.75em;
+          }
+        }
+      }
+
+      > .of-field-body {
+        > .of-field-inner {
+          margin-top: 1em;
+        }
+      }
+    }
+  }
+}

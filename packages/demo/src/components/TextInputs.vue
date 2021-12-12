@@ -14,7 +14,12 @@
         />
       </template>
       <template #options>
-        <of-field type="toggle" label="Multi-line" label-position="input" v-model="customProps.multiline" />
+        <of-field
+          type="toggle"
+          label="Multi-line"
+          label-position="input"
+          v-model="customProps.multiline"
+        />
       </template>
     </of-demo-field>
 
@@ -55,7 +60,7 @@
           frame="none"
         />
         <of-text-field
-          class="of--density-0"
+          class="of--density-3"
           style="width: 10em"
           model-value="Compact"
           frame="none"
