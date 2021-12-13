@@ -282,7 +282,7 @@
           content: '';
           flex: 0 0
             calc(max(var(--field-h-pad), var(--field-border-radius)) - 0.25em);
-          transition: border-color 1200ms;
+          transition: border-color 120ms;
         }
         &::after {
           border: var(--field-border-width) var(--field-border-style)
@@ -293,7 +293,7 @@
           border-left: none;
           content: '';
           flex: auto;
-          transition: border-color 1200ms;
+          transition: border-color 120ms;
         }
 
         .of-field-header-label {
@@ -305,7 +305,7 @@
           box-sizing: border-box;
           max-width: calc(100% - 2 * var(--field-h-pad));
           padding: 0 0.25em;
-          transition: border-color 1200ms;
+          transition: border-color 120ms;
 
           .of-field-label {
             position: relative;
