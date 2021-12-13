@@ -10,8 +10,6 @@ $vars: ();
       )
     );
     @each $_st in $_states {
-      @debug $_cat;
-      @debug $_st;
       $vars: map-merge(
         $vars,
         (
@@ -25,7 +23,6 @@ $vars: ();
 }
 
 @mixin state-vars($cat, $default, $spec) {
-  @debug $spec;
   --of-#{$cat}-color: #{nth($default, 1)};
   --of-#{$cat}-opacity: #{nth($default, 2)};
   @each $_name, $_s in $spec {
