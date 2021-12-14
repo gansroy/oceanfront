@@ -63,7 +63,7 @@ export const OfButton = defineComponent({
     const expand = h(
       'div',
       { class: 'of-button-expand' },
-      h(OfIcon, { name: 'expand down' })
+      h(OfIcon, { name: 'bullet down' })
     )
     const menuMouseEvts = {
       onMouseenter: () => {
