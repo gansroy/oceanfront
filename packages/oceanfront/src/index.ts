@@ -172,7 +172,13 @@ export {
   TextInputResult,
   useFormats,
 } from './lib/formats'
-export { IconFont, SvgIcon, showMissingIcons, useIcons } from './lib/icons'
+export {
+  IconFont,
+  SvgIcon,
+  registerIconFont,
+  showMissingIcons,
+  useIcons,
+} from './lib/icons'
 export { registerItemList, useItems } from './lib/items'
 export { setMobileBreakpoint, useLayout } from './lib/layout'
 export { useLocale } from './lib/locale'
