@@ -128,8 +128,9 @@ const materialIcons = {
   ],
 }
 
-export const materialIconFont = {
-  resolve(name: string) {
+export const materialIconSet = {
+  name: 'mi',
+  resolve(name: string, _type?: string) {
     let icon = (materialIcons as any)[name]
     if (icon) {
       return { svg: { paths: icon } }
@@ -138,4 +139,4 @@ export const materialIconFont = {
   },
 }
 
-export default materialIconFont
+export default materialIconSet

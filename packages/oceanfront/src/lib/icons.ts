@@ -18,18 +18,10 @@ export interface IconMapping {
   [key: string]: Icon | string
 }
 
-export interface IconResolver {
-  resolve(name: string): Icon | string | null
-}
-
-export interface IconFont {
-  resolve(name: string): Icon | null
-}
-
-function makeResolver(mapping: IconMapping): IconResolver {
-  return {
-    resolve: (name: string) => (mapping && mapping[name]) || null,
-  }
+export interface IconSet {
+  name?: string
+  requirePrefix?: boolean
+  resolve(name: string, prefix?: string): Icon | string | null
 }
 
 const ledIcon = {
@@ -41,75 +33,70 @@ const ledIcon = {
   },
 }
 
+const LedIconSet = {
+  name: 'led',
+  resolve(name: string, type?: string): Icon | string | null {
+    if (name && type) {
+      return {
+        class: 'of--icon-led of--led-' + name,
+        ...ledIcon,
+      }
+    }
+    return null
+  },
+}
+
 class IconManager {
-  defaultFont: string | undefined
-  fonts: { [name: string]: IconFont }
-  resolvers: IconResolver[]
+  sets: IconSet[]
+  setsNamed: { [name: string]: IconSet }
   showMissing = false
 
   constructor() {
-    this.fonts = {}
-    this.resolvers = [
-      {
-        resolve: (name: string) => {
-          let ret = null
-          if (this.defaultFont) {
-            ret = this.fonts[this.defaultFont].resolve(name)
-          }
-          if (!ret && name.startsWith('led ')) {
-            ret = {
-              class: 'of--icon-led of--led-' + name.substring(4),
-              ...ledIcon,
-            }
-          }
-          return ret
-        },
-      },
-    ]
+    this.sets = []
+    this.setsNamed = { [LedIconSet.name]: LedIconSet }
   }
 
-  resolve(name?: string): Icon | null {
-    if (!name) return null
+  resolve(name?: string, type?: string): Icon | null {
+    if (typeof name !== 'string') return null
+    let result
     const spp = name.indexOf(' ')
-    if (spp !== -1) {
-      const font = name.substring(0, spp)
-      if (font in this.fonts) {
-        return this.fonts[font].resolve(name.substring(spp + 1))
+    const pfx = type || (spp !== -1 ? name.substring(0, spp) : null)
+    if (pfx && pfx in this.setsNamed) {
+      const sfx = type ? name : name.substring(spp + 1)
+      result = this.setsNamed[pfx].resolve(sfx, pfx)
+    }
+    if (!result && !type) {
+      for (const set of this.sets) {
+        result = set.resolve(name)
+        if (result) break
       }
     }
-    for (const r of this.resolvers) {
-      const ret = r.resolve(name)
-      if (typeof ret === 'string') return this.resolve(ret)
-      else if (ret) return ret
+    if (typeof result === 'string') {
+      if (result === name) {
+        result = null // prevent loop
+      } else {
+        return this.resolve(result)
+      }
     }
-    if (this.showMissing) {
-      return { text: 'xx' }
+    if (!result && this.showMissing) {
+      result = { text: 'xx' }
     }
-    return null
+    return result || null
   }
 }
 
 const configManager = new ConfigManager('oficon', IconManager)
 
-export function registerIconFont(name: string, def: IconFont): void {
-  if (!def) return
+export function registerIconSet(set: IconSet): void {
+  if (!set) return
   const mgr = configManager.extendingManager
-  mgr.fonts[name] = def
-  if (!mgr.defaultFont) {
-    mgr.defaultFont = name
+  const name = set.name
+  if (name) {
+    mgr.setsNamed[name] = set
   }
-}
-
-export function registerIcons(icons: IconMapping | IconResolver): void {
-  if (!icons) return
-  if (typeof icons === 'object') {
-    icons = makeResolver(icons as IconMapping)
+  if (!set.requirePrefix) {
+    mgr.sets.push(set)
   }
-  configManager.extendingManager.resolvers.push(icons)
-}
-
-export function setDefaultIconFont(name: string): void {
-  configManager.extendingManager.defaultFont = name
 }
 
 export function showMissingIcons(flag?: boolean): void {

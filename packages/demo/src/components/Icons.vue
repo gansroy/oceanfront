@@ -7,11 +7,11 @@
       along with any others that applications choose to include.
     </p>
 
-    <of-config :icon-font="iconFont">
+    <of-config>
       <div class="row demo-row">
         <div class="demo-inline" v-for="(iconset, idx) of icons" :key="idx">
           <div class="demo-icon" v-for="(desc, icon) of iconset" :key="icon">
-            <of-icon :name="icon" :title="desc" size="input" />
+            <of-icon :name="icon" :title="desc" />
           </div>
         </div>
       </div>
@@ -26,16 +26,6 @@
         </div>
       </div>
     </of-config>
-
-    <!-- div class="row">
-      <div class="column">
-        <of-select-field
-          label="Select icon set"
-          :items="fontOpts"
-          v-model="iconFont"
-        />
-      </div>
-    </div -->
 
     <h2>Two-color SVG icons</h2>
     <of-icon-preview />
@@ -52,15 +42,7 @@ export default defineComponent({
   components: { OfIconPreview },
   setup(_props, _ctx) {
     const layout = useLayout()
-    const iconFont = ref('')
-    const fontOpts = [
-      { value: '', text: 'Default' },
-      { value: 'uii', text: 'UIBasic' },
-      { value: 'mi', text: 'Material' },
-    ]
     return {
-      iconFont,
-      fontOpts,
       highDpi: computed(() => layout.isHighDpi),
       icons: [
         {

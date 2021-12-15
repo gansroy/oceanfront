@@ -3,55 +3,67 @@
     <of-config :icons="icons">
       <div class="load-error">{{ loadError }}</div>
 
-      <of-icon name="preview-icon" size="sm" title="20px size" />
-      <of-icon name="preview-icon" size="md" title="24px size (standard)" />
-      <of-icon name="preview-icon" size="lg" title="28px size" />
-      <of-icon name="preview-icon" size="xl" title="32px size" />
+      <div>
+        <of-icon name="preview-icon" size="xs" title="16px size" />
+        <of-icon name="preview-icon" size="sm" title="20px size" />
+        <of-icon name="preview-icon" size="md" title="24px size (standard)" />
+        <of-icon name="preview-icon" size="lg" title="28px size" />
+        <of-icon name="preview-icon" size="xl" title="32px size" />
+      </div>
 
-      <of-icon
-        name="preview-icon"
-        class="style-no-alt"
-        title="without alt layer"
-      />
+      <div>
+        <of-icon
+          name="preview-icon"
+          class="style-no-alt"
+          title="without alt layer"
+        />
 
-      <of-icon
-        name="preview-icon"
-        class="style-blue"
-        title="fill single colour"
-      />
-      <of-icon
-        name="preview-icon"
-        class="style-contrast"
-        title="fill two colours"
-      />
+        <of-icon
+          name="preview-icon"
+          class="style-blue"
+          title="fill single colour"
+        />
+        <of-icon
+          name="preview-icon"
+          class="style-contrast"
+          title="fill two colours"
+        />
 
-      <div class="round"><of-icon name="preview-icon" /></div>
-      <div class="roundr"><of-icon name="preview-icon" /></div>
+        <div class="round"><of-icon name="preview-icon" /></div>
+        <div class="roundr"><of-icon name="preview-icon" /></div>
 
-      <svg
-        style="width: 0; height: 0; position: absolute"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <linearGradient id="of-icon-grad-1" x2="100%" y2="100%">
-          <!-- FIXME use variables -->
-          <stop offset="0%" class="g g1" stop-color="#cfc998" />
-          <stop offset="60%" class="g g2" stop-color="#deb887" />
-        </linearGradient>
-        <linearGradient id="of-icon-grad-2" x2="1" y2="1">
-          <!-- FIXME use variables -->
-          <stop offset="0%" class="g g1" stop-color="#fff" stop-opacity="0.6" />
-          <stop offset="60%" class="g g2" stop-color="#fff" />
-        </linearGradient>
-      </svg>
+        <svg
+          style="width: 0; height: 0; position: absolute"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <linearGradient id="of-icon-grad-1" x2="100%" y2="100%">
+            <!-- FIXME use variables -->
+            <stop offset="0%" class="g g1" stop-color="#cfc998" />
+            <stop offset="60%" class="g g2" stop-color="#deb887" />
+          </linearGradient>
+          <linearGradient id="of-icon-grad-2" x2="1" y2="1">
+            <!-- FIXME use variables -->
+            <stop
+              offset="0%"
+              class="g g1"
+              stop-color="#fff"
+              stop-opacity="0.6"
+            />
+            <stop offset="60%" class="g g2" stop-color="#fff" />
+          </linearGradient>
+        </svg>
+      </div>
 
-      <canvas
-        width="100"
-        height="100"
-        title="24px scaled"
-        @vnodeMounted="draw"
-        @vnodeUpdated="draw"
-      ></canvas>
+      <div>
+        <canvas
+          width="100"
+          height="100"
+          title="24px scaled"
+          @vnodeMounted="draw"
+          @vnodeUpdated="draw"
+        ></canvas>
+      </div>
     </of-config>
   </div>
 </template>
@@ -114,11 +126,13 @@ export default defineComponent({
         ],
       },
     })
-    const icons = computed(() => {
-      return {
-        'preview-icon': testIcon.value,
-      }
-    })
+    const icons = {
+      resolve(name: string) {
+        if (name === 'preview-icon') {
+          return testIcon.value
+        }
+      },
+    }
     const dragActive = ref(false)
     const loadError = ref('')
 
@@ -209,18 +223,18 @@ canvas {
   top: 5px;
 }
 .of-icon.style-no-alt {
-  font-size: 48px;
+  --icon-size: 48pt;
   .alt {
     fill: transparent;
   }
 }
 .of-icon.style-blue {
   color: darkblue;
-  font-size: 60pt;
+  --icon-size: 60pt;
 }
 .of-icon.style-contrast {
   color: rgb(39, 139, 170);
-  font-size: 60pt;
+  --icon-size: 60pt;
   .alt {
     fill: red;
   }
@@ -233,7 +247,7 @@ canvas {
   padding: 20px;
   .of-icon {
     color: #def;
-    font-size: 60pt;
+    --icon-size: 60pt;
   }
 }
 .roundr {
@@ -244,7 +258,7 @@ canvas {
   margin-left: 10px;
   box-shadow: inset 0 -3px 0 3px rgba(0, 0, 0, 0.1);
   .of-icon {
-    font-size: 60pt;
+    --icon-size: 60pt;
   }
   .pri {
     fill: url(#of-icon-grad-1);

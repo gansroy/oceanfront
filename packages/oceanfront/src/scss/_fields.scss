@@ -349,6 +349,7 @@
   grid-area: main;
   min-height: calc(2 * var(--field-v-pad) + var(--field-input-height));
   outline: none;
+  overflow: hidden;
   position: relative;
 }
 .of-field-caption {
@@ -402,6 +403,7 @@
   background: none;
   border: none;
   border-radius: 0;
+  box-sizing: border-box;
   // height: 100%;
   width: 100%;
   &::placeholder {
@@ -412,11 +414,15 @@
 
 .of-field-input,
 .of-field-content-text {
-  box-sizing: border-box;
   font-weight: normal;
   margin: 0;
   outline: none;
   // letter-spacing
+}
+
+.of-field-content-text {
+  box-sizing: content-box;
+  min-height: 1.25em;
 }
 
 .of-field-fixed-content {

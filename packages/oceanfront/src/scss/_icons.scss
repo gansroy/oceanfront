@@ -3,6 +3,8 @@
 
   display: inline-flex; // allow scaling of contents
   font-size: var(--icon-size);
+  line-height: 1;
+
   &.left {
     margin-right: 0.25em;
   }
@@ -13,25 +15,33 @@
     width: var(--icon-size, var(--of-icon-size));
     height: auto;
   }
+
+  &--svg {
+    vertical-align: text-bottom;
+  }
 }
 
 .of--icon-size-inherit {
   --icon-size: 1em;
 }
 
-.of--icon-size-sm {
+.of-icon.of--icon-size-xs {
+  --icon-size: 16px;
+}
+
+.of-icon.of--icon-size-sm {
   --icon-size: 20px;
 }
 
-.of--icon-md {
+.of-icon.of--icon-size-md {
   --icon-size: 24px;
 }
 
-.of--icon-lg {
+.of-icon.of--icon-size-lg {
   --icon-size: 28px;
 }
 
-.of--icon-xl {
+.of-icon.of--icon-size-xl {
   --icon-size: 32px;
 }
 

@@ -33,13 +33,27 @@ export const OfIcon = defineComponent({
     class: String,
     name: String,
     size: [Number, String],
+    type: String,
   },
   setup(props, ctx) {
     const mgr = useIcons()
-    const icon = computed(() => mgr.resolve(props.name))
+    const icon = computed(() => mgr.resolve(props.name, props.type))
+    const size = computed(() => {
+      let sz = props.size
+      if (sz) {
+        if (
+          typeof sz === 'number' ||
+          (typeof sz === 'string' && sz.match(/^[0-9]+$/))
+        ) {
+          sz = '' + sz + 'px'
+        }
+      }
+      return sz || undefined
+    })
+
     return () => {
       const iconVal = icon.value
-      const sz = props.size
+      const sz = size.value
       const numSz = !isNaN(parseInt(sz as string))
       if (!iconVal) return
       return h(
@@ -49,7 +63,7 @@ export const OfIcon = defineComponent({
           class: [
             {
               'of-icon': true,
-              'of--icon-svg': !!iconVal.svg,
+              'of-icon--svg': !!iconVal.svg,
             },
             props.size && !numSz ? 'of--icon-size-' + props.size : undefined,
             props.class,
