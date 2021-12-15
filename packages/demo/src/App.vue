@@ -25,6 +25,29 @@
           </div>
         </of-dialog>
       </div>
+      <div class="app-config-source" style="width: auto; flex-direction: row">
+        <div
+          style="
+            margin: 2px;
+            display: flex;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+            background: var(--of-color-background);
+            border-radius: 20em;
+          "
+          v-for="t in tintParams"
+          :key="t.name"
+        >
+          <div
+            style="display: flex; color: var(--of-primary-tint)"
+            :class="`of--tinted of--tint-${t.name}`"
+            @click="() => (tint = t.name)"
+          >
+            <of-icon :name="t.icon" />
+          </div>
+        </div>
+      </div>
       <div
         class="app-config-source"
         style="fill: var(--of-on-primary-tint)"
@@ -149,9 +172,12 @@ function formatError(e: any) {
   return (e.stack || e).toString()
 }
 
+const tints = ['primary', 'secondary', 'tertiary']
+
 export default defineComponent({
   name: 'App',
   setup(_props: {}, _ctx: SetupContext) {
+    const tint = ref('primary')
     const error = ref<any>(null)
     onErrorCaptured((e) => {
       error.value = formatError(e)
@@ -202,6 +228,25 @@ export default defineComponent({
       },
       { immediate: true }
     )
+    watch(
+      () => tint.value,
+      (tint) => {
+        const htmlEl = document.body
+        if (htmlEl) {
+          tints.forEach((t) => {
+            htmlEl.classList.remove(`of--tint-${t}`)
+          })
+          htmlEl.classList.add(`of--tint-${tint}`)
+        }
+      },
+      { immediate: true }
+    )
+    const tintParams = computed(() =>
+      tints.map((t) => ({
+        name: t,
+        icon: t == tint.value ? 'accept circle' : 'radio checked',
+      }))
+    )
     return {
       baseFontSize,
       configActive,
@@ -211,6 +256,8 @@ export default defineComponent({
       sidebarActive,
       toggleSidebar,
       dark,
+      tint,
+      tintParams,
     }
   },
 })

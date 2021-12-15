@@ -173,11 +173,11 @@ export default defineComponent({
     ]
 
     const densityOptions = ['default', '0', '1', '2', '3']
-    const tintOptions = ['primary', 'secondary', 'tertiary']
+    const tintOptions = ['default', 'primary', 'secondary', 'tertiary']
     const params = reactive({
       density: 'default',
       rounded: false,
-      tint: 'primary',
+      tint: 'default',
     })
     return {
       sampleCode,
