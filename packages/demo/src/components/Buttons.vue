@@ -76,7 +76,13 @@
     <div class="demo-fields of--elevated-1">
       <div class="row" v-for="variant in variants" :key="variant">
         <div class="column spaced">
-          <span class="of-buttonset">
+          <span
+            class="of-buttonset"
+            :class="{
+              'of-buttonset--rounded': params.rounded,
+              'of--elevated': variant == 'elevated',
+            }"
+          >
             <of-button v-bind="params" :variant="variant" icon="accept"
               >Save</of-button
             >
@@ -100,7 +106,13 @@
           </span>
         </div>
         <div class="column spaced">
-          <span class="of-buttonset">
+          <span
+            class="of-buttonset"
+            :class="{
+              'of-buttonset--rounded': params.rounded,
+              'of--elevated': variant == 'elevated',
+            }"
+          >
             <of-button v-bind="params" :variant="variant">1</of-button>
             <of-button v-bind="params" :variant="variant" active>2</of-button>
             <of-button v-bind="params" :variant="variant">3</of-button>

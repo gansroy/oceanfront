@@ -257,6 +257,9 @@
     &:not(.of--mode-disabled) {
       & .of--layer.of--layer-outl {
         --elevation-level: 1;
+        .of-buttonset & {
+          --elevation-level: 0;
+        }
       }
       &:hover:not(:active) {
         @include apply-button-state(btn-elv, hover);
@@ -386,19 +389,24 @@
 }
 
 .of-buttonset {
-  --buttonset-border-radius: 2em;
   display: flex;
+  width: fit-content;
+  --buttonset-border-radius: 3px;
+  &.of-buttonset--rounded {
+    --buttonset-border-radius: 2em;
+  }
+  border-radius: var(--buttonset-border-radius);
 
   > .of-button {
-    --button-border-radius: 0;
     margin: 0 -1px 0 0;
-
     &.of--active {
       z-index: 1;
     }
     &:hover {
       z-index: 2;
     }
+
+    --button-border-radius: 0;
 
     &.of--variant-outlined.of--active {
       --button-border-color: #{use-color(btn-outl-brd)};
