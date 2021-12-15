@@ -1,12 +1,18 @@
 <template>
-  <div class="of-demo-field">
-    <div class="content">
+  <div class="of-demo-field of--elevated">
+    <div :class="containerClass">
       <div class="field" v-for="(opts, idx) in allParams" :key="idx">
         <slot v-bind="opts"></slot>
       </div>
     </div>
-    <div class="options">
+    <div class="options of--elevated">
       <div class="options-fields">
+        <of-field
+          v-model="params.containerTint"
+          label="Container Tint"
+          type="select"
+          :items="tintOptions"
+        />
         <of-field
           v-model="params.variant"
           label="Variant Type"
@@ -24,6 +30,12 @@
           label="Density"
           type="select"
           :items="densityOptions"
+        />
+        <of-field
+          v-model="params.tint"
+          label="Tint"
+          type="select"
+          :items="tintOptions"
         />
       </div>
       <hr />
@@ -44,23 +56,45 @@
 import { computed, reactive, defineComponent } from 'vue'
 
 export default defineComponent({
-  setup() {
+  props: {
+    allowInputLabelPosition: Boolean,
+  },
+  setup(props) {
     const params = reactive({
       density: 'default',
       labelPosition: 'default',
       mode: 'editable',
       variant: 'compare',
+      tint: 'default',
+      containerTint: 'default',
     })
+
     const densityOptions = ['default', '0', '1', '2', '3']
-    const labelPosOptions = ['default', 'none', 'frame', 'left', 'right', 'top']
+    const tintOptions = ['default', 'primary', 'secondary', 'tertiary']
+    const labelPosOptions = [
+      'default',
+      'none',
+      'frame',
+      'left',
+      'right',
+      'top',
+      ...(props.allowInputLabelPosition ? ['input'] : []),
+    ]
     const modeOptions = ['editable', 'locked', 'readonly', 'disabled', 'fixed']
     const variantOptions = ['default', 'outlined', 'filled', 'compare']
+    const containerClass = computed(() => [
+      'content',
+      'of--tinted',
+      `of--tint-${params.containerTint}`,
+    ])
     const allParams = computed(() => {
-      let p: any = { ...params };
-      if (p.variant === 'default')
-        delete p.variant;
+      let p: any = { ...params }
+      if (p.variant === 'default') delete p.variant
       if (p.variant === 'compare') {
-        return [{ ...p, variant: "outlined" }, { ...p, variant: "filled" }]
+        return [
+          { ...p, variant: 'outlined' },
+          { ...p, variant: 'filled' },
+        ]
       } else {
         return [p]
       }
@@ -68,6 +102,8 @@ export default defineComponent({
     return {
       allParams,
       densityOptions,
+      tintOptions,
+      containerClass,
       labelPosOptions,
       modeOptions,
       variantOptions,
@@ -79,13 +115,13 @@ export default defineComponent({
 
 <style lang="scss">
 .of-demo-field {
-  border: 2px solid var(--of-pal-primary-72);
+  background: var(--of-color-background);
+  --elevation-level: 1;
   border-radius: 4px;
   display: flex;
   flex-flow: row nowrap;
   margin: 1em 0;
   .content {
-    background: var(--of-pal-primary-90);
     box-sizing: border-box;
     display: flex;
     flex: auto;
@@ -103,10 +139,12 @@ export default defineComponent({
     }
   }
   .options {
-    background: var(--of-pal-primary-92);
     flex: 0 0 16em;
-    padding: 1em;
+    padding: 1ex;
+    margin: 1em;
     overflow: hidden;
+    --elevation-level: 1;
+    border-radius: 8px;
   }
   .options-fields {
     display: flex;

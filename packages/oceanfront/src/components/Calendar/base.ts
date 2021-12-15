@@ -1,4 +1,5 @@
 import { DateTimeFormatterOptions } from 'src/formats/DateTime'
+import { sameDate } from 'src/lib/datetime'
 import { useFormats } from 'src/lib/formats'
 import { defineComponent, h } from 'vue'
 
@@ -27,7 +28,16 @@ export default defineComponent({
       const dayFmt = this.formatMgr.getTextFormatter('date', dayFormat)
       return h('div', { class: 'of-calendar-day-title' }, [
         weekday ? this.renderWeekDay(date) : null,
-        h('div', { class: 'day-number' }, dayFmt?.format(date).textValue),
+        h(
+          'div',
+          {
+            class: {
+              'day-number': true,
+              today: date && sameDate(date, new Date()),
+            },
+          },
+          dayFmt?.format(date).textValue
+        ),
       ])
     },
   },

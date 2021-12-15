@@ -3,11 +3,15 @@
     <h1>Field States</h1>
 
     <div class="row">
-      <of-toggle-field v-model="filled" label="Show filled inputs" label-position="input" />
+      <of-toggle-field
+        v-model="filled"
+        label="Show filled inputs"
+        label-position="input"
+      />
     </div>
     <br />
 
-    <div class="attrs">
+    <div class="attrs of--elevated-1">
       <div class="row">
         <div class="column state">Editable</div>
         <div class="column field">
@@ -86,29 +90,6 @@
   </div>
 </template>
 
-<style lang="scss">
-.attrs {
-  border: 2px solid rgb(77, 150, 128);
-  border-radius: 4px;
-  padding: 1em;
-  display: grid;
-  grid-template-columns: 20% 40% auto;
-  grid-gap: 1em;
-  > .row {
-    display: contents;
-    .column {
-      align-self: center;
-      &:first-child {
-        grid-column-start: 1;
-      }
-    }
-  }
-  .desc {
-    font-size: 80%;
-  }
-}
-</style>
-
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
 
@@ -130,3 +111,25 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss">
+.attrs {
+  border-radius: 4px;
+  padding: 1em;
+  display: grid;
+  grid-template-columns: 20% 40% auto;
+  grid-gap: 1em;
+  > .row {
+    display: contents;
+    .column {
+      align-self: center;
+      &:first-child {
+        grid-column-start: 1;
+      }
+    }
+  }
+  .desc {
+    font-size: 80%;
+  }
+}
+</style>

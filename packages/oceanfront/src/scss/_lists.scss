@@ -13,8 +13,34 @@
     max-height: 0;
   }
 }
+
 .of-list-item {
-  color: $color-item-text;
+  @include define-color-opacity(
+    item-bg,
+    (transparent, 0%),
+    (
+      active: var(--of-container-tint) 100%,
+      hover: var(--of-color-on-surface) 16%,
+      exp: var(--of-color-on-surface-variant) 12%,
+    )
+  );
+  @include define-color-opacity(
+    item-text,
+    (var(--of-on-container-tint), 100%),
+    (
+      hover: var(--of-color-on-surface) 100%,
+      disabled: var(--of-color-on-surface) 38%,
+      exp: var(--of-color-on-surface-variant) 100%,
+    )
+  );
+
+  --item-border-color: transparent;
+  --item-border-opacity: 100%;
+  --bg-color: #{use-color(item-bg)};
+  --bg-opacity: #{use-opacity(item-bg)};
+  --text-color: #{use-color(item-text)};
+  --text-opacity: #{use-opacity(item-text)};
+
   cursor: pointer;
   display: block;
   outline: none;
@@ -22,40 +48,61 @@
   text-decoration: none;
   transition: color 200ms;
   &.of--disabled {
-    color: $color-item-disabled;
     cursor: default;
   }
-  &:not(.of--disabled):not(.of--active) {
-    &.of-list-item:hover {
-      color: $color-item-hover-text;
-    }
-    &:hover > .of-list-item-inner {
-      background: $color-item-hover;
-    }
-  }
-}
-.of-list-item-inner {
-  align-items: center;
-  border: 1px solid transparent;
-  background: transparent;
-  border-radius: 5px;
-  display: flex;
-  padding: 0.3em 0.8em;
-  transition: background-color 200ms;
-  .of-list-item.of--focused:not(.of--disabled) & {
-    border-color: $color-item-hover;
-  }
-}
-.of-list-item-content {
-  flex: auto;
-}
 
-.of--active:not(.of--disabled) > .of-list-item-inner {
-  background: $color-item-active;
-}
-.of-list-item.of--active:not(.of--disabled) {
-  color: $color-item-active-text;
-  font-weight: 500;
+  & .of-list-item-inner {
+    position: relative;
+    align-items: center;
+    display: flex;
+    padding: 0.3em 0.8em;
+    transition: background-color 200ms;
+
+    & .of--layer {
+      border: 1px solid transparent;
+      background: transparent;
+      border-radius: 5px;
+
+      &.of--layer-bg {
+        background-color: var(--bg-color);
+        opacity: var(--bg-opacity);
+      }
+    }
+
+    color: var(--text-color);
+    opacity: var(--text-opacity);
+    & .of-list-item-content {
+      flex: auto;
+      z-index: 1;
+    }
+  }
+
+  &.of--disabled {
+    --bg-color: #{use-color(item-bg, disabled)};
+    --bg-opacity: #{use-opacity(item-bg, disabled)};
+    --text-color: #{use-color(item-text, disabled)};
+    --text-opacity: #{use-opacity(item-text, disabled)};
+  }
+  &.of--active:not(.of--disabled):not(.of--expandable) {
+    font-weight: 500;
+    --bg-color: #{use-color(item-bg, active)};
+    --bg-opacity: #{use-opacity(item-bg, active)};
+    --text-color: #{use-color(item-text, active)};
+    --text-opacity: #{use-opacity(item-text, active)};
+  }
+  &:not(.of--disabled):not(.of--active):not(.of--expandable):hover {
+    --bg-color: #{use-color(item-bg, hover)};
+    --bg-opacity: #{use-opacity(item-bg, hover)};
+    --text-color: #{use-color(item-text, hover)};
+    --text-opacity: #{use-opacity(item-text, hover)};
+  }
+  &.of--expandable {
+    font-weight: 800;
+    --bg-color: #{use-color(item-bg, exp)};
+    --bg-opacity: #{use-opacity(item-bg, exp)};
+    --text-color: #{use-color(item-text, exp)};
+    --text-opacity: #{use-opacity(item-text, exp)};
+  }
 }
 
 .of-list-outer {
@@ -64,8 +111,22 @@
 }
 
 .of-list-header {
-  background: $color-item-header;
-  color: $color-item-header-text;
+  @include define-color-opacity(
+    item-bg,
+    (transparent, 0%),
+    (
+      header: var(--of-color-surface-variant) 100%,
+    )
+  );
+  @include define-color-opacity(
+    item-text,
+    (var(--of-on-container-tint), 100%),
+    (
+      header: var(--of-color-on-surface-variant) 100%,
+    )
+  );
+
+  z-index: 2;
   cursor: default;
   font-size: 80%;
   overflow: hidden;
@@ -77,6 +138,9 @@
   top: 0px;
   user-select: none;
   white-space: nowrap;
+  background: #{use-color(item-bg, header)};
+  color: #{use-color(item-text, header)};
+  opacity: 100%;
 }
 
 .of-list-divider {

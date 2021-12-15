@@ -20,13 +20,17 @@ export const OfButton = defineComponent({
     split: Boolean,
     type: String,
     variant: String,
+    tint: String,
+    keepTextColor: Boolean,
   },
   emits: {
     click: null,
   },
   setup(props, ctx) {
-    const variant = computed(() => props.variant || 'solid')
+    const variant = computed(() => props.variant || 'filled')
+    const tint = computed(() => props.tint)
     const menuShown = ref(false)
+    const focused = ref(false)
     let menuTimerId: number | undefined
 
     const density = computed(() => {
@@ -76,6 +80,14 @@ export const OfButton = defineComponent({
         }, 500)
       },
     }
+    const focusEvts = {
+      onFocus: () => {
+        focused.value = true
+      },
+      onBlur: () => {
+        focused.value = false
+      },
+    }
     let autoId: string
 
     return () => {
@@ -86,16 +98,16 @@ export const OfButton = defineComponent({
       }
       const buttonId = (id || autoId) + '-button'
       const splitId = (id || autoId) + '-split'
-      const body = [
-        ctx.slots.icon
-          ? ctx.slots.icon()
-          : props.icon
-          ? h(
-              'div',
-              { class: 'of-button-icon' },
-              h(OfIcon, { class: 'button-icon', name: props.icon })
-            )
-          : undefined,
+      const iconContent = ctx.slots.icon
+        ? ctx.slots.icon()
+        : props.icon
+        ? h(
+            'div',
+            { class: 'of-button-icon' },
+            h(OfIcon, { class: 'button-icon', name: props.icon })
+          )
+        : undefined
+      const mainContent =
         ctx.slots.content || ctx.slots.default || props.label
           ? h(
               'div',
@@ -107,7 +119,11 @@ export const OfButton = defineComponent({
                     ctx.slots.default ? ctx.slots.default() : props.label
                   )
             )
-          : undefined,
+          : undefined
+
+      const body = [
+        iconContent,
+        mainContent,
         items && !split ? expand : undefined,
       ]
       return h(
@@ -118,14 +134,24 @@ export const OfButton = defineComponent({
             'of--density-' + density.value,
             'of--variant-' + variant.value,
             {
+              'of--tinted': !!tint.value,
+              ['of--tint-' + tint.value]: !!tint.value,
+              'of--keep-text-color': props.keepTextColor,
+              'of--focused': focused.value,
               'of--active': props.active,
               'of-button--rounded': rounded,
+              'of-button--icon': !!(
+                iconContent && !(mainContent || items || split)
+              ),
               'of--mode-disabled': disabled,
             },
           ],
           id,
         },
         [
+          h('div', { class: 'of--layer of--layer-bg' }),
+          h('div', { class: 'of--layer of--layer-brd' }),
+          h('div', { class: 'of--layer of--layer-outl of--elevated' }),
           h(
             'button',
             {
@@ -136,6 +162,7 @@ export const OfButton = defineComponent({
               name: props.name,
               type: props.type ?? 'button',
               ...menuMouseEvts,
+              ...focusEvts,
             },
             body
           ),
@@ -148,6 +175,7 @@ export const OfButton = defineComponent({
                   id: splitId,
                   onClick: toggleMenu,
                   ...menuMouseEvts,
+                  ...focusEvts,
                 },
                 expand
               )
@@ -166,12 +194,14 @@ export const OfButton = defineComponent({
                 },
                 () =>
                   h(OfOptionList, {
+                    class: 'of--elevated-1',
                     items,
                     onClick: onClickItem,
                     ...menuMouseEvts,
                   })
               )
             : undefined,
+          h('div', { class: 'of--layer of--layer-state' }),
         ]
       )
     }

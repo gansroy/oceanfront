@@ -23,7 +23,7 @@
       </template>
     </of-demo-field>
 
-    <div class="demo-fields">
+    <div class="demo-fields of--elevated-1">
       <div class="row demo-row">
         <of-text-field
           class="of--small"

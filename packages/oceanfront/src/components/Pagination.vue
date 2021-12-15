@@ -48,8 +48,13 @@
         @blur="closeOffsetPopup()"
       >
         <slot name="custom-offset-popup" v-if="showCustomOffsetPopup">
-          <div role="menu" class="of-menu of-pagination-offset">
-            <form class="of-group" method="POST" action="#" @submit.prevent="updateOffsetParams()">
+          <div role="menu" class="of-menu of-pagination-offset of--elevated-1">
+            <form
+              class="of-group"
+              method="POST"
+              action="#"
+              @submit.prevent="updateOffsetParams()"
+            >
               <div class="of-group-row of--pad">
                 <of-text-field
                   v-bind="startAtField"
@@ -63,7 +68,9 @@
                 />
               </div>
               <div class="of-group-row of--pad">
-                <of-button icon="accept" @click="updateOffsetParams()">Update</of-button>
+                <of-button icon="accept" @click="updateOffsetParams()"
+                  >Update</of-button
+                >
               </div>
             </form>
           </div>
@@ -72,12 +79,6 @@
     </div>
   </transition>
 </template>
-
-<style lang="scss">
-  .of-pagination-offset {
-    width: 10rem;
-  }
-</style>
 
 <script lang="ts">
 import {
@@ -116,15 +117,15 @@ export default defineComponent({
     let autoId: string
     const outerId = computed(() => {
       let id = props.id
-      if(! id) {
-        if(! autoId) {
-          autoId = 'of-pagination-' + (++ sysPaginationIndex);
+      if (!id) {
+        if (!autoId) {
+          autoId = 'of-pagination-' + ++sysPaginationIndex
         }
         id = autoId
       }
       return id
     })
-    const variant = computed(() => props.variant || 'solid')
+    const variant = computed(() => props.variant || 'filled')
     const density = computed(() => props.density || 'default')
 
     const getStartPageNum = function (): number {
@@ -230,7 +231,7 @@ export default defineComponent({
     )
     const offsetPopupOpened = ref(false)
 
-    const openOffsetPopup = (e: Event) => {
+    const openOffsetPopup = () => {
       offsetPopupOpened.value = true
     }
 

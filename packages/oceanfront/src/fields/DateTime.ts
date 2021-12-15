@@ -209,7 +209,7 @@ const fieldInit =
                   size: 'input',
                 })
               : null,
-            withClear && (ctx.editable || ctx.mode === 'locked')
+            withClear && !(!ctx.editable || ctx.mode === 'locked')
               ? h(OfIcon, {
                   name: 'cancel circle',
                   size: 'input',

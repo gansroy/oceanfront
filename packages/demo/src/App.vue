@@ -1,6 +1,7 @@
 <template>
   <of-config :form="{ locked: true }">
     <header class="app-header">
+      <div class="app-header-gradient" />
       <div class="app-menu-source" @click.prevent="toggleSidebar">
         <of-icon name="menu" />
       </div>
@@ -26,7 +27,7 @@
       </div>
       <div
         class="app-config-source"
-        style="fill: var(--of-pal-primary-88)"
+        style="fill: var(--of-on-primary-tint)"
         @click="
           () => {
             dark = !dark
@@ -221,15 +222,34 @@ export default defineComponent({
 }
 .app-header {
   align-items: center;
-  background: linear-gradient(
-    to bottom,
-    var(--of-pal-primary-38),
-    var(--of-pal-primary-42) 60%
-  );
-  color: var(--of-pal-primary-92);
+  background: var(--of-primary-tint);
+  color: var(--of-on-primary-tint);
   display: flex;
   flex: none;
   height: 3rem;
+  position: relative;
+
+  & .app-header-gradient {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 20%;
+    --gradient-from: rgba(255, 255, 255, 0%);
+    --gradient-to: rgba(255, 255, 255, 100%);
+
+    .-of-theme-dark & {
+      --gradient-from: rgba(0, 0, 0, 00%);
+      --gradient-to: rgba(0, 0, 0, 100%);
+    }
+    background: linear-gradient(
+      to bottom,
+      var(--gradient-from),
+      var(--gradient-to)
+    );
+  }
 }
 .app-header-main {
   align-items: center;
@@ -244,8 +264,9 @@ export default defineComponent({
   flex-direction: column;
   font-size: 1.75rem;
   width: 3rem;
+  opacity: 90%;
   &:hover {
-    color: var(--of-pal-primary-100);
+    opacity: 100%;
     text-shadow: 0 1.5px 2px rgba(36, 40, 60, 0.4);
   }
 }
@@ -264,7 +285,7 @@ export default defineComponent({
   padding-left: 1em;
 }
 .app-tag {
-  border: 1px solid var(--of-pal-primary-98);
+  border: 1px solid var(--of-color-on-primary);
   border-radius: 2px;
   font-size: 0.9rem;
   margin-left: 1.5ch;
@@ -277,17 +298,13 @@ export default defineComponent({
   padding-top: 0.25em;
 }
 .of-sidebar .of--expandable {
-  .of-list-item-inner {
-    background-color: var(--of-pal-neutral-72);
-    border-radius: 0;
-  }
   .of-list-item-content {
     font-size: 80%;
     text-transform: uppercase;
   }
 }
 .of-sidebar .of-list-group .of-list-item {
-  border-left: 2px solid var(--of-pal-neutral-variant-60);
+  border-left: 2px solid var(--of-color-outline);
 }
 .of--overlay > .of-sidebar {
   margin-top: 48px;

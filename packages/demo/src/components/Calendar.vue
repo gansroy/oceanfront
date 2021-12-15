@@ -99,10 +99,12 @@
         <div style="width: 100%">
           <div
             :style="{
+              display: 'flex',
+              'align-items': 'center',
               'background-color':
                 category === values.selectedCategory ? '#eee' : 'inherit',
               width: '100%',
-              'text-align': 'center',
+              'justify-content': 'center',
             }"
           >
             <of-icon name="user" /><i>{{ category }} </i>
@@ -113,7 +115,7 @@
         #event-content="{ formattedRange, event, brk }"
         v-if="values.useSlots"
       >
-        <of-icon name="phone" />
+        <of-icon name="phone" size="inherit" />
         <b
           ><i>
             {{ event.name }}
@@ -123,7 +125,7 @@
         {{ formattedRange }}
       </template>
       <template #allday-event-content="{ event }" v-if="values.useSlots">
-        <of-icon name="phone" />
+        <of-icon name="phone" size="inherit" />
         <b>
           <i>{{ event.name }}</i>
         </b>

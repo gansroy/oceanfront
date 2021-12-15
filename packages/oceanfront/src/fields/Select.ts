@@ -244,6 +244,7 @@ export const SelectField = defineFieldType({
           opened.value
             ? h(OfOptionList, {
                 items: formatItems.value,
+                class: 'of--elevated-1',
                 onClick: setValue,
               })
             : undefined,

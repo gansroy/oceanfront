@@ -110,8 +110,8 @@ export const ToggleField = defineFieldType({
             }),
             inputType.value === 'switch'
               ? h('div', { class: 'of-switch' }, [
-                  h('div', { class: 'of-switch-thumb' }),
                   h('div', { class: 'of-switch-track' }),
+                  h('div', { class: 'of-switch-thumb' }),
                 ])
               : h(OfIcon, {
                   class: 'of-toggle-icon',

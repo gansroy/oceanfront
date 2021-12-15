@@ -3,7 +3,12 @@
     <div class="of-data-table-header">
       <div v-if="rowsSelector" class="of-data-table-rows-selector">
         <slot name="header-rows-selector">
-          <of-button split :items="selectRowsItems">
+          <of-button
+            variant="text"
+            keep-text-color
+            split
+            :items="selectRowsItems"
+          >
             <of-toggle
               type="toggle"
               variant="basic"
@@ -115,7 +120,7 @@ export default defineComponent({
   name: 'OfDataTable',
   // components: { OfFormat },
   props: {
-    footerItems: { type: Array, default: () => [] },
+    footerItems: { type: Array as PropType<any[]>, default: () => [] },
     headers: { type: Array, default: () => [] } as any as object &
       PropType<DataTableHeader[]>,
     items: { type: Array, default: () => [] } as any as object &

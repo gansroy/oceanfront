@@ -13,7 +13,7 @@
 
     <div class="row content">
       <div class="column">
-        <div class="demo-form">
+        <div class="demo-form of--elevated-1">
           <div class="row form-row">
             <div class="column">
               <of-select-field

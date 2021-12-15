@@ -29,7 +29,7 @@
       <div class="roundr"><of-icon name="preview-icon" /></div>
 
       <svg
-        style="width: 0; height: 0; position: absolute;"
+        style="width: 0; height: 0; position: absolute"
         aria-hidden="true"
         focusable="false"
       >
@@ -147,7 +147,7 @@ export default defineComponent({
               const svgData = ev.target?.result as string
               try {
                 testIcon.value = { svg: parseSvg(svgData) }
-              } catch (e) {
+              } catch (e: any) {
                 loadError.value = e.message
               }
             }

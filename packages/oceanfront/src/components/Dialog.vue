@@ -6,7 +6,7 @@
           <div
             role="dialog"
             :id="id"
-            class="of-dialog"
+            class="of-dialog of--elevated-3"
             :class="classAttr"
             v-if="dlgActive"
           >

@@ -3,7 +3,7 @@
     <h1>Toggle Inputs</h1>
     <of-highlight lang="html" :value="sampleCode" />
 
-    <of-demo-field>
+    <of-demo-field allow-input-label-position>
       <template #default="props">
         <of-field
           type="toggle"

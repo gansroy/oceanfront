@@ -21,18 +21,13 @@
               :key="idx"
               :style="{
                 height: '30px',
-                width: '30px',
+                width: '3px',
                 background: cl.color,
-                'font-size': '65%',
-                'font-weight': 'bolder',
-                color: cl.isDark ? '#fff' : '#000',
                 'align-items': 'center',
                 'justify-content': 'center',
                 display: 'flex',
               }"
-            >
-              {{ idx }}
-            </div>
+            />
           </div>
         </div>
       </div>
@@ -61,6 +56,14 @@ type PaletteEntry = {
   isDark: boolean
   l: number
 }
+
+const limits: { [k: string]: number } = {
+  neutral: 0.4,
+  'neutral-variant': 0.4,
+}
+
+const shades = Array.from({ length: 101 }).map((_, idx) => idx)
+
 const ColorSchemeEditor = defineComponent({
   name: 'ColorSchemeEditor',
   setup() {
@@ -68,9 +71,8 @@ const ColorSchemeEditor = defineComponent({
       return Object.keys(colors.value).reduce((acc, name) => {
         const color = colors.value[name]
         const base = hexToHsluv(color)
-        acc[name] = [
-          0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 100,
-        ].reduce((acc, l) => {
+        base[1] *= limits[name] ?? 1
+        acc[name] = shades.reduce((acc, l) => {
           base[2] = l
           const cl = hsluvToHex(base)
           return {
@@ -120,15 +122,18 @@ const ColorSchemeEditor = defineComponent({
       style += `--of-color-outline-light: ${pallettes.value['neutral-variant'][50].color};\n`
       style += `--of-color-shadow-light: ${pallettes.value['neutral'][0].color};\n`
 
-      style += `--of-color-surface-light: ${pallettes.value['neutral'][98].color};\n`
+      style += `--of-color-surface-light: ${pallettes.value['neutral'][95].color};\n`
       style += `--of-color-on-surface-light: ${pallettes.value['neutral'][10].color};\n`
 
-      style += `--of-color-surface-variant-light: ${pallettes.value['neutral-variant'][90].color};\n`
+      style += `--of-color-surface-variant-light: ${pallettes.value['neutral-variant'][95].color};\n`
       style += `--of-color-on-surface-variant-light: ${pallettes.value['neutral-variant'][30].color};\n`
 
       style += `--of-color-inverse-surface-light: ${pallettes.value['neutral'][20].color};\n`
       style += `--of-color-inverse-on-surface-light: ${pallettes.value['neutral'][95].color};\n`
-      style += `--of-color-inverse-primary-light: ${pallettes.value['primary'][80].color};\n`
+
+      style += `--of-color-inverse-primary-light: ${pallettes.value['primary'][95].color};\n`
+      style += `--of-color-inverse-secondary-light: ${pallettes.value['secondary'][95].color};\n`
+      style += `--of-color-inverse-tertiary-light: ${pallettes.value['tertiary'][95].color};\n`
 
       /******************************************************* */
       style += `--of-color-primary-dark: ${pallettes.value['primary'][80].color};\n`
@@ -153,14 +158,17 @@ const ColorSchemeEditor = defineComponent({
       style += `--of-color-background-dark: ${pallettes.value['neutral'][10].color};\n`
       style += `--of-color-on-background-dark: ${pallettes.value['neutral'][90].color};\n`
       style += `--of-color-outline-dark: ${pallettes.value['neutral-variant'][60].color};\n`
-      style += `--of-color-shadow-dark: ${pallettes.value['neutral'][0].color};\n`
-      style += `--of-color-surface-dark: ${pallettes.value['neutral'][10].color};\n`
+      style += `--of-color-shadow-dark: ${pallettes.value['neutral'][40].color};\n`
+      style += `--of-color-surface-dark: ${pallettes.value['neutral'][20].color};\n`
       style += `--of-color-on-surface-dark: ${pallettes.value['neutral'][90].color};\n`
       style += `--of-color-surface-variant-dark: ${pallettes.value['neutral-variant'][30].color};\n`
       style += `--of-color-on-surface-variant-dark: ${pallettes.value['neutral-variant'][80].color};\n`
       style += `--of-color-inverse-surface-dark: ${pallettes.value['neutral'][90].color};\n`
       style += `--of-color-inverse-on-surface-dark: ${pallettes.value['neutral'][20].color};\n`
-      style += `--of-color-inverse-primary-dark: ${pallettes.value['primary'][40].color};\n`
+
+      style += `--of-color-inverse-primary-dark: ${pallettes.value['primary'][10].color};\n`
+      style += `--of-color-inverse-secondary-dark: ${pallettes.value['secondary'][10].color};\n`
+      style += `--of-color-inverse-tertiary-dark: ${pallettes.value['tertiary'][10].color};\n`
 
       const htmlEl = document.body.parentElement
       if (htmlEl) {

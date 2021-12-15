@@ -155,19 +155,19 @@ export default defineComponent({
 }
 .demo-icon {
   // box-sizing: content-box;
-  // display: inline-block;
+  display: flex;
   border-radius: 2px;
   // font-size: 1.75rem;
   // line-height: 1;
-  border: 1px solid var(--of-pal-primary-92);
-  background: var(--of-pal-primary-98);
-  color: var(--of-pal-primary-8);
-  box-shadow: 0 1px 0 var(--of-pal-primary-80);
+  border: 1px solid var(--of-color-outline);
+  background: var(--of-color-surface);
+  color: var(--of-color-on-surface);
+  box-shadow: 0 1px 0 var(--of-color-shadow);
   cursor: default;
   margin: 2px;
   text-align: center;
   &:hover {
-    color: var(--of-pal-primary-20);
+    color: var(--of-primary-tint);
   }
 }
 </style>

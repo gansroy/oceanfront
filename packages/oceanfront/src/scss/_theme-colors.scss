@@ -1,30 +1,4 @@
-$pal_colors: (189 47%) (15 83%) (34 97%) (0 75%) (80 15%) (191 8%);
-$pal_names: 'primary' 'secondary' 'tertiary' 'error' 'neutral' 'neutral-variant';
-$lighness_values: (
-  0 2 8 10 12 18 20 22 28 30 32 38 40 42 48 50 52 58 60 62 68 70 72 78 80 82 88
-    90 92 98 100
-);
-
 :root {
-  @each $pal in $pal_names {
-    $idx: index($pal_names, $pal);
-    $color: nth($pal_colors, $idx);
-    $hue: nth($color, 1);
-    $sat: nth($color, 2);
-    --of-pal-#{$pal}-hue: #{$hue};
-    --of-pal-#{$pal}-sat: #{$sat};
-    --of-pal-#{$pal}-huesat: #{$hue}, #{$sat};
-    @each $a in $lighness_values {
-      --of-pal-#{$pal}-#{$a}: hsl(
-        var(--of-pal-#{$pal}-huesat),
-        var(--of-light-#{$a})
-      );
-    }
-  }
-  @each $a in $lighness_values {
-    --of-light-#{$a}: #{$a * 1%};
-  }
-
   --of-color-primary-light: #266772;
   --of-color-primary-container-light: #b0ecfa;
   --of-color-on-primary-light: #ffffff;
@@ -41,17 +15,19 @@ $lighness_values: (
   --of-color-on-error-light: #ffffff;
   --of-color-error-container-light: #ffdad4;
   --of-color-on-error-container-light: #410001;
-  --of-color-background-light: #f6fceb;
-  --of-color-on-background-light: #191d12;
-  --of-color-outline-light: #6a7a7d;
+  --of-color-background-light: #f8faf4;
+  --of-color-on-background-light: #1b1c18;
+  --of-color-outline-light: #72787a;
   --of-color-shadow-light: #000000;
-  --of-color-surface-light: #f6fceb;
-  --of-color-on-surface-light: #191d12;
-  --of-color-surface-variant-light: #d6e5e9;
-  --of-color-on-surface-variant-light: #3f484b;
-  --of-color-inverse-surface-light: #2d3223;
-  --of-color-inverse-on-surface-light: #e7f7c8;
-  --of-color-inverse-primary-light: #58d7ed;
+  --of-color-surface-light: #edf3e1;
+  --of-color-on-surface-light: #1b1c18;
+  --of-color-surface-variant-light: #eef1f2;
+  --of-color-on-surface-variant-light: #444748;
+  --of-color-inverse-surface-light: #2f312b;
+  --of-color-inverse-on-surface-light: #edf3e1;
+  --of-color-inverse-primary-light: #daf5fd;
+  --of-color-inverse-secondary-light: #feedeb;
+  --of-color-inverse-tertiary-light: #ffede5;
   --of-color-primary-dark: #58d7ed;
   --of-color-primary-container-dark: #1b4d56;
   --of-color-on-primary-dark: #10353c;
@@ -68,17 +44,19 @@ $lighness_values: (
   --of-color-on-error-dark: #680003;
   --of-color-error-container-dark: #930006;
   --of-color-on-error-container-dark: #ffdad4;
-  --of-color-background-dark: #191d12;
-  --of-color-on-background-dark: #d6eaae;
-  --of-color-outline-dark: #819498;
-  --of-color-shadow-dark: #000000;
-  --of-color-surface-dark: #191d12;
-  --of-color-on-surface-dark: #d6eaae;
-  --of-color-surface-variant-dark: #3f484b;
-  --of-color-on-surface-variant-dark: #b2cbd1;
-  --of-color-inverse-surface-dark: #d6eaae;
-  --of-color-inverse-on-surface-dark: #2d3223;
-  --of-color-inverse-primary-dark: #266772;
+  --of-color-background-dark: #1b1c18;
+  --of-color-on-background-dark: #dde6cf;
+  --of-color-outline-dark: #8b9294;
+  --of-color-shadow-dark: #5c6055;
+  --of-color-surface-dark: #2f312b;
+  --of-color-on-surface-dark: #dde6cf;
+  --of-color-surface-variant-dark: #444748;
+  --of-color-on-surface-variant-dark: #bfc8cb;
+  --of-color-inverse-surface-dark: #dde6cf;
+  --of-color-inverse-on-surface-dark: #2f312b;
+  --of-color-inverse-primary-dark: #061f23;
+  --of-color-inverse-secondary-dark: #390c01;
+  --of-color-inverse-tertiary-dark: #2e1600;
 
   --of-color-primary: var(--of-color-primary-light);
   --of-color-primary-container: var(--of-color-primary-container-light);
@@ -109,12 +87,11 @@ $lighness_values: (
   --of-color-inverse-surface: var(--of-color-inverse-surface-light);
   --of-color-inverse-on-surface: var(--of-color-inverse-on-surface-light);
   --of-color-inverse-primary: var(--of-color-inverse-primary-light);
+  --of-color-inverse-secondary: var(--of-color-inverse-secondary-light);
+  --of-color-inverse-tertiary: var(--of-color-inverse-tertiary-light);
 }
 
 .-of-theme-dark {
-  @each $a in $lighness_values {
-    --of-light-#{$a}: #{(100 - $a) * 1%};
-  }
   --of-color-primary: var(--of-color-primary-dark);
   --of-color-primary-container: var(--of-color-primary-container-dark);
   --of-color-on-primary: var(--of-color-on-primary-dark);
@@ -144,4 +121,39 @@ $lighness_values: (
   --of-color-inverse-surface: var(--of-color-inverse-surface-dark);
   --of-color-inverse-on-surface: var(--of-color-inverse-on-surface-dark);
   --of-color-inverse-primary: var(--of-color-inverse-primary-dark);
+  --of-color-inverse-secondary: var(--of-color-inverse-secondary-dark);
+  --of-color-inverse-tertiary: var(--of-color-inverse-tertiary-dark);
+}
+
+.of--tinted {
+  --of-has-tint: 1;
+  &.of--tint-primary {
+    --of-tint-name: primary;
+    --of-primary-tint: var(--of-color-primary);
+    --of-on-primary-tint: var(--of-color-on-primary);
+    --of-container-tint: var(--of-color-primary-container);
+    --of-on-container-tint: var(--of-color-on-primary-container);
+    --of-inverse-tint: var(--of-color-inverse-primary);
+  }
+  &.of--tint-secondary {
+    --of-tint-name: secondary;
+    --of-primary-tint: var(--of-color-secondary);
+    --of-on-primary-tint: var(--of-color-on-secondary);
+    --of-container-tint: var(--of-color-secondary-container);
+    --of-on-container-tint: var(--of-color-on-secondary-container);
+    --of-inverse-tint: var(--of-color-inverse-secondary);
+  }
+
+  &.of--tint-tertiary {
+    --of-tint-name: tertiary;
+    --of-primary-tint: var(--of-color-tertiary);
+    --of-on-primary-tint: var(--of-color-on-tertiary);
+    --of-container-tint: var(--of-color-tertiary-container);
+    --of-on-container-tint: var(--of-color-on-tertiary-container);
+    --of-inverse-tint: var(--of-color-inverse-tertiary);
+  }
+}
+
+body {
+  --of-primary-tint: var(--of-color-primary);
 }

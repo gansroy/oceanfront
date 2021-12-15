@@ -122,7 +122,11 @@ export const OfListItem = defineComponent({
                 ...handlers,
                 ...props.attrs,
               },
-              h('div', { class: 'of-list-item-inner' }, content())
+              h('div', { class: 'of-list-item-inner' }, [
+                h('div', { class: 'of--layer of--layer-bg' }),
+                h('div', { class: 'of--layer of--layer-brd' }),
+                content(),
+              ])
             )
           },
         }

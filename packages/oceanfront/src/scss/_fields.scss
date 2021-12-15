@@ -16,8 +16,8 @@
   font-variant-numeric: lining-nums tabular-nums;
 }
 .of--text-placeholder {
-  color: #{state-color(field-color, placeholder)};
-  opacity: #{state-opacity(field-color, placeholder)};
+  color: #{use-color(field-color, placeholder)};
+  opacity: #{use-opacity(field-color, placeholder)};
 }
 
 .of--align-left {
@@ -50,25 +50,28 @@
 
 .of-group {
   --group-pad: calc(0.5em - 1px);
+  --elevation-level: 0;
   border-radius: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--of-color-outline);
   padding: var(--group-pad) 0;
 }
 .of-group-label {
-  color: #666;
+  color: #{use-color(field-label)};
+  opacity: #{use-opacity(field-label)};
   font-size: 90%;
   padding-left: 0.7em;
   margin-bottom: var(--group-pad);
 }
 .of-group:hover > .of-group-label {
-  color: #{state-color(field-label, disabled)};
-  opacity: #{state-opacity(field-label, disabled)};
+  color: #{use-color(field-label, hover)};
+  opacity: #{use-opacity(field-label, hover)};
 }
 .of-group:focus-within,
 .of-group.of--focused {
-  box-shadow: 0 0 1px 2px rgba(99, 131, 167, 0.5);
+  --elevation-level: 0.3;
   > .of-group-label {
-    color: $color-field-focus-label;
+    color: #{use-color(field-label, focus)};
+    opacity: #{use-opacity(field-label, focus)};
   }
 }
 .of-group-row {
@@ -129,7 +132,555 @@
     margin: -2px 0;
     justify-content: center;
     position: relative;
+    .of--checked & {
+      color: var(--of-primary-tint, inherit);
+    }
   }
+}
+
+.of-field {
+  @include define-color-opacity(
+    field-border,
+    (var(--of-primary-tint), 20%),
+    (
+      hover: var(--of-primary-tint) 30%,
+      disabled: var(--of-primary-tint) 30%,
+      focus: var(--of-primary-tint) 100%,
+      invalid: var(--of-color-error) 100%,
+    )
+  );
+  @include define-color-opacity(
+    field-filled-label,
+    (var(--of-primary-tint), 80%),
+    (
+      hover: var(--of-primary-tint) 90%,
+      disabled: var(--of-primary-tint) 38%,
+      focus: var(--of-primary-tint) 100%,
+      invalid: var(--of-color-error) 100%,
+    )
+  );
+  @include define-color-opacity(
+    field-filled-bg,
+    (var(--of-color-on-surface) 4%),
+    (
+      hover: var(--of-color-on-surface) 6%,
+      focus: var(--of-color-on-surface) 8%,
+    )
+  );
+  @include define-color-opacity(
+    field-color,
+    (var(--of-color-on-surface), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+      placeholder: var(--of-color-on-surface) 55%,
+    )
+  );
+  @include define-color-opacity(
+    field-filled-color,
+    (var(--of-color-on-surface), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+      placeholder: var(--of-color-on-surface) 55%,
+    )
+  );
+}
+
+.of-field,
+.of-group {
+  @include define-color-opacity(
+    field-label,
+    (var(--of-color-on-surface), 80%),
+    (
+      hover: var(--of-primary-tint) 90%,
+      disabled: var(--of-primary-tint) 38%,
+      focus: var(--of-primary-tint) 100%,
+      invalid: var(--of-color-error) 100%,
+    )
+  );
+}
+
+.of-field {
+  --field-background: transparent;
+  --field-background-opacity: 0%;
+  --field-border-color: transparent;
+  --field-border-opacity: 100%;
+  --field-border-radius: #{$border-radius-input};
+  --field-border-style: solid;
+  --field-border-width: 1px;
+  --field-color: #{use-color(field-color)};
+  --field-opacity: #{use-opacity(field-color)};
+  --field-font-size: #{$font-size-input};
+  --field-label-color: #{use-color(field-label)};
+  --field-label-opacity: #{use-opacity(field-label)};
+  --field-label-width: var(--of-field-label-width, 50%);
+  --field-input-height: calc(var(--field-line-height) * 1em);
+  --field-line-height: #{$line-height-input};
+  --field-h-pad: 0.5em;
+  --field-v-pad-base: 1.125em;
+  --field-v-pad: var(--field-v-pad-base);
+  --field-size: var(--of-field-size);
+  --field-size-append: 0px;
+  --field-size-prepend: 0px;
+
+  &.of--small {
+    --field-font-size: #{$font-size-input-sm};
+  }
+  &.of--large {
+    --field-font-size: #{$font-size-input-lg};
+  }
+  .of--layer-bg {
+    background-color: var(--field-background);
+    opacity: var(--field-background-opacity);
+  }
+
+  &.of--interactive {
+    --field-border-color: #{use-color(field-border)};
+    --field-border-opacity: #{use-opacity(field-border)};
+  }
+  &.of--mode-disabled {
+    --field-border-color: #{use-color(field-border, disabled)};
+    --field-border-opacity: #{use-opacity(field-border, disabled)};
+    --field-color: #{use-color(field-color, disabled)};
+    --field-opacity: #{use-opacity(field-color, disabled)};
+    --field-label-color: #{use-color(field-label, disabled)};
+    --field-label-opacity: #{use-opacity(field-label, disabled)};
+  }
+  &.of--mode-editable:hover {
+    &:not(.of--invalid) {
+      --field-border-color: #{use-color(field-border, hover)};
+      --field-border-opacity: #{use-opacity(field-border, hover)};
+    }
+    --field-label-color: #{use-color(field-label, hover)};
+    --field-label-opacity: #{use-opacity(field-label, hover)};
+  }
+  &.of--interactive.of--focused {
+    &:not(.of--invalid) {
+      --field-border-color: #{use-color(field-border, focus)};
+      --field-border-opacity: #{use-opacity(field-border, focus)};
+    }
+    --field-label-color: #{use-color(field-label, focus)};
+    --field-label-opacity: #{use-opacity(field-label, focus)};
+  }
+  &.of--invalid {
+    --field-label-color: #{use-color(field-label, invalid)};
+    --field-label-opacity: #{use-opacity(field-label, invalid)};
+
+    --field-border-color: #{use-color(field-border, invalid)};
+    --field-border-opacity: #{use-opacity(field-border, invalid)};
+  }
+
+  box-sizing: border-box;
+  color: var(--field-color);
+  display: flex;
+  flex: 1 0 auto; // var(--field-size);
+  flex-flow: column nowrap;
+  font-size: var(--field-font-size);
+  line-height: normal;
+  max-width: 100%;
+  outline: none;
+  text-align: start;
+  // width: calc(min(100%, var(--field-size)));
+  vertical-align: top;
+  @include no-select;
+
+  &.of--inline {
+    display: inline-flex;
+    width: var(--field-size);
+  }
+
+  &.of--label-left,
+  &.of--label-right {
+    display: grid;
+    grid-template-columns: var(--field-label-width) auto;
+
+    > .of-field-main-label {
+      align-items: center;
+      display: flex;
+      padding: 0 var(--field-h-pad);
+    }
+
+    &.of--inline {
+      display: inline-grid;
+    }
+  }
+  &.of--label-left {
+    grid-template-areas: 'label main' 'label caption';
+  }
+  &.of--label-right {
+    grid-template-areas: 'main label' 'caption label';
+  }
+  &.of--label-top > .of-field-main-label {
+    margin-bottom: 0.25em;
+    padding-left: var(--field-h-pad);
+  }
+
+  &.of--rounded {
+    --field-border-radius: calc(var(--field-v-pad) + 0.5em + 2px);
+  }
+
+  > .of-field-main > .of-field-body > .of-field-inner > textarea {
+    box-sizing: border-box;
+    margin: 0 var(--field-border-width) 2px 0;
+    padding: var(--field-v-pad) var(--field-h-pad);
+    resize: vertical;
+  }
+}
+
+.of-field.of--density-0 {
+  --field-v-pad-base: 1.125em;
+}
+.of-field.of--density-1 {
+  --field-v-pad-base: 0.875em;
+}
+.of-field.of--density-2 {
+  --field-v-pad-base: 0.625em;
+}
+.of-field.of--density-3 {
+  --field-v-pad-base: 0.375em;
+}
+
+.of-field-main-label {
+  grid-area: label;
+}
+.of-field-main {
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column nowrap;
+  grid-area: main;
+  min-height: calc(2 * var(--field-v-pad) + var(--field-input-height));
+  outline: none;
+  position: relative;
+}
+.of-field-caption {
+  grid-area: caption;
+}
+
+.of-field-body {
+  opacity: var(--field-opacity);
+  align-items: flex-start;
+  box-sizing: border-box;
+  display: flex;
+  overflow: hidden;
+  margin: calc(0px - var(--field-border-width));
+  min-height: calc(var(--field-v-pad) + var(--field-input-height));
+  position: relative;
+  max-width: 100%;
+
+  @include field-text-base;
+}
+
+.of-field-inner {
+  display: flex;
+  width: 0; // allow element to resize smaller in firefox when nowrap is used
+
+  > *:not(.of--unpadded) {
+    padding: var(--field-v-pad) var(--field-h-pad);
+  }
+}
+.of-field-inner,
+.of-field-content-text {
+  cursor: inherit;
+  flex: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  &:empty:after {
+    content: '\200b';
+  }
+}
+
+.of-field-input {
+  // caret-color
+  color: inherit;
+  display: block;
+  flex: auto;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+
+  // may want to restrict to certain variants:
+  appearance: none;
+  background: none;
+  border: none;
+  border-radius: 0;
+  // height: 100%;
+  width: 100%;
+  &::placeholder {
+    color: #{use-color(field-color, placeholder)};
+    opacity: #{use-opacity(field-color, placeholder)};
+  }
+}
+
+.of-field-input,
+.of-field-content-text {
+  box-sizing: border-box;
+  font-weight: normal;
+  margin: 0;
+  outline: none;
+  // letter-spacing
+}
+
+.of-field-fixed-content {
+  user-select: text;
+}
+
+.of-field-prepend,
+.of-field-append {
+  align-self: center;
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+}
+.of-field-prepend {
+  padding-left: var(--field-h-pad);
+}
+.of-field-append {
+  padding-right: var(--field-h-pad);
+}
+
+.of-field.of--variant-outlined {
+  .of--layer {
+    border-radius: var(--field-border-radius);
+  }
+  .of--layer-brd {
+    border: var(--field-border-width) var(--field-border-style) transparent;
+  }
+
+  &:not(.of--label-frame) .of--layer-brd {
+    border-color: var(--field-border-color);
+    opacity: var(--field-border-opacity);
+  }
+  > .of-field-inner {
+    margin-top: -1px;
+  }
+
+  &.of--label-frame {
+    --field-h-pad: 0.75em;
+
+    > .of-field-main {
+      border: none;
+
+      > .of-field-body {
+        margin: 0;
+
+        .of-field-inner {
+          opacity: 0;
+          transition: opacity 180ms;
+          will-change: opacity;
+        }
+      }
+
+      > .of-field-header {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+
+        &::before {
+          border: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          opacity: var(--field-border-opacity);
+          border-radius: var(--field-border-radius) 0 0
+            var(--field-border-radius);
+          border-right: none;
+          box-sizing: border-box;
+          content: '';
+          flex: 0 0
+            calc(max(var(--field-h-pad), var(--field-border-radius)) - 0.25em);
+          transition: border-color 120ms;
+        }
+        &::after {
+          border: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          opacity: var(--field-border-opacity);
+          border-radius: 0 var(--field-border-radius) var(--field-border-radius)
+            0; // inherit?
+          border-left: none;
+          content: '';
+          flex: auto;
+          transition: border-color 120ms;
+        }
+
+        .of-field-header-label {
+          border-bottom: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          border-top: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          opacity: var(--field-border-opacity);
+          box-sizing: border-box;
+          max-width: calc(100% - 2 * var(--field-h-pad));
+          padding: 0 0.25em;
+          transition: border-color 120ms;
+
+          .of-field-label {
+            position: relative;
+            top: calc(0px - var(--field-border-width));
+            display: block;
+            font-size: 0.75em;
+            transform: translateX(var(--field-size-prepend)) scale(1.3333)
+              translateY(var(--field-v-pad));
+            transform-origin: left top;
+            transition: transform 150ms;
+            backface-visibility: hidden; // avoid some jumping?
+            // will-change: transform; // FIXME currently blurry in chrome
+          }
+        }
+      }
+    }
+
+    &.of--interactive.of--focused {
+      --field-border-width: 2px;
+    }
+
+    &.of--interactive.of--focused,
+    &.of--active {
+      > .of-field-main {
+        box-shadow: none;
+
+        > .of-field-header {
+          .of-field-header-label {
+            border-top-color: transparent;
+
+            .of-field-label {
+              transform: translateY(-0.675em);
+            }
+          }
+        }
+
+        > .of-field-body > .of-field-inner {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+.of-field.of--variant-filled {
+  .of--layer-brd {
+    border: var(--field-border-width) var(--field-border-style)
+      var(--field-border-color);
+    border-color: transparent transparent var(--field-border-color) transparent;
+    opacity: var(--field-border-opacity);
+  }
+
+  &.of--mode-editable,
+  &.of--mode-locked {
+    --field-background: #{use-color(field-filled-bg)};
+    --field-background-opacity: #{use-opacity(field-filled-bg)};
+  }
+  &.of--interactive {
+    --field-color: #{use-color(field-filled-color)};
+    --field-opacity: #{use-opacity(field-filled-color)};
+    .of--layer {
+      border-radius: var(--field-border-radius) var(--field-border-radius) 0 0;
+    }
+  }
+  &.of--mode-editable:hover {
+    --field-background: #{use-color(field-filled-bg, hover)};
+    --field-background-opacity: #{use-opacity(field-filled-bg, hover)};
+  }
+  &.of--mode-disabled {
+    --field-color: #{use-color(field-filled-color, disabled)};
+    --field-opacity: #{use-opacity(field-filled-color, disabled)};
+    --field-border-style: dashed;
+    --field-label-color: #{use-color(field-filled-label, disabled)};
+    --field-label-opacity: #{use-opacity(field-filled-label, disabled)};
+  }
+  &.of--interactive.of--focused {
+    --field-background: #{use-color(field-filled-bg, focus)};
+    --field-background-opacity: #{use-opacity(field-filled-bg, focus)};
+    --field-label-color: #{use-color(field-filled-label, focus)};
+    --field-label-opacity: #{use-opacity(field-filled-label, focus)};
+  }
+
+  &.of--interactive > .of-field-main::after {
+    // ripple
+    background: #{use-color(field-border, focus)};
+    content: '';
+    height: 2px;
+    position: absolute;
+    bottom: calc(0px - var(--field-border-width));
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: opacity 90ms, transform 150ms;
+    will-change: opacity, transform;
+    z-index: 1;
+  }
+  &.of--interactive.of--invalid > .of-field-main::after {
+    background: #{use-color(field-border, invalid)};
+  }
+  &.of--interactive.of--focused > .of-field-main::after {
+    opacity: #{use-opacity(field-border, focus)};
+    transform: scaleX(1);
+  }
+  &.of--mode-editable:hover {
+    --field-label-color: #{use-color(field-filled-label, hover)};
+    --field-label-opacity: #{use-opacity(field-filled-label, hover)};
+  }
+
+  &.of--mode-disabled {
+    --field-label-color: #{use-color(field-filled-label, disabled)};
+    --field-label-opacity: #{use-opacity(field-filled-label, disabled)};
+  }
+
+  &.of--interactive.of--focused {
+    --field-label-color: #{use-color(field-filled-label, focus)};
+    --field-label-opacity: #{use-opacity(field-filled-label, focus)};
+  }
+
+  &.of--label-frame {
+    --field-h-pad: 0.75em;
+    --field-v-pad: calc(var(--field-v-pad-base) - 0.5em);
+
+    > .of-field-main {
+      min-height: calc(
+        1em + 2 * var(--field-v-pad) + var(--field-input-height)
+      );
+      padding: 0;
+
+      > .of-field-header {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -1px;
+        margin: calc(0px - var(--field-border-width));
+
+        .of-field-header-label {
+          box-sizing: border-box;
+          line-height: 1;
+          padding: var(--field-v-pad)
+            calc(var(--field-size-append) + var(--field-h-pad)) 0
+            calc(var(--field-size-prepend) + var(--field-h-pad));
+
+          .of-field-label {
+            font-size: 0.75em;
+          }
+        }
+      }
+
+      > .of-field-body {
+        > .of-field-inner {
+          margin-top: 1em;
+        }
+      }
+    }
+  }
+}
+
+.of-field-label {
+  align-self: center;
+  color: var(--field-label-color);
+  opacity: var(--field-label-opacity);
+  // cursor: inherit;
+  font-size: 0.8em;
+  text-overflow: ellipsis;
+  transition: color 100ms;
+  white-space: nowrap;
+  word-wrap: break-word;
 }
 
 // container around inline toggle field (checkbox or switch)
@@ -151,34 +702,37 @@
   width: 2em;
 
   &-thumb {
-    background-color: $color-slider;
+    background-color: var(--of-color-outline);
     // border: 1px solid #bbb;
     border-radius: 50%;
     box-sizing: border-box;
-    box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
+    box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15),
+      0 -2px 1px 0 rgba(100, 100, 100, 0.15);
     content: ' ';
     height: 1em;
     left: 0;
     position: absolute;
     top: 0;
-    transition: left 0.15s ease-in-out;
+    transition: left 0.15s ease-in-out, background-color 0.15s ease-in-out;
     width: 1em;
   }
 
   &-track {
-    border: 1px solid #777;
+    border: 1px solid var(--of-color-outline);
     border-radius: 1em;
     box-sizing: border-box;
     flex: auto;
     height: 100%;
-    transition: background 0.15s ease-in-out;
+    transition: background 0.15s ease-in-out, border 0.15s ease-in-out;
   }
   .of--checked & {
     .of-switch-thumb {
+      background-color: var(--of-primary-tint);
       left: calc(1em - 1px);
     }
     .of-switch-track {
-      background: #888;
+      background-color: var(--of-primary-tint);
+      opacity: 72%;
     }
   }
 }
@@ -201,10 +755,11 @@
     width: 100%;
     z-index: 0;
     height: 0.5em;
-    background: $border-color-field;
+    background-color: var(--of-primary-tint);
+    opacity: 60%;
   }
   &-thumb {
-    background-color: $color-slider;
+    background-color: var(--of-primary-tint);
     border-radius: 50%;
     box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
     box-sizing: border-box;
@@ -226,8 +781,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    border: 1px solid #{state-color(field-border)};
-    opacity: #{state-opacity(field-border)};
+    border: 1px solid #{use-color(field-border)};
+    opacity: #{use-opacity(field-border)};
     border-radius: 2px;
   }
   position: relative;

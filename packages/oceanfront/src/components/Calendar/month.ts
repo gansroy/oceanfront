@@ -210,7 +210,7 @@ export default defineComponent({
     return h(
       'div',
       {
-        class: 'container',
+        class: 'container of--calendar',
         style: {
           '--of-event-height': `${this.eventHeightNumber}px`,
         },

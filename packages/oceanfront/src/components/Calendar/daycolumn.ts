@@ -526,7 +526,7 @@ export default defineComponent({
     return h(
       'div',
       {
-        class: 'container',
+        class: 'container of--calendar',
         style: {
           '--of-calendar-iterval-height': `${hourHeight}px`,
           '--of-event-height': `${eventHeight}px`,

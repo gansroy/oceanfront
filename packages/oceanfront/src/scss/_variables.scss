@@ -1,249 +1,62 @@
-$vars: ();
+@function use-var($cat, $var, $state: false) {
+  @if $state {
+    @return var(--of-#{$cat}-#{$var}-#{$state}, var(--of-#{$cat}-#{$var}));
+  } @else {
+    @return var(--of-#{$cat}-#{$var});
+  }
+}
 
-@function color-names($vars, $_categories, $_states) {
-  @each $_cat in $_categories {
-    $vars: map-merge(
-      $vars,
-      (
-        #{$_cat}-color: var(--of-#{$_cat}-color),
-        #{$_cat}-opacity: var(--of-#{$_cat}-opacity)
-      )
-    );
-    @each $_st in $_states {
-      $vars: map-merge(
-        $vars,
-        (
-          #{$_cat}-color-#{$_st}: var(--of-#{$_cat}-color-#{$_st}),
-          #{$_cat}-opacity-#{$_st}: var(--of-#{$_cat}-opacity-#{$_st})
-        )
-      );
+@function use-color($cat, $state: false) {
+  @return use-var($cat, color, $state);
+}
+
+@function use-opacity($cat, $state: false) {
+  @return use-var($cat, opacity, $state);
+}
+
+@mixin define-vars($cat, $default, $spec: ()) {
+  @each $attr, $val in $default {
+    --of-#{$cat}-#{$attr}: #{$val};
+  }
+  @each $state, $vals in $spec {
+    @each $attr, $val in $vals {
+      --of-#{$cat}-#{$attr}-#{$state}: #{$val};
     }
   }
-  @return $vars;
 }
 
-@mixin state-vars($cat, $default, $spec) {
-  --of-#{$cat}-color: #{nth($default, 1)};
-  --of-#{$cat}-opacity: #{nth($default, 2)};
-  @each $_name, $_s in $spec {
-    $_color: nth($_s, 1);
-    $_opa: nth($_s, 2);
-    --of-#{$cat}-color-#{$_name}: #{$_color};
-    --of-#{$cat}-opacity-#{$_name}: #{$_opa};
+@mixin define-color-opacity($cat, $default, $spec: ()) {
+  $default: (
+    color: #{nth($default, 1)},
+    opacity: #{nth($default, 2)},
+  );
+  $new_spec: ();
+  @each $state, $vals in $spec {
+    $_color: nth($vals, 1);
+    $_opa: nth($vals, 2);
+    $new_spec: map-merge(
+      $new_spec,
+      (
+        $state: (
+          color: #{$_color},
+          opacity: #{$_opa},
+        ),
+      )
+    );
   }
+  @include define-vars($cat, $default, $new_spec);
 }
-
-$base-color-disabled: var(--of-color-neutral) !default;
-$base-color-focus-border: var(--of-color-primary);
-$base-opacity-focus-border: 100%;
-
-$vars: color-names(
-  $vars,
-  (field-border, field-label, field-filled-label, field-bg),
-  (active, disabled, focus, hover, invalid)
-);
-
-$vars: color-names($vars, (field-filled-bg), (focus, hover));
-$vars: color-names(
-  $vars,
-  (field-color, field-filled-color),
-  (disabled, placeholder)
-);
-
-@function state-color($cat, $state: false) {
-  @if $state {
-    @return map-get($vars, #{$cat}-color-#{$state});
-  } @else {
-    @return map-get($vars, #{$cat}-color);
-  }
-}
-
-@function state-opacity($cat, $state: false) {
-  @if $state {
-    @return map-get($vars, #{$cat}-opacity-#{$state});
-  } @else {
-    @return map-get($vars, #{$cat}-opacity);
-  }
-}
-
-/// REMOVE       !!!!!!!!!!!!!!!!!!!!!!!!
-$border-color-field: var(--of-border-color-field);
-/// REMOVE END   !!!!!!!!!!!!!!!!!!!!!!!!
 
 $border-radius-input: var(--border-radius-input, 5px);
-
-:root {
-  @include state-vars(
-    field-border,
-    (var(--of-color-primary), 20%),
-    (
-      hover: var(--of-color-primary) 30%,
-      disabled: var(--of-color-primary) 30%,
-      focus: var(--of-color-primary) 100%,
-      invalid: var(--of-color-error) 100%,
-    )
-  );
-  @include state-vars(
-    field-label,
-    (var(--of-color-primary), 80%),
-    (
-      hover: var(--of-color-primary) 90%,
-      disabled: var(--of-color-primary) 38%,
-      focus: var(--of-color-primary) 100%,
-      invalid: var(--of-color-error) 100%,
-    )
-  );
-  @include state-vars(
-    field-filled-label,
-    (var(--of-color-primary), 80%),
-    (
-      hover: var(--of-color-primary) 90%,
-      disabled: var(--of-color-primary) 38%,
-      focus: var(--of-color-primary) 100%,
-      invalid: var(--of-color-error) 100%,
-    )
-  );
-  @include state-vars(
-    field-filled-bg,
-    (var(--of-color-on-surface), 4%),
-    (
-      hover: var(--of-color-on-surface) 6%,
-      focus: var(--of-color-on-surface) 8%,
-    )
-  );
-  @include state-vars(
-    field-color,
-    (var(--of-color-on-surface), 100%),
-    (
-      disabled: var(--of-color-on-surface) 38%,
-      placeholder: var(--of-color-on-surface) 55%,
-    )
-  );
-  @include state-vars(
-    field-filled-color,
-    (var(--of-color-on-surface), 100%),
-    (
-      disabled: var(--of-color-on-surface) 38%,
-      placeholder: var(--of-color-on-surface) 55%,
-    )
-  );
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-$base-color-field-border: var(--of-pal-neutral-10) !default;
-$base-color-field-bg: #fff !default;
-$base-color-highlight: var(--of-color-primary-80) !default;
-$base-color-field-text: var(--of-pal-primary-18) !default;
-$base-color-muted: var(--of-pal-primary-68) !default; // fixme use alpha
-$base-color-sheet-bg: var(--of-pal-primary-98);
-$base-color-text: var(--of-pal-primary-28);
-
-$base-color-item-text: var(--of-pal-primary-30);
-$base-color-item-disabled: var(--of-pal-primary-60);
-$base-color-item-active: var(--of-pal-primary-52);
-$base-color-item-active-text: var(--of-pal-primary-100);
-$base-color-item-hover: var(--of-pal-primary-70);
-$base-color-item-hover-text: var(--of-pal-primary-12);
-$base-color-item-header: var(--of-pal-primary-80);
-$base-color-item-header-text: var(--of-pal-primary-28);
-
-$base-color-menu-bg: var(--of-pal-primary-98);
-$base-color-menu-border: var(--of-pal-primary-72);
-$base-color-menu-shadow: var(--of-pal-primary-92);
-$color-slider: var(--of-color-slider, var(--of-pal-neutral-50));
-
-//////////////////////////////////////////////////////////////////////////
-
-:root {
-  --of-bg-field-focus: var(--of-bg-field);
-  --of-bg-field-filled: var(--of-color-on-surface);
-  --of-bg-field-filled-opacity: 4%;
-  --of-bg-field-filled-hover: var(--of-color-on-surface);
-  --of-bg-field-filled-hover-opacity: 6%;
-  --of-bg-field-filled-focus: var(--of-color-on-surface);
-  --of-bg-field-filled-focus-opacity: 8%;
-  --of-box-shadow-field-basic: inset 1px 2px 8px
-    var(--of-box-shadow-field-basic-color, var(--of-pal-neutral-8));
-  --of-box-shadow-field-basic-focus: 0 0 3px 0.1rem
-    var(--of-box-shadow-field-basic-focus-color, var(--of-color-on-surface));
-  --of-box-shadow-field-basic-focus-opacity: 30%;
-
-  --of-bg-sheet: #{$base-color-sheet-bg};
-  --of-color-sheet: #{$base-color-text};
-  --of-field-size: 26ch;
-  --of-button-color-bg: var(--of-pal-primary-40);
-  --of-button-color-bg-hover: var(--of-pal-primary-48);
-  --of-button-color-shadow: hsla(
-    var(--of-pal-primary-huesat),
-    var(--of-light-10),
-    0.15
-  );
-  --of-button-color-label: var(--of-pal-primary-90);
-  --of-button-color-bg-disabled: var(--of-pal-primary-60);
-  --of-button-color-label-disabled: var(--of-pal-primary-20);
-  --of-button-outlined-color: hsla(
-    var(--of-pal-primary-huesat),
-    var(--of-light-30),
-    0.3
-  );
-  --of-button-outlined-color-bg-hover: hsla(
-    var(--of-pal-primary-huesat),
-    var(--of-light-30),
-    0.1
-  );
-  --of-icon-size: 24px;
-}
-
-$color-item-text: var(--of-color-item-text, $base-color-item-text);
-$color-item-disabled: var(--of-color-item-disabled, $base-color-item-disabled);
-$color-item-active: var(--of-color-item-active, $base-color-item-active);
-$color-item-active-text: var(
-  --of-color-item-active-text,
-  $base-color-item-active-text
-);
-$color-item-hover: var(--of-color-item-hover, $base-color-item-hover);
-$color-item-hover-text: var(
-  --of-color-item-hover-text,
-  $base-color-item-hover-text
-);
-$color-item-header: var(--of-color-item-header, $base-color-item-header);
-$color-item-header-text: var(
-  --of-color-item-header-text,
-  $base-color-item-header-text
-);
-
-$color-menu-bg: var(--of-color-menu-bg, $base-color-menu-bg);
-$color-menu-border: var(--of-color-menu-border, $base-color-menu-border);
-$color-menu-shadow: var(--of-color-menu-shadow, $base-color-menu-shadow);
-
-$bg-badge: var(--bg-badge, $base-color-field-bg);
-$bg-bullet-down: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTUgMTEiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxLjQxNDIxOyI+PGcgaWQ9InBvbHlnb24xNzMiIHRyYW5zZm9ybT0ibWF0cml4KDEuOTQzNDQsMCwwLDEuNzI4MjMsLTYwMC43OTgsLTM2Ljg0MTUpIj48cGF0aCBkPSJNMzA5LjUsMjJMMzE2LjUsMjJMMzEzLDI3TDMwOS41LDIyWiIgc3R5bGU9ImZpbGw6cmdiKDY4LDY4LDY4KTtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+);
-$bg-field: var(--of-bg-field);
-$bg-field-focus: var(--of-bg-field-focus);
-$bg-field-filled: var(--of-bg-field-filled);
-$bg-field-filled-opacity: var(--of-bg-field-filled-opacity);
-$bg-field-filled-hover: var(--of-bg-field-filled-hover);
-$bg-field-filled-hover-opacity: var(--of-bg-field-filled-hover-opacity);
-$bg-field-filled-focus: var(--of-bg-field-filled-focus);
-$bg-field-filled-focus-opacity: var(--of-bg-field-filled-focus-opacity);
-$border-color-active: var(--of-border-color-active);
-$border-color-button: var(--border-color-button, #{$base-color-field-border});
-
+$base-color-sheet-bg: var(--of-color-surface);
+$base-color-text: var(--of-color-on-surface);
+$base-color-highlight: var(--of-inverse-tint) !default;
+$vertical-align-badge: middle;
 $border-radius-badge: 0.5em;
 $border-radius-button: var(--border-radius-button, 5px);
-$border-radius-menu-current: var(--border-radius-menu-current, 2px);
-$border-radius-progress: var(--border-radius-progress, 3px);
 $border-width-badge: 1px !default;
-$border-width-button: 1px !default;
-$border-width-input: 1px !default;
-$border-width-tab: 1px !default;
-$box-shadow-field-basic: var(--of-box-shadow-field-basic);
-$box-shadow-field-basic-focus: var(--of-box-shadow-field-basic-focus);
-$color-badge: var(--color-badge, #{$base-color-muted});
-$color-field-label: var(--of-color-field-label);
-$color-field-focus-label: var(--of-color-field-focus-label);
-$color-menu-option: var(--color-menu-option, #{$base-color-field-text});
+$bg-badge: var(--bg-badge, --of-color-background);
+
 $font-family-input: var(--font-family-input, inherit);
 $font-size-badge: var(--font-size-badge, 0.8rem);
 $font-size-badge-sm: var(--font-size-badge-sm, 0.55rem);
@@ -260,7 +73,6 @@ $line-height-badge: var(--line-height-badge, 1);
 $line-height-input: var(--line-height-input, 1.25); // 20/16
 $line-height-form-label: var(--line-height-form-label, 1.7);
 $line-height-menu-option: var(--line-height-menu-option, 1.35);
-$opacity-input-disabled: var(--opacity-input-disabled, 38%);
 $pad-h-badge: var(--pad-h-badge, 0.5em);
 $pad-v-badge: var(--pad-v-badge, 0.5em);
 $pad-v-compact-badge: var(--pad-v-compact-badge, 0.2em);
@@ -271,26 +83,19 @@ $pad-v-input: var(--pad-v-input, 0.5em);
 $pad-h-menu-option: var(--pad-h-menu-option, 0.4em);
 $pad-v-menu-option: var(--pad-v-menu-option, 0.3em);
 $pad-inline-button: var(--pad-inline-button, 0.2rem);
-$text-shadow-badge: var(--text-shadow-badge, 0 1px 0 rgba(180, 180, 180, 0.1));
-$text-shadow-button: var(
-  --text-shadow-button,
-  0 1px 1px rgba(255, 255, 255, 0.8)
-);
-$text-shadow-disabled: var(
-  --text-shadow-disabled,
-  0 1px 0 rgba(255, 255, 255, 0.3)
-);
-$text-shadow-label: var(--text-shadow-label, 0 1px 0 rgba(150, 150, 150, 0.1));
-$text-shadow-progress: var(--text-shadow-progress, 0 0 2px #fff);
-$vertical-align-badge: middle;
-$vertical-align-button: middle;
-$vertical-align-input: text-bottom; // NOTE: was middle in previous version
-$width-bullet: var(--width-bullet, 1.1em);
 
-$border-radius-field: var(--border-radius-field, 4px);
-$pad-h-field: calc(var(--font-size-input, 1rem) * 0.75);
-$pad-v-field: 0.25em;
-$pad-v-field-inner: 0.75rem;
+//////////////////////////////////////////////////////////////////////////
+
+/** !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+$color-field-focus-label: var(--of-color-field-focus-label);
+/** !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+
+:root {
+  --of-bg-sheet: #{$base-color-sheet-bg};
+  --of-color-sheet: #{$base-color-text};
+  --of-field-size: 26ch;
+  --of-icon-size: 24px;
+}
 
 @mixin no-select {
   -webkit-user-select: none;

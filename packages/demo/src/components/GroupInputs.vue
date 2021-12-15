@@ -3,11 +3,11 @@
     <h1>Grouped Inputs</h1>
     <!-- of-highlight lang="html" :value="sampleCode" / -->
 
-    <div class="demo-fields">
+    <div class="demo-fields of--elevated-1" style="max-width: fit-content">
       <div class="row form-row">
         <div class="column filled">
           <div class="of-block">
-            <div class="of-group">
+            <div class="of-group of--elevated">
               <div class="of-group-row of--pad">
                 <of-field id="pw" input-type="password" label="Password" />
                 <of-field
@@ -19,7 +19,7 @@
             </div>
           </div>
           <div class="of-block">
-            <div class="of-group">
+            <div class="of-group of--elevated">
               <div class="of-group-label">Primary Address</div>
               <div class="of-group-row of--pad">
                 <of-field
@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="of-block">
-            <div class="of-group">
+            <div class="of-group of--elevated">
               <div class="of-group-label">Phone Numbers</div>
               <div class="of-group-row of--pad">
                 <of-field
@@ -58,6 +58,7 @@
                   frame="none"
                   model-value="999-888-7777"
                   variant="filled"
+                  density="3"
                   id="ph1"
                 />
                 <label class="of-group-label" for="ph1">work</label>
@@ -68,6 +69,7 @@
                   frame="none"
                   model-value="999-888-7778"
                   variant="filled"
+                  density="3"
                   id="ph2"
                 />
                 <label class="of-group-label" for="ph2">mobile</label>
@@ -78,6 +80,7 @@
                   frame="none"
                   model-value="999-888-7789"
                   variant="filled"
+                  density="3"
                   id="ph3"
                 />
                 <label class="of-group-label" for="ph3">home</label>

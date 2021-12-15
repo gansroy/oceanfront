@@ -116,3 +116,41 @@
 .state-invert {
   @include state-mixin-grad(#fff, #888, #777);
 }
+
+.of--elevated,
+.of--elevated-1,
+.of--elevated-2,
+.of--elevated-3,
+.of--elevated-4 {
+  --of-elevation-shadow: var(--of-color-shadow);
+  box-shadow: var(--of-elevation-shadow) 0 calc(var(--elevation-level, 0) * 3px)
+    calc(var(--elevation-level, 0) * 10px)
+    calc(var(--elevation-level, 0) * -2px)
+    /*,
+    var(--of-elevation-shadow) 0 calc(var(--elevation-level, 0) * 2px)
+      calc(var(--elevation-level, 0) * 2px) 0,
+    var(--of-elevation-shadow) 0 calc(var(--elevation-level, 0) * 1px)
+      calc(var(--elevation-level, 0) * 5px) 0*/;
+}
+
+.of--elevated-1 {
+  --elevation-level: 1;
+}
+.of--elevated-2 {
+  --elevation-level: 2;
+}
+.of--elevated-3 {
+  --elevation-level: 3;
+}
+.of--elevated-4 {
+  --elevation-level: 4;
+}
+
+.of--layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
