@@ -236,6 +236,7 @@ export default ColorSchemeEditor
 .palette-grid {
   display: grid;
   font-size: 65%;
+  max-width: 60em;
   grid-template-columns: repeat(4, minmax(50px, 1fr));
   border-radius: 4px;
   overflow: hidden;
