@@ -105,7 +105,7 @@
             >
           </span>
         </div>
-        <div class="column spaced">
+        <div class="column spaced" v-if="variant != 'text'">
           <span
             class="of-buttonset"
             :class="{

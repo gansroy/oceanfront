@@ -2,7 +2,13 @@
   <transition>
     <div :id="outerId" class="of-pagination">
       <div class="of-pagination-header">
-        <span class="of-buttonset">
+        <span
+          class="of-buttonset"
+          :class="{
+            'of-buttonset--rounded': rounded,
+            'of--elevated': variant == 'elevated',
+          }"
+        >
           <of-button
             v-if="showGoToFirst"
             icon="page first"
@@ -108,6 +114,7 @@ export default defineComponent({
     customOffsetPopup: [Boolean, String],
     startRecord: Number,
     perPage: Number,
+    rounded: Boolean,
   },
   emits: ['update:modelValue', 'select-page', 'update-offset'],
   setup(props, context: SetupContext) {

@@ -12,23 +12,10 @@
       />
     </div>
     <div class="demo-fields">
-      <div class="row form-row">
+      <div class="row form-row" v-for="variant in variants" :key="variant">
         <of-pagination
           v-model="page"
-          variant="outlined"
-          :density="params.density"
-          :per-page="perPage"
-          :total-pages="total"
-          :start-record="startRecord"
-          @select-page="selectPage"
-          @update-offset="updateOffset"
-          custom-offset-popup
-        />
-      </div>
-      <div class="row form-row">
-        <of-pagination
-          v-model="page"
-          variant="solid"
+          :variant="variant"
           :density="params.density"
           :per-page="perPage"
           :total-pages="total"
@@ -50,6 +37,7 @@ import {
   calcPageValue,
 } from 'oceanfront/src/lib/paginator'
 
+const variants = ['outlined', 'tonal', 'filled', 'elevated']
 export default defineComponent({
   setup() {
     const sampleCode = `
@@ -90,6 +78,7 @@ export default defineComponent({
       startRecord,
       densityOptions,
       params,
+      variants,
       selectPage,
       updateOffset,
     }
