@@ -432,7 +432,7 @@
     }
 
     &.of--variant-elevated.of--focused,
-    &.of--variant-tonal.of--focused,
+    &.of--variant-tonal.of--focused:not(.of--active),
     &.of--variant-filled.of--focused {
       --state-bg-opacity: 0;
     }
