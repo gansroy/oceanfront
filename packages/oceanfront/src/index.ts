@@ -48,14 +48,14 @@ import { NumberFormatter } from './formats/Number'
 import { UrlFormatter } from './formats/Url'
 import { extendDefaultConfig } from './lib/config'
 import { FieldTypeConstructor } from './lib/fields'
-import { registerIconFont } from './lib/icons'
+import { registerIconSet } from './lib/icons'
 import {
   registerFieldType,
   registerTextFormatter,
   TextFormatterConstructor,
 } from './lib/formats'
 import './scss/index.scss'
-import { materialIconFont } from '../icons/material'
+import { materialIconSet } from '../icons/material'
 
 export const components: Record<string, Component> = {
   OfConfig,
@@ -126,7 +126,7 @@ export const Oceanfront: Plugin = {
       for (const idx in textFormatters) {
         registerTextFormatter(idx, textFormatters[idx])
       }
-      registerIconFont('mi', materialIconFont)
+      registerIconSet(materialIconSet)
     })
     if (args && typeof args.config === 'function') {
       extendDefaultConfig(args.config)
@@ -173,9 +173,9 @@ export {
   useFormats,
 } from './lib/formats'
 export {
-  IconFont,
+  IconSet,
   SvgIcon,
-  registerIconFont,
+  registerIconSet,
   showMissingIcons,
   useIcons,
 } from './lib/icons'
