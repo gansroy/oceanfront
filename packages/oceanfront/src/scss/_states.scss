@@ -123,14 +123,18 @@
 .of--elevated-3,
 .of--elevated-4 {
   --of-elevation-shadow: var(--of-color-shadow);
-  box-shadow: var(--of-elevation-shadow) 0 calc(var(--elevation-level, 0) * 3px)
-    calc(var(--elevation-level, 0) * 10px)
-    calc(var(--elevation-level, 0) * -2px)
-    /*,
+  --el: var(--elevation-level, 0);
+  --of-elevation-mul: calc(
+    (var(--el) / max(0.0005, var(--el))) + (var(--el) * 0.2)
+  );
+  box-shadow: /*var(--of-elevation-shadow) 0 calc(var(--elevation-level, 0) * 3px)
+      calc(var(--elevation-level, 0) * 2px)
+      calc(var(--elevation-level, 0) * -1px),
     var(--of-elevation-shadow) 0 calc(var(--elevation-level, 0) * 2px)
-      calc(var(--elevation-level, 0) * 2px) 0,
-    var(--of-elevation-shadow) 0 calc(var(--elevation-level, 0) * 1px)
-      calc(var(--elevation-level, 0) * 5px) 0*/;
+      calc(var(--elevation-level, 0) * 2px) 0,*/ var(
+      --of-elevation-shadow
+    )
+    0 0 calc(var(--of-elevation-mul) * 6px) -1px;
 }
 
 .of--elevated-1 {
