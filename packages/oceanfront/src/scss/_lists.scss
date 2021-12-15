@@ -33,9 +33,16 @@
       exp: var(--of-color-on-surface-variant) 100%,
     )
   );
+  @include define-color-opacity(
+    item-border,
+    (transparent, 0%),
+    (
+      focus: var(--of-primary-tint) 50%,
+    )
+  );
 
-  --item-border-color: transparent;
-  --item-border-opacity: 100%;
+  --border-color: transparent;
+  --border-opacity: 100%;
   --bg-color: #{use-color(item-bg)};
   --bg-opacity: #{use-opacity(item-bg)};
   --text-color: #{use-color(item-text)};
@@ -67,6 +74,10 @@
         background-color: var(--bg-color);
         opacity: var(--bg-opacity);
       }
+      &.of--layer-brd {
+        border-color: var(--border-color);
+        opacity: var(--border-opacity);
+      }
     }
 
     color: var(--text-color);
@@ -95,6 +106,10 @@
     --bg-opacity: #{use-opacity(item-bg, hover)};
     --text-color: #{use-color(item-text, hover)};
     --text-opacity: #{use-opacity(item-text, hover)};
+  }
+  &:not(.of--disabled).of--focused {
+    --border-color: #{use-color(item-border, focus)};
+    --border-opacity: #{use-opacity(item-border, focus)};
   }
   &.of--expandable {
     font-weight: 800;
