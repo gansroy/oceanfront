@@ -1,6 +1,11 @@
 <template>
   <transition>
-    <div class="of-tabs" ref="tabs">
+    <div
+      class="of-tabs"
+      ref="tabs"
+      :class="{ 'of--with-border': withBorder }"
+      :style="offsetStyle"
+    >
       <div :class="cls">
         <div
           :class="{
@@ -24,29 +29,31 @@
             />
           </div>
           <div class="of-tabs-header" ref="ofTabsHeader">
-            <div
-              :key="tab.key"
-              @click="tab.disabled || selectTab(tab.key)"
-              @mouseover="tab.disabled || openSubMenu(tab.key, $event)"
-              @mouseleave="tab.disabled || subMenuLeave()"
-              v-for="tab in tabsList"
-              :class="{
-                'is-active': selectedTabKey === tab.key,
-                'is-disabled': tab.disabled,
-                'of-tab-header-item': true,
-                'overflow-button': tab.overflowButton,
-                'of--rounded': rounded,
-              }"
-            >
-              <div class="of--layer of--layer-bg" />
-              <div class="of--layer of--layer-brd" />
-              <div class="of--layer of--layer-outl" />
-              <div class="of-tab-text">
-                <of-icon v-if="tab.icon" :name="tab.icon" size="1.1em" />
-                {{ tab.text }}
+            <template :key="tab.key" v-for="tab in tabsList">
+              <div class="overflow-separator" v-if="tab.overflowButton" />
+              <div
+                @click="tab.disabled || selectTab(tab.key)"
+                @mouseover="tab.disabled || openSubMenu(tab.key, $event)"
+                @mouseleave="tab.disabled || subMenuLeave()"
+                :class="{
+                  'is-active': selectedTabKey === tab.key,
+                  'is-disabled': tab.disabled,
+                  'of-tab-header-item': true,
+                  'overflow-button': tab.overflowButton,
+                  'of--rounded': rounded,
+                  'of--with-border': withBorder,
+                }"
+              >
+                <div class="of--layer of--layer-bg" />
+                <div class="of--layer of--layer-brd" />
+                <div class="of--layer of--layer-outl" />
+                <div class="of-tab-text">
+                  <of-icon v-if="tab.icon" :name="tab.icon" size="1.1em" />
+                  {{ tab.text }}
+                </div>
+                <div class="of--layer of--layer-state" />
               </div>
-              <div class="of--layer of--layer-state" />
-            </div>
+            </template>
             <div class="of-tabs-line" ref="tabLine"></div>
           </div>
           <div
@@ -147,6 +154,16 @@ import { ItemList, useItems } from '../lib/items'
 import { OfOverlay } from './Overlay'
 import { Tab } from '../lib/tab'
 
+const elementWidth = (el?: HTMLElement): number => {
+  let w = el?.offsetWidth ?? 0
+  if (el instanceof HTMLElement) {
+    const style = window.getComputedStyle(el, null)
+    w += parseFloat(style.marginLeft)
+    w += parseFloat(style.marginRight)
+  }
+  return w
+}
+
 const formatItems = (
   list: any,
   params: any,
@@ -209,15 +226,22 @@ export default defineComponent({
     overflowButton: { type: Boolean, default: false },
     variant: String,
     rounded: Boolean,
+    withBorder: Boolean,
+    activeOffset: String,
     tabsList: Array,
     submenu: Boolean,
   },
   emits: ['update:modelValue', 'select-tab'],
   setup(props, context: SetupContext) {
     let tabs: any = ref([])
+
     let ofTabsHeader: any = ref()
     let selectedTabKey: any = ref(props.modelValue)
     let tabsWidth: any = ref([])
+
+    const offsetStyle = computed(() => ({
+      '--tab-active-border': props.activeOffset,
+    }))
 
     watch(
       () => props.modelValue,
@@ -231,18 +255,17 @@ export default defineComponent({
     )
 
     watch(
-      () => props.items,
+      () => [props.items, props.variant, props.withBorder],
       () => {
         fillItems()
         init()
       }
     )
-
     const targetPos = computed(() => watchPosition())
     watch(targetPos.value.positions, () => repositionLine())
 
     const variant = computed(() => props.variant || 'material')
-    const cls = 'of--variant-' + variant.value
+    const cls = computed(() => 'of--variant-' + variant.value)
 
     const overflowButtonEnabled = computed(() => props.overflowButton || false)
     let showOverflowButton = ref(false)
@@ -407,9 +430,10 @@ export default defineComponent({
         tabsWidth.value = []
 
         for (let item of ofTabsHeader.value.childNodes) {
-          if (!item.clientWidth) continue
+          const w = elementWidth(item)
+          if (!w) continue
 
-          tabsWidth.value.push(item.clientWidth)
+          tabsWidth.value.push(w)
         }
       }
     }
@@ -448,7 +472,7 @@ export default defineComponent({
     }
 
     const adjustTabsVisibility = function (tabsIndexes: Array<number>) {
-      const outerWidth = ofTabsHeader.value.clientWidth
+      const outerWidth = elementWidth(ofTabsHeader.value)
       let tabsWidth = 0
       let hasInvisibleTabs = false
 
@@ -456,7 +480,6 @@ export default defineComponent({
       for (const index of tabsIndexes) {
         updateTabVisibility(index, true)
         tabsWidth = calcVisibleTabsWidth()
-
         if (tabsWidth > outerWidth) {
           hasInvisibleTabs = true
           updateTabVisibility(index, false)
@@ -477,11 +500,15 @@ export default defineComponent({
       const overflowButton = tabs.value.querySelector(
         '.of-tab-header-item.overflow-button'
       )
+      const overflowSeparator = tabs.value.querySelector('.overflow-separator')
 
-      width += overflowButton?.clientWidth ?? 0
+      width += overflowButton?.offsetWidth ?? 0
+      width += overflowSeparator?.offsetWidth ?? 0
 
       for (const item of tabsList.value) {
-        if (item['visible']) width += tabsWidth.value[item['key']]
+        if (item['visible']) {
+          width += tabsWidth.value[item['key']]
+        }
       }
 
       return width
@@ -508,6 +535,17 @@ export default defineComponent({
       return undefined
     }
 
+    watch(
+      () => props.variant,
+      () => {
+        const reposition = () => {
+          repositionTabs()
+          repositionLine()
+          tabs.value?.removeEventListener('transitionend', reposition)
+        }
+        tabs.value?.addEventListener('transitionend', reposition)
+      }
+    )
     const selectTab = function (key: number, emitSelectEvent = true) {
       const selectedTab: Tab | undefined = getTab(key)
 
@@ -629,6 +667,7 @@ export default defineComponent({
 
       tabs,
       cls,
+      offsetStyle,
 
       invisibleTabsList,
       outsideTabsOpened,

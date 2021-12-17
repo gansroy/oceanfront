@@ -8,6 +8,11 @@
   --tab-opacity: #{use-opacity(#{$cat}-color, $state)};
 }
 
+@mixin apply-tab-border($cat, $state: false) {
+  --tab-border-color: #{use-color(#{$cat}-brd, $state)};
+  --tab-border-opacity: #{use-opacity(#{$cat}-brd, $state)};
+}
+
 @mixin apply-tab-state($cat, $state: false) {
   --tab-state-color: #{use-color(#{$cat}-st, $state)};
   --tab-state-opacity: #{use-opacity(#{$cat}-st, $state)};
@@ -20,7 +25,6 @@
     (transparent, 0%),
     (
       hover: var(--of-primary-tint) 6%,
-      active: var(--of-primary-tint) 12%,
     )
   );
   @include define-color-opacity(
@@ -32,6 +36,31 @@
     )
   );
   @include define-color-opacity(mat-st, (transparent, 0), ());
+
+  @include define-color-opacity(
+    att-bg,
+    (transparent, 0%),
+    (
+      hover: var(--of-primary-tint) 6%,
+      active: var(--of-color-surface) 100%,
+    )
+  );
+  @include define-color-opacity(
+    att-brd,
+    (--of-primary-tint, 100%),
+    (
+      active: var(--of-primary-tint) 100%,
+    )
+  );
+  @include define-color-opacity(
+    att-color,
+    (var(--of-color-on-background), 100%),
+    (
+      active: var(--of-primary-tint) 100%,
+      disabled: var(--of-color-on-background) 38%,
+    )
+  );
+  @include define-color-opacity(att-st, (transparent, 0), ());
 
   @include define-color-opacity(
     osx-bg,
@@ -61,16 +90,22 @@
   .of-tab-header-item {
     position: relative;
   }
+  &.of--with-border {
+    margin-bottom: calc(-1 * var(--tab-active-border));
+  }
 
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
+  --tab-border-width: 1px;
+  --tab-active-border: 1px;
 
   div {
+    .of-tabs-line {
+      visibility: hidden;
+    }
     .of-tabs-navigation-header {
       --tabs-bg-color: transparent;
-
-      --tab-border-width: 1px;
 
       --tab-bg-color: transparent;
       --tab-bg-opacity: 0;
@@ -81,9 +116,12 @@
       --tab-state-color: 0;
       --tab-state-opacity: 0;
       --tab-border-radius: 0;
+      --tab-border-color: transparent;
+      --tab-border-opacity: 0;
       position: relative;
       background: var(--tabs-bg-color);
       padding: 0 3px;
+      box-sizing: border-box;
 
       .of-tabs-navigation {
         opacity: 0;
@@ -140,11 +178,15 @@
       scrollbar-width: none;
       -ms-overflow-style: none;
       overflow-x: auto;
+      overflow-y: visible;
 
       &::-webkit-scrollbar {
         display: none;
       }
 
+      .overflow-separator {
+        min-width: 10px;
+      }
       .of-tab-header-item {
         padding: 10px 10px;
         &:not(.is-disabled) {
@@ -153,7 +195,8 @@
         &.of--rounded {
           --tab-border-radius: var(--of-tab-border-radius);
         }
-        transition: all 0.2s;
+        transition-property: all, margin;
+        transition-duration: 0.2s, 0s;
         display: flex;
 
         .of-tab-text {
@@ -176,14 +219,17 @@
             background-color: var(--tab-bg-color);
             opacity: var(--tab-bg-opacity);
           }
+          &.of--layer-brd {
+            border-color: var(--tab-border-color);
+            opacity: var(--tab-border-opacity);
+          }
           &.of--layer-state {
             background-color: var(--tab-state-color);
             opacity: var(--tab-state-opacity);
           }
         }
-
-        &.is-active {
-          transition: all 0.2s;
+        &:last- {
+          margin-right: 4px;
         }
 
         &.overflow-button {
@@ -201,12 +247,13 @@
       background: var(--of-primary-tint);
       bottom: 0;
       transition: all 0.2s;
+      visibility: visible;
     }
-    @include apply-tab-bg(mat);
-    @include apply-tab-bg(mat);
-    @include apply-tab-color(mat);
 
     .of-tab-header-item {
+      @include apply-tab-bg(mat);
+      @include apply-tab-bg(mat);
+      @include apply-tab-color(mat);
       &:not(.is-disabled) {
         &:hover {
           @include apply-tab-bg(mat, hover);
@@ -232,15 +279,59 @@
     }
   }
 
+  .of--variant-attached {
+    .of-tab-header-item {
+      margin-left: 1ex;
+      @include apply-tab-bg(att);
+      @include apply-tab-color(att);
+      @include apply-tab-border(att);
+      &:not(.is-disabled) {
+        &:hover {
+          @include apply-tab-bg(att, hover);
+          @include apply-tab-color(att, hover);
+          @include apply-tab-state(att, hover);
+        }
+        &:focus {
+          @include apply-tab-bg(att, focus);
+          @include apply-tab-color(att, focus);
+          @include apply-tab-state(att, focus);
+        }
+        &.is-active {
+          @include apply-tab-bg(att, active);
+          @include apply-tab-color(att, active);
+          @include apply-tab-state(att, active);
+          @include apply-tab-border(att, active);
+        }
+        &.of--with-border {
+          margin-bottom: var(--tab-active-border);
+          &.is-active {
+            bottom: calc(-1 * var(--tab-active-border));
+            margin-top: calc(-1 * var(--tab-active-border));
+          }
+          & .of--layer-brd {
+            border-style: solid;
+            border-width: var(--tab-border-width);
+            border-bottom: none;
+          }
+          &.is-active .of--layer-brd {
+            border-width: var(--tab-active-border);
+          }
+        }
+      }
+      &.is-disabled {
+        @include apply-tab-bg(att, disabled);
+        @include apply-tab-color(att, disabled);
+        @include apply-tab-state(att, disabled);
+      }
+    }
+  }
+
   .of--variant-osx {
     .of-tabs-header {
       &::-webkit-scrollbar {
         display: none;
       }
 
-      .of-tabs-line {
-        visibility: hidden;
-      }
       @include apply-tab-bg(osx);
       @include apply-tab-color(osx);
       @include apply-tab-state(osx);
