@@ -83,6 +83,7 @@
     color: var(--text-color);
     opacity: var(--text-opacity);
     & .of-list-item-content {
+      display: flex;
       flex: auto;
       z-index: 1;
     }

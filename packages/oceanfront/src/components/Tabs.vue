@@ -74,32 +74,13 @@
           :target="subMenuOuter"
         >
           <slot name="sub-menu" v-if="showSubMenu">
-            <div
-              role="menu"
-              class="of-menu of-invisible-tabs"
+            <of-option-list
               @mouseenter="subMenuClearTimeout()"
               @mouseleave="subMenuLeave()"
-            >
-              <div class="of-list-outer">
-                <div
-                  class="of-list-item of--enabled"
-                  :key="subTab.key"
-                  @click="selectSubMenuTab(subTab)"
-                  v-for="subTab in subMenuTabsList"
-                >
-                  <div class="of-list-item-inner">
-                    <of-icon
-                      v-if="subTab.icon"
-                      :name="subTab.icon"
-                      size="input"
-                    />
-                    <div class="of-list-item-content">
-                      {{ subTab.text }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              @click="selectSubMenuTab"
+              class="of--elevated-1"
+              :items="subMenuTabsList"
+            />
           </slot>
         </of-overlay>
       </div>
@@ -111,27 +92,11 @@
         :target="overflowButtonEl"
         @blur="closeOverflowPopup"
       >
-        <div
-          role="menu"
-          class="of-menu of-invisible-tabs of--elevated-1"
-          v-show="outsideTabsOpened"
-        >
-          <div class="of-list-outer">
-            <div
-              class="of-list-item of--enabled"
-              :key="tab.key"
-              v-for="tab in invisibleTabsList"
-              @click="selectInvisibleTab(tab.key)"
-            >
-              <div class="of-list-item-inner">
-                <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
-                <div class="of-list-item-content">
-                  {{ tab.text }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <of-option-list
+          class="of--elevated-1"
+          :items="invisibleTabsList"
+          @click="selectInvisibleTab"
+        />
       </of-overlay>
     </div>
   </transition>
@@ -197,6 +162,8 @@ const formatItems = (
       overflowButton: false,
       text: item[params.textKey],
       key: parseInt(item['key']),
+      value: parseInt(item['key']),
+      selected: false,
       parentKey: !isNaN(item['parentKey'])
         ? parseInt(item['parentKey'])
         : undefined,
@@ -666,7 +633,7 @@ export default defineComponent({
       clearTimeout(subMenuTimerId.value)
     }
 
-    const selectSubMenuTab = function (tab: Tab) {
+    const selectSubMenuTab = function (_index: number, tab: Tab) {
       if (typeof tab.parentKey !== 'undefined') {
         selectTab(tab.parentKey, false)
         context.emit('select-tab', tab)

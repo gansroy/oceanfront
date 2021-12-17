@@ -1,5 +1,6 @@
 export interface Tab {
   key: number
+  value: number
   text: string
   visible: boolean
   overflowButton: boolean

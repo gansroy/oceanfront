@@ -15,11 +15,13 @@
               :disabled="item.disabled"
               @click="
                 () => {
-                  onClick(item.value)
+                  onClick(item.value, item)
                 }
               "
               :attrs="item.attrs"
-              >{{ item.text }}
+            >
+              <of-icon v-if="item.icon" :name="item.icon" size="input" />
+              {{ item.text }}
             </of-list-item>
           </template>
         </div>
