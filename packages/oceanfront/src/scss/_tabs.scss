@@ -338,6 +338,14 @@
         @include apply-tab-bg(att, disabled);
         @include apply-tab-color(att, disabled);
         @include apply-tab-state(att, disabled);
+
+        &.of--with-border {
+          & .of--layer-brd {
+            border-style: solid;
+            border-width: var(--tab-border-width);
+            border-bottom: none;
+          }
+        }
       }
     }
   }
