@@ -6,7 +6,8 @@
     <of-tabs
       :items="testItems"
       v-model="selected1"
-      variant="standard"
+      variant="material"
+      rounded
       @select-tab="selectTab"
     />
     <h2>Tabs with submenu</h2>
@@ -14,7 +15,7 @@
       :items="testItems5"
       submenu
       v-model="selected5"
-      variant="standard"
+      variant="material"
       @select-tab="selectTab"
     />
     <h2>Scrolling tabs</h2>
@@ -22,7 +23,7 @@
       :items="testItems2"
       v-model="selected2"
       :scrolling="true"
-      variant="standard"
+      variant="material"
       style="width: 400px"
     />
     <h2>Tabs with overflow button</h2>
@@ -30,12 +31,12 @@
       :items="testItems3"
       v-model="selected3"
       overflow-button
-      variant="standard"
+      variant="material"
       style="width: 400px"
       @select-tab="selectTab"
     />
     <h2>OSX tabs</h2>
-    <of-tabs :items="testItems4" v-model="selected4" variant="osx" />
+    <of-tabs :items="testItems2" v-model="selected2" variant="osx" />
   </div>
 </template>
 
@@ -46,35 +47,11 @@ import { Tab } from 'oceanfront/src/lib/tab'
 export default defineComponent({
   setup() {
     const sampleCode = `
-<of-tabs
-  :items="itemsList"
-  v-model="selItem"
-  variant="standard"
-  @select-tab="selectTab"
-/>
-<of-tabs
-  :items="itemsList"
-  v-model="selItem"
-  variant="standard"
-  submenu
-/>
-<of-tabs
-  :items="itemsList2"
-  v-model="selItem"
-  :scrolling="true"
-  style="width: 400px;"
-/>
-<of-tabs
-  :items="itemsList3"
-  v-model="selItem"
-  overflow-buttton
-  style="width: 400px;"
-/>
-<of-tabs
-  :items="itemsList"
-  v-model="selItem"
-  variant="osx"
-/>
+<of-tabs :items="itemsList" v-model="selItem" variant="material" @select-tab="selectTab" />
+<of-tabs :items="itemsList" v-model="selItem" variant="material" submenu />
+<of-tabs :items="itemsList2" v-model="selItem" :scrolling="true" style="width: 400px;" />
+<of-tabs :items="itemsList3" v-model="selItem" overflow-buttton style="width: 400px;" />
+<of-tabs :items="itemsList" v-model="selItem" variant="osx" />
 `
 
     const testItems = [
@@ -90,10 +67,10 @@ export default defineComponent({
     const testItems2 = [
       'Tab 1',
       'Tab 2',
-      'Tab 3',
+      { text: 'Tab 3', icon: 'user' },
       'Tab 4',
       'Tab 5',
-      { text: 'Tab 6' },
+      { text: 'Tab 6', disabled: true },
       'Tab 7',
       'Tab 8',
     ]
@@ -102,11 +79,11 @@ export default defineComponent({
       'Tab 1',
       'Tab 2',
       'Tab 3',
-      { text: 'Tab 4', icon: 'led red' },
+      { text: 'Tab 4', icon: 'user' },
       'Tab 5',
       { text: 'Tab 6' },
       'Tab 7',
-      'Tab 8',
+      { text: 'Tab 8', disabled: true },
       'Tab 9',
       { text: 'Tab 10', icon: 'led blue' },
     ]

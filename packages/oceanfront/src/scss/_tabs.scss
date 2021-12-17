@@ -1,11 +1,88 @@
+@mixin apply-tab-bg($cat, $state: false) {
+  --tab-bg-color: #{use-color(#{$cat}-bg, $state)};
+  --tab-bg-opacity: #{use-opacity(#{$cat}-bg, $state)};
+}
 
+@mixin apply-tab-color($cat, $state: false) {
+  --tab-color: #{use-color(#{$cat}-color, $state)};
+  --tab-opacity: #{use-opacity(#{$cat}-color, $state)};
+}
+
+@mixin apply-tab-state($cat, $state: false) {
+  --tab-state-color: #{use-color(#{$cat}-st, $state)};
+  --tab-state-opacity: #{use-opacity(#{$cat}-st, $state)};
+}
+
+/** Define state variables */
 .of-tabs {
+  @include define-color-opacity(
+    mat-bg,
+    (transparent, 0%),
+    (
+      hover: var(--of-primary-tint) 6%,
+      active: var(--of-primary-tint) 12%,
+    )
+  );
+  @include define-color-opacity(
+    mat-color,
+    (var(--of-color-on-background), 100%),
+    (
+      active: var(--of-primary-tint) 100%,
+      disabled: var(--of-color-on-background) 38%,
+    )
+  );
+  @include define-color-opacity(mat-st, (transparent, 0), ());
 
-  .of--variant-standard,
-  .of--variant-osx {
+  @include define-color-opacity(
+    osx-bg,
+    (transparent, 0%),
+    (
+      hover: var(--of-color-inverse-surface) 60%,
+      active: var(--of-color-inverse-surface) 60%,
+    )
+  );
+  @include define-color-opacity(
+    osx-color,
+    (var(--of-color-on-surface), 100%),
+    (
+      hover: var(--of-color-inverse-on-surface) 100%,
+      active: var(--of-color-inverse-on-surface) 100%,
+      disabled: var(--of-color-on-surface) 38%,
+    )
+  );
+  @include define-color-opacity(osx-st, (transparent, 0), ());
+
+  --of-tab-border-radius: 6px;
+  --of-tab-osx-border-color: var(--of-color-outline);
+}
+
+/** Styling */
+.of-tabs {
+  .of-tab-header-item {
+    position: relative;
+  }
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+
+  div {
     .of-tabs-navigation-header {
+      --tabs-bg-color: transparent;
+
+      --tab-border-width: 1px;
+
+      --tab-bg-color: transparent;
+      --tab-bg-opacity: 0;
+      --tab-color: inherit;
+      --tab-opacity: 100%;
+      --state-bg-color: transparent;
+      --state-bg-opacity: 0;
+      --tab-state-color: 0;
+      --tab-state-opacity: 0;
+      --tab-border-radius: 0;
       position: relative;
-      background: #eee;
+      background: var(--tabs-bg-color);
       padding: 0 3px;
 
       .of-tabs-navigation {
@@ -31,19 +108,18 @@
         }
 
         .of-tabs-header {
-          padding-left: 43px;
+          margin-left: 43px;
         }
       }
     }
 
     .of-tabs-navigation {
-      background: #eeeeee;
       padding: 8px 9px;
       position: absolute;
       height: 30px;
       left: 0;
       cursor: pointer;
-      z-index: 1;
+      z-index: 3;
 
       &.of-tabs-navigation-next {
         z-index: 111;
@@ -69,27 +145,44 @@
         display: none;
       }
 
-      .of-tabs-line {
-        position: absolute;
-        height: 2px;
-        background: #88aed3;
-        bottom: 0;
-        transition: all 0.2s;
-      }
-
       .of-tab-header-item {
         padding: 10px 10px;
-        cursor: pointer;
+        &:not(.is-disabled) {
+          cursor: pointer;
+        }
+        &.of--rounded {
+          --tab-border-radius: var(--of-tab-border-radius);
+        }
         transition: all 0.2s;
+        display: flex;
 
-        &:hover,
-        &:focus {
-          background-color: white;
-          transition: all 0.2s;
+        .of-tab-text {
+          z-index: 2;
+          display: flex;
+          color: var(--tab-color);
+          opacity: var(--tab-opacity);
+          & > .of-icon {
+            margin-right: 0.4em;
+          }
+        }
+        * {
+          pointer-events: none;
+        }
+        .of--layer {
+          border-top-left-radius: var(--tab-border-radius);
+          border-top-right-radius: var(--tab-border-radius);
+
+          &.of--layer-bg {
+            background-color: var(--tab-bg-color);
+            opacity: var(--tab-bg-opacity);
+          }
+          &.of--layer-state {
+            background-color: var(--tab-state-color);
+            opacity: var(--tab-state-opacity);
+          }
         }
 
         &.is-active {
-          background-color: white;
           transition: all 0.2s;
         }
 
@@ -101,10 +194,46 @@
     }
   }
 
+  .of--variant-material {
+    .of-tabs-line {
+      position: absolute;
+      height: 2px;
+      background: var(--of-primary-tint);
+      bottom: 0;
+      transition: all 0.2s;
+    }
+    @include apply-tab-bg(mat);
+    @include apply-tab-bg(mat);
+    @include apply-tab-color(mat);
+
+    .of-tab-header-item {
+      &:not(.is-disabled) {
+        &:hover {
+          @include apply-tab-bg(mat, hover);
+          @include apply-tab-color(mat, hover);
+          @include apply-tab-state(mat, hover);
+        }
+        &:focus {
+          @include apply-tab-bg(mat, focus);
+          @include apply-tab-color(mat, focus);
+          @include apply-tab-state(mat, focus);
+        }
+        &.is-active {
+          @include apply-tab-bg(mat, active);
+          @include apply-tab-color(mat, active);
+          @include apply-tab-state(mat, active);
+        }
+      }
+      &.is-disabled {
+        @include apply-tab-bg(mat, disabled);
+        @include apply-tab-color(mat, disabled);
+        @include apply-tab-state(mat, disabled);
+      }
+    }
+  }
+
   .of--variant-osx {
     .of-tabs-header {
-      -webkit-user-select: none;
-
       &::-webkit-scrollbar {
         display: none;
       }
@@ -112,36 +241,63 @@
       .of-tabs-line {
         visibility: hidden;
       }
+      @include apply-tab-bg(osx);
+      @include apply-tab-color(osx);
+      @include apply-tab-state(osx);
 
       .of-tab-header-item {
+        font-weight: 500;
         float: left;
-        background: #f0f0f0;
-        border-top: 1px solid #c9c9c9;
-        border-bottom: 1px solid #c9c9c9;
+        border-top: 1px solid var(--of-tab-osx-border-color);
+        border-bottom: 1px solid var(--of-tab-osx-border-color);
         list-style: none;
-        display: block;
         height: 19px !important;
-        color: #000;
         text-decoration: none;
         font-size: 13px;
         padding: 2px 20px 2px 20px;
-        border-right: 1px solid #e5e5e5;
+        border-right: 1px solid var(--of-tab-osx-border-color);
+
+        .of-tab-text > .of-icon {
+          margin-right: 0.2em;
+        }
 
         &:first-of-type {
-          border-left: 1px solid #c9c9c9;
-          border-left-color: #c9c9c9;
+          border-left: 1px solid var(--of-tab-osx-border-color);
+          border-left-color: var(--of-tab-osx-border-color);
           border-top-left-radius: 4px;
           border-bottom-left-radius: 4px;
         }
 
         &:nth-last-of-type(2) {
-          border-right: 1px solid #c9c9c9;
-          border-right-color: #c9c9c9;
+          border-right: 1px solid var(--of-tab-osx-border-color);
+          border-right-color: var(--of-tab-osx-border-color);
           border-top-right-radius: 4px;
           border-bottom-right-radius: 4px;
+        }
+
+        &:not(.is-disabled) {
+          &:hover {
+            @include apply-tab-bg(osx, hover);
+            @include apply-tab-color(osx, hover);
+            @include apply-tab-state(osx, hover);
+          }
+          &:focus {
+            @include apply-tab-bg(osx, focus);
+            @include apply-tab-color(osx, focus);
+            @include apply-tab-state(osx, focus);
+          }
+          &.is-active {
+            @include apply-tab-bg(osx, active);
+            @include apply-tab-color(osx, active);
+            @include apply-tab-state(osx, active);
+          }
+        }
+        &.is-disabled {
+          @include apply-tab-bg(osx, disabled);
+          @include apply-tab-color(osx, disabled);
+          @include apply-tab-state(osx, disabled);
         }
       }
     }
   }
-
 }

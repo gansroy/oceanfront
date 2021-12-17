@@ -26,18 +26,26 @@
           <div class="of-tabs-header" ref="ofTabsHeader">
             <div
               :key="tab.key"
-              @click="selectTab(tab.key)"
-              @mouseover="openSubMenu(tab.key, $event)"
-              @mouseleave="subMenuLeave()"
+              @click="tab.disabled || selectTab(tab.key)"
+              @mouseover="tab.disabled || openSubMenu(tab.key, $event)"
+              @mouseleave="tab.disabled || subMenuLeave()"
               v-for="tab in tabsList"
               :class="{
                 'is-active': selectedTabKey === tab.key,
+                'is-disabled': tab.disabled,
                 'of-tab-header-item': true,
                 'overflow-button': tab.overflowButton,
+                'of--rounded': rounded,
               }"
             >
-              <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
-              {{ tab.text }}
+              <div class="of--layer of--layer-bg" />
+              <div class="of--layer of--layer-brd" />
+              <div class="of--layer of--layer-outl" />
+              <div class="of-tab-text">
+                <of-icon v-if="tab.icon" :name="tab.icon" size="1.1em" />
+                {{ tab.text }}
+              </div>
+              <div class="of--layer of--layer-state" />
             </div>
             <div class="of-tabs-line" ref="tabLine"></div>
           </div>
@@ -95,7 +103,7 @@
       >
         <div
           role="menu"
-          class="of-menu of-invisible-tabs"
+          class="of-menu of-invisible-tabs of--elevated-1"
           v-show="outsideTabsOpened"
         >
           <div class="of-list-outer">
@@ -188,7 +196,6 @@ const formatItems = (
       parentKey: undefined,
     } as Tab)
   }
-
   return rows
 }
 
@@ -201,6 +208,7 @@ export default defineComponent({
     scrolling: { type: Boolean, default: false },
     overflowButton: { type: Boolean, default: false },
     variant: String,
+    rounded: Boolean,
     tabsList: Array,
     submenu: Boolean,
   },
@@ -217,6 +225,7 @@ export default defineComponent({
         selectedTabKey.value = val
         nextTick(() => {
           repositionLine()
+          repositionTabs()
         })
       }
     )
@@ -232,7 +241,7 @@ export default defineComponent({
     const targetPos = computed(() => watchPosition())
     watch(targetPos.value.positions, () => repositionLine())
 
-    const variant = computed(() => props.variant || 'standard')
+    const variant = computed(() => props.variant || 'material')
     const cls = 'of--variant-' + variant.value
 
     const overflowButtonEnabled = computed(() => props.overflowButton || false)
@@ -557,7 +566,7 @@ export default defineComponent({
     const subMenuTabsList: Ref<Tab[]> = ref([])
     const subMenuTimerId = ref()
 
-    const openSubMenu = (key: number, _evt?: MouseEvent) => {
+    const openSubMenu = (key: number, evt?: MouseEvent) => {
       if (!showSubMenu.value) return false
 
       if (key !== -1 && variant.value !== 'osx') {
@@ -569,7 +578,7 @@ export default defineComponent({
           subMenuTimerId.value = window.setTimeout(
             () => {
               subMenuTabsList.value = tab.subMenuItems ?? []
-              subMenuOuter.value = _evt?.target
+              subMenuOuter.value = evt?.target
               subMenuOpened.value = true
             },
             subMenuOpened.value ? 0 : 500
