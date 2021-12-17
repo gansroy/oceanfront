@@ -87,6 +87,20 @@
 
 /** Styling */
 .of-tabs {
+  --tabs-v-pad-base: 0.3em;
+  &.of--density-0 {
+    --tabs-v-pad-base: 0.6em;
+  }
+  &.of--density-1 {
+    --tabs-v-pad-base: 0.4em;
+  }
+  &.of--density-2 {
+    --tabs-v-pad-base: 0.3em;
+  }
+  &.of--density-3 {
+    --tabs-v-pad-base: 0.2em;
+  }
+
   .of-tab-header-item {
     position: relative;
   }
@@ -188,7 +202,8 @@
         min-width: 10px;
       }
       .of-tab-header-item {
-        padding: 10px 10px;
+        padding: calc(1.1 * var(--tabs-v-pad-base)) 10px
+          calc(0.9 * var(--tabs-v-pad-base)) 10px;
         &:not(.is-disabled) {
           cursor: pointer;
         }
@@ -198,6 +213,7 @@
         transition-property: all, margin;
         transition-duration: 0.2s, 0s;
         display: flex;
+        align-items: center;
 
         .of-tab-text {
           z-index: 2;

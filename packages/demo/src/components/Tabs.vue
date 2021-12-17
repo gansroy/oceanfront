@@ -13,6 +13,14 @@
             :items="variants"
           />
         </div>
+        <div class="column spaced">
+          <of-field
+            v-model="params.density"
+            label="Density"
+            type="select"
+            :items="densities"
+          />
+        </div>
         <div class="column spaced" style="align-self: flex-end">
           <of-field
             v-model="params.rounded"
@@ -50,6 +58,7 @@
         :items="testItems"
         v-model="selected1"
         :variant="params.variant"
+        :density="params.density"
         :rounded="params.rounded"
         :with-border="params.border"
         :active-offset="params.borderWidth"
@@ -73,6 +82,7 @@
         submenu
         v-model="selected5"
         :variant="params.variant"
+        :density="params.density"
         :rounded="params.rounded"
         :with-border="params.border"
         :active-offset="params.borderWidth"
@@ -96,6 +106,7 @@
         v-model="selected2"
         :scrolling="true"
         :variant="params.variant"
+        :density="params.density"
         :rounded="params.rounded"
         :with-border="params.border"
         :active-offset="params.borderWidth"
@@ -119,6 +130,7 @@
         v-model="selected3"
         overflow-button
         :variant="params.variant"
+        :density="params.density"
         :rounded="params.rounded"
         :with-border="params.border"
         :active-offset="params.borderWidth"
@@ -151,6 +163,7 @@ import { Tab } from 'oceanfront/src/lib/tab'
 
 const variants = ['material', 'attached']
 const borderWidths = ['1px', '2px', '3px']
+const densities = ['default', '0', '1', '2', '3']
 
 export default defineComponent({
   setup() {
@@ -167,6 +180,7 @@ export default defineComponent({
       rounded: false,
       border: false,
       borderWidth: '1px',
+      density: 'default',
     })
     const testItems = [
       'Tab 1',
@@ -249,6 +263,7 @@ export default defineComponent({
       params,
       variants,
       borderWidths,
+      densities,
 
       testItems,
       selected1,
