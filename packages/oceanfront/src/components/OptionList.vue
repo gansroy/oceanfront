@@ -13,11 +13,7 @@
               v-if="!item.special"
               :active="item.selected"
               :disabled="item.disabled"
-              @click="
-                () => {
-                  onClick(item.value, item)
-                }
-              "
+              @click="() => item.disabled || onClick(item.value, item)"
               :attrs="item.attrs"
             >
               <of-icon v-if="item.icon" :name="item.icon" size="input" />
