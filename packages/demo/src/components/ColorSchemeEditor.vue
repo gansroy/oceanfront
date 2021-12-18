@@ -176,11 +176,11 @@ const ColorSchemeEditor = defineComponent({
       style += `--of-color-on-error-dark: #680003;\n`
       style += `--of-color-error-container-dark: #930006;\n`
       style += `--of-color-on-error-container-dark: #ffdad4;\n`
-      style += `--of-color-background-dark: ${pallettes.value['neutral'][10].color};\n`
+      style += `--of-color-background-dark: ${pallettes.value['neutral'][25].color};\n`
       style += `--of-color-on-background-dark: ${pallettes.value['neutral'][90].color};\n`
       style += `--of-color-outline-dark: ${pallettes.value['neutral-variant'][60].color};\n`
-      style += `--of-color-shadow-dark: ${pallettes.value['neutral'][40].color};\n`
-      style += `--of-color-surface-dark: ${pallettes.value['neutral'][20].color};\n`
+      style += `--of-color-shadow-dark: ${pallettes.value['neutral'][0].color};\n`
+      style += `--of-color-surface-dark: ${pallettes.value['neutral'][30].color};\n`
       style += `--of-color-on-surface-dark: ${pallettes.value['neutral'][90].color};\n`
       style += `--of-color-surface-variant-dark: ${pallettes.value['neutral-variant'][30].color};\n`
       style += `--of-color-on-surface-variant-dark: ${pallettes.value['neutral-variant'][80].color};\n`
@@ -341,7 +341,7 @@ export default ColorSchemeEditor
   & .shadow {
     grid-column-start: 3;
     grid-column-end: 5;
-    color: var(--of-color-background);
+    color: var(--of-color-outline);
     background: var(--of-color-shadow);
   }
   & .inverse-surface {
