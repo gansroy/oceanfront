@@ -22,6 +22,7 @@ import Calendar from './components/Calendar.vue'
 import Popups from './components/Popups.vue'
 import Badges from './components/Badges.vue'
 import ColorSchemeEditor from './components/ColorSchemeEditor.vue'
+import ElevationDemo from './components/ElevationDemo.vue'
 
 export const routerHistory = createWebHashHistory('/ofdocs')
 export const router = createRouter({
@@ -49,5 +50,6 @@ export const router = createRouter({
     { path: '/popups', component: Popups },
     { path: '/badges', component: Badges },
     { path: '/color-scheme', component: ColorSchemeEditor },
+    { path: '/elevation', component: ElevationDemo },
   ],
 })

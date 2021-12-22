@@ -103,6 +103,7 @@
         <of-nav-group>
           <of-list-item to="/">Overview</of-list-item>
           <of-list-item to="/color-scheme">Colors &amp; Theming</of-list-item>
+          <of-list-item to="/elevation">Elevation</of-list-item>
           <of-list-item to="/icons">Icons</of-list-item>
           <of-list-item to="/calendar">Calendar</of-list-item>
           <of-list-group value="1">

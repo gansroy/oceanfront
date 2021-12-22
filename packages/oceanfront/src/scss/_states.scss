@@ -121,33 +121,32 @@
 .of--elevated-1,
 .of--elevated-2,
 .of--elevated-3,
-.of--elevated-4 {
-  --of-elevation-shadow: var(--of-color-shadow);
-  --el: var(--elevation-level, 0);
-  --of-elevation-mul: calc(
-    (var(--el) / max(0.0005, var(--el))) + (var(--el) * 0.2)
-  );
-  box-shadow: /*var(--of-elevation-shadow) 0 calc(var(--elevation-level, 0) * 3px)
-      calc(var(--elevation-level, 0) * 2px)
-      calc(var(--elevation-level, 0) * -1px),
-    var(--of-elevation-shadow) 0 calc(var(--elevation-level, 0) * 2px)
-      calc(var(--elevation-level, 0) * 2px) 0,*/ var(
-      --of-elevation-shadow
-    )
-    0 0 calc(var(--of-elevation-mul) * 6px) -1px;
+.of--elevated-4,
+.of--elevated-5 {
+    --of-elevation-box-shadow: none;
+  box-shadow: var(--of-elevation-box-shadow);
+  --of-elevation-box-shadow-1: 0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.5);
+  --of-elevation-box-shadow-2: 0 3px 6px rgba(0,0,0,0.32), 0 3px 6px rgba(0,0,0,0.5);
+  --of-elevation-box-shadow-3: 0 10px 20px rgba(0,0,0,0.38), 0 6px 6px rgba(0,0,0,0.46);
+  --of-elevation-box-shadow-4: 0 14px 28px rgba(0,0,0,0.5), 0 10px 10px rgba(0,0,0,0.44);
+  --of-elevation-box-shadow-5: 0 19px 38px rgba(0,0,0,0.6), 0 15px 12px rgba(0,0,0,0.44);
 }
 
 .of--elevated-1 {
-  --elevation-level: 1;
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-1);
 }
+
 .of--elevated-2 {
-  --elevation-level: 2;
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-2);
 }
 .of--elevated-3 {
-  --elevation-level: 3;
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-3);
 }
 .of--elevated-4 {
-  --elevation-level: 4;
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-4);
+}
+.of--elevated-5 {
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-5);
 }
 
 .of--layer {

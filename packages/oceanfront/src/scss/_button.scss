@@ -153,9 +153,6 @@
   position: relative;
   --button-v-pad-base: 0.375em;
 
-  .of--layer {
-    --elevation-level: 0;
-  }
 
   .of--layer.of--layer-state {
     pointer-events: none;
@@ -261,15 +258,15 @@
     --button-border-color: transparent;
     &:not(.of--mode-disabled) {
       & .of--layer.of--layer-outl {
-        --elevation-level: 1;
+        --of-elevation-box-shadow: var(--of-elevation-box-shadow-1);
         .of-buttonset & {
-          --elevation-level: 0;
+          --of-elevation-box-shadow: none;
         }
       }
       &:hover:not(:active) {
         @include apply-button-state(btn-elv, hover);
         .of--layer.of--layer-outl {
-          --elevation-level: 2;
+          --of-elevation-box-shadow: var(--of-elevation-box-shadow-2);
         }
       }
       &.of--focused {
@@ -292,7 +289,7 @@
       &:hover:not(:active) {
         @include apply-button-state(btn-fill, hover);
         & .of--layer.of--layer-outl {
-          --elevation-level: 1;
+          --of-elevation-box-shadow: var(--of-elevation-box-shadow-2);
         }
       }
       &.of--focused {
@@ -315,7 +312,7 @@
       &:hover:not(:active) {
         @include apply-button-state(btn-tonal, hover);
         & .of--layer.of--layer-outl {
-          --elevation-level: 1;
+          --of-elevation-box-shadow: var(--of-elevation-box-shadow-1);
         }
       }
       &.of--focused {
@@ -402,7 +399,7 @@
   }
   border-radius: var(--buttonset-border-radius);
   &.of--elevated {
-    --elevation-level: 1;
+    --of-elevation-box-shadow: var(--of-elevation-box-shadow-1);
   }
 
   > .of-button {
