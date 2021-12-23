@@ -154,6 +154,10 @@
   --button-v-pad-base: 0.375em;
 
 
+  .of--layer.of--layer-lining {
+    background-color: var(--lining-color);
+  }
+
   .of--layer.of--layer-state {
     pointer-events: none;
     opacity: var(--state-bg-opacity);
@@ -188,6 +192,7 @@
   --button-v-pad: var(--button-v-pad-base);
   --button-split-color: transparent;
   --button-split-opacity: 0;
+  --lining-color: var(--of-color-background);
 
   display: inline-flex;
   font-size: var(--button-font-size);
@@ -326,8 +331,8 @@
   }
 
   &.of--variant-outlined {
-    --button-bg-color: transparent;
-    --button-bg-opacity: 0;
+    --button-bg-color: var(--of-color-surface);
+    --button-bg-opacity: 1;
     @include apply-button-color(btn-outl);
     @include apply-button-split(outl);
     --button-border-color: #{use-color(btn-outl-brd)};
@@ -349,6 +354,7 @@
   &.of--variant-text {
     --button-bg-color: transparent;
     --button-bg-opacity: 0;
+    --lining-color: trensparent;
     &:not(.of--keep-text-color) {
       @include apply-button-bg(btn-text);
       @include apply-button-color(btn-text);

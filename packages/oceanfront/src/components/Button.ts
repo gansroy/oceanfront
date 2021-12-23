@@ -149,6 +149,7 @@ export const OfButton = defineComponent({
           id,
         },
         [
+          h('div', { class: 'of--layer of--layer-lining' }),
           h('div', { class: 'of--layer of--layer-bg' }),
           h('div', { class: 'of--layer of--layer-brd' }),
           h('div', { class: 'of--layer of--layer-outl of--elevated' }),
