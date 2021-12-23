@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 import DataTables from './components/DataTables.vue'
 import Formatters from './components/Formatters.vue'
-import Colors from './components/Colors.vue'
 import Icons from './components/Icons.vue'
 import Overview from './components/Overview.vue'
 import Buttons from './components/Buttons.vue'
@@ -22,13 +21,14 @@ import Pagination from './components/Pagination.vue'
 import Calendar from './components/Calendar.vue'
 import Popups from './components/Popups.vue'
 import Badges from './components/Badges.vue'
+import ColorSchemeEditor from './components/ColorSchemeEditor.vue'
+import ElevationDemo from './components/ElevationDemo.vue'
 
 export const routerHistory = createWebHashHistory('/ofdocs')
 export const router = createRouter({
   history: routerHistory,
   routes: [
     { path: '/', name: 'index', component: Overview },
-    { path: '/colors', component: Colors },
     { path: '/icons', component: Icons },
     { path: '/field-states', component: FieldStates },
     { path: '/records', component: Records },
@@ -49,5 +49,7 @@ export const router = createRouter({
     { path: '/calendar', component: Calendar },
     { path: '/popups', component: Popups },
     { path: '/badges', component: Badges },
+    { path: '/color-scheme', component: ColorSchemeEditor },
+    { path: '/elevation', component: ElevationDemo },
   ],
 })

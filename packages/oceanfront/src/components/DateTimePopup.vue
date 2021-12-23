@@ -2,7 +2,7 @@
   <!-- eslint-disable vue/singleline-html-element-content-newline-->
   <div
     role="menu"
-    class="of-menu of-datepicker-popup"
+    class="of-menu of-datepicker-popup of--elevated-1"
     :class="{ 'with-time': withTime, 'with-date': withDate }"
     tabindex="0"
     :onVnodeMounted="mounted"
@@ -113,8 +113,8 @@
       </div>
     </div>
     <div class="of-date-picker-buttons" v-if="useButtons">
-      <div class="of-date-picker-button accept" :onclick="onAccept">Accept</div>
-      <div class="of-date-picker-button cancel" :onclick="onCancel">Cancel</div>
+      <OfButton label="Accept" :onclick="onAccept" />
+      <OfButton label="Cancel" :onclick="onCancel" />
     </div>
   </div>
 </template>
@@ -129,7 +129,14 @@ import {
   sameDate,
 } from 'src/lib/datetime'
 import { useFormats } from 'src/lib/formats'
-import { defineComponent, SetupContext, computed, ref, VNode } from 'vue'
+import {
+  defineComponent,
+  SetupContext,
+  computed,
+  ref,
+  VNode,
+  resolveComponent,
+} from 'vue'
 
 export default defineComponent({
   name: 'OfDateTimePopup',
@@ -149,6 +156,7 @@ export default defineComponent({
     const selDate = ref(props.date ?? new Date())
     const selMonthStart = ref(props.monthStart || selDate.value)
     const editingYear = ref(false)
+    const OfButton = resolveComponent('OfButton')
 
     const formatMgr = useFormats()
     const titleFormat = formatMgr.getTextFormatter('datetime', {
@@ -245,6 +253,8 @@ export default defineComponent({
     }
 
     return {
+      OfButton,
+
       selMonthStart,
       useButtons: props.withTime,
 

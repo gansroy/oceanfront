@@ -1,6 +1,14 @@
 <template>
   <transition>
-    <div class="of-tabs" ref="tabs">
+    <div
+      class="of-tabs"
+      ref="tabs"
+      :class="{
+        'of--with-border': withBorder,
+        [`of--density-${normalizedDensity}`]: true,
+      }"
+      :style="offsetStyle"
+    >
       <div :class="cls">
         <div
           :class="{
@@ -24,21 +32,31 @@
             />
           </div>
           <div class="of-tabs-header" ref="ofTabsHeader">
-            <div
-              :key="tab.key"
-              @click="selectTab(tab.key)"
-              @mouseover="openSubMenu(tab.key, $event)"
-              @mouseleave="subMenuLeave()"
-              v-for="tab in tabsList"
-              :class="{
-                'is-active': selectedTabKey === tab.key,
-                'of-tab-header-item': true,
-                'overflow-button': tab.overflowButton,
-              }"
-            >
-              <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
-              {{ tab.text }}
-            </div>
+            <template :key="tab.key" v-for="tab in tabsList">
+              <div class="overflow-separator" v-if="tab.overflowButton" />
+              <div
+                @click="tab.disabled || selectTab(tab.key)"
+                @mouseover="tab.disabled || openSubMenu(tab.key, $event)"
+                @mouseleave="tab.disabled || subMenuLeave()"
+                :class="{
+                  'is-active': selectedTabKey === tab.key,
+                  'is-disabled': tab.disabled,
+                  'of-tab-header-item': true,
+                  'overflow-button': tab.overflowButton,
+                  'of--rounded': rounded,
+                  'of--with-border': withBorder,
+                }"
+              >
+                <div class="of--layer of--layer-bg" />
+                <div class="of--layer of--layer-brd" />
+                <div class="of--layer of--layer-outl" />
+                <div class="of-tab-text">
+                  <of-icon v-if="tab.icon" :name="tab.icon" size="1.1em" />
+                  {{ tab.text }}
+                </div>
+                <div class="of--layer of--layer-state" />
+              </div>
+            </template>
             <div class="of-tabs-line" ref="tabLine"></div>
           </div>
           <div
@@ -56,32 +74,13 @@
           :target="subMenuOuter"
         >
           <slot name="sub-menu" v-if="showSubMenu">
-            <div
-              role="menu"
-              class="of-menu of-invisible-tabs"
+            <of-option-list
               @mouseenter="subMenuClearTimeout()"
               @mouseleave="subMenuLeave()"
-            >
-              <div class="of-list-outer">
-                <div
-                  class="of-list-item of--enabled"
-                  :key="subTab.key"
-                  @click="selectSubMenuTab(subTab)"
-                  v-for="subTab in subMenuTabsList"
-                >
-                  <div class="of-list-item-inner">
-                    <of-icon
-                      v-if="subTab.icon"
-                      :name="subTab.icon"
-                      size="input"
-                    />
-                    <div class="of-list-item-content">
-                      {{ subTab.text }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              @click="selectSubMenuTab"
+              class="of--elevated-1"
+              :items="subMenuTabsList"
+            />
           </slot>
         </of-overlay>
       </div>
@@ -93,27 +92,11 @@
         :target="overflowButtonEl"
         @blur="closeOverflowPopup"
       >
-        <div
-          role="menu"
-          class="of-menu of-invisible-tabs"
-          v-show="outsideTabsOpened"
-        >
-          <div class="of-list-outer">
-            <div
-              class="of-list-item of--enabled"
-              :key="tab.key"
-              v-for="tab in invisibleTabsList"
-              @click="selectInvisibleTab(tab.key)"
-            >
-              <div class="of-list-item-inner">
-                <of-icon v-if="tab.icon" :name="tab.icon" size="input" />
-                <div class="of-list-item-content">
-                  {{ tab.text }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <of-option-list
+          class="of--elevated-1"
+          :items="invisibleTabsList"
+          @click="selectInvisibleTab"
+        />
       </of-overlay>
     </div>
   </transition>
@@ -138,6 +121,16 @@ import { watchPosition } from '../lib/util'
 import { ItemList, useItems } from '../lib/items'
 import { OfOverlay } from './Overlay'
 import { Tab } from '../lib/tab'
+
+const elementWidth = (el?: HTMLElement): number => {
+  let w = el?.offsetWidth ?? 0
+  if (el instanceof HTMLElement) {
+    const style = window.getComputedStyle(el, null)
+    w += parseFloat(style.marginLeft)
+    w += parseFloat(style.marginRight)
+  }
+  return w
+}
 
 const formatItems = (
   list: any,
@@ -169,6 +162,8 @@ const formatItems = (
       overflowButton: false,
       text: item[params.textKey],
       key: parseInt(item['key']),
+      value: parseInt(item['key']),
+      selected: false,
       parentKey: !isNaN(item['parentKey'])
         ? parseInt(item['parentKey'])
         : undefined,
@@ -188,7 +183,6 @@ const formatItems = (
       parentKey: undefined,
     } as Tab)
   }
-
   return rows
 }
 
@@ -201,15 +195,38 @@ export default defineComponent({
     scrolling: { type: Boolean, default: false },
     overflowButton: { type: Boolean, default: false },
     variant: String,
+    density: [String, Number],
+    rounded: Boolean,
+    withBorder: Boolean,
+    activeOffset: String,
     tabsList: Array,
     submenu: Boolean,
   },
   emits: ['update:modelValue', 'select-tab'],
   setup(props, context: SetupContext) {
     let tabs: any = ref([])
+
     let ofTabsHeader: any = ref()
     let selectedTabKey: any = ref(props.modelValue)
     let tabsWidth: any = ref([])
+
+    const offsetStyle = computed(() => ({
+      '--tab-active-border': props.activeOffset,
+    }))
+
+    const normalizedDensity = computed(() => {
+      let d = props.density
+      if (d === 'default') {
+        d = undefined
+      } else if (typeof d === 'string') {
+        d = parseInt(d, 10)
+        if (isNaN(d)) d = undefined
+      }
+      if (typeof d !== 'number') {
+        d = 2
+      }
+      return Math.max(0, Math.min(3, d || 0))
+    })
 
     watch(
       () => props.modelValue,
@@ -217,23 +234,23 @@ export default defineComponent({
         selectedTabKey.value = val
         nextTick(() => {
           repositionLine()
+          repositionTabs()
         })
       }
     )
 
     watch(
-      () => props.items,
+      () => [props.items, props.variant, props.withBorder],
       () => {
         fillItems()
         init()
       }
     )
-
     const targetPos = computed(() => watchPosition())
     watch(targetPos.value.positions, () => repositionLine())
 
-    const variant = computed(() => props.variant || 'standard')
-    const cls = 'of--variant-' + variant.value
+    const variant = computed(() => props.variant || 'material')
+    const cls = computed(() => 'of--variant-' + variant.value)
 
     const overflowButtonEnabled = computed(() => props.overflowButton || false)
     let showOverflowButton = ref(false)
@@ -398,9 +415,10 @@ export default defineComponent({
         tabsWidth.value = []
 
         for (let item of ofTabsHeader.value.childNodes) {
-          if (!item.clientWidth) continue
+          const w = elementWidth(item)
+          if (!w) continue
 
-          tabsWidth.value.push(item.clientWidth)
+          tabsWidth.value.push(w)
         }
       }
     }
@@ -439,7 +457,7 @@ export default defineComponent({
     }
 
     const adjustTabsVisibility = function (tabsIndexes: Array<number>) {
-      const outerWidth = ofTabsHeader.value.clientWidth
+      const outerWidth = elementWidth(ofTabsHeader.value)
       let tabsWidth = 0
       let hasInvisibleTabs = false
 
@@ -447,7 +465,6 @@ export default defineComponent({
       for (const index of tabsIndexes) {
         updateTabVisibility(index, true)
         tabsWidth = calcVisibleTabsWidth()
-
         if (tabsWidth > outerWidth) {
           hasInvisibleTabs = true
           updateTabVisibility(index, false)
@@ -468,11 +485,15 @@ export default defineComponent({
       const overflowButton = tabs.value.querySelector(
         '.of-tab-header-item.overflow-button'
       )
+      const overflowSeparator = tabs.value.querySelector('.overflow-separator')
 
-      width += overflowButton?.clientWidth ?? 0
+      width += overflowButton?.offsetWidth ?? 0
+      width += overflowSeparator?.offsetWidth ?? 0
 
       for (const item of tabsList.value) {
-        if (item['visible']) width += tabsWidth.value[item['key']]
+        if (item['visible']) {
+          width += tabsWidth.value[item['key']]
+        }
       }
 
       return width
@@ -499,6 +520,17 @@ export default defineComponent({
       return undefined
     }
 
+    watch(
+      () => props.variant,
+      () => {
+        const reposition = () => {
+          repositionTabs()
+          repositionLine()
+          tabs.value?.removeEventListener('transitionend', reposition)
+        }
+        tabs.value?.addEventListener('transitionend', reposition)
+      }
+    )
     const selectTab = function (key: number, emitSelectEvent = true) {
       const selectedTab: Tab | undefined = getTab(key)
 
@@ -557,7 +589,7 @@ export default defineComponent({
     const subMenuTabsList: Ref<Tab[]> = ref([])
     const subMenuTimerId = ref()
 
-    const openSubMenu = (key: number, _evt?: MouseEvent) => {
+    const openSubMenu = (key: number, evt?: MouseEvent) => {
       if (!showSubMenu.value) return false
 
       if (key !== -1 && variant.value !== 'osx') {
@@ -569,7 +601,7 @@ export default defineComponent({
           subMenuTimerId.value = window.setTimeout(
             () => {
               subMenuTabsList.value = tab.subMenuItems ?? []
-              subMenuOuter.value = _evt?.target
+              subMenuOuter.value = evt?.target
               subMenuOpened.value = true
             },
             subMenuOpened.value ? 0 : 500
@@ -601,7 +633,7 @@ export default defineComponent({
       clearTimeout(subMenuTimerId.value)
     }
 
-    const selectSubMenuTab = function (tab: Tab) {
+    const selectSubMenuTab = function (_index: number, tab: Tab) {
       if (typeof tab.parentKey !== 'undefined') {
         selectTab(tab.parentKey, false)
         context.emit('select-tab', tab)
@@ -612,6 +644,7 @@ export default defineComponent({
       tabsList,
       selectedTabKey,
       overflowButtonEl,
+      normalizedDensity,
 
       showNavigation,
       navigateHeader,
@@ -620,6 +653,7 @@ export default defineComponent({
 
       tabs,
       cls,
+      offsetStyle,
 
       invisibleTabsList,
       outsideTabsOpened,

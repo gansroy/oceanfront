@@ -1,6 +1,7 @@
 <template>
   <of-config :form="{ locked: true }">
     <header class="app-header">
+      <div class="app-header-gradient" />
       <div class="app-menu-source" @click.prevent="toggleSidebar">
         <of-icon name="menu" />
       </div>
@@ -24,12 +25,85 @@
           </div>
         </of-dialog>
       </div>
+      <div class="app-config-source" style="width: auto; flex-direction: row">
+        <div
+          style="
+            margin: 2px;
+            display: flex;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+            background: var(--of-color-background);
+            border-radius: 20em;
+          "
+          v-for="t in tintParams"
+          :key="t.name"
+        >
+          <div
+            style="display: flex; color: var(--of-primary-tint)"
+            :class="`of--tinted of--tint-${t.name}`"
+            @click="() => (tint = t.name)"
+          >
+            <of-icon :name="t.icon" />
+          </div>
+        </div>
+      </div>
+      <div
+        class="app-config-source"
+        style="fill: var(--of-on-primary-tint)"
+        @click="
+          () => {
+            dark = !dark
+          }
+        "
+      >
+        <svg
+          v-if="!dark"
+          width="0.9em"
+          height="0.9em"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 11.807C10.7418 10.5483 9.88488 8.94484 9.53762 7.1993C9.19037 5.45375 9.36832 3.64444 10.049
+             2C8.10826 2.38205 6.3256 3.33431 4.92899 4.735C1.02399 8.64 1.02399 14.972 4.92899 18.877C8.83499 22.783 
+             15.166 22.782 19.072 18.877C20.4723 17.4805 21.4245 15.6983 21.807 13.758C20.1625 14.4385 18.3533 14.6164 
+             16.6077 14.2692C14.8622 13.9219 13.2588 13.0651 12 11.807V11.807Z"
+          />
+        </svg>
+        <svg
+          v-if="dark"
+          width="0.9em"
+          height="0.9em"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6.995 12C6.995 14.761 9.241 17.007 12.002 17.007C14.763 17.007 17.009 14.761 17.009 12C17.009 9.239
+             14.763 6.993 12.002 6.993C9.241 6.993 6.995 9.239 6.995 12ZM11 19H13V22H11V19ZM11 2H13V5H11V2ZM2 
+             11H5V13H2V11ZM19 11H22V13H19V11Z"
+          />
+          <path
+            d="M5.63702 19.778L4.22302 18.364L6.34402 16.243L7.75802 17.657L5.63702 19.778Z"
+          />
+          <path
+            d="M16.242 6.34405L18.364 4.22205L19.778 5.63605L17.656 7.75805L16.242 6.34405Z"
+          />
+          <path
+            d="M6.34402 7.75902L4.22302 5.63702L5.63802 4.22302L7.75802 6.34502L6.34402 7.75902Z"
+          />
+          <path
+            d="M19.778 18.3639L18.364 19.7779L16.242 17.6559L17.656 16.2419L19.778 18.3639Z"
+          />
+        </svg>
+      </div>
     </header>
     <div class="app-body">
       <of-sidebar v-model="sidebarActive" :embed="!isMobile">
         <of-nav-group>
           <of-list-item to="/">Overview</of-list-item>
-          <of-list-item to="/colors">Colors &amp; Theming</of-list-item>
+          <of-list-item to="/color-scheme">Colors &amp; Theming</of-list-item>
+          <of-list-item to="/elevation">Elevation</of-list-item>
           <of-list-item to="/icons">Icons</of-list-item>
           <of-list-item to="/calendar">Calendar</of-list-item>
           <of-list-group value="1">
@@ -98,9 +172,12 @@ function formatError(e: any) {
   return (e.stack || e).toString()
 }
 
+const tints = ['primary', 'secondary', 'tertiary']
+
 export default defineComponent({
   name: 'App',
   setup(_props: {}, _ctx: SetupContext) {
+    const tint = ref('primary')
     const error = ref<any>(null)
     onErrorCaptured((e) => {
       error.value = formatError(e)
@@ -110,6 +187,7 @@ export default defineComponent({
     const router = useRouter()
     const baseFontSize = ref('16')
     const configActive = ref(false)
+    const dark = ref(false)
     const isMobile = computed(() => layoutMgr.isMobile)
     const sidebarMobileActive = ref(false)
     const sidebarDesktopActive = ref(true)
@@ -142,6 +220,33 @@ export default defineComponent({
       }
     })
 
+    watch(
+      () => dark.value,
+      (isDark) => {
+        const htmlEl = document.body.parentElement
+        if (htmlEl) htmlEl.className = isDark ? '-of-theme-dark' : ''
+      },
+      { immediate: true }
+    )
+    watch(
+      () => tint.value,
+      (tint) => {
+        const htmlEl = document.body
+        if (htmlEl) {
+          tints.forEach((t) => {
+            htmlEl.classList.remove(`of--tint-${t}`)
+          })
+          htmlEl.classList.add(`of--tint-${tint}`)
+        }
+      },
+      { immediate: true }
+    )
+    const tintParams = computed(() =>
+      tints.map((t) => ({
+        name: t,
+        icon: t == tint.value ? 'accept circle' : 'radio checked',
+      }))
+    )
     return {
       baseFontSize,
       configActive,
@@ -150,6 +255,9 @@ export default defineComponent({
       showConfig,
       sidebarActive,
       toggleSidebar,
+      dark,
+      tint,
+      tintParams,
     }
   },
 })
@@ -161,11 +269,34 @@ export default defineComponent({
 }
 .app-header {
   align-items: center;
-  background: linear-gradient(to bottom, #88aed3, #88bbd3 60%);
-  color: #fbfdff;
+  background: var(--of-primary-tint);
+  color: var(--of-on-primary-tint);
   display: flex;
   flex: none;
   height: 3rem;
+  position: relative;
+
+  & .app-header-gradient {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 20%;
+    --gradient-from: rgba(255, 255, 255, 0%);
+    --gradient-to: rgba(255, 255, 255, 100%);
+
+    .-of-theme-dark & {
+      --gradient-from: rgba(0, 0, 0, 00%);
+      --gradient-to: rgba(0, 0, 0, 100%);
+    }
+    background: linear-gradient(
+      to bottom,
+      var(--gradient-from),
+      var(--gradient-to)
+    );
+  }
 }
 .app-header-main {
   align-items: center;
@@ -180,8 +311,9 @@ export default defineComponent({
   flex-direction: column;
   font-size: 1.75rem;
   width: 3rem;
+  opacity: 90%;
   &:hover {
-    color: #fff;
+    opacity: 100%;
     text-shadow: 0 1.5px 2px rgba(36, 40, 60, 0.4);
   }
 }
@@ -200,7 +332,7 @@ export default defineComponent({
   padding-left: 1em;
 }
 .app-tag {
-  border: 1px solid #fff;
+  border: 1px solid var(--of-color-on-primary);
   border-radius: 2px;
   font-size: 0.9rem;
   margin-left: 1.5ch;
@@ -213,17 +345,13 @@ export default defineComponent({
   padding-top: 0.25em;
 }
 .of-sidebar .of--expandable {
-  .of-list-item-inner {
-    background-color: #e6e6e6;
-    border-radius: 0;
-  }
   .of-list-item-content {
     font-size: 80%;
     text-transform: uppercase;
   }
 }
 .of-sidebar .of-list-group .of-list-item {
-  border-left: 2px solid #ddd;
+  border-left: 2px solid var(--of-color-outline);
 }
 .of--overlay > .of-sidebar {
   margin-top: 48px;

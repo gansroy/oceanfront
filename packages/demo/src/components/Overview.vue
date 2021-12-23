@@ -55,6 +55,11 @@ export default defineComponent({
 .row h2 {
   display: flex;
 }
+
+.row li:only-child {
+  list-style: none;
+}
+
 @media (min-width: 800px) {
   .row ul {
     display: flex;

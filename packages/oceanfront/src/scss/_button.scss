@@ -1,5 +1,168 @@
+@mixin apply-button-bg($cat, $state: false) {
+  --button-bg-color: #{use-color(#{$cat}-bg, $state)};
+  --button-bg-opacity: #{use-opacity(#{$cat}-bg, $state)};
+}
+
+@mixin apply-button-color($cat, $state: false) {
+  --button-color: #{use-color(#{$cat}-color, $state)};
+  --button-opacity: #{use-opacity(#{$cat}-color, $state)};
+}
+
+@mixin apply-button-state($cat, $state: false) {
+  --state-bg-color: #{use-color(#{$cat}-st, $state)};
+  --state-bg-opacity: #{use-opacity(#{$cat}-st, $state)};
+}
+
+@mixin apply-button-split($cat) {
+  --button-split-color: #{use-color(btn-split, $cat)};
+  --button-split-opacity: #{use-opacity(btn-split, $cat)};
+}
+
 .of-button {
+  @include define-color-opacity(
+    btn-elv-bg,
+    (var(--of-color-surface), 50%),
+    (
+      disabled: var(--of-color-on-surface) 12%,
+    )
+  );
+  @include define-color-opacity(
+    btn-elv-color,
+    (var(--of-primary-tint), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+    )
+  );
+  @include define-color-opacity(
+    btn-elv-st,
+    (var(--of-primary-tint), 0%),
+    (
+      hover: var(--of-primary-tint) 8%,
+      focus: var(--of-primary-tint) 12%,
+      active: var(--of-primary-tint) 18%,
+    )
+  );
+
+  @include define-color-opacity(
+    btn-fill-bg,
+    (var(--of-primary-tint), 100%),
+    (
+      disabled: var(--of-color-on-surface) 12%,
+      active: var(--of-primary-tint) 90%,
+    )
+  );
+  @include define-color-opacity(
+    btn-fill-color,
+    (var(--of-color-on-primary), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+    )
+  );
+  @include define-color-opacity(
+    btn-fill-st,
+    (var(--of-primary-tint), 0%),
+    (
+      hover: var(--of-color-on-primary) 8%,
+      focus: var(--of-color-on-primary) 12%,
+    )
+  );
+
+  @include define-color-opacity(
+    btn-tonal-bg,
+    (var(--of-container-tint), 100%),
+    (
+      disabled: var(--of-color-on-surface) 12%,
+    )
+  );
+  @include define-color-opacity(
+    btn-tonal-color,
+    (var(--of-on-container-tint), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+    )
+  );
+  @include define-color-opacity(
+    btn-tonal-st,
+    (var(--of-primary-tint), 0%),
+    (
+      hover: var(--of-on-container-tint) 8%,
+      focus: var(--of-on-container-tint) 12%,
+      active: var(--of-on-container-tint) 18%,
+    )
+  );
+
+  @include define-color-opacity(
+    btn-outl-bg,
+    (var(--of-primary-tint), 100%),
+    (
+      disabled: var(--of-color-on-surface) 12%,
+    )
+  );
+  @include define-color-opacity(
+    btn-outl-brd,
+    (var(--of-color-outline), 100%),
+    (
+      disabled: var(--of-color-on-surface) 12%,
+      active: var(--of-primary-tint) 100%,
+    )
+  );
+  @include define-color-opacity(
+    btn-outl-color,
+    (var(--of-on-container-tint), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+    )
+  );
+  @include define-color-opacity(
+    btn-outl-st,
+    (var(--of-primary-tint), 0%),
+    (
+      hover: var(--of-on-container-tint) 8%,
+      focus: var(--of-on-container-tint) 12%,
+    )
+  );
+
+  @include define-color-opacity(
+    btn-text-color,
+    (var(--of-primary-tint), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+    )
+  );
+  @include define-color-opacity(
+    btn-text-st,
+    (var(--of-primary-tint), 0%),
+    (
+      hover: var(--of-primary-tint) 8%,
+      focus: var(--of-primary-tint) 12%,
+    )
+  );
+
+  @include define-color-opacity(
+    btn-split,
+    (transparent, 0),
+    (
+      elv: var(--of-primary-tint) 100%,
+      fill: var(--of-color-on-primary) 100%,
+      tonal: var(--of-on-container-tint) 100%,
+      outl: var(--of-on-container-tint) 100%,
+    )
+  );
+
+  font-weight: bold;
+  position: relative;
   --button-v-pad-base: 0.375em;
+
+
+  .of--layer.of--layer-lining {
+    background-color: var(--lining-color);
+  }
+
+  .of--layer.of--layer-state {
+    pointer-events: none;
+    opacity: var(--state-bg-opacity);
+    background-color: var(--state-bg-color);
+  }
 
   &.of--density-0 {
     --button-v-pad-base: 0.75em;
@@ -14,31 +177,55 @@
     --button-v-pad-base: 0.25em;
   }
 
-  --button-bg-color: var(--of-button-color-bg);
-  --button-border-color: var(--of-button-outlined-color);
-  --button-border-radius: 0;
+  --state-bg-color: transparent;
+  --state-bg-opacity: 0;
+  --button-bg-color: #{use-color(btn-elv-bg)};
+  --button-bg-opacity: #{use-opacity(btn-elv-bg)};
+  --button-border-color: transparent;
+  --button-border-width: 1px;
+  --button-border-radius: 3px;
   --button-border-left-radius: var(--button-border-radius);
   --button-border-right-radius: var(--button-border-radius);
-  --button-color: var(--of-button-color-label);
   --button-font-size: #{$font-size-input};
   --button-h-pad: 1em;
   --button-h-spacer: 0.75em;
   --button-v-pad: var(--button-v-pad-base);
+  --button-split-color: transparent;
+  --button-split-opacity: 0;
+  --lining-color: var(--of-color-background);
 
-  border-radius: var(--button-border-left-radius)
-    var(--button-border-right-radius) var(--button-border-right-radius)
-    var(--button-border-left-radius);
-  color: var(--button-color);
   display: inline-flex;
   font-size: var(--button-font-size);
   vertical-align: bottom;
 
+  & .of--layer {
+    border-radius: var(--button-border-left-radius)
+      var(--button-border-right-radius) var(--button-border-right-radius)
+      var(--button-border-left-radius);
+  }
+
+  .of--layer {
+    border-top-left-radius: var(--button-border-left-radius);
+    border-bottom-left-radius: var(--button-border-left-radius);
+    border-top-right-radius: var(--button-border-right-radius);
+    border-bottom-right-radius: var(--button-border-right-radius);
+    &.of--layer-bg {
+      background-color: var(--button-bg-color);
+      opacity: var(--button-bg-opacity);
+    }
+    &.of--layer-brd {
+      border: var(--button-border-width) solid var(--button-border-color);
+    }
+  }
+
   > button {
+    outline: none;
     align-items: center;
-    background-color: var(--button-bg-color);
-    border: 1px solid var(--button-border-color);
-    border-radius: var(--button-border-radius);
-    color: inherit;
+    color: var(--button-color);
+    opacity: var(--button-opacity);
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
     display: flex;
     font: inherit;
     flex: auto;
@@ -52,15 +239,6 @@
     position: relative;
     white-space: nowrap;
 
-    &:first-of-type {
-      border-top-left-radius: var(--button-border-left-radius);
-      border-bottom-left-radius: var(--button-border-left-radius);
-    }
-    &:last-of-type {
-      border-top-right-radius: var(--button-border-right-radius);
-      border-bottom-right-radius: var(--button-border-right-radius);
-    }
-
     > .of-button-content {
       padding: var(--button-v-pad) 0;
       label {
@@ -70,48 +248,136 @@
       }
     }
   }
+  &.of-button--icon > button {
+    padding: 0 var(--button-v-pad);
+  }
 
   &--rounded {
     --button-border-radius: 2em;
   }
 
-  &.of--variant-solid {
+  &.of--variant-elevated {
+    @include apply-button-bg(btn-elv);
+    @include apply-button-color(btn-elv);
+    @include apply-button-split(elv);
     --button-border-color: transparent;
-    transition: box-shadow 150ms;
-
-    &.of--active {
-      --button-bg-color: var(--of-button-color-bg-hover);
-    }
-
     &:not(.of--mode-disabled) {
-      &:hover,
-      &:focus-within {
-        --button-bg-color: var(--of-button-color-bg-hover);
-        box-shadow: var(--of-button-color-shadow) 0 3px 1px -2px,
-          var(--of-button-color-shadow) 0 2px 2px 0,
-          var(--of-button-color-shadow) 0 1px 5px 0;
+      & .of--layer.of--layer-outl {
+        --of-elevation-box-shadow: var(--of-elevation-box-shadow-1);
+        .of-buttonset & {
+          --of-elevation-box-shadow: none;
+        }
+      }
+      &:hover:not(:active) {
+        @include apply-button-state(btn-elv, hover);
+        .of--layer.of--layer-outl {
+          --of-elevation-box-shadow: var(--of-elevation-box-shadow-2);
+        }
+      }
+      &.of--focused {
+        @include apply-button-state(btn-elv, focus);
       }
     }
-  }
-
-  &.of--variant-outlined,
-  &.of--variant-text {
-    --button-bg-color: transparent;
-    --button-color: var(--of-button-outlined-color-label);
-  }
-  &.of--variant-text {
-    --button-border-color: transparent;
-  }
-  &.of--variant-outlined {
-    --button-border-color: var(--of-button-outlined-color);
-    &:hover, &.of--active {
-      --button-bg-color: var(--of-button-outlined-color-bg-hover);
+    &.of--mode-disabled {
+      @include apply-button-bg(btn-elv, disabled);
+      @include apply-button-color(btn-elv, disabled);
     }
   }
 
-  &.of--mode-disabled > button {
-    cursor: default;
-    opacity: 0.38;
+  &.of--variant-filled {
+    @include apply-button-bg(btn-fill);
+    @include apply-button-color(btn-fill);
+    @include apply-button-split(fill);
+    --button-border-color: transparent;
+
+    &:not(.of--mode-disabled) {
+      &:hover:not(:active) {
+        @include apply-button-state(btn-fill, hover);
+        & .of--layer.of--layer-outl {
+          --of-elevation-box-shadow: var(--of-elevation-box-shadow-2);
+        }
+      }
+      &.of--focused {
+        @include apply-button-state(btn-fill, hover);
+      }
+    }
+    &.of--mode-disabled {
+      @include apply-button-bg(btn-fill, disabled);
+      @include apply-button-color(btn-fill, disabled);
+    }
+  }
+
+  &.of--variant-tonal {
+    @include apply-button-bg(btn-tonal);
+    @include apply-button-color(btn-tonal);
+    @include apply-button-split(tonal);
+    --button-border-color: transparent;
+
+    &:not(.of--mode-disabled) {
+      &:hover:not(:active) {
+        @include apply-button-state(btn-tonal, hover);
+        & .of--layer.of--layer-outl {
+          --of-elevation-box-shadow: var(--of-elevation-box-shadow-1);
+        }
+      }
+      &.of--focused {
+        @include apply-button-state(btn-tonal, focus);
+      }
+    }
+    &.of--mode-disabled {
+      @include apply-button-bg(btn-tonal, disabled);
+      @include apply-button-color(btn-tonal, disabled);
+    }
+  }
+
+  &.of--variant-outlined {
+    --button-bg-color: var(--of-color-surface);
+    --button-bg-opacity: 1;
+    @include apply-button-color(btn-outl);
+    @include apply-button-split(outl);
+    --button-border-color: #{use-color(btn-outl-brd)};
+
+    &:not(.of--mode-disabled) {
+      &:hover:not(:active) {
+        @include apply-button-state(btn-outl, hover);
+      }
+      &.of--focused {
+        @include apply-button-state(btn-outl, focus);
+      }
+    }
+    &.of--mode-disabled {
+      @include apply-button-bg(btn-outl, disabled);
+      @include apply-button-color(btn-outl, disabled);
+    }
+  }
+
+  &.of--variant-text {
+    --button-bg-color: transparent;
+    --button-bg-opacity: 0;
+    --lining-color: trensparent;
+    &:not(.of--keep-text-color) {
+      @include apply-button-bg(btn-text);
+      @include apply-button-color(btn-text);
+    }
+    --button-border-color: transparent;
+
+    &:not(.of--mode-disabled) {
+      &:hover:not(:active) {
+        @include apply-button-state(btn-text, hover);
+      }
+      &.of--focused {
+        @include apply-button-state(btn-text, focus);
+      }
+    }
+    &.of--mode-disabled {
+      @include apply-button-color(btn-text, disabled);
+    }
+  }
+
+  & .of-button-split .of-button-expand::before {
+    content: '';
+    border-left: solid 1px var(--button-split-color);
+    opacity: var(--button-split-opacity);
   }
 }
 
@@ -131,22 +397,51 @@
 }
 
 .of-buttonset {
-  --buttonset-border-radius: 2em;
   display: flex;
+  width: fit-content;
+  --buttonset-border-radius: 3px;
+  &.of-buttonset--rounded {
+    --buttonset-border-radius: 2em;
+  }
+  border-radius: var(--buttonset-border-radius);
+  &.of--elevated {
+    --of-elevation-box-shadow: var(--of-elevation-box-shadow-1);
+  }
 
   > .of-button {
-    --button-border-radius: 0;
     margin: 0 -1px 0 0;
-
     &.of--active {
       z-index: 1;
     }
-    &:hover {
-      z-index: 2;
+
+    --button-border-radius: 0;
+
+    &.of--variant-outlined.of--active {
+      --button-border-color: #{use-color(btn-outl-brd, active)};
+      --button-border-width: 2px;
     }
 
     &.of--variant-outlined.of--active {
-      --button-border-color: var(--of-button-outlined-color-label);
+      --button-border-color: #{use-color(btn-outl-brd, active)};
+      --button-border-width: 2px;
+    }
+
+    &.of--variant-filled.of--active {
+      @include apply-button-bg(btn-fill, active);
+    }
+
+    &.of--variant-tonal.of--active {
+      @include apply-button-state(btn-tonal, active);
+    }
+
+    &.of--variant-elevated.of--focused,
+    &.of--variant-tonal.of--focused:not(.of--active),
+    &.of--variant-filled.of--focused {
+      --state-bg-opacity: 0;
+    }
+
+    &.of--variant-elevated.of--active {
+      @include apply-button-state(btn-elv, active);
     }
 
     &:first-of-type {
@@ -157,4 +452,8 @@
       margin-right: 0;
     }
   }
+}
+
+.of-pagination-offset {
+  width: 10rem;
 }

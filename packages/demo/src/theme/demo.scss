@@ -1,22 +1,27 @@
 @import 'page';
 
 ::selection {
-  background-color: #9bc;
-  color: #334;
+  background-color: var(--of-primary-tint);
+  color: var(--of-on-primary-tint);
 }
 
 @import 'oceanfront/dist/oceanfront.css';
 
 .of-code {
   border-radius: 5px;
-  background: #444a55;
-  color: #f6f6f6;
+  background: var(--of-color-surface);
+  color: var(--of-color-on-surface);
   font-family: monospace;
   padding: 1ch;
 }
 
+h1 {
+  color: var(--of-primary-tint);
+}
+
 h2 {
-  color: #339988;
+  color: var(--of-primary-tint);
+  opacity: 0.9;
   margin: 0.4em 0;
 }
 
@@ -29,7 +34,6 @@ h4 {
 }
 
 .demo-fields {
-  border: 1px solid #aaa;
   border-radius: 0.25rem;
   margin-top: 2rem;
   padding: 1rem;
@@ -40,8 +44,7 @@ h4 {
 }
 
 .demo-form {
-  background: #eee;
-  border: 1px solid #aaa;
+  background: var(--of-color-background);
   border-radius: 0.25rem;
   margin: 0.5rem;
   padding: 1rem;

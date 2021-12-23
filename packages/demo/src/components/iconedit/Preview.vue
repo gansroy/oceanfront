@@ -44,7 +44,12 @@
           </linearGradient>
           <linearGradient id="of-icon-grad-2" x2="1" y2="1">
             <!-- FIXME use variables -->
-            <stop offset="0%" class="g g1" stop-color="#fff" stop-opacity="0.6" />
+            <stop
+              offset="0%"
+              class="g g1"
+              stop-color="#fff"
+              stop-opacity="0.6"
+            />
             <stop offset="60%" class="g g2" stop-color="#fff" />
           </linearGradient>
         </svg>

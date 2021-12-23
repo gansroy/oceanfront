@@ -1,3 +1,15 @@
+.of--calendar {
+  --calendar-background: var(--of-color-background);
+  --calendar-grid-color: var(--of-color-outline);
+  --calendar-day-color: var(--of-color-surface);
+  --calendar-day-text-color: var(--of-color-on-surface);
+  --calendar-today-background: var(--of-primary-tint);
+  --calendar-today-color: var(--of-color-inverse-on-surface);
+  --calendar-weekday-color: var(--of-color-on-surface);
+
+  background-color: var(--calendar-background);
+}
+
 .of-datepicker-grid {
   display: grid;
   margin: 8px;
@@ -21,25 +33,25 @@
     }
 
     &.today {
-      border-color: teal;
+      border-color: var(--of-primary-tint);
     }
 
     &.selected-date {
-      border-color: teal;
-      background-color: teal;
-      color: white;
+      border-color: var(--of-color-on-background);
+      background-color: var(--of-primary-tint);
+      color: var(--of-on-primary-tint);
     }
 
     &.other-month {
-      color: #ccc;
+      opacity: 0.4;
       cursor: default;
     }
   }
 }
 
 .of-date-picker-title {
-  background-color: teal;
-  color: white;
+  background-color: var(--of-container-tint);
+  color: var(--of-on-container-tint);
   font-size: 110%;
   padding-left: 8px;
 }
@@ -87,6 +99,7 @@ div.of-date-picker-cur-year {
 }
 
 .of-time-selector {
+  color: var(--of-on-container-tint);
   display: grid;
   width: 100%;
   grid-template-columns: 1fr 30px 8px 30px 1fr;
@@ -111,9 +124,7 @@ div.of-date-picker-cur-year {
   justify-items: center;
   grid-template-columns: 1fr 1fr;
   padding: 0;
-  margin: 0;
-  margin-top: 8px;
-  border-top: solid 1px #ccc;
+  margin: 8px 0;
 }
 
 .of-date-picker-button {
@@ -124,20 +135,20 @@ div.of-date-picker-cur-year {
   padding-top: 8px;
   padding-bottom: 8px;
   &.accept {
-    color: teal;
+    color: var(--of-pal-primary-20);
   }
   &.cancel {
-    color: red;
+    color: var(--of-pal-error-50);
   }
   &:hover {
-    background-color: #eee;
+    background-color: var(--of-pal-primary-92);
   }
 }
 
 .of-calendar-day-supertitles {
   display: grid;
   grid-template-columns: 40px 1fr;
-  border-top: solid 1px #ccc;
+  border-top: solid 1px var(--calendar-grid-color);
 }
 
 .of-calendar-day-supertitle {
@@ -156,9 +167,9 @@ div.of-date-picker-cur-year {
 .of-calendar-month-row {
   display: grid;
   grid-template-columns: 40px repeat(auto-fit, minmax(50px, 1fr));
-  border-bottom: solid 1px #ccc;
+  border-bottom: solid 1px var(--calendar-grid-color);
   &:first-child {
-    border-top: solid 1px #ccc;
+    border-top: solid 1px var(--calendar-grid-color);
   }
 }
 
@@ -168,9 +179,9 @@ div.of-date-picker-cur-year {
     justify-content: center;
     padding-bottom: 2px;
   }
-  border-right: solid 1px #ccc;
+  border-right: solid 1px var(--calendar-grid-color);
   &:first-child {
-    border-left: solid 1px #ccc;
+    border-left: solid 1px var(--calendar-grid-color);
   }
   & .of-calendar-event {
     height: var(--of-event-height, 20px);
@@ -235,7 +246,7 @@ div.of-date-picker-cur-year {
 .of-calendar-interval {
   height: var(--of-calendar-iterval-height, 48px);
   box-sizing: border-box;
-  border-bottom: solid 1px #ccc;
+  border-bottom: solid 1px var(--calendar-grid-color);
   &:first-child .of-calendar-interval-label {
     display: none;
   }
@@ -244,7 +255,7 @@ div.of-date-picker-cur-year {
 
 .of-calendar-interval-label {
   position: absolute;
-  background-color: #fff;
+  background-color: var(--calendar-background);
   text-align: right;
   top: 0;
   right: 12px;
@@ -253,14 +264,14 @@ div.of-date-picker-cur-year {
 }
 
 .of-calendar-day-supertitle {
-  border-top: solid 1px #ccc;
-  border-bottom: solid 1px #ccc;
+  border-top: solid 1px var(--calendar-grid-color);
+  border-bottom: solid 1px var(--calendar-grid-color);
 }
 
 .of-calendar-gutter,
 .of-calendar-day-supertitle {
-  border-left: solid 1px #ccc;
-  border-right: solid 1px #ccc;
+  border-left: solid 1px var(--calendar-grid-color);
+  border-right: solid 1px var(--calendar-grid-color);
   &.of-week-number {
     cursor: pointer;
     display: flex;
@@ -275,7 +286,7 @@ div.of-date-picker-cur-year {
 
 .of-calendar-day,
 .of-calendar-category-title {
-  border-right: solid 1px #ccc;
+  border-right: solid 1px var(--calendar-grid-color);
 }
 
 .of-calendar-category-title,
@@ -290,22 +301,24 @@ div.of-date-picker-cur-year {
   & .weekday {
     text-transform: uppercase;
     font-size: 70%;
-    color: #aaa;
+    color: var(--calendar-weekday-color);
     text-align: center;
   }
   & .day-number {
-    border: 1px solid #ccc;
-    background-color: #ccc;
+    border: 1px solid var(--calendar-grid-color);
+    background-color: var(--calendar-day-color);
+    color: var(--calendar-day-text-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 32px;
     height: 32px;
+    margin: 2px;
 
     &.today {
-      background-color: teal;
-      color: #fff;
+      background-color: var(--calendar-today-background);
+      color: var(--calendar-today-color);
     }
   }
 }

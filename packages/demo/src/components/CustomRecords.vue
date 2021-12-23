@@ -13,7 +13,7 @@
 
     <div class="row content">
       <div class="column">
-        <div class="demo-form">
+        <div class="demo-form of--elevated-1">
           <div class="row form-row">
             <of-field :record="testRecord" name="one"></of-field>
           </div>
@@ -28,12 +28,18 @@
             <of-field :record="testRecord" name="two"></of-field>
           </div>
           <div class="row form-row">
+            <of-field :record="testRecord" name="three"></of-field>
+          </div>
+          <div class="row form-row">
             <of-field name="four" :record="testRecord"></of-field>
           </div>
           <div class="row form-row">
-            <button @click="testRecord.reset()" :disabled="testRecord.locked">
+            <of-button
+              @click="testRecord.reset()"
+              :disabled="testRecord.locked"
+            >
               Reset
-            </button>
+            </of-button>
           </div>
         </div>
       </div>
@@ -196,6 +202,7 @@ const createContext = <T extends object = Record<string, any>>(
 const data = {
   one: 'optionA',
   two: '2015-05-11',
+  three: 'Text',
   four_hours: 1,
   four_minutes: 15,
 }
@@ -212,6 +219,10 @@ const meta = reactive({
   two: {
     type: 'date',
     label: 'Date',
+  },
+  three: {
+    type: 'text',
+    label: 'Text',
   },
   four: {
     type: 'minutes',

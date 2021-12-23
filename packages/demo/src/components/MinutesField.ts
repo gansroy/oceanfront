@@ -4,7 +4,7 @@ import {
   fieldRender,
   useRecords,
 } from 'oceanfront'
-import { computed, h } from 'vue'
+import { computed, h, ref } from 'vue'
 
 export default defineFieldType({
   name: 'minutes',
@@ -13,33 +13,49 @@ export default defineFieldType({
     const record = computed(() => {
       return props.record || recordMgr.getCurrentRecord()
     })
+    const focused = ref(false)
+    const elt = ref<HTMLInputElement | undefined>()
+    const focus = (select?: boolean) => {
+      if (elt.value) {
+        elt.value.focus()
+        if (select) elt.value.select()
+        return true
+      }
+    }
 
     const value = computed(() => {
       const h = parseInt(record.value?.value[props.name + '_hours']) || 0
       const m = parseInt(record.value?.value[props.name + '_minutes']) || 0
-      console.log(h, m)
       return h * 60 + m
     })
 
-    const onChange = (evt: Event) => {
-      if (!record.value) return
-      const target = evt.target as
-        | (HTMLInputElement | HTMLTextAreaElement)
-        | null
-      if (!target) return
-      const val = target.value
-      let hm = parseInt(val)
-      if (!isNaN(hm)) {
-        const sign = hm < 0 ? -1 : 1
-        hm *= sign
-        record.value.value[props.name + '_hours'] = (
-          sign * Math.floor(hm / 60)
-        ).toFixed(0)
-        record.value.value[props.name + '_minutes'] = (
-          sign *
-          (hm % 60)
-        ).toFixed(0)
-      }
+    const hooks = {
+      onChange: (evt: Event) => {
+        if (!record.value) return
+        const target = evt.target as
+          | (HTMLInputElement | HTMLTextAreaElement)
+          | null
+        if (!target) return
+        const val = target.value
+        let hm = parseInt(val)
+        if (!isNaN(hm)) {
+          const sign = hm < 0 ? -1 : 1
+          hm *= sign
+          record.value.value[props.name + '_hours'] = (
+            sign * Math.floor(hm / 60)
+          ).toFixed(0)
+          record.value.value[props.name + '_minutes'] = (
+            sign *
+            (hm % 60)
+          ).toFixed(0)
+        }
+      },
+      onFocus: () => {
+        focused.value = true
+      },
+      onBlur: () => {
+        focused.value = false
+      },
     }
 
     return fieldRender({
@@ -51,10 +67,15 @@ export default defineFieldType({
           type: 'number',
           readonly: !ctx.editable,
           class: ['of-field-input'],
-          onchange: onChange,
           value: value.value,
+          ...hooks,
+          ref: elt,
         })
       },
+      click: () => focus(ctx.editable),
+      cursor: computed(() => (ctx.editable ? 'text' : 'normal')),
+      focused,
+      focus,
     })
   },
 })

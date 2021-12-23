@@ -182,8 +182,33 @@ export const OfOverlay = defineComponent({
       }
     )
 
+    const hasTint = ref(false)
+    const tintClass = ref('')
+
+    watch(
+      () => props.active,
+      (active) => {
+        if (!active) return
+        hasTint.value = !!(
+          target.value &&
+          window
+            .getComputedStyle(target.value)
+            .getPropertyValue('--of-has-tint')
+        )
+
+        const tintName =
+          target.value &&
+          window
+            .getComputedStyle(target.value)
+            .getPropertyValue('--of-tint-name')
+        tintClass.value = `of--tint-${tintName}`
+      }
+    )
+
     return () => {
       const cls = {
+        [tintClass.value]: !!hasTint.value,
+        'of--tinted': !!hasTint.value,
         'of--active': props.active,
         'of--capture': props.active && props.capture,
         'of--embed': state.value === 'embed',

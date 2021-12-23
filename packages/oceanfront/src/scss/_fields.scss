@@ -16,7 +16,8 @@
   font-variant-numeric: lining-nums tabular-nums;
 }
 .of--text-placeholder {
-  color: $color-field-placeholder;
+  color: #{use-color(field-color, placeholder)};
+  opacity: #{use-opacity(field-color, placeholder)};
 }
 
 .of--align-left {
@@ -47,41 +48,30 @@
   cursor: text;
 }
 
-.of-field-label {
-  align-self: center;
-  color: var(--field-label-color, $color-field-label);
-  // cursor: inherit;
-  font-size: 0.8em;
-  text-overflow: ellipsis;
-  transition: color 100ms;
-  white-space: nowrap;
-  word-wrap: break-word;
-
-  &.of--focused {
-    color: $color-field-focus-label;
-  }
-}
-
 .of-group {
   --group-pad: calc(0.5em - 1px);
+  --elevation-level: 0;
   border-radius: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--of-color-outline);
   padding: var(--group-pad) 0;
 }
 .of-group-label {
-  color: #666;
+  color: #{use-color(field-label)};
+  opacity: #{use-opacity(field-label)};
   font-size: 90%;
   padding-left: 0.7em;
   margin-bottom: var(--group-pad);
 }
 .of-group:hover > .of-group-label {
-  color: $color-field-hover;
+  color: #{use-color(field-label, hover)};
+  opacity: #{use-opacity(field-label, hover)};
 }
 .of-group:focus-within,
 .of-group.of--focused {
-  box-shadow: 0 0 1px 2px rgba(99, 131, 167, 0.5);
+  --elevation-level: 0.3;
   > .of-group-label {
-    color: $color-field-focus-label;
+    color: #{use-color(field-label, focus)};
+    opacity: #{use-opacity(field-label, focus)};
   }
 }
 .of-group-row {
@@ -95,14 +85,133 @@
 }
 
 .of-field {
+  position: relative;
+}
+
+.of-toggle-input,
+.of-slider-field,
+.of-file-field {
+  .of-field-input {
+    // input is invisible and covers the entire container
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: inherit;
+    font-size: inherit;
+    margin: 0;
+    opacity: 0;
+    outline: none;
+    &::-webkit-file-upload-button {
+      cursor: inherit;
+    }
+  }
+}
+
+.of-file-input {
+  display: flex;
+  position: relative;
+}
+
+.of-toggle-wrapper {
+  display: flex;
+  flex: auto;
+
+  .of-field-inner > & {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .of-toggle-input {
+    align-self: center;
+    flex: none;
+    padding: 0 var(--field-h-pad, 0.4em);
+    margin: -2px 0;
+    justify-content: center;
+    position: relative;
+    .of--checked & {
+      color: var(--of-primary-tint, inherit);
+    }
+  }
+}
+
+.of-field {
+  @include define-color-opacity(
+    field-border,
+    (var(--of-primary-tint), 20%),
+    (
+      hover: var(--of-primary-tint) 30%,
+      disabled: var(--of-primary-tint) 30%,
+      focus: var(--of-primary-tint) 100%,
+      invalid: var(--of-color-error) 100%,
+    )
+  );
+  @include define-color-opacity(
+    field-filled-label,
+    (var(--of-primary-tint), 80%),
+    (
+      hover: var(--of-primary-tint) 90%,
+      disabled: var(--of-primary-tint) 38%,
+      focus: var(--of-primary-tint) 100%,
+      invalid: var(--of-color-error) 100%,
+    )
+  );
+  @include define-color-opacity(
+    field-filled-bg,
+    (var(--of-color-on-surface) 4%),
+    (
+      hover: var(--of-color-on-surface) 6%,
+      focus: var(--of-color-on-surface) 8%,
+    )
+  );
+  @include define-color-opacity(
+    field-color,
+    (var(--of-color-on-surface), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+      placeholder: var(--of-color-on-surface) 55%,
+    )
+  );
+  @include define-color-opacity(
+    field-filled-color,
+    (var(--of-color-on-surface), 100%),
+    (
+      disabled: var(--of-color-on-surface) 38%,
+      placeholder: var(--of-color-on-surface) 55%,
+    )
+  );
+}
+
+.of-field,
+.of-group {
+  @include define-color-opacity(
+    field-label,
+    (var(--of-color-on-surface), 80%),
+    (
+      hover: var(--of-primary-tint) 90%,
+      disabled: var(--of-primary-tint) 38%,
+      focus: var(--of-primary-tint) 100%,
+      invalid: var(--of-color-error) 100%,
+    )
+  );
+}
+
+.of-field {
   --field-background: transparent;
+  --field-background-opacity: 0%;
   --field-border-color: transparent;
+  --field-border-opacity: 100%;
   --field-border-radius: #{$border-radius-input};
   --field-border-style: solid;
   --field-border-width: 1px;
-  --field-color: #{$color-field};
+  --field-color: #{use-color(field-color)};
+  --field-opacity: #{use-opacity(field-color)};
   --field-font-size: #{$font-size-input};
-  --field-label-color: #{$color-field-label};
+  --field-label-color: #{use-color(field-label)};
+  --field-label-opacity: #{use-opacity(field-label)};
   --field-label-width: var(--of-field-label-width, 50%);
   --field-input-height: calc(var(--field-line-height) * 1em);
   --field-line-height: #{$line-height-input};
@@ -113,37 +222,51 @@
   --field-size-append: 0px;
   --field-size-prepend: 0px;
 
+  &.of--small {
+    --field-font-size: #{$font-size-input-sm};
+  }
+  &.of--large {
+    --field-font-size: #{$font-size-input-lg};
+  }
+  .of--layer-bg {
+    background-color: var(--field-background);
+    opacity: var(--field-background-opacity);
+  }
+
   &.of--interactive {
-    --field-border-color: #{$border-color-field};
+    --field-border-color: #{use-color(field-border)};
+    --field-border-opacity: #{use-opacity(field-border)};
   }
   &.of--mode-disabled {
-    --field-border-color: #{$border-color-field-disabled};
-    --field-color: #{$color-field-disabled};
-    --field-label-color: #{$color-field-disabled};
-
-    > .of-field-main {
-      opacity: $opacity-input-disabled;
-
-      > .of-field-inner {
-        -webkit-text-fill-color: var(--field-color); // override needed for disabled state
-        text-shadow: $text-shadow-disabled;    
-      }
-    }
+    --field-border-color: #{use-color(field-border, disabled)};
+    --field-border-opacity: #{use-opacity(field-border, disabled)};
+    --field-color: #{use-color(field-color, disabled)};
+    --field-opacity: #{use-opacity(field-color, disabled)};
+    --field-label-color: #{use-color(field-label, disabled)};
+    --field-label-opacity: #{use-opacity(field-label, disabled)};
   }
   &.of--mode-editable:hover {
-    --field-border-color: #{$border-color-field-hover};
-    --field-label-color: #{$color-field-hover};
+    &:not(.of--invalid) {
+      --field-border-color: #{use-color(field-border, hover)};
+      --field-border-opacity: #{use-opacity(field-border, hover)};
+    }
+    --field-label-color: #{use-color(field-label, hover)};
+    --field-label-opacity: #{use-opacity(field-label, hover)};
   }
   &.of--interactive.of--focused {
-    --field-border-color: #{$border-color-field-focus};
-    --field-label-color: #{$color-field-focus-label};
+    &:not(.of--invalid) {
+      --field-border-color: #{use-color(field-border, focus)};
+      --field-border-opacity: #{use-opacity(field-border, focus)};
+    }
+    --field-label-color: #{use-color(field-label, focus)};
+    --field-label-opacity: #{use-opacity(field-label, focus)};
   }
   &.of--invalid {
-    --field-label-color: #{$color-error};
+    --field-label-color: #{use-color(field-label, invalid)};
+    --field-label-opacity: #{use-opacity(field-label, invalid)};
 
-    &:not(.of--focused) {
-      --field-border-color: #{$border-color-field-invalid};
-    }
+    --field-border-color: #{use-color(field-border, invalid)};
+    --field-border-opacity: #{use-opacity(field-border, invalid)};
   }
 
   box-sizing: border-box;
@@ -165,7 +288,8 @@
     width: var(--field-size);
   }
 
-  &.of--label-left, &.of--label-right {
+  &.of--label-left,
+  &.of--label-right {
     display: grid;
     grid-template-columns: var(--field-label-width) auto;
 
@@ -219,8 +343,6 @@
   grid-area: label;
 }
 .of-field-main {
-  background: var(--field-background);
-  border: var(--field-border-width) var(--field-border-style) var(--field-border-color);
   box-sizing: border-box;
   display: flex;
   flex-flow: column nowrap;
@@ -235,6 +357,7 @@
 }
 
 .of-field-body {
+  opacity: var(--field-opacity);
   align-items: flex-start;
   box-sizing: border-box;
   display: flex;
@@ -261,6 +384,9 @@
   flex: auto;
   overflow: hidden;
   text-overflow: ellipsis;
+  &:empty:after {
+    content: '\200b';
+  }
 }
 
 .of-field-input {
@@ -281,8 +407,8 @@
   // height: 100%;
   width: 100%;
   &::placeholder {
-    color: $color-field-placeholder;
-    opacity: 1;
+    color: #{use-color(field-color, placeholder)};
+    opacity: #{use-opacity(field-color, placeholder)};
   }
 }
 
@@ -300,7 +426,7 @@
 }
 
 .of-field-fixed-content {
-    user-select: text;
+  user-select: text;
 }
 
 .of-field-prepend,
@@ -318,17 +444,19 @@
 }
 
 .of-field.of--variant-outlined {
-  > .of-field-main {
-    border: var(--field-border-width) var(--field-border-style) var(--field-border-color);
+  .of--layer {
     border-radius: var(--field-border-radius);
-
-    > .of-field-inner {
-      margin-top: -1px;
-    }
+  }
+  .of--layer-brd {
+    border: var(--field-border-width) var(--field-border-style) transparent;
   }
 
-  &.of--interactive.of--focused > .of-field-main {
-    box-shadow: $box-shadow-field-basic-focus;
+  &:not(.of--label-frame) .of--layer-brd {
+    border-color: var(--field-border-color);
+    opacity: var(--field-border-opacity);
+  }
+  > .of-field-inner {
+    margin-top: -1px;
   }
 
   &.of--label-frame {
@@ -356,17 +484,24 @@
         width: 100%;
 
         &::before {
-          border: var(--field-border-width) var(--field-border-style) var(--field-border-color);
-          border-radius: var(--field-border-radius) 0 0 var(--field-border-radius);
+          border: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          opacity: var(--field-border-opacity);
+          border-radius: var(--field-border-radius) 0 0
+            var(--field-border-radius);
           border-right: none;
           box-sizing: border-box;
           content: '';
-          flex: 0 0 calc(max(var(--field-h-pad), var(--field-border-radius)) - 0.25em);
+          flex: 0 0
+            calc(max(var(--field-h-pad), var(--field-border-radius)) - 0.25em);
           transition: border-color 120ms;
         }
         &::after {
-          border: var(--field-border-width) var(--field-border-style) var(--field-border-color);
-          border-radius: 0 var(--field-border-radius) var(--field-border-radius) 0; // inherit?
+          border: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          opacity: var(--field-border-opacity);
+          border-radius: 0 var(--field-border-radius) var(--field-border-radius)
+            0; // inherit?
           border-left: none;
           content: '';
           flex: auto;
@@ -374,8 +509,11 @@
         }
 
         .of-field-header-label {
-          border-bottom: var(--field-border-width) var(--field-border-style) var(--field-border-color);
-          border-top: var(--field-border-width) var(--field-border-style) var(--field-border-color);
+          border-bottom: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          border-top: var(--field-border-width) var(--field-border-style)
+            var(--field-border-color);
+          opacity: var(--field-border-opacity);
           box-sizing: border-box;
           max-width: calc(100% - 2 * var(--field-h-pad));
           padding: 0 0.25em;
@@ -386,7 +524,8 @@
             top: calc(0px - var(--field-border-width));
             display: block;
             font-size: 0.75em;
-            transform: translateX(var(--field-size-prepend)) scale(1.3333) translateY(var(--field-v-pad));
+            transform: translateX(var(--field-size-prepend)) scale(1.3333)
+              translateY(var(--field-v-pad));
             transform-origin: left top;
             transition: transform 150ms;
             backface-visibility: hidden; // avoid some jumping?
@@ -408,7 +547,7 @@
         > .of-field-header {
           .of-field-header-label {
             border-top-color: transparent;
-      
+
             .of-field-label {
               transform: translateY(-0.675em);
             }
@@ -424,34 +563,46 @@
 }
 
 .of-field.of--variant-filled {
-  > .of-field-main {
+  .of--layer-brd {
+    border: var(--field-border-width) var(--field-border-style)
+      var(--field-border-color);
     border-color: transparent transparent var(--field-border-color) transparent;
+    opacity: var(--field-border-opacity);
   }
 
   &.of--mode-editable,
   &.of--mode-locked {
-    --field-background: #{$bg-field-filled};
+    --field-background: #{use-color(field-filled-bg)};
+    --field-background-opacity: #{use-opacity(field-filled-bg)};
   }
   &.of--interactive {
-    --field-color: #{$color-field-filled};
-    > .of-field-main {
+    --field-color: #{use-color(field-filled-color)};
+    --field-opacity: #{use-opacity(field-filled-color)};
+    .of--layer {
       border-radius: var(--field-border-radius) var(--field-border-radius) 0 0;
     }
   }
   &.of--mode-editable:hover {
-    --field-background: #{$bg-field-filled-hover};
-  }
-  &.of--interactive.of--focused {
-    --field-background: #{$bg-field-filled-focus};
+    --field-background: #{use-color(field-filled-bg, hover)};
+    --field-background-opacity: #{use-opacity(field-filled-bg, hover)};
   }
   &.of--mode-disabled {
-    --field-color: #{$color-field-disabled};
+    --field-color: #{use-color(field-filled-color, disabled)};
+    --field-opacity: #{use-opacity(field-filled-color, disabled)};
     --field-border-style: dashed;
+    --field-label-color: #{use-color(field-filled-label, disabled)};
+    --field-label-opacity: #{use-opacity(field-filled-label, disabled)};
+  }
+  &.of--interactive.of--focused {
+    --field-background: #{use-color(field-filled-bg, focus)};
+    --field-background-opacity: #{use-opacity(field-filled-bg, focus)};
+    --field-label-color: #{use-color(field-filled-label, focus)};
+    --field-label-opacity: #{use-opacity(field-filled-label, focus)};
   }
 
   &.of--interactive > .of-field-main::after {
     // ripple
-    background: $border-color-field-focus;
+    background: #{use-color(field-border, focus)};
     content: '';
     height: 2px;
     position: absolute;
@@ -465,15 +616,26 @@
     will-change: opacity, transform;
     z-index: 1;
   }
+  &.of--interactive.of--invalid > .of-field-main::after {
+    background: #{use-color(field-border, invalid)};
+  }
   &.of--interactive.of--focused > .of-field-main::after {
-    opacity: 1;
+    opacity: #{use-opacity(field-border, focus)};
     transform: scaleX(1);
   }
   &.of--mode-editable:hover {
-    --field-label-color: #{$color-field-filled-hover};
+    --field-label-color: #{use-color(field-filled-label, hover)};
+    --field-label-opacity: #{use-opacity(field-filled-label, hover)};
   }
+
+  &.of--mode-disabled {
+    --field-label-color: #{use-color(field-filled-label, disabled)};
+    --field-label-opacity: #{use-opacity(field-filled-label, disabled)};
+  }
+
   &.of--interactive.of--focused {
-    --field-label-color: #{$color-field-filled-focus-label};
+    --field-label-color: #{use-color(field-filled-label, focus)};
+    --field-label-opacity: #{use-opacity(field-filled-label, focus)};
   }
 
   &.of--label-frame {
@@ -481,7 +643,9 @@
     --field-v-pad: calc(var(--field-v-pad-base) - 0.5em);
 
     > .of-field-main {
-      min-height: calc(1em + 2 * var(--field-v-pad) + var(--field-input-height));
+      min-height: calc(
+        1em + 2 * var(--field-v-pad) + var(--field-input-height)
+      );
       padding: 0;
 
       > .of-field-header {
@@ -494,7 +658,9 @@
         .of-field-header-label {
           box-sizing: border-box;
           line-height: 1;
-          padding: var(--field-v-pad) calc(var(--field-size-append) + var(--field-h-pad)) 0 calc(var(--field-size-prepend) + var(--field-h-pad));
+          padding: var(--field-v-pad)
+            calc(var(--field-size-append) + var(--field-h-pad)) 0
+            calc(var(--field-size-prepend) + var(--field-h-pad));
 
           .of-field-label {
             font-size: 0.75em;
@@ -511,51 +677,16 @@
   }
 }
 
-.of-toggle-input,
-.of-slider-field,
-.of-file-field {
-  .of-field-input {
-    // input is invisible and covers the entire container
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    -webkit-appearance: none;
-    appearance: none;
-    cursor: inherit;
-    font-size: inherit;
-    margin: 0;
-    opacity: 0;
-    outline: none;
-    &::-webkit-file-upload-button {
-      cursor: inherit;
-    }
-  }
-}
-
-.of-file-input {
-  display: flex;
-  position: relative;
-}
-
-.of-toggle-wrapper {
-  display: flex;
-  flex: auto;
-
-  .of-field-inner > & {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .of-toggle-input {
-    align-self: center;
-    flex: none;
-    padding: 0 var(--field-h-pad, 0.4em);
-    margin: -2px 0;
-    justify-content: center;
-    position: relative;
-  }
+.of-field-label {
+  align-self: center;
+  color: var(--field-label-color);
+  opacity: var(--field-label-opacity);
+  // cursor: inherit;
+  font-size: 0.8em;
+  text-overflow: ellipsis;
+  transition: color 100ms;
+  white-space: nowrap;
+  word-wrap: break-word;
 }
 
 // container around inline toggle field (checkbox or switch)
@@ -577,34 +708,37 @@
   width: 2em;
 
   &-thumb {
-    background-color: #555;
+    background-color: var(--of-color-outline);
     // border: 1px solid #bbb;
     border-radius: 50%;
     box-sizing: border-box;
-    box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
+    box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15),
+      0 -2px 1px 0 rgba(100, 100, 100, 0.15);
     content: ' ';
     height: 1em;
     left: 0;
     position: absolute;
     top: 0;
-    transition: left 0.15s ease-in-out;
+    transition: left 0.15s ease-in-out, background-color 0.15s ease-in-out;
     width: 1em;
   }
 
   &-track {
-    border: 1px solid #777;
+    border: 1px solid var(--of-color-outline);
     border-radius: 1em;
     box-sizing: border-box;
     flex: auto;
     height: 100%;
-    transition: background 0.15s ease-in-out;
+    transition: background 0.15s ease-in-out, border 0.15s ease-in-out;
   }
   .of--checked & {
     .of-switch-thumb {
+      background-color: var(--of-primary-tint);
       left: calc(1em - 1px);
     }
     .of-switch-track {
-      background: #888;
+      background-color: var(--of-primary-tint);
+      opacity: 72%;
     }
   }
 }
@@ -627,10 +761,11 @@
     width: 100%;
     z-index: 0;
     height: 0.5em;
-    background: $border-color-field;
+    background-color: var(--of-primary-tint);
+    opacity: 60%;
   }
   &-thumb {
-    background-color: #555;
+    background-color: var(--of-primary-tint);
     border-radius: 50%;
     box-shadow: 0 2px 1px 0 rgba(100, 100, 100, 0.15);
     box-sizing: border-box;
@@ -646,7 +781,17 @@
 }
 
 .of-color-swatch {
-  border: 1px solid $border-color-field;
+  & > .of-color-swatch-border {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 1px solid #{use-color(field-border)};
+    opacity: #{use-opacity(field-border)};
+    border-radius: 2px;
+  }
+  position: relative;
   border-radius: 2px;
   box-sizing: border-box;
   width: 2.5em;

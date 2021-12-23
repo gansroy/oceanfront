@@ -4,85 +4,131 @@
     <of-highlight lang="html" :value="sampleCode" />
     <br />
     <div class="row">
-      <of-field
-        v-model="params.density"
-        label="Density"
-        type="select"
-        :items="densityOptions"
-      />
+      <div class="column spaced">
+        <of-field
+          v-model="params.density"
+          label="Density"
+          type="select"
+          :items="densityOptions"
+        />
+      </div>
+      <div class="column spaced" style="align-self: flex-end">
+        <of-field
+          v-model="params.rounded"
+          label="Rounded"
+          type="toggle"
+          label-position="input"
+          :items="densityOptions"
+        />
+      </div>
+      <div class="column spaced">
+        <of-field
+          v-model="params.tint"
+          label="Tint"
+          type="select"
+          :items="tintOptions"
+        />
+      </div>
     </div>
-    <div class="demo-fields">
-      <div class="row">
+    <div class="demo-fields of--elevated-1">
+      <div class="row" v-for="variant in variants" :key="variant">
+        <div
+          class="column spaced"
+          style="flex: 0 1 10em; text-transform: capitalize; font-weight: bold"
+        >
+          {{ variant }}
+        </div>
         <div class="column spaced">
-          <of-button v-bind="params">Submit</of-button>
-          <of-button v-bind="params" disabled>Disabled</of-button>
-          <of-button v-bind="params" icon="gear">Gear</of-button>
-          <of-button v-bind="params" rounded>Rounded</of-button>
-          <of-button v-bind="params" split :items="testItems" @click="menuClick"
+          <of-button v-bind="params" :variant="variant">Submit</of-button>
+          <of-button v-bind="params" :variant="variant" disabled
+            >Disabled</of-button
+          >
+          <of-button v-bind="params" :variant="variant" icon="gear"></of-button>
+          <of-button
+            v-bind="params"
+            :variant="variant"
+            split
+            :items="testItems"
+            @click="menuClick"
+            icon="gear"
+          ></of-button>
+          <of-button v-bind="params" :variant="variant" icon="gear"
+            >Gear</of-button
+          >
+          <of-button
+            v-bind="params"
+            :variant="variant"
+            split
+            :items="testItems"
+            @click="menuClick"
             >Split</of-button
           >
-          <of-button v-bind="params" icon="gear" rounded :items="testItems"
+          <of-button
+            v-bind="params"
+            :variant="variant"
+            icon="gear"
+            :items="testItems"
             >Menu</of-button
           >
         </div>
       </div>
-      <div class="row">
-        <div class="column">
-          <h4>Button Sets</h4>
-          <span class="of-buttonset">
-            <of-button v-bind="params" icon="accept">Save</of-button>
-            <of-button v-bind="params" icon="refresh" disabled
-              >Refresh</of-button
+    </div>
+    <div class="demo-fields of--elevated-1">
+      <div class="row" v-for="variant in variants" :key="variant">
+        <div class="column spaced">
+          <span
+            class="of-buttonset"
+            :class="{
+              'of-buttonset--rounded': params.rounded,
+              'of--elevated': variant == 'elevated',
+            }"
+          >
+            <of-button v-bind="params" :variant="variant" icon="accept"
+              >Save</of-button
             >
-            <of-button v-bind="params" icon="gear" rounded :items="testItems"
-              >Menu</of-button
-            >
-            <of-button v-bind="params" icon="cancel">Cancel</of-button>
-          </span>
-          <br />
-          <span class="of-buttonset">
-            <of-button v-bind="params" variant="outlined">1</of-button>
-            <of-button v-bind="params" variant="outlined" active>2</of-button
-            >
-            <of-button v-bind="params" variant="outlined">3</of-button>
-            <of-button v-bind="params" variant="outlined">4</of-button>
-            <of-button v-bind="params" variant="outlined">5</of-button>
             <of-button
               v-bind="params"
-              icon="page last"
-              variant="outlined"
-            ></of-button>
+              :variant="variant"
+              icon="refresh"
+              disabled
+              >Refresh</of-button
+            >
+            <of-button
+              v-bind="params"
+              :variant="variant"
+              icon="gear"
+              :items="testItems"
+              >Menu</of-button
+            >
+            <of-button v-bind="params" :variant="variant" icon="cancel"
+              >Cancel</of-button
+            >
           </span>
         </div>
-      </div>
-      <div class="row">
-        <div class="column md-2 sm-4">
-          <h4>Solid</h4>
-          <of-button rounded v-bind="params">Submit</of-button>
-        </div>
-        <div class="column md-2 sm-4">
-          <h4>Outlined</h4>
-          <of-button rounded v-bind="params" variant="outlined"
-            >Submit</of-button
+        <div class="column spaced" v-if="variant != 'text'">
+          <span
+            class="of-buttonset"
+            :class="{
+              'of-buttonset--rounded': params.rounded,
+              'of--elevated': variant == 'elevated',
+            }"
           >
-        </div>
-        <div class="column md-2 sm-4">
-          <h4>Text</h4>
-          <of-button rounded v-bind="params" variant="text">Submit</of-button>
+            <of-button v-bind="params" :variant="variant">1</of-button>
+            <of-button v-bind="params" :variant="variant" active>2</of-button>
+            <of-button v-bind="params" :variant="variant">3</of-button>
+            <of-button v-bind="params" :variant="variant">4</of-button>
+            <of-button v-bind="params" :variant="variant">5</of-button>
+            <of-button
+              v-bind="params"
+              :variant="variant"
+              icon="page last"
+            ></of-button>
+          </span>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<style lang="scss">
-.spaced {
-  > * {
-    margin-right: 1em;
-    margin-bottom: 0.5em;
-  }
-}
-</style>
 
 <script lang="ts">
 import { defineComponent, reactive } from 'vue'
@@ -106,6 +152,7 @@ export default defineComponent({
   <of-button icon="cancel">Cancel</of-button>
 </span>`
 
+    const variants = ['elevated', 'filled', 'tonal', 'outlined', 'text']
     const selectMenu1 = () => {
       console.log('Menu item 1 selected')
     }
@@ -126,16 +173,30 @@ export default defineComponent({
     ]
 
     const densityOptions = ['default', '0', '1', '2', '3']
+    const tintOptions = ['default', 'primary', 'secondary', 'tertiary']
     const params = reactive({
       density: 'default',
+      rounded: false,
+      tint: 'default',
     })
     return {
       sampleCode,
       testItems,
       densityOptions,
+      tintOptions,
       params,
       menuClick,
+      variants,
     }
   },
 })
 </script>
+
+<style lang="scss">
+.spaced {
+  > * {
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+  }
+}
+</style>

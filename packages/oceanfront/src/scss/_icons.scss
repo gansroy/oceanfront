@@ -12,7 +12,7 @@
   svg {
     aspect-ratio: 1;
     fill: currentColor;
-    width: var(--icon-size);
+    width: var(--icon-size, var(--of-icon-size));
     height: auto;
   }
 

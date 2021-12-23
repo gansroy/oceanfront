@@ -2,38 +2,36 @@ import {
   computed,
   defineComponent,
   h,
+  PropType,
   proxyRefs,
   ref,
-  watch,
-  PropType,
   Ref,
   SetupContext,
   VNode,
+  watch,
   WatchStopHandle,
 } from 'vue'
-
 import { OfOverlay } from '../components/Overlay'
 import { useConfig } from '../lib/config'
 import {
   FieldContext,
   FieldDragIn,
-  FieldMode,
-  FieldRender,
-  Renderable,
   FieldFormatProp,
   FieldLabelPositionProp,
+  FieldMode,
   FieldTypeConstructor,
+  Renderable,
 } from '../lib/fields'
 import { useFocusGroup } from '../lib/focus'
 import { useFormats } from '../lib/formats'
-import { FormRecord, useRecords } from '../lib/records'
 import { ItemList } from '../lib/items'
+import { FormRecord, useRecords } from '../lib/records'
 import {
-  extractRefs,
   extendReactive,
+  extractRefs,
+  PositionObserver,
   restrictProps,
   watchPosition,
-  PositionObserver,
 } from '../lib/util'
 
 const renderSlot = (
@@ -155,6 +153,7 @@ export const OfField = defineComponent({
     // style
     type: String,
     variant: String,
+    tint: String,
     context: String,
   },
   emits: {
@@ -199,6 +198,7 @@ export const OfField = defineComponent({
     const dragOver = ref(false)
     const focused = ref(false)
     const variant = computed(() => props.variant || 'outlined')
+    const tint = computed(() => props.tint)
 
     // may inherit default value from context in future
     const initialValue = computed(() =>
@@ -412,8 +412,10 @@ export const OfField = defineComponent({
             )
           : undefined
         const cls = [
-          'of-field',
+          'of-field ',
           {
+            'of--tinted': !!tint.value,
+            ['of--tint-' + tint.value]: !!tint.value,
             'of--active': render.active || !blank, // overridden for toggle input to avoid hiding content
             'of--blank': blank,
             'of--dragover': dragOver.value,
@@ -431,6 +433,7 @@ export const OfField = defineComponent({
           'of--label-' + (label ? labelPosition.value : 'none'),
           'of--mode-' + mode.value,
           'of--variant-' + variant.value,
+          'of--tint-' + tint.value,
           render.class,
           props.class,
         ]
@@ -496,6 +499,9 @@ export const OfField = defineComponent({
                 id: mainId,
               },
               [
+                h('div', { class: 'of--layer of--layer-bg' }),
+                h('div', { class: 'of--layer of--layer-brd' }),
+                h('div', { class: 'of--layer of--layer-outl' }),
                 h(
                   'div',
                   {

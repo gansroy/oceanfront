@@ -232,6 +232,7 @@ export const SelectField = defineFieldType({
       click: clickOpen,
       cursor: computed(() => (ctx.editable ? 'pointer' : null)),
       focus,
+      focused,
       // hovered,
       inputId,
       inputValue,
@@ -243,6 +244,7 @@ export const SelectField = defineFieldType({
           opened.value
             ? h(OfOptionList, {
                 items: formatItems.value,
+                class: 'of--elevated-1',
                 onClick: setValue,
               })
             : undefined,

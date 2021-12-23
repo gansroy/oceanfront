@@ -1,5 +1,5 @@
 <template>
-  <div role="menu" class="of-menu">
+  <div role="menu" class="of-menu" :class="menuClass" :style="menuStyle">
     <of-nav-group>
       <div v-if="isEmpty" style="padding: 0 0.5em">No items</div>
       <template v-if="!isEmpty">
@@ -13,13 +13,11 @@
               v-if="!item.special"
               :active="item.selected"
               :disabled="item.disabled"
-              @click="
-                () => {
-                  onClick(item.value)
-                }
-              "
+              @click="() => item.disabled || onClick(item.value, item)"
               :attrs="item.attrs"
-              >{{ item.text }}
+            >
+              <of-icon v-if="item.icon" :name="item.icon" size="input" />
+              {{ item.text }}
             </of-list-item>
           </template>
         </div>
@@ -39,6 +37,8 @@ const OfOptionList = defineComponent({
     OfNavGroup,
   },
   props: {
+    class: [Object, String],
+    style: [Object, String],
     items: {
       type: Array as PropType<any[]>,
       default: () => [],
@@ -48,7 +48,9 @@ const OfOptionList = defineComponent({
   setup(props) {
     const isEmpty = computed(() => !props.items || !props.items.length)
     const theItems = computed(() => props.items as any[])
-    return { isEmpty, theItems }
+    const menuClass = computed(() => props.class)
+    const menuStyle = computed(() => props.style)
+    return { isEmpty, theItems, menuClass, menuStyle }
   },
 })
 

@@ -23,7 +23,8 @@
     "vue": "~3.2"
   },
   "dependencies": {
-    "hsluv": "0.1.0"
+    "hsluv": "0.1.0",
+    "tinycolor2": "^1.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15",

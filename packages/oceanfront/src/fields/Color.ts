@@ -16,6 +16,8 @@ export const ColorField = defineFieldType({
 
   init(props: FieldProps, ctx: FieldContext) {
     const opened = ref(false)
+    const focused = ref(false)
+    const elt = ref<HTMLElement | undefined>()
     let defaultFieldId: string
     const inputId = computed(() => {
       let id = ctx.id
@@ -25,8 +27,12 @@ export const ColorField = defineFieldType({
       }
       return id
     })
-    const closePopup = () => {
+    const focus = () => {
+      elt.value?.focus()
+    }
+    const closePopup = (refocus?: boolean) => {
       opened.value = false
+      if (refocus) focus()
     }
     const clickOpen = () => {
       if (ctx.editable) opened.value = true
@@ -86,7 +92,10 @@ export const ColorField = defineFieldType({
       const hsv = color.hsv
       return h(
         'div',
-        { class: 'of-menu of-colorpicker-popup' },
+        {
+          class: 'of-menu of-colorpicker-popup of--elevated-1',
+          tabindex: '0',
+        },
         h('div', { class: 'color-picker' }, [
           h(Saturation, {
             saturation: hsv.s,
@@ -103,6 +112,21 @@ export const ColorField = defineFieldType({
         ])
       )
     }
+    const hooks = {
+      onBlur(_evt: FocusEvent) {
+        focused.value = false
+      },
+      onFocus(_evt: FocusEvent) {
+        focused.value = true
+      },
+      onKeydown(evt: KeyboardEvent) {
+        if (evt.key == ' ' || evt.key == 'ArrowUp' || evt.key == 'ArrowDown') {
+          clickOpen()
+          evt.preventDefault()
+          evt.stopPropagation()
+        }
+      },
+    }
 
     return fieldRender({
       class: 'of-color-field',
@@ -116,9 +140,12 @@ export const ColorField = defineFieldType({
             ],
             id: inputId.value,
             tabindex: 0,
+            ref: elt,
+            ...hooks,
           },
           [compColor.value.hex]
         ),
+      focused,
       click: clickOpen,
       cursor: computed(() => (ctx.editable ? 'pointer' : 'default')),
       inputId,
@@ -128,12 +155,16 @@ export const ColorField = defineFieldType({
         onBlur: closePopup,
       },
       prepend: () =>
-        h('div', {
-          class: 'of-color-swatch',
-          style: {
-            backgroundColor: compColor.value.hex,
+        h(
+          'div',
+          {
+            class: 'of-color-swatch',
+            style: {
+              backgroundColor: compColor.value.hex,
+            },
           },
-        }),
+          h('div', { class: 'of-color-swatch-border' })
+        ),
       updated: computed(() => initialValue.value !== stateValue.value),
       value: stateValue,
     })

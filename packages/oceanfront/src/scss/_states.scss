@@ -66,17 +66,6 @@
 /*.state-neutral {
 	.state-mixin(@state-color-neutral, @bg-color-neutral, @border-color-neutral);
 }*/
-// .state-label {
-//   @include state-mixin($color-label, $bg-label, $border-color-label);
-//   text-shadow: $text-shadow-label;
-// }
-// .state-button {
-//   @include state-mixin($color-button, $bg-button, $border-color-button);
-//   text-shadow: $text-shadow-button;
-// }
-// .state-active {
-//   @include state-mixin($color-active, $bg-active, $border-color-active);
-// }
 /*.state-selected {
 	color: @state-color-selected;
 	border-color: @border-color-selected;
@@ -85,14 +74,6 @@
 .state-current {
 	border-color: @border-color-current;
 }*/
-.state-disabled {
-  @include state-mixin(
-    $color-field-disabled,
-    $bg-field-disabled,
-    $border-color-field-disabled
-  );
-  text-shadow: $text-shadow-disabled;
-}
 .state-success {
   @include state-mixin-grad(#595, rgba(255, 255, 255, 0.8), #6b6);
 }
@@ -134,4 +115,45 @@
 }
 .state-invert {
   @include state-mixin-grad(#fff, #888, #777);
+}
+
+.of--elevated,
+.of--elevated-1,
+.of--elevated-2,
+.of--elevated-3,
+.of--elevated-4,
+.of--elevated-5 {
+    --of-elevation-box-shadow: none;
+  box-shadow: var(--of-elevation-box-shadow);
+  --of-elevation-box-shadow-1: 0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.5);
+  --of-elevation-box-shadow-2: 0 3px 6px rgba(0,0,0,0.32), 0 3px 6px rgba(0,0,0,0.5);
+  --of-elevation-box-shadow-3: 0 10px 20px rgba(0,0,0,0.38), 0 6px 6px rgba(0,0,0,0.46);
+  --of-elevation-box-shadow-4: 0 14px 28px rgba(0,0,0,0.5), 0 10px 10px rgba(0,0,0,0.44);
+  --of-elevation-box-shadow-5: 0 19px 38px rgba(0,0,0,0.6), 0 15px 12px rgba(0,0,0,0.44);
+}
+
+.of--elevated-1 {
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-1);
+}
+
+.of--elevated-2 {
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-2);
+}
+.of--elevated-3 {
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-3);
+}
+.of--elevated-4 {
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-4);
+}
+.of--elevated-5 {
+  --of-elevation-box-shadow: var(--of-elevation-box-shadow-5);
+}
+
+.of--layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
 }
