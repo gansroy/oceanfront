@@ -121,9 +121,11 @@ export const OfButton = defineComponent({
             )
           : undefined
 
+      const extraContent = ctx.slots.extra?.()
       const body = [
         iconContent,
         mainContent,
+        extraContent,
         items && !split ? expand : undefined,
       ]
       return h(
