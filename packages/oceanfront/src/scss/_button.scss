@@ -294,7 +294,7 @@
       &:hover:not(:active) {
         @include apply-button-state(btn-fill, hover);
         & .of--layer.of--layer-outl {
-          --of-elevation-box-shadow: var(--of-elevation-box-shadow-2);
+          --of-elevation-box-shadow: var(--of-elevation-box-shadow-1);
         }
       }
       &.of--focused {
