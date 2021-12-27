@@ -90,7 +90,7 @@ function pluginConfig(compact, extractCss) {
       __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
     }),
     postcss({
-      extract: extractCss ? 'oceanfront.css' : false,
+      extract: extractCss ? 'oceanfront-html-editor.css' : false,
       inject: false,
       plugins: [...postcssPlugins, cssnano()],
       sourceMap: true,
@@ -153,7 +153,7 @@ if (targetFormats.iife) {
       compact: true,
       file: 'dist/oceanfront-html-editor-browser.min.js',
       format: 'iife',
-      name: 'oceanfront',
+      name: 'oceanfront-html-editor',
       exports: 'named',
       globals,
     },

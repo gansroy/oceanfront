@@ -127,6 +127,7 @@
             <of-list-item to="/records">Records</of-list-item>
             <of-list-item to="/custom-records">Custom Records</of-list-item>
             <of-list-item to="/formatters">Value Formatters</of-list-item>
+            <of-list-item to="/html-editor">HTML Editor</of-list-item>
           </of-list-group>
           <of-list-group value="1">
             <template #activator="{ state, toggle }">
