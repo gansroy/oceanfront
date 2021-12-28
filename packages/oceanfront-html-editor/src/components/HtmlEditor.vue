@@ -124,14 +124,45 @@
         @click="editor.chain().focus().undo().run()"
         density="3"
         variant="text"
-        >undo</of-button
       >
+        undo
+      </of-button>
       <of-button
         @click="editor.chain().focus().redo().run()"
         density="3"
         variant="text"
         >redo</of-button
       >
+      <of-button
+        @click="editor.chain().focus().setTextAlign('left').run()"
+        density="3"
+        :variant="getVariant({ textAlign: 'left' })"
+      >
+        left
+      </of-button>
+      <of-button
+        @click="editor.chain().focus().setTextAlign('center').run()"
+        density="3"
+        :variant="getVariant({ textAlign: 'center' })"
+      >
+        center
+      </of-button>
+      <of-button
+        @click="editor.chain().focus().setTextAlign('right').run()"
+        density="3"
+        :variant="getVariant({ textAlign: 'right' })"
+      >
+        right
+      </of-button>
+      <of-button
+        @click="editor.chain().focus().setTextAlign('justify').run()"
+        density="3"
+        :variant="getVariant({ textAlign: 'justify' })"
+      >
+        justify
+      </of-button>
+      <of-button @click="addImage" density="3" variant="text">image</of-button>
+      <of-button @click="addLink" density="3" variant="text">link</of-button>
     </div>
     <editor-content :editor="editor" />
   </div>
@@ -148,6 +179,9 @@ import {
 } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
+import TextAlign from '@tiptap/extension-text-align'
+import Image from '@tiptap/extension-image'
+import Link from '@tiptap/extension-link'
 import { FormRecord } from 'oceanfront'
 
 export default defineComponent({
@@ -208,7 +242,14 @@ export default defineComponent({
 
     const editor = useEditor({
       content: fieldValue.value,
-      extensions: [StarterKit],
+      extensions: [
+        StarterKit,
+        Image,
+        TextAlign.configure({
+          types: ['heading', 'paragraph'],
+        }),
+        Link,
+      ],
       onUpdate: () => {
         if (props.name && htmlFieldName.value && record.value) {
           record.value.value[htmlFieldName.value] = editor.value.getHTML()
@@ -224,11 +265,27 @@ export default defineComponent({
       },
     })
 
-    const getVariant = (name: string, params = {}): string => {
+    const getVariant = (name: any, params = {}): string => {
       return editor.value.isActive(name, params) ? 'filled' : 'text'
     }
 
-    return { editor, getVariant }
+    const addImage = () => {
+      const url = window.prompt('URL')
+
+      if (url) {
+        editor.value.chain().focus().setImage({ src: url }).run()
+      }
+    }
+
+    const addLink = () => {
+      const url = window.prompt('Link')
+
+      if (url) {
+        editor.value.chain().focus().setLink({ href: url }).run()
+      }
+    }
+
+    return { editor, getVariant, addImage, addLink }
   },
 })
 </script>
