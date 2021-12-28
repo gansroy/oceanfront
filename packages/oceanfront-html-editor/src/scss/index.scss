@@ -12,21 +12,7 @@
       var(--of-field-border-color);
 
     .of-button {
-      &.is-active {
-        --button-bg-color: var(--of-btn-fill-bg-color);
-        --button-bg-opacity: var(--of-btn-fill-bg-opacity);
-        --button-color: var(--of-btn-fill-color-color);
-        --button-opacity: var(--of-btn-fill-color-opacity);
-        --button-split-color: var(
-          --of-btn-split-color-fill,
-          var(--of-btn-split-color)
-        );
-        --button-split-opacity: var(
-          --of-btn-split-opacity-fill,
-          var(--of-btn-split-opacity)
-        );
-        --button-border-color: transparent;
-      }
+      margin: 0.2em;
     }
   }
 
@@ -34,6 +20,8 @@
     > * + * {
       margin-top: 0.75em;
     }
+
+    margin: 0.75em;
 
     ul,
     ol {

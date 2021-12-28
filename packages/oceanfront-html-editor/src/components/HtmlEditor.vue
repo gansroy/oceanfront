@@ -3,121 +3,106 @@
     <div v-if="editor" class="editor-toolbar">
       <of-button
         @click="editor.chain().focus().toggleBold().run()"
-        :class="{ 'is-active': editor.isActive('bold') }"
         density="3"
-        variant="text"
+        :variant="getVariant('bold')"
       >
         bold
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleItalic().run()"
-        :class="{ 'is-active': editor.isActive('italic') }"
         density="3"
-        variant="text"
+        :variant="getVariant('italic')"
       >
         italic
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleStrike().run()"
-        :class="{ 'is-active': editor.isActive('strike') }"
         density="3"
-        variant="text"
+        :variant="getVariant('strike')"
       >
         strike
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleCode().run()"
-        :class="{ 'is-active': editor.isActive('code') }"
         density="3"
-        variant="text"
+        :variant="getVariant('code')"
       >
         code
       </of-button>
       <of-button
         @click="editor.chain().focus().setParagraph().run()"
-        :class="{ 'is-active': editor.isActive('paragraph') }"
         density="3"
-        variant="text"
+        :variant="getVariant('paragraph')"
       >
         paragraph
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
         density="3"
-        variant="text"
+        :variant="getVariant('heading', { level: 1 })"
       >
         h1
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
         density="3"
-        variant="text"
+        :variant="getVariant('heading', { level: 2 })"
       >
         h2
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }"
         density="3"
-        variant="text"
+        :variant="getVariant('heading', { level: 3 })"
       >
         h3
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 4 }) }"
         density="3"
-        variant="text"
+        :variant="getVariant('heading', { level: 4 })"
       >
         h4
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 5 }) }"
         density="3"
-        variant="text"
+        :variant="getVariant('heading', { level: 5 })"
       >
         h5
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 6 }) }"
         density="3"
-        variant="text"
+        :variant="getVariant('heading', { level: 6 })"
       >
         h6
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleBulletList().run()"
-        :class="{ 'is-active': editor.isActive('bulletList') }"
         density="3"
-        variant="text"
+        :variant="getVariant('bulletList')"
       >
         bullet list
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleOrderedList().run()"
-        :class="{ 'is-active': editor.isActive('orderedList') }"
         density="3"
-        variant="text"
+        :variant="getVariant('orderedList')"
       >
         ordered list
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleCodeBlock().run()"
-        :class="{ 'is-active': editor.isActive('codeBlock') }"
         density="3"
-        variant="text"
+        :variant="getVariant('codeBlock')"
       >
         code block
       </of-button>
       <of-button
         @click="editor.chain().focus().toggleBlockquote().run()"
-        :class="{ 'is-active': editor.isActive('blockquote') }"
         density="3"
-        variant="text"
+        :variant="getVariant('blockquote')"
       >
         blockquote
       </of-button>
@@ -153,23 +138,97 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {
+  defineComponent,
+  watch,
+  PropType,
+  computed,
+  ComputedRef,
+  SetupContext,
+} from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
+import { FormRecord } from 'oceanfront'
 
 export default defineComponent({
   name: 'OfHtmlEditor',
   components: {
     EditorContent,
   },
-  props: {},
-  setup(_props) {
-    const editor = useEditor({
-      content: '<p>Test HTML2</p>',
-      extensions: [StarterKit],
+  props: {
+    name: String,
+    modelValue: {
+      type: String,
+      default: '',
+    },
+    record: {
+      type: Object as PropType<FormRecord>,
+      required: false,
+    },
+  },
+  emits: {
+    'update:modelValue': null,
+    updated: null,
+  },
+  setup(props, ctx: SetupContext) {
+    const record: ComputedRef<FormRecord | undefined> = computed(() => {
+      return props.record || undefined
     })
 
-    return { editor }
+    const htmlFieldName: ComputedRef<string | undefined> = computed(() => {
+      return props.name ? `${props.name}_html` : undefined
+    })
+
+    const fieldValue: ComputedRef<string> = computed(() => {
+      let value = props.modelValue ?? ''
+
+      if (record.value && props.name && htmlFieldName.value) {
+        const htmlValue = record.value.value[htmlFieldName.value] ?? null
+        const textValue = record.value.value[props.name] ?? null
+        if (htmlValue !== null) {
+          value = htmlValue
+        } else if (textValue !== null) {
+          value = textValue
+        }
+      }
+
+      return value
+    })
+
+    watch(
+      () => props.modelValue,
+      (value) => {
+        if (!record.value) {
+          const isSame = editor.value.getHTML() === value
+          if (isSame) return
+          editor.value.commands.setContent(value, false)
+        }
+      }
+    )
+
+    const editor = useEditor({
+      content: fieldValue.value,
+      extensions: [StarterKit],
+      onUpdate: () => {
+        if (props.name && htmlFieldName.value && record.value) {
+          record.value.value[htmlFieldName.value] = editor.value.getHTML()
+          record.value.value[props.name] = editor.value.getText()
+        } else {
+          ctx.emit('update:modelValue', editor.value.getHTML())
+        }
+
+        ctx.emit('updated', {
+          html: editor.value.getHTML(),
+          text: editor.value.getText(),
+        })
+      },
+    })
+
+    const getVariant = (name: string, params = {}): string => {
+      return editor.value.isActive(name, params) ? 'filled' : 'text'
+    }
+
+    return { editor, getVariant }
   },
 })
 </script>
