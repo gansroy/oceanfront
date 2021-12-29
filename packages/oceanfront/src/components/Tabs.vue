@@ -210,9 +210,13 @@ export default defineComponent({
     let selectedTabKey: any = ref(props.modelValue)
     let tabsWidth: any = ref([])
 
-    const offsetStyle = computed(() => ({
-      '--tab-active-border': props.activeOffset,
-    }))
+    const offsetStyle = computed(() =>
+      props.activeOffset
+        ? {
+            '--tab-active-border': props.activeOffset,
+          }
+        : {}
+    )
 
     const normalizedDensity = computed(() => {
       let d = props.density
