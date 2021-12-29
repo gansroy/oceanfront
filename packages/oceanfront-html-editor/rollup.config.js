@@ -156,6 +156,7 @@ if (targetFormats.iife) {
       name: 'oceanfront-html-editor',
       exports: 'named',
       globals,
+      extend: true,
     },
     plugins: pluginConfig(true),
   })
