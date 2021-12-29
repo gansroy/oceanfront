@@ -12,7 +12,19 @@
       var(--of-field-border-color);
 
     .of-button {
-      margin: 0.2em;
+      margin: 0.5em;
+    }
+
+    .divider {
+      width: 2px;
+      height: 1.5rem;
+      background-color: #0000001a;
+      margin-bottom: 0.2em;
+      margin-right: 0.5em;
+      margin-left: 0.5em;
+      display: inline-block;
+      line-height: 1.5;
+      box-sizing: border-box;
     }
   }
 
