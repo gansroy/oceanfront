@@ -177,7 +177,7 @@ import {
   ComputedRef,
   SetupContext,
 } from 'vue'
-import { useEditor, EditorContent } from '@tiptap/vue-3'
+import { useEditor, EditorContent, Extension } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
 import Image from '@tiptap/extension-image'
@@ -198,6 +198,9 @@ export default defineComponent({
     record: {
       type: Object as PropType<FormRecord>,
       required: false,
+    },
+    extensions: {
+      type: Array as PropType<Extension[]>,
     },
   },
   emits: {
@@ -240,16 +243,20 @@ export default defineComponent({
       }
     )
 
+    const coreExtensions = [
+      StarterKit,
+      Image,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      Link,
+    ]
+
     const editor = useEditor({
       content: fieldValue.value,
-      extensions: [
-        StarterKit,
-        Image,
-        TextAlign.configure({
-          types: ['heading', 'paragraph'],
-        }),
-        Link,
-      ],
+      extensions: props.extensions
+        ? coreExtensions.concat(props.extensions)
+        : coreExtensions,
       onUpdate: () => {
         if (props.name && htmlFieldName.value && record.value) {
           record.value.value[htmlFieldName.value] = editor.value.getHTML()
