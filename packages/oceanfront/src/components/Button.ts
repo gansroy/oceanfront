@@ -22,6 +22,7 @@ export const OfButton = defineComponent({
     variant: String,
     tint: String,
     keepTextColor: Boolean,
+    menuTrigger: { type: String, default: 'click' },
   },
   emits: {
     click: null,
@@ -71,6 +72,9 @@ export const OfButton = defineComponent({
     )
     const menuMouseEvts = {
       onMouseenter: () => {
+        if (props.menuTrigger === 'hover') {
+          menuShown.value = true
+        }
         clearTimeout(menuTimerId)
       },
       onMouseleave: () => {
