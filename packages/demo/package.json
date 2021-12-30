@@ -10,6 +10,7 @@
   "dependencies": {
     "hsluv": "^0.1.0",
     "oceanfront": "*",
+    "oceanfront-html-editor": "*",
     "vue": "~3.2",
     "vue-router": "~4.0"
   },

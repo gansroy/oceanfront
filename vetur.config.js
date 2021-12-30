@@ -19,5 +19,12 @@ module.exports = {
         "./src/components/**/*.vue",
       ],
     },
+    {
+      root: "./packages/oceanfront-html-editor",
+      globalComponents: [
+        "./src/components/**/*.ts",
+        "./src/components/**/*.vue",
+      ],
+    },
   ],
 };
