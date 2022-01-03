@@ -1,6 +1,6 @@
 <template>
-  <div class="of-field editor">
-    <div v-if="editor" class="editor-toolbar">
+  <div :class="['of-field', 'editor', !isEditable ? 'fixed' : 'active']">
+    <div v-if="editor && isEditable" class="editor-toolbar">
       <of-button
         @click="editor.chain().focus().toggleBold().run()"
         density="3"
@@ -207,12 +207,18 @@ export default defineComponent({
     extensions: {
       type: Array as PropType<Extension[]>,
     },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: {
     'update:modelValue': null,
     updated: null,
   },
   setup(props, ctx: SetupContext) {
+    const isEditable: ComputedRef<boolean> = computed(() => props.editable)
+
     const record: ComputedRef<FormRecord | undefined> = computed(() => {
       return props.record || undefined
     })
@@ -227,9 +233,9 @@ export default defineComponent({
       if (record.value && props.name && htmlFieldName.value) {
         const htmlValue = record.value.value[htmlFieldName.value] ?? null
         const textValue = record.value.value[props.name] ?? null
-        if (htmlValue !== null) {
+        if (htmlValue) {
           value = htmlValue
-        } else if (textValue !== null) {
+        } else if (textValue) {
           value = textValue
         }
       }
@@ -248,6 +254,13 @@ export default defineComponent({
       }
     )
 
+    watch(
+      () => isEditable.value,
+      (value) => {
+        editor.value.setEditable(value)
+      }
+    )
+
     const coreExtensions = [
       StarterKit,
       Image,
@@ -259,6 +272,7 @@ export default defineComponent({
 
     const editor = useEditor({
       content: fieldValue.value,
+      editable: isEditable.value,
       extensions: props.extensions
         ? coreExtensions.concat(props.extensions)
         : coreExtensions,
@@ -297,7 +311,7 @@ export default defineComponent({
       }
     }
 
-    return { editor, getVariant, addImage, addLink }
+    return { editor, getVariant, addImage, addLink, isEditable }
   },
 })
 </script>
