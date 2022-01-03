@@ -1,4 +1,5 @@
 .editor {
+  --content-margin: var(--of-editor-content-margin, 0.75em);
   border: var(--field-border-width) var(--field-border-style)
     var(--of-field-border-color);
   border-radius: var(--field-border-radius);
@@ -30,10 +31,10 @@
 
   .ProseMirror {
     > * + * {
-      margin-top: 0.75em;
+      margin-top: var(--content-margin);
     }
 
-    margin: 0.75em;
+    margin: var(--content-margin);
 
     ul,
     ol {
