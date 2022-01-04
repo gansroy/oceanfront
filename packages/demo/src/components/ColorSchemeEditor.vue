@@ -55,6 +55,16 @@
     </div>
   </div>
   <div class="container">
+    <h2>Section</h2>
+    <div class="sections">
+      <div class="header separated">Title</div>
+      <div class="header2 separated">Title 2</div>
+      <div class="header3 separated">Title 3</div>
+      <div class="bg separated">Background</div>
+      <div class="bg-alt">Alt background</div>
+    </div>
+  </div>
+  <div class="container">
     <of-highlight lang="css" :value="styles" />
   </div>
 </template>
@@ -67,9 +77,9 @@ import { hexToHsluv, hsluvToHex } from 'hsluv'
 const colors: Ref<{ [k: string]: string }> = ref({
   primary: tinycolor('hsl(189 47% 50%)').toHexString(),
   secondary: tinycolor('hsl(15 83% 50%)').toHexString(),
-  tertiary: tinycolor('hsl(34 97% 50%)').toHexString(),
-  neutral: tinycolor('hsl(80 15% 50%)').toHexString(),
-  'neutral-variant': tinycolor('hsl(191 8% 50%)').toHexString(),
+  tertiary: tinycolor('hsl(227 97% 50%)').toHexString(),
+  neutral: tinycolor('hsl(80 6% 44%)').toHexString(),
+  section: tinycolor('hsl(211 87% 53%)').toHexString(),
 })
 
 type PaletteEntry = {
@@ -80,7 +90,7 @@ type PaletteEntry = {
 
 const limits: { [k: string]: number } = {
   neutral: 0.4,
-  'neutral-variant': 0.4,
+  'section-dark': 0.1,
 }
 
 const shades = Array.from({ length: 101 }).map((_, idx) => idx)
@@ -89,11 +99,16 @@ const ColorSchemeEditor = defineComponent({
   name: 'ColorSchemeEditor',
   setup() {
     const pallettes = computed(() => {
-      return Object.keys(colors.value).reduce((acc, name) => {
+      return Object.keys({
+        ...colors.value,
+        'section-dark': colors.value.section,
+      }).reduce((acc, nm) => {
+        const name = nm == 'section-dark' ? 'section' : nm
         const color = colors.value[name]
         const base = hexToHsluv(color)
-        base[1] *= limits[name] ?? 1
-        acc[name] = shades.reduce((acc, l) => {
+        const limit = limits[nm] ?? 1
+        base[1] *= limit
+        acc[nm] = shades.reduce((acc, l) => {
           base[2] = l
           const cl = hsluvToHex(base)
           return {
@@ -140,14 +155,14 @@ const ColorSchemeEditor = defineComponent({
       style += `--of-color-background-light: ${pallettes.value['neutral'][98].color};\n`
       style += `--of-color-on-background-light: ${pallettes.value['neutral'][10].color};\n`
 
-      style += `--of-color-outline-light: ${pallettes.value['neutral-variant'][50].color};\n`
+      style += `--of-color-outline-light: ${pallettes.value['neutral'][50].color};\n`
       style += `--of-color-shadow-light: ${pallettes.value['neutral'][0].color};\n`
 
       style += `--of-color-surface-light: ${pallettes.value['neutral'][95].color};\n`
       style += `--of-color-on-surface-light: ${pallettes.value['neutral'][10].color};\n`
 
-      style += `--of-color-surface-variant-light: ${pallettes.value['neutral-variant'][95].color};\n`
-      style += `--of-color-on-surface-variant-light: ${pallettes.value['neutral-variant'][30].color};\n`
+      style += `--of-color-surface-variant-light: ${pallettes.value['neutral'][95].color};\n`
+      style += `--of-color-on-surface-variant-light: ${pallettes.value['neutral'][30].color};\n`
 
       style += `--of-color-inverse-surface-light: ${pallettes.value['neutral'][20].color};\n`
       style += `--of-color-inverse-on-surface-light: ${pallettes.value['neutral'][95].color};\n`
@@ -155,6 +170,13 @@ const ColorSchemeEditor = defineComponent({
       style += `--of-color-inverse-primary-light: ${pallettes.value['primary'][95].color};\n`
       style += `--of-color-inverse-secondary-light: ${pallettes.value['secondary'][95].color};\n`
       style += `--of-color-inverse-tertiary-light: ${pallettes.value['tertiary'][95].color};\n`
+
+      style += `--of-color-section-border-light: ${pallettes.value['section'][72].color};\n`
+      style += `--of-color-section-bg-light: ${pallettes.value['section'][98].color};\n`
+      style += `--of-color-section-alt-bg-light: ${pallettes.value['section'][97].color};\n`
+      style += `--of-color-section-header-light: ${pallettes.value['section'][95].color};\n`
+      style += `--of-color-section-header2-light: ${pallettes.value['section'][93].color};\n`
+      style += `--of-color-section-header3-light: ${pallettes.value['section'][91].color};\n`
 
       /******************************************************* */
       style += `--of-color-primary-dark: ${pallettes.value['primary'][80].color};\n`
@@ -178,18 +200,25 @@ const ColorSchemeEditor = defineComponent({
       style += `--of-color-on-error-container-dark: #ffdad4;\n`
       style += `--of-color-background-dark: ${pallettes.value['neutral'][25].color};\n`
       style += `--of-color-on-background-dark: ${pallettes.value['neutral'][90].color};\n`
-      style += `--of-color-outline-dark: ${pallettes.value['neutral-variant'][60].color};\n`
+      style += `--of-color-outline-dark: ${pallettes.value['neutral'][60].color};\n`
       style += `--of-color-shadow-dark: ${pallettes.value['neutral'][0].color};\n`
       style += `--of-color-surface-dark: ${pallettes.value['neutral'][30].color};\n`
       style += `--of-color-on-surface-dark: ${pallettes.value['neutral'][90].color};\n`
-      style += `--of-color-surface-variant-dark: ${pallettes.value['neutral-variant'][30].color};\n`
-      style += `--of-color-on-surface-variant-dark: ${pallettes.value['neutral-variant'][80].color};\n`
+      style += `--of-color-surface-variant-dark: ${pallettes.value['neutral'][30].color};\n`
+      style += `--of-color-on-surface-variant-dark: ${pallettes.value['neutral'][80].color};\n`
       style += `--of-color-inverse-surface-dark: ${pallettes.value['neutral'][90].color};\n`
       style += `--of-color-inverse-on-surface-dark: ${pallettes.value['neutral'][20].color};\n`
 
       style += `--of-color-inverse-primary-dark: ${pallettes.value['primary'][10].color};\n`
       style += `--of-color-inverse-secondary-dark: ${pallettes.value['secondary'][10].color};\n`
       style += `--of-color-inverse-tertiary-dark: ${pallettes.value['tertiary'][10].color};\n`
+
+      style += `--of-color-section-border-dark: ${pallettes.value['section-dark'][60].color};\n`
+      style += `--of-color-section-bg-dark: ${pallettes.value['section-dark'][26].color};\n`
+      style += `--of-color-section-alt-bg-dark: ${pallettes.value['section-dark'][27].color};\n`
+      style += `--of-color-section-header-dark: ${pallettes.value['section-dark'][30].color};\n`
+      style += `--of-color-section-header2-dark: ${pallettes.value['section-dark'][32].color};\n`
+      style += `--of-color-section-header3-dark: ${pallettes.value['section-dark'][34].color};\n`
 
       const styleEl = document.querySelector('style#color-scheme')
       if (styleEl) {
@@ -365,6 +394,44 @@ export default ColorSchemeEditor
   & .inverse-tertiary {
     color: var(--of-color-tertiary);
     background: var(--of-color-inverse-tertiary);
+  }
+}
+
+.sections {
+  border: solid 1px var(--of-color-section-border);
+  border-radius: 8px;
+  overflow: hidden;
+  div {
+    padding: 8px;
+  }
+  .header {
+    background-color: var(--of-color-section-header);
+  }
+  .header2 {
+    background-color: var(--of-color-section-header2);
+  }
+  .header3 {
+    background-color: var(--of-color-section-header3);
+  }
+  .bg {
+    background-color: var(--of-color-section-bg);
+  }
+  .bg-alt {
+    background-color: var(--of-color-section-alt-bg);
+  }
+}
+
+.separated {
+  position: relative;
+  &:after {
+    position: absolute;
+    height: 1px;
+    background: var(--of-color-outline);
+    opacity: 0.2;
+    content: '';
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 </style>

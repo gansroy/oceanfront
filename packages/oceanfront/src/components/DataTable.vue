@@ -47,7 +47,7 @@
       class="of-data-table-row"
       v-for="(row, rowidx) of rows"
       :key="rowidx"
-      :class="{ selected: rowsRecord.value[row.id] }"
+      :class="{ selected: rowsRecord.value[row.id], odd: rowidx % 2 != 0 }"
     >
       <div v-if="rowsSelector">
         <slot name="rows-selector" :record="rowsRecord" :item="row">
@@ -154,10 +154,13 @@ export default defineComponent({
       () => parseInt(props.itemsPerPage as any, 10) || 10
     )
     const page = ref(0)
+    // What was this?
+    /*
     const pageCount = computed(() => {
       let count = parseInt(props.itemsCount ?? props.items?.length, 10) || 0
       return Math.ceil(count / perPage.value)
     })
+    */
     watch(
       () => props.page,
       (p) => (page.value = parseInt(p as string, 10) || 1), // FIXME check in range
