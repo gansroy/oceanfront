@@ -255,6 +255,15 @@ export default defineComponent({
     )
 
     watch(
+      () => record.value?.value[htmlFieldName.value as string],
+      (value) => {
+        const isSame = editor.value.getHTML() === value
+        if (isSame) return
+        editor.value.commands.setContent(value, false)
+      }
+    )
+
+    watch(
       () => isEditable.value,
       (value) => {
         editor.value.setEditable(value)
