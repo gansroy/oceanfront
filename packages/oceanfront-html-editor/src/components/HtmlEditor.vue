@@ -1,175 +1,211 @@
 <template>
-  <div :class="['of-field', 'editor', !isEditable ? 'fixed' : 'active']">
-    <div v-if="editor && isEditable" class="editor-toolbar">
-      <of-button
-        @click="editor.chain().focus().toggleBold().run()"
-        density="3"
-        :variant="getVariant('bold')"
-        icon="format bold"
-        title="Bold"
-      />
-      <of-button
-        @click="editor.chain().focus().toggleItalic().run()"
-        density="3"
-        :variant="getVariant('italic')"
-        icon="format italic"
-        title="Italic"
-      />
-      <of-button
-        @click="editor.chain().focus().toggleStrike().run()"
-        density="3"
-        :variant="getVariant('strike')"
-        icon="format strikethrough"
-        title="Strike"
-      />
-      <of-button
-        @click="editor.chain().focus().toggleCode().run()"
-        density="3"
-        :variant="getVariant('code')"
-        icon="code"
-        title="Code"
-      />
-      <of-button
-        @click="editor.chain().focus().setParagraph().run()"
-        density="3"
-        :variant="getVariant('paragraph')"
-        icon="paragraph"
-        title="Paragraph"
-      />
-      <div class="divider"></div>
-      <of-button
-        @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-        density="3"
-        :variant="getVariant('heading', { level: 1 })"
-        icon="h-1"
-        titile="Heading 1"
-      />
-      <of-button
-        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-        density="3"
-        :variant="getVariant('heading', { level: 2 })"
-        icon="h-2"
-        titile="Heading 2"
-      />
-      <of-button
-        @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-        density="3"
-        :variant="getVariant('heading', { level: 3 })"
-        icon="h-3"
-        titile="Heading 3"
-      />
-      <of-button
-        @click="editor.chain().focus().toggleBulletList().run()"
-        density="3"
-        :variant="getVariant('bulletList')"
-        icon="format list-bulleted"
-        title="Bullet List"
-      />
-      <of-button
-        @click="editor.chain().focus().toggleOrderedList().run()"
-        density="3"
-        :variant="getVariant('orderedList')"
-        icon="format list-numbered"
-        title="Ordered List"
-      />
-      <of-button
-        @click="editor.chain().focus().toggleCodeBlock().run()"
-        density="3"
-        :variant="getVariant('codeBlock')"
-        icon="developer-mode"
-        title="Code Block"
-      />
-      <div class="divider"></div>
-      <of-button
-        @click="editor.chain().focus().setTextAlign('left').run()"
-        density="3"
-        :variant="getVariant({ textAlign: 'left' })"
-        icon="format align-left"
-        title="Left"
-      />
-      <of-button
-        @click="editor.chain().focus().setTextAlign('center').run()"
-        density="3"
-        :variant="getVariant({ textAlign: 'center' })"
-        icon="format align-center"
-        title="Center"
-      />
-      <of-button
-        @click="editor.chain().focus().setTextAlign('right').run()"
-        density="3"
-        :variant="getVariant({ textAlign: 'right' })"
-        icon="format align-right"
-        title="Right"
-      />
-      <of-button
-        @click="editor.chain().focus().setTextAlign('justify').run()"
-        density="3"
-        :variant="getVariant({ textAlign: 'justify' })"
-        icon="format align-justify"
-        title="Justify"
-      />
-      <div class="divider"></div>
-      <of-button
-        @click="editor.chain().focus().toggleBlockquote().run()"
-        density="3"
-        :variant="getVariant('blockquote')"
-        icon="format quote"
-        title="Blockquote"
-      />
-      <of-button
-        @click="editor.chain().focus().setHorizontalRule().run()"
-        density="3"
-        variant="text"
-        icon="separator"
-        title="Horizontal Rule"
-      />
-      <div class="divider"></div>
-      <of-button
-        @click="editor.chain().focus().setHardBreak().run()"
-        density="3"
-        variant="text"
-        icon="wrap-text"
-        title="Hard Break"
-      />
-      <of-button
-        @click="editor.chain().focus().clearNodes().run()"
-        density="3"
-        variant="text"
-        icon="format clear"
-        title="Clear Format"
-      />
-      <div class="divider"></div>
-      <of-button
-        @click="addImage"
-        density="3"
-        variant="text"
-        icon="insert-photo"
-        title="Image"
-      />
-      <of-button
-        @click="addLink"
-        density="3"
-        variant="text"
-        icon="insert-link"
-        title="Link"
-      />
-      <div class="divider"></div>
-      <of-button
-        @click="editor.chain().focus().undo().run()"
-        density="3"
-        variant="text"
-        icon="undo"
-        title="Undo"
-      />
-      <of-button
-        @click="editor.chain().focus().redo().run()"
-        density="3"
-        variant="text"
-        icon="redo"
-        title="Redo"
-      />
+  <div
+    :class="[
+      'of-field',
+      'of-editor',
+      'of--active',
+      'of--interactive',
+      isEditable ? 'of--cursor-text' : 'of--cursor-normal',
+      isEditable ? 'of--label-top' : '',
+      isEditable ? 'of--mode-editable' : 'of--mode-fixed',
+      focused ? 'of--focused' : '',
+      'of--variant-outlined',
+      'of--tint-undefined',
+      'of-text-field',
+    ]"
+  >
+    <div class="of-field-main-label">
+      <label class="of-field-label">{{ label }}</label>
     </div>
-    <editor-content :editor="editor" />
+    <div class="of-field-main">
+      <div class="of--layer of--layer-bg"></div>
+      <div class="of--layer of--layer-brd"></div>
+      <div class="of--layer of--layer-outl"></div>
+      <div class="of-field-header"></div>
+      <div class="of-field-body">
+        <div class="of-field-inner">
+          <div class="of-field-content-text of--align-start of--unpadded">
+            <div v-if="editor && isEditable" class="editor-toolbar">
+              <of-button
+                @click="editor.chain().focus().toggleBold().run()"
+                density="3"
+                :variant="getVariant('bold')"
+                icon="format bold"
+                title="Bold"
+              />
+              <of-button
+                @click="editor.chain().focus().toggleItalic().run()"
+                density="3"
+                :variant="getVariant('italic')"
+                icon="format italic"
+                title="Italic"
+              />
+              <of-button
+                @click="editor.chain().focus().toggleStrike().run()"
+                density="3"
+                :variant="getVariant('strike')"
+                icon="format strikethrough"
+                title="Strike"
+              />
+              <of-button
+                @click="editor.chain().focus().toggleCode().run()"
+                density="3"
+                :variant="getVariant('code')"
+                icon="code"
+                title="Code"
+              />
+              <of-button
+                @click="editor.chain().focus().setParagraph().run()"
+                density="3"
+                :variant="getVariant('paragraph')"
+                icon="paragraph"
+                title="Paragraph"
+              />
+              <div class="divider"></div>
+              <of-button
+                @click="
+                  editor.chain().focus().toggleHeading({ level: 1 }).run()
+                "
+                density="3"
+                :variant="getVariant('heading', { level: 1 })"
+                icon="h-1"
+                titile="Heading 1"
+              />
+              <of-button
+                @click="
+                  editor.chain().focus().toggleHeading({ level: 2 }).run()
+                "
+                density="3"
+                :variant="getVariant('heading', { level: 2 })"
+                icon="h-2"
+                titile="Heading 2"
+              />
+              <of-button
+                @click="
+                  editor.chain().focus().toggleHeading({ level: 3 }).run()
+                "
+                density="3"
+                :variant="getVariant('heading', { level: 3 })"
+                icon="h-3"
+                titile="Heading 3"
+              />
+              <of-button
+                @click="editor.chain().focus().toggleBulletList().run()"
+                density="3"
+                :variant="getVariant('bulletList')"
+                icon="format list-bulleted"
+                title="Bullet List"
+              />
+              <of-button
+                @click="editor.chain().focus().toggleOrderedList().run()"
+                density="3"
+                :variant="getVariant('orderedList')"
+                icon="format list-numbered"
+                title="Ordered List"
+              />
+              <of-button
+                @click="editor.chain().focus().toggleCodeBlock().run()"
+                density="3"
+                :variant="getVariant('codeBlock')"
+                icon="developer-mode"
+                title="Code Block"
+              />
+              <div class="divider"></div>
+              <of-button
+                @click="editor.chain().focus().setTextAlign('left').run()"
+                density="3"
+                :variant="getVariant({ textAlign: 'left' })"
+                icon="format align-left"
+                title="Left"
+              />
+              <of-button
+                @click="editor.chain().focus().setTextAlign('center').run()"
+                density="3"
+                :variant="getVariant({ textAlign: 'center' })"
+                icon="format align-center"
+                title="Center"
+              />
+              <of-button
+                @click="editor.chain().focus().setTextAlign('right').run()"
+                density="3"
+                :variant="getVariant({ textAlign: 'right' })"
+                icon="format align-right"
+                title="Right"
+              />
+              <of-button
+                @click="editor.chain().focus().setTextAlign('justify').run()"
+                density="3"
+                :variant="getVariant({ textAlign: 'justify' })"
+                icon="format align-justify"
+                title="Justify"
+              />
+              <div class="divider"></div>
+              <of-button
+                @click="editor.chain().focus().toggleBlockquote().run()"
+                density="3"
+                :variant="getVariant('blockquote')"
+                icon="format quote"
+                title="Blockquote"
+              />
+              <of-button
+                @click="editor.chain().focus().setHorizontalRule().run()"
+                density="3"
+                variant="text"
+                icon="separator"
+                title="Horizontal Rule"
+              />
+              <div class="divider"></div>
+              <of-button
+                @click="editor.chain().focus().setHardBreak().run()"
+                density="3"
+                variant="text"
+                icon="wrap-text"
+                title="Hard Break"
+              />
+              <of-button
+                @click="editor.chain().focus().clearNodes().run()"
+                density="3"
+                variant="text"
+                icon="format clear"
+                title="Clear Format"
+              />
+              <div class="divider"></div>
+              <of-button
+                @click="addImage"
+                density="3"
+                variant="text"
+                icon="insert-photo"
+                title="Image"
+              />
+              <of-button
+                @click="addLink"
+                density="3"
+                variant="text"
+                icon="insert-link"
+                title="Link"
+              />
+              <div class="divider"></div>
+              <of-button
+                @click="editor.chain().focus().undo().run()"
+                density="3"
+                variant="text"
+                icon="undo"
+                title="Undo"
+              />
+              <of-button
+                @click="editor.chain().focus().redo().run()"
+                density="3"
+                variant="text"
+                icon="redo"
+                title="Redo"
+              />
+              <hr class="editor-toolbar-border" />
+            </div>
+            <editor-content :editor="editor" />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -180,6 +216,8 @@ import {
   PropType,
   computed,
   ComputedRef,
+  ref,
+  Ref,
   SetupContext,
 } from 'vue'
 import { useEditor, EditorContent, Extension } from '@tiptap/vue-3'
@@ -196,6 +234,7 @@ export default defineComponent({
   },
   props: {
     name: String,
+    label: String,
     modelValue: {
       type: String,
       default: '',
@@ -217,6 +256,7 @@ export default defineComponent({
     updated: null,
   },
   setup(props, ctx: SetupContext) {
+    const focused: Ref<boolean> = ref(false)
     const isEditable: ComputedRef<boolean> = computed(() => props.editable)
 
     const record: ComputedRef<FormRecord | undefined> = computed(() => {
@@ -298,6 +338,12 @@ export default defineComponent({
           text: editor.value.getText(),
         })
       },
+      onFocus: () => {
+        focused.value = true
+      },
+      onBlur: () => {
+        focused.value = false
+      },
     })
 
     const getVariant = (name: any, params = {}): string => {
@@ -320,7 +366,7 @@ export default defineComponent({
       }
     }
 
-    return { editor, getVariant, addImage, addLink, isEditable }
+    return { editor, getVariant, addImage, addLink, isEditable, focused }
   },
 })
 </script>

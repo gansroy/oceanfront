@@ -12,7 +12,12 @@
       />
     </div>
     <br />
-    <of-html-editor v-model="content" @updated="updated" :editable="editable" />
+    <of-html-editor
+      v-model="content"
+      @updated="updated"
+      :editable="editable"
+      label="Message"
+    />
   </div>
 </template>
 
