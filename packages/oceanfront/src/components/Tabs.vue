@@ -169,6 +169,7 @@ const formatItems = (
         : undefined,
       visible: item.visible,
       params: item.params ?? undefined,
+      attrs: item.attrs ?? undefined,
       subMenuItems: subMenu,
     } as Tab)
   }
