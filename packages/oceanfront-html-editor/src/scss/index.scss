@@ -1,18 +1,26 @@
-.editor {
-  border: var(--field-border-width) var(--field-border-style)
-    var(--of-field-border-color);
-  border-radius: var(--field-border-radius);
-  background-color: var(--field-background);
-  opacity: var(--field-border-opacity);
-  height: 300px;
+.of-editor {
+  --content-margin: var(--of-editor-content-margin, 0.75em);
+
+  .of-field-body {
+    height: 300px;
+  }
 
   .editor-toolbar {
     width: 100%;
-    border-bottom: var(--field-border-width) var(--field-border-style)
-      var(--of-field-border-color);
+
+    .editor-toolbar-border {
+      margin: 0;
+      width: 100%;
+      color: var(--of-field-border-color);
+      background-color: var(--of-field-border-color);
+      opacity: var(--of-field-border-opacity);
+      height: var(--field-border-width);
+      border: none;
+    }
 
     .of-button {
       margin: 0.5em;
+      --button-border-width: 0;
     }
 
     .divider {
@@ -30,10 +38,10 @@
 
   .ProseMirror {
     > * + * {
-      margin-top: 0.75em;
+      margin-top: var(--content-margin);
     }
 
-    margin: 0.75em;
+    margin: var(--content-margin);
 
     ul,
     ol {
@@ -88,5 +96,25 @@
       border-top: 2px solid rgba(#0d0d0d, 0.1);
       margin: 2rem 0;
     }
+  }
+
+  .ProseMirror Mirror-focused [contenteditable='false'] {
+    cursor: text;
+  }
+}
+
+.of-field.of-editor.of--mode-fixed {
+  border: 0;
+  --of-editor-content-margin: 0;
+  --field-border-width: 0;
+
+  .of-field-body {
+    height: auto;
+  }
+}
+
+.of-field.of-editor.of--focused {
+  .editor-toolbar-border {
+    opacity: 100%;
   }
 }
