@@ -4,14 +4,14 @@
       'of-field',
       'of-editor',
       'of--active',
-      'of--interactive',
+      isEditable ? 'of--interactive' : '',
       isEditable ? 'of--cursor-text' : 'of--cursor-normal',
       isEditable ? 'of--label-top' : '',
       isEditable ? 'of--mode-editable' : 'of--mode-fixed',
       focused ? 'of--focused' : '',
       'of--variant-outlined',
       'of--tint-undefined',
-      'of-text-field',
+      isEditable ? 'of-text-field' : '',
     ]"
   >
     <div class="of-field-main-label">
