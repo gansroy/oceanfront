@@ -72,7 +72,12 @@
 <script lang="ts">
 import { defineComponent, ref, computed, Ref } from 'vue'
 import tinycolor from 'tinycolor2'
-import { hexToHsluv, hsluvToHex } from 'hsluv'
+import {
+  hex_to_rgb,
+  okhsl_to_srgb,
+  rgb_to_hex,
+  srgb_to_okhsl,
+} from '../lib/colorconversion'
 
 const colors: Ref<{ [k: string]: string }> = ref({
   primary: tinycolor('hsl(189 47% 50%)').toHexString(),
@@ -88,9 +93,12 @@ type PaletteEntry = {
   l: number
 }
 
-const limits: { [k: string]: number } = {
+const lLimits: { [k: string]: number } = {
   neutral: 0.4,
-  'section-dark': 0.1,
+}
+
+const sLimits: { [k: string]: number } = {
+  'section-dark': 0.4,
 }
 
 const shades = Array.from({ length: 101 }).map((_, idx) => idx)
@@ -105,12 +113,14 @@ const ColorSchemeEditor = defineComponent({
       }).reduce((acc, nm) => {
         const name = nm == 'section-dark' ? 'section' : nm
         const color = colors.value[name]
-        const base = hexToHsluv(color)
-        const limit = limits[nm] ?? 1
-        base[1] *= limit
+        const base = srgb_to_okhsl(hex_to_rgb(color) || { r: 0, g: 0, b: 0 })
+        const lLimit = lLimits[nm] ?? 1
+        const sLimit = sLimits[nm] ?? 1
+        base.l *= lLimit
+        base.s *= sLimit
         acc[nm] = shades.reduce((acc, l) => {
-          base[2] = l
-          const cl = hsluvToHex(base)
+          base.l = l / 100
+          const cl = rgb_to_hex(okhsl_to_srgb(base))
           return {
             ...acc,
             [l]: {
@@ -227,13 +237,6 @@ const ColorSchemeEditor = defineComponent({
 
       return style
     })
-    const colors2 = computed(() => {
-      return Object.keys(colors.value).reduce((acc, name) => {
-        const color = colors.value[name]
-        acc[name] = hexToHsluv(color)
-        return acc
-      }, {} as any)
-    })
 
     const formatName = (name: string): string => {
       return (
@@ -245,7 +248,6 @@ const ColorSchemeEditor = defineComponent({
       colors,
       pallettes,
       formatName,
-      colors2,
       styles,
     }
   },
