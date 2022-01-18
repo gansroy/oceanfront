@@ -107,6 +107,7 @@
   border: 0;
   --of-editor-content-margin: 0;
   --field-border-width: 0;
+  padding-left: var(--field-h-pad);
 
   .of-field-body {
     height: auto;
