@@ -50,12 +50,12 @@ const ColorSchemeEditor = defineComponent({
         const color = props.colors?.[name] ?? ''
         acc[name] = {}
         ;['light', 'dark'].forEach((mode) => {
+          const lLimit = getLimit(limits, name, 'lightness', mode)
+          const sLimit = getLimit(limits, name, 'saturation', mode)
           acc[name][mode] = shades.reduce((acc, l) => {
             const base = srgb_to_okhsl(
               hex_to_rgb(color) || { r: 0, g: 0, b: 0 }
             )
-            const lLimit = getLimit(limits, name, 'lightness', mode)
-            const sLimit = getLimit(limits, name, 'saturation', mode)
             base.l *= lLimit
             base.s *= sLimit
             base.l = l / 100
@@ -72,100 +72,6 @@ const ColorSchemeEditor = defineComponent({
         })
         return acc
       }, {} as { [k: string]: { [k: string]: PaletteEntry } })
-    })
-    const styles = computed(() => {
-      let style = ''
-      /*
-      style += `--of-color-primary-light: ${pallettes.value['primary'][40].color};\n`
-      style += `--of-color-primary-container-light: ${pallettes.value['primary'][90].color};\n`
-      style += `--of-color-on-primary-light: ${pallettes.value['primary'][100].color};\n`
-      style += `--of-color-on-primary-container-light: ${pallettes.value['primary'][10].color};\n`
-
-      style += `--of-color-secondary-light: ${pallettes.value['secondary'][40].color};\n`
-      style += `--of-color-secondary-container-light: ${pallettes.value['secondary'][90].color};\n`
-      style += `--of-color-on-secondary-light: ${pallettes.value['secondary'][100].color};\n`
-      style += `--of-color-on-secondary-container-light: ${pallettes.value['secondary'][10].color};\n`
-
-      style += `--of-color-tertiary-light: ${pallettes.value['tertiary'][40].color};\n`
-      style += `--of-color-tertiary-container-light: ${pallettes.value['tertiary'][90].color};\n`
-      style += `--of-color-on-tertiary-light: ${pallettes.value['tertiary'][100].color};\n`
-      style += `--of-color-on-tertiary-container-light: ${pallettes.value['tertiary'][10].color};\n`
-
-      style += `--of-color-error-light: #ba1b1b;\n`
-      style += `--of-color-on-error-light: #ffffff;\n`
-      style += `--of-color-error-container-light: #ffdad4;\n`
-      style += `--of-color-on-error-container-light: #410001;\n`
-
-      style += `--of-color-background-light: ${pallettes.value['neutral'][98].color};\n`
-      style += `--of-color-on-background-light: ${pallettes.value['neutral'][10].color};\n`
-
-      style += `--of-color-outline-light: ${pallettes.value['neutral'][50].color};\n`
-      style += `--of-color-shadow-light: ${pallettes.value['neutral'][0].color};\n`
-
-      style += `--of-color-surface-light: ${pallettes.value['neutral'][95].color};\n`
-      style += `--of-color-on-surface-light: ${pallettes.value['neutral'][10].color};\n`
-
-      style += `--of-color-surface-variant-light: ${pallettes.value['neutral'][95].color};\n`
-      style += `--of-color-on-surface-variant-light: ${pallettes.value['neutral'][30].color};\n`
-
-      style += `--of-color-inverse-surface-light: ${pallettes.value['neutral'][20].color};\n`
-      style += `--of-color-inverse-on-surface-light: ${pallettes.value['neutral'][95].color};\n`
-
-      style += `--of-color-inverse-primary-light: ${pallettes.value['primary'][95].color};\n`
-      style += `--of-color-inverse-secondary-light: ${pallettes.value['secondary'][95].color};\n`
-      style += `--of-color-inverse-tertiary-light: ${pallettes.value['tertiary'][95].color};\n`
-
-      style += `--of-color-section-border-light: ${pallettes.value['section'][72].color};\n`
-      style += `--of-color-section-bg-light: ${pallettes.value['section'][98].color};\n`
-      style += `--of-color-section-alt-bg-light: ${pallettes.value['section'][97].color};\n`
-      style += `--of-color-section-header-light: ${pallettes.value['section'][95].color};\n`
-      style += `--of-color-section-header2-light: ${pallettes.value['section'][93].color};\n`
-      style += `--of-color-section-header3-light: ${pallettes.value['section'][91].color};\n`
-
-      // ******************************************************* 
-      
-      style += `--of-color-primary-dark: ${pallettes.value['primary'][80].color};\n`
-      style += `--of-color-primary-container-dark: ${pallettes.value['primary'][30].color};\n`
-      style += `--of-color-on-primary-dark: ${pallettes.value['primary'][20].color};\n`
-      style += `--of-color-on-primary-container-dark: ${pallettes.value['primary'][90].color};\n`
-
-      style += `--of-color-secondary-dark: ${pallettes.value['secondary'][80].color};\n`
-      style += `--of-color-on-secondary-dark: ${pallettes.value['secondary'][30].color};\n`
-      style += `--of-color-secondary-container-dark: ${pallettes.value['secondary'][20].color};\n`
-      style += `--of-color-on-secondary-container-dark: ${pallettes.value['secondary'][90].color};\n`
-
-      style += `--of-color-tertiary-dark: ${pallettes.value['tertiary'][80].color};\n`
-      style += `--of-color-on-tertiary-dark: ${pallettes.value['tertiary'][30].color};\n`
-      style += `--of-color-tertiary-container-dark: ${pallettes.value['tertiary'][20].color};\n`
-      style += `--of-color-on-tertiary-container-dark: ${pallettes.value['tertiary'][90].color};\n`
-
-      style += `--of-color-error-dark: #ffb4a9;\n`
-      style += `--of-color-on-error-dark: #680003;\n`
-      style += `--of-color-error-container-dark: #930006;\n`
-      style += `--of-color-on-error-container-dark: #ffdad4;\n`
-      style += `--of-color-background-dark: ${pallettes.value['neutral'][25].color};\n`
-      style += `--of-color-on-background-dark: ${pallettes.value['neutral'][90].color};\n`
-      style += `--of-color-outline-dark: ${pallettes.value['neutral'][60].color};\n`
-      style += `--of-color-shadow-dark: ${pallettes.value['neutral'][0].color};\n`
-      style += `--of-color-surface-dark: ${pallettes.value['neutral'][30].color};\n`
-      style += `--of-color-on-surface-dark: ${pallettes.value['neutral'][90].color};\n`
-      style += `--of-color-surface-variant-dark: ${pallettes.value['neutral'][30].color};\n`
-      style += `--of-color-on-surface-variant-dark: ${pallettes.value['neutral'][80].color};\n`
-      style += `--of-color-inverse-surface-dark: ${pallettes.value['neutral'][90].color};\n`
-      style += `--of-color-inverse-on-surface-dark: ${pallettes.value['neutral'][20].color};\n`
-
-      style += `--of-color-inverse-primary-dark: ${pallettes.value['primary'][10].color};\n`
-      style += `--of-color-inverse-secondary-dark: ${pallettes.value['secondary'][10].color};\n`
-      style += `--of-color-inverse-tertiary-dark: ${pallettes.value['tertiary'][10].color};\n`
-
-      style += `--of-color-section-border-dark: ${pallettes.value['section-dark'][60].color};\n`
-      style += `--of-color-section-bg-dark: ${pallettes.value['section-dark'][26].color};\n`
-      style += `--of-color-section-alt-bg-dark: ${pallettes.value['section-dark'][27].color};\n`
-      style += `--of-color-section-header-dark: ${pallettes.value['section-dark'][30].color};\n`
-      style += `--of-color-section-header2-dark: ${pallettes.value['section-dark'][32].color};\n`
-      style += `--of-color-section-header3-dark: ${pallettes.value['section-dark'][34].color};\n`
-*/
-      return style
     })
 
     watch(
@@ -189,7 +95,6 @@ const ColorSchemeEditor = defineComponent({
     return {
       pallettes,
       formatName,
-      styles,
       updateColor,
     }
   },
