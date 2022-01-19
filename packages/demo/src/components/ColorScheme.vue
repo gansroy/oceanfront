@@ -7,6 +7,7 @@
           <h2>Source colors</h2>
           <of-color-scheme-editor
             :colors="colors"
+            :limits="limits"
             @colorUpdated="colorUpdated"
             @palletteUpdated="palletteUpdated"
           />
@@ -72,6 +73,7 @@
 import { defineComponent, reactive, ref } from 'vue'
 import {
   defaultBaseColors,
+  defaultLimits,
   defaultStyles,
   OfColorSchemeEditor,
 } from 'of-colorscheme-editor'
@@ -103,6 +105,7 @@ export default defineComponent({
       colorUpdated,
       styles,
       applyScheme,
+      limits: defaultLimits,
     }
   },
   mounted() {
