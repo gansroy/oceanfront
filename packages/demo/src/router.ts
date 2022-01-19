@@ -21,9 +21,9 @@ import Pagination from './components/Pagination.vue'
 import Calendar from './components/Calendar.vue'
 import Popups from './components/Popups.vue'
 import Badges from './components/Badges.vue'
-import ColorSchemeEditor from './components/ColorSchemeEditor.vue'
 import ElevationDemo from './components/ElevationDemo.vue'
 import HtmlEditor from './components/HtmlEditor.vue'
+import ColorScheme from './components/ColorScheme.vue'
 export const routerHistory = createWebHashHistory('/ofdocs')
 export const router = createRouter({
   history: routerHistory,
@@ -49,7 +49,7 @@ export const router = createRouter({
     { path: '/calendar', component: Calendar },
     { path: '/popups', component: Popups },
     { path: '/badges', component: Badges },
-    { path: '/color-scheme', component: ColorSchemeEditor },
+    { path: '/color-scheme', component: ColorScheme },
     { path: '/elevation', component: ElevationDemo },
     { path: '/html-editor', component: HtmlEditor },
   ],

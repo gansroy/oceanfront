@@ -1,10 +1,11 @@
 {
-  "name": "oceanfront",
+  "name": "of-colorscheme-editor",
   "version": "0.1.0",
   "license": "MIT",
-  "main": "dist/oceanfront.cjs.js",
-  "module": "dist/oceanfront.esm.js",
-  "unpkg": "dist/oceanfront-browser.min.js",
+  "private": true,
+  "main": "dist/of-colorscheme-editor.cjs.js",
+  "module": "dist/of-colorscheme-editor.esm.js",
+  "unpkg": "dist/of-colorscheme-editor-browser.min.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -19,11 +20,14 @@
     "lint": "eslint src",
     "test": "jest"
   },
-  "peerDependencies": {
-    "vue": "~3.2"
-  },
   "dependencies": {
-    "hsluv": "0.1.0"
+    "@tiptap/extension-image": "^2.0.0-beta.24",
+    "@tiptap/extension-link": "^2.0.0-beta.33",
+    "@tiptap/extension-text-align": "^2.0.0-beta.29",
+    "@tiptap/starter-kit": "^2.0.0-beta.164",
+    "@tiptap/vue-3": "^2.0.0-beta.85",
+    "oceanfront": "*",
+    "vue": "~3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15",
@@ -35,7 +39,6 @@
     "@rollup/plugin-replace": "^3.0",
     "@rollup/plugin-url": "^6.0",
     "@types/jest": "^26",
-    "@types/resize-observer-browser": "^0.1.3",
     "@typescript-eslint/eslint-plugin": "^4.32",
     "@typescript-eslint/parser": "^4.32",
     "@vue/compiler-sfc": "~3.2",
