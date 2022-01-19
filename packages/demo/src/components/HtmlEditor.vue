@@ -3,7 +3,21 @@
     <h1>HTML Editor</h1>
     <of-highlight lang="html" :value="sampleCode" />
     <hr />
-    <of-html-editor v-model="content" @updated="updated" />
+    <div class="row">
+      <of-field
+        v-model="editable"
+        label="Editable"
+        type="toggle"
+        label-position="input"
+      />
+    </div>
+    <br />
+    <of-html-editor
+      v-model="content"
+      @updated="updated"
+      :editable="editable"
+      label="Message"
+    />
   </div>
 </template>
 
@@ -17,6 +31,8 @@ export default defineComponent({
 <of-html-editor v-model="content" />
 <of-html-editor :record="record" name="description" />`
 
+    const editable = ref(true)
+
     const updated = (val: any) => {
       console.log(val)
     }
@@ -24,6 +40,7 @@ export default defineComponent({
     return {
       sampleCode,
       content,
+      editable,
       updated,
     }
   },

@@ -20,6 +20,7 @@
             v-for="item in pages"
             :key="item"
             :active="page === item"
+            :ref="page === item ? 'activeButton' : null"
             :variant="variant"
             :density="density"
             @click="onSelectPage(item)"
@@ -95,6 +96,7 @@ import {
   Ref,
   watchEffect,
   watch,
+  nextTick,
 } from 'vue'
 import { OfOverlay } from './Overlay'
 import { Paginator } from '../lib/paginator'
@@ -120,6 +122,7 @@ export default defineComponent({
   setup(props, context: SetupContext) {
     let page: Ref<number> = computed(() => props.modelValue || 1)
     const totalVisible: Ref<number> = computed(() => props.totalVisible || 5)
+    const activeButton = ref<any>(null)
 
     let autoId: string
     const outerId = computed(() => {
@@ -201,12 +204,23 @@ export default defineComponent({
       context.emit('select-page', paginator)
     }
 
+    const focusActiveButton = () => {
+      nextTick(() => {
+        const elt = activeButton.value.$el.querySelector(
+          'button'
+        ) as HTMLElement | null
+        if (elt) elt.focus()
+      })
+    }
+
     const goToFirst = function () {
       onSelectPage(1)
+      focusActiveButton()
     }
 
     const goToLast = function () {
       onSelectPage(props.totalPages)
+      focusActiveButton()
     }
 
     //Custom Offset Popup
@@ -294,6 +308,7 @@ export default defineComponent({
       page,
       pages,
       outerId,
+      activeButton,
 
       showGoToFirst,
       showGoToLast,
