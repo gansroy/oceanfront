@@ -26,7 +26,7 @@ import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   setup() {
-    const content = ref('<code>Oceanfront is the best UI lib!</code>')
+    const content = ref('<h3><i>Oceanfront is the best UI lib!</i></h3>')
     const sampleCode = `
 <of-html-editor v-model="content" />
 <of-html-editor :record="record" name="description" />`

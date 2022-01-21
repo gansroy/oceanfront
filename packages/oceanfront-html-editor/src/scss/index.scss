@@ -1,12 +1,26 @@
 .of-editor {
   --content-margin: var(--of-editor-content-margin, 0.75em);
+  overflow: hidden;
+
+  .editor-outer {
+    background-color: rgb(255, 255, 255);
+    margin-left: 0.11em;
+    height: 255px;
+    overflow: auto;
+    border-bottom-right-radius: var(--field-border-radius);
+    border-bottom-left-radius: var(--field-border-radius);
+    -webkit-user-select: text;
+    user-select: text;
+  }
 
   .of-field-body {
     height: 300px;
+    color: rgb(0, 0, 0);
   }
 
   .editor-toolbar {
     width: 100%;
+    background-color: inherit;
 
     .editor-toolbar-border {
       margin: 0;
@@ -42,6 +56,10 @@
     }
 
     margin: var(--content-margin);
+
+    &:focus {
+      outline: none;
+    }
 
     ul,
     ol {
@@ -111,6 +129,10 @@
 
   .of-field-body {
     height: auto;
+  }
+  .editor-outer {
+    height: auto;
+    border-radius: var(--field-border-radius);
   }
 }
 

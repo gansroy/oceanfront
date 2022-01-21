@@ -14,7 +14,7 @@
       isEditable ? 'of-text-field' : '',
     ]"
   >
-    <div class="of-field-main-label">
+    <div class="of-field-main-label" @click="setFocus('end')">
       <label class="of-field-label">{{ label }}</label>
     </div>
     <div class="of-field-main">
@@ -201,7 +201,11 @@
               />
               <hr class="editor-toolbar-border" />
             </div>
-            <editor-content :editor="editor" />
+            <editor-content
+              :editor="editor"
+              class="editor-outer"
+              @click="setFocus(undefined)"
+            />
           </div>
         </div>
       </div>
@@ -220,7 +224,12 @@ import {
   Ref,
   SetupContext,
 } from 'vue'
-import { useEditor, EditorContent, Extension } from '@tiptap/vue-3'
+import {
+  useEditor,
+  EditorContent,
+  Extension,
+  FocusPosition,
+} from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
 import Image from '@tiptap/extension-image'
@@ -366,7 +375,21 @@ export default defineComponent({
       }
     }
 
-    return { editor, getVariant, addImage, addLink, isEditable, focused }
+    const setFocus = (
+      position: FocusPosition | undefined = undefined
+    ): void => {
+      editor.value.commands.focus(position)
+    }
+
+    return {
+      editor,
+      getVariant,
+      addImage,
+      addLink,
+      isEditable,
+      focused,
+      setFocus,
+    }
   },
 })
 </script>
