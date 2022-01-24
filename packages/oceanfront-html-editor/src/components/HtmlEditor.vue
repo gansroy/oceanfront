@@ -13,6 +13,7 @@
       'of--tint-undefined',
       isEditable ? 'of-text-field' : '',
     ]"
+    :style="style"
   >
     <div class="of-field-main-label" @click="setFocus('end')">
       <label class="of-field-label">{{ label }}</label>
@@ -22,7 +23,7 @@
       <div class="of--layer of--layer-brd"></div>
       <div class="of--layer of--layer-outl"></div>
       <div class="of-field-header"></div>
-      <div class="of-field-body">
+      <div class="of-field-body of-editor-body">
         <div class="of-field-inner">
           <div class="of-field-content-text of--align-start of--unpadded">
             <div v-if="editor && isEditable" class="editor-toolbar">
@@ -206,6 +207,9 @@
               class="editor-outer"
               @click="setFocus(undefined)"
             />
+            <div class="editor-footer" ref="footer" v-if="isEditable">
+              <slot name="editor-footer"></slot>
+            </div>
           </div>
         </div>
       </div>
@@ -223,6 +227,7 @@ import {
   ref,
   Ref,
   SetupContext,
+  onMounted,
 } from 'vue'
 import {
   useEditor,
@@ -381,6 +386,20 @@ export default defineComponent({
       editor.value.commands.focus(position)
     }
 
+    const footer = ref<HTMLElement | null>(null)
+    const footerIsEmpty: Ref<boolean> = ref(true)
+    const style = computed(() => {
+      return footerIsEmpty.value
+        ? '--of-editor-content-height: 255px; --of-editor-editable-area-height: 300px;'
+        : '--of-editor-content-height: 320px; --of-editor-editable-area-height: 400px;'
+    })
+
+    onMounted(() => {
+      if (footer.value?.textContent || footer.value?.innerHTML) {
+        footerIsEmpty.value = false
+      }
+    })
+
     return {
       editor,
       getVariant,
@@ -389,6 +408,8 @@ export default defineComponent({
       isEditable,
       focused,
       setFocus,
+      footer,
+      style,
     }
   },
 })

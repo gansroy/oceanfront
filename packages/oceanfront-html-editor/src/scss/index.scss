@@ -1,21 +1,42 @@
 .of-editor {
   --content-margin: var(--of-editor-content-margin, 0.75em);
   overflow: hidden;
+  max-height: 100%;
 
   .editor-outer {
     background-color: rgb(255, 255, 255);
     margin-left: 0.11em;
-    height: 255px;
+    height: var(--of-editor-content-height, 255px);
     overflow: auto;
     border-bottom-right-radius: var(--field-border-radius);
     border-bottom-left-radius: var(--field-border-radius);
     -webkit-user-select: text;
+    -moz-user-select: text;
     user-select: text;
+    margin-bottom: 0.2em;
   }
 
-  .of-field-body {
-    height: 300px;
+  .of-editor-body {
+    min-height: var(--of-editor-editable-area-height, 300px);
     color: rgb(0, 0, 0);
+  }
+
+  .editor-footer {
+    display: flex;
+    overflow: hidden;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 0.1em;
+    width: 100%;
+
+    .of-field {
+      margin: 0.3em;
+      flex: 20em;
+    }
+    .of-button {
+      margin: 0.3em;
+      flex: 1em;
+    }
   }
 
   .editor-toolbar {
@@ -127,8 +148,8 @@
   --field-border-width: 0;
   padding-left: var(--field-h-pad);
 
-  .of-field-body {
-    height: auto;
+  .of-editor-body {
+    min-height: auto;
   }
   .editor-outer {
     height: auto;
