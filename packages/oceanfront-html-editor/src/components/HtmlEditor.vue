@@ -92,6 +92,7 @@ import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
+import Underline from '@tiptap/extension-underline'
 import { FormRecord } from 'oceanfront'
 
 type ToolbarMenuItem = {
@@ -196,6 +197,7 @@ export default defineComponent({
         types: ['heading', 'paragraph'],
       }),
       Link,
+      Underline,
     ]
 
     const editor = useEditor({
@@ -300,6 +302,13 @@ export default defineComponent({
               title: 'Italic',
               variant: getVariant('italic'),
               click: () => editor.value.chain().focus().toggleItalic().run(),
+            },
+            {
+              name: 'underline',
+              icon: 'format underline',
+              title: 'Underline',
+              variant: getVariant('underline'),
+              click: () => editor.value.chain().focus().toggleUnderline().run(),
             },
             {
               name: 'strike',
