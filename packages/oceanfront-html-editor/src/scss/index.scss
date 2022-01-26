@@ -43,6 +43,23 @@
     width: 100%;
     background-color: inherit;
 
+    .editor-toolbar-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      row-gap: 0.1em;
+
+      .of-button {
+        margin: 0.5em;
+        --button-border-width: 0;
+      }
+
+      .of-field {
+        margin: 0.3em 0.5em 0.3em 0.5em;
+        flex: 10em;
+      }
+    }
+
     .editor-toolbar-border {
       margin: 0;
       width: 100%;
@@ -53,18 +70,11 @@
       border: none;
     }
 
-    .of-button {
-      margin: 0.5em;
-      --button-border-width: 0;
-    }
-
     .divider {
       width: 2px;
       height: 1.5rem;
       background-color: #0000001a;
-      margin-bottom: 0.2em;
-      margin-right: 0.5em;
-      margin-left: 0.5em;
+      margin: 0.5em 0.5em 0.2em 0.5em;
       display: inline-block;
       line-height: 1.5;
       box-sizing: border-box;

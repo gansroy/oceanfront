@@ -27,9 +27,15 @@
         <div class="of-field-inner">
           <div class="of-field-content-text of--align-start of--unpadded">
             <div v-if="editor && isEditable" class="editor-toolbar">
-              <div>
+              <div class="editor-toolbar-row">
                 <template v-for="item in menuRow1" :key="item.name">
-                  <div class="divider" v-if="item.name === 'divider'"></div>
+                  <div class="divider" v-if="item.type === 'divider'"></div>
+                  <of-select-field
+                    v-else-if="item.type === 'select'"
+                    :items="item.options"
+                    density="3"
+                    v-model="item.modelValue"
+                  />
                   <of-button
                     density="3"
                     :variant="item.variant"
@@ -40,9 +46,14 @@
                   />
                 </template>
               </div>
-              <div>
+              <div class="editor-toolbar-row">
                 <template v-for="item in menuRow2" :key="item.name">
-                  <div class="divider" v-if="item.name === 'divider'"></div>
+                  <div class="divider" v-if="item.type === 'divider'"></div>
+                  <of-select-field
+                    v-else-if="item.type === 'select'"
+                    v-bind="item"
+                    density="3"
+                  />
                   <of-button
                     density="3"
                     :variant="item.variant"
@@ -93,6 +104,9 @@ import TextAlign from '@tiptap/extension-text-align'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
+import Highlight from '@tiptap/extension-highlight'
+import TextStyle from '@tiptap/extension-text-style'
+import FontFamily from '@tiptap/extension-font-family'
 import { FormRecord } from 'oceanfront'
 
 type ToolbarMenuItem = {
@@ -100,6 +114,8 @@ type ToolbarMenuItem = {
   icon: string
   title: string
   variant: string
+  type?: string
+  items?: Array<any>
   click?: Function
 }
 
@@ -163,9 +179,20 @@ export default defineComponent({
       return value
     })
 
+    const font: Ref<string> = ref('default')
+
+    const fonts = [
+      { text: 'Default Font', value: 'default' },
+      { text: 'Inter', value: 'Inter' },
+      { text: 'Comic Sans', value: 'Comic Sans MS, Comic Sans' },
+      { text: 'Serif', value: 'serif' },
+      { text: 'Monospace', value: 'monospace' },
+      { text: 'Cursive', value: 'cursive' },
+    ]
+
     watch(
       () => props.modelValue,
-      (value) => {
+      (value: string) => {
         if (!record.value) {
           const isSame = editor.value.getHTML() === value
           if (isSame) return
@@ -176,7 +203,7 @@ export default defineComponent({
 
     watch(
       () => record.value?.value[htmlFieldName.value as string],
-      (value) => {
+      (value: string) => {
         const isSame = editor.value.getHTML() === value
         if (isSame) return
         editor.value.commands.setContent(value, false)
@@ -185,7 +212,7 @@ export default defineComponent({
 
     watch(
       () => isEditable.value,
-      (value) => {
+      (value: boolean) => {
         editor.value.setEditable(value)
       }
     )
@@ -198,6 +225,9 @@ export default defineComponent({
       }),
       Link,
       Underline,
+      Highlight.configure({ multicolor: true }),
+      TextStyle,
+      FontFamily,
     ]
 
     const editor = useEditor({
@@ -324,6 +354,18 @@ export default defineComponent({
               variant: getVariant('code'),
               click: () => editor.value.chain().focus().toggleCode().run(),
             },
+            {
+              name: 'highlight',
+              icon: 'highlight',
+              title: 'Highlight',
+              variant: getVariant('highlight'),
+              click: () =>
+                editor.value
+                  .chain()
+                  .focus()
+                  .toggleHighlight({ color: '#74c0fc' })
+                  .run(),
+            },
           ],
         ],
         [
@@ -379,6 +421,27 @@ export default defineComponent({
               title: 'Hard Break',
               variant: 'text',
               click: () => editor.value.chain().focus().setHardBreak().run(),
+            },
+          ],
+        ],
+        [
+          'font',
+          [
+            {
+              name: 'font-family',
+              icon: '',
+              title: 'Font Family',
+              variant: 'text',
+              type: 'select',
+              items: fonts,
+              modelValue: font.value,
+              'onUpdate:modelValue': (value: string) => {
+                if (value === 'default') {
+                  editor.value.chain().focus().unsetFontFamily().run()
+                } else {
+                  editor.value.chain().focus().setFontFamily(value).run()
+                }
+              },
             },
           ],
         ],
@@ -474,6 +537,7 @@ export default defineComponent({
             icon: '',
             title: '',
             variant: '',
+            type: 'divider',
           })
         }
         result = [...result, ...sectionItems]
