@@ -1,12 +1,64 @@
 .of-editor {
   --content-margin: var(--of-editor-content-margin, 0.75em);
+  overflow: hidden;
+  max-height: 100%;
 
-  .of-field-body {
-    height: 300px;
+  .editor-outer {
+    background-color: rgb(255, 255, 255);
+    margin-left: 0.11em;
+    height: var(--of-editor-content-height, 255px);
+    overflow: auto;
+    border-bottom-right-radius: var(--field-border-radius);
+    border-bottom-left-radius: var(--field-border-radius);
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+    margin-bottom: 0.2em;
+  }
+
+  .of-editor-body {
+    min-height: var(--of-editor-editable-area-height, 300px);
+    color: rgb(0, 0, 0);
+  }
+
+  .editor-footer {
+    display: flex;
+    overflow: hidden;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 0.1em;
+    width: 100%;
+
+    .of-field {
+      margin: 0.3em;
+      flex: 20em;
+    }
+    .of-button {
+      margin: 0.3em;
+      flex: 1em;
+    }
   }
 
   .editor-toolbar {
     width: 100%;
+    background-color: inherit;
+
+    .editor-toolbar-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      row-gap: 0.1em;
+
+      .of-button {
+        margin: 0.5em;
+        --button-border-width: 0;
+      }
+
+      .of-field {
+        margin: 0.3em 0.5em 0.3em 0.5em;
+        flex: 10em;
+      }
+    }
 
     .editor-toolbar-border {
       margin: 0;
@@ -18,18 +70,11 @@
       border: none;
     }
 
-    .of-button {
-      margin: 0.5em;
-      --button-border-width: 0;
-    }
-
     .divider {
       width: 2px;
       height: 1.5rem;
       background-color: #0000001a;
-      margin-bottom: 0.2em;
-      margin-right: 0.5em;
-      margin-left: 0.5em;
+      margin: 0.5em 0.5em 0.2em 0.5em;
       display: inline-block;
       line-height: 1.5;
       box-sizing: border-box;
@@ -42,6 +87,10 @@
     }
 
     margin: var(--content-margin);
+
+    &:focus {
+      outline: none;
+    }
 
     ul,
     ol {
@@ -109,8 +158,12 @@
   --field-border-width: 0;
   padding-left: var(--field-h-pad);
 
-  .of-field-body {
+  .of-editor-body {
+    min-height: auto;
+  }
+  .editor-outer {
     height: auto;
+    border-radius: var(--field-border-radius);
   }
 }
 
