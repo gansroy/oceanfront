@@ -27,43 +27,26 @@
         <div class="of-field-inner">
           <div class="of-field-content-text of--align-start of--unpadded">
             <div v-if="editor && isEditable" class="editor-toolbar">
-              <div class="editor-toolbar-row">
-                <template v-for="item in menuRow1" :key="item.name">
-                  <div class="divider" v-if="item.type === 'divider'"></div>
-                  <of-select-field
-                    v-else-if="item.type === 'select'"
-                    :items="item.options"
-                    density="3"
-                    v-model="item.modelValue"
-                  />
-                  <of-button
-                    density="3"
-                    :variant="item.variant"
-                    @click="item.click"
-                    :icon="item.icon"
-                    :title="item.title"
-                    v-else
-                  />
-                </template>
-              </div>
-              <div class="editor-toolbar-row">
-                <template v-for="item in menuRow2" :key="item.name">
-                  <div class="divider" v-if="item.type === 'divider'"></div>
-                  <of-select-field
-                    v-else-if="item.type === 'select'"
-                    v-bind="item"
-                    density="3"
-                  />
-                  <of-button
-                    density="3"
-                    :variant="item.variant"
-                    @click="item.click"
-                    :icon="item.icon"
-                    :title="item.title"
-                    v-else
-                  />
-                </template>
-              </div>
+              <template v-for="(row, index) in menuRows" :key="index">
+                <div class="editor-toolbar-row">
+                  <template v-for="item in row" :key="item.name">
+                    <div class="divider" v-if="item.type === 'divider'"></div>
+                    <of-select-field
+                      v-else-if="item.type === 'select'"
+                      v-bind="item"
+                      density="3"
+                    />
+                    <of-button
+                      density="3"
+                      :variant="item.variant"
+                      @click="item.click"
+                      :icon="item.icon"
+                      :title="item.title"
+                      v-else
+                    />
+                  </template>
+                </div>
+              </template>
               <hr class="editor-toolbar-border" />
             </div>
             <editor-content
@@ -107,6 +90,7 @@ import Underline from '@tiptap/extension-underline'
 import Highlight from '@tiptap/extension-highlight'
 import TextStyle from '@tiptap/extension-text-style'
 import FontFamily from '@tiptap/extension-font-family'
+import { FontSize } from '../extensions/font_size'
 import { FormRecord } from 'oceanfront'
 
 type ToolbarMenuItem = {
@@ -190,6 +174,32 @@ export default defineComponent({
       { text: 'Cursive', value: 'cursive' },
     ]
 
+    const getFontSizes = (): number[] => {
+      let result: number[] = []
+      let size = 8
+
+      while (size <= 28) {
+        result.push(size)
+        let step = size >= 12 ? 2 : 1
+        size += step
+      }
+
+      result = result.concat([36, 48, 72])
+
+      return result
+    }
+
+    const fontSizeValue: Ref<string> = ref('default')
+
+    const fontSizeItems: ComputedRef<any[]> = computed(() => {
+      return [
+        { text: 'Size', value: 'default' },
+        ...getFontSizes().map((size: number) => {
+          return { text: String(size), value: String(size) }
+        }),
+      ]
+    })
+
     watch(
       () => props.modelValue,
       (value: string) => {
@@ -228,6 +238,7 @@ export default defineComponent({
       Highlight.configure({ multicolor: true }),
       TextStyle,
       FontFamily,
+      FontSize,
     ]
 
     const editor = useEditor({
@@ -261,7 +272,7 @@ export default defineComponent({
       return editor.value.isActive(name, params) ? 'filled' : 'text'
     }
 
-    const menuRow1 = computed(() => {
+    const getMenuRow1 = (): ToolbarMenuItem[] => {
       const menu: Map<string, ToolbarMenuItem[]> = new Map([
         [
           'action',
@@ -312,9 +323,9 @@ export default defineComponent({
       ])
 
       return compactMenuItems(menu)
-    })
+    }
 
-    const menuRow2 = computed(() => {
+    const getMenuRow2 = (): ToolbarMenuItem[] => {
       const menu: Map<string, ToolbarMenuItem[]> = new Map([
         [
           'format',
@@ -443,6 +454,22 @@ export default defineComponent({
                 }
               },
             },
+            {
+              name: 'font-size',
+              icon: '',
+              title: 'Font Size',
+              variant: 'text',
+              type: 'select',
+              items: fontSizeItems.value,
+              modelValue: fontSizeValue.value,
+              'onUpdate:modelValue': (value: string) => {
+                if (value === 'default') {
+                  editor.value.chain().focus().unsetFontSize().run()
+                } else {
+                  editor.value.chain().focus().setFontSize(`${value}px`).run()
+                }
+              },
+            },
           ],
         ],
         [
@@ -520,6 +547,13 @@ export default defineComponent({
       ])
 
       return compactMenuItems(menu)
+    }
+
+    const menuRows = computed(() => {
+      return {
+        row1: getMenuRow1(),
+        row2: getMenuRow2(),
+      }
     })
 
     const compactMenuItems = (menu: Map<string, ToolbarMenuItem[]>) => {
@@ -592,8 +626,7 @@ export default defineComponent({
       setFocus,
       footer,
       style,
-      menuRow1,
-      menuRow2,
+      menuRows,
     }
   },
 })
