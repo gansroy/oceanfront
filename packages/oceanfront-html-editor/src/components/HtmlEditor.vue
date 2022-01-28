@@ -235,6 +235,35 @@ export default defineComponent({
       }
     )
 
+    watch(
+      () => font.value,
+      (value: string) => {
+        if (value === 'default') {
+          editor.value.chain().focus().unsetFontFamily().run()
+        } else {
+          editor.value.chain().focus().setFontFamily(value).run()
+        }
+      }
+    )
+
+    watch(
+      () => fontSizeValue.value,
+      (value: string) => {
+        if (value === 'default') {
+          editor.value.chain().focus().unsetFontSize().run()
+        } else {
+          editor.value.chain().focus().setFontSize(`${value}px`).run()
+        }
+      }
+    )
+
+    watch(
+      () => colorValue.value,
+      (value: string) => {
+        editor.value.chain().setColor(value).run()
+      }
+    )
+
     const coreExtensions = [
       StarterKit,
       Image,
@@ -503,7 +532,7 @@ export default defineComponent({
               type: 'color',
               modelValue: colorValue.value,
               'onUpdate:modelValue': (value: string) => {
-                editor.value.chain().setColor(value).run()
+                colorValue.value = value
               },
             },
             {
@@ -515,11 +544,7 @@ export default defineComponent({
               items: fonts,
               modelValue: font.value,
               'onUpdate:modelValue': (value: string) => {
-                if (value === 'default') {
-                  editor.value.chain().focus().unsetFontFamily().run()
-                } else {
-                  editor.value.chain().focus().setFontFamily(value).run()
-                }
+                font.value = value
               },
             },
             {
@@ -531,11 +556,7 @@ export default defineComponent({
               items: fontSizeItems.value,
               modelValue: fontSizeValue.value,
               'onUpdate:modelValue': (value: string) => {
-                if (value === 'default') {
-                  editor.value.chain().focus().unsetFontSize().run()
-                } else {
-                  editor.value.chain().focus().setFontSize(`${value}px`).run()
-                }
+                fontSizeValue.value = value
               },
             },
           ],
