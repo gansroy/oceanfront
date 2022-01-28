@@ -36,6 +36,11 @@
                       v-bind="item"
                       density="3"
                     />
+                    <of-color-field
+                      v-else-if="item.type === 'color'"
+                      v-bind="item"
+                      density="3"
+                    />
                     <of-button
                       density="3"
                       :variant="item.variant"
@@ -90,6 +95,7 @@ import Underline from '@tiptap/extension-underline'
 import Highlight from '@tiptap/extension-highlight'
 import TextStyle from '@tiptap/extension-text-style'
 import FontFamily from '@tiptap/extension-font-family'
+import Color from '@tiptap/extension-color'
 import { FontSize } from '../extensions/font_size'
 import { FormRecord } from 'oceanfront'
 
@@ -200,6 +206,8 @@ export default defineComponent({
       ]
     })
 
+    const colorValue: Ref<string> = ref('#000000')
+
     watch(
       () => props.modelValue,
       (value: string) => {
@@ -239,6 +247,7 @@ export default defineComponent({
       TextStyle,
       FontFamily,
       FontSize,
+      Color,
     ]
 
     const editor = useEditor({
@@ -311,12 +320,55 @@ export default defineComponent({
               click: () => addLink(),
             },
             {
+              name: 'add-table',
+              icon: 'table',
+              title: 'Table',
+              variant: 'text',
+              click: () => null,
+            },
+            {
               name: 'horizontal-line',
               icon: 'separator',
               title: 'Insert Horizontal Line',
               variant: 'text',
               click: () =>
                 editor.value.chain().focus().setHorizontalRule().run(),
+            },
+          ],
+        ],
+        [
+          'style',
+          [
+            {
+              name: 'paragraph',
+              icon: 'paragraph',
+              title: 'Paragraph',
+              variant: getVariant('paragraph'),
+              click: () => editor.value.chain().focus().setParagraph().run(),
+            },
+            {
+              name: 'heading-1',
+              icon: 'h-1',
+              title: 'Heading 1',
+              variant: getVariant('heading', { level: 1 }),
+              click: () =>
+                editor.value.chain().focus().toggleHeading({ level: 1 }).run(),
+            },
+            {
+              name: 'heading-2',
+              icon: 'h-2',
+              title: 'Heading 2',
+              variant: getVariant('heading', { level: 2 }),
+              click: () =>
+                editor.value.chain().focus().toggleHeading({ level: 2 }).run(),
+            },
+            {
+              name: 'heading-3',
+              icon: 'h-3',
+              title: 'Heading 3',
+              variant: getVariant('heading', { level: 3 }),
+              click: () =>
+                editor.value.chain().focus().toggleHeading({ level: 3 }).run(),
             },
           ],
         ],
@@ -358,6 +410,11 @@ export default defineComponent({
               variant: getVariant('strike'),
               click: () => editor.value.chain().focus().toggleStrike().run(),
             },
+          ],
+        ],
+        [
+          'highlight',
+          [
             {
               name: 'code',
               icon: 'code',
@@ -439,6 +496,17 @@ export default defineComponent({
           'font',
           [
             {
+              name: 'text-color',
+              icon: '',
+              title: 'Text Color',
+              variant: 'text',
+              type: 'color',
+              modelValue: colorValue.value,
+              'onUpdate:modelValue': (value: string) => {
+                editor.value.chain().setColor(value).run()
+              },
+            },
+            {
               name: 'font-family',
               icon: '',
               title: 'Font Family',
@@ -469,42 +537,6 @@ export default defineComponent({
                   editor.value.chain().focus().setFontSize(`${value}px`).run()
                 }
               },
-            },
-          ],
-        ],
-        [
-          'style',
-          [
-            {
-              name: 'paragraph',
-              icon: 'paragraph',
-              title: 'Paragraph',
-              variant: getVariant('paragraph'),
-              click: () => editor.value.chain().focus().setParagraph().run(),
-            },
-            {
-              name: 'heading-1',
-              icon: 'h-1',
-              title: 'Heading 1',
-              variant: getVariant('heading', { level: 1 }),
-              click: () =>
-                editor.value.chain().focus().toggleHeading({ level: 1 }).run(),
-            },
-            {
-              name: 'heading-2',
-              icon: 'h-2',
-              title: 'Heading 2',
-              variant: getVariant('heading', { level: 2 }),
-              click: () =>
-                editor.value.chain().focus().toggleHeading({ level: 2 }).run(),
-            },
-            {
-              name: 'heading-3',
-              icon: 'h-3',
-              title: 'Heading 3',
-              variant: getVariant('heading', { level: 3 }),
-              click: () =>
-                editor.value.chain().focus().toggleHeading({ level: 3 }).run(),
             },
           ],
         ],

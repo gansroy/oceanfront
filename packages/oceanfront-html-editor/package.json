@@ -21,6 +21,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@tiptap/extension-color": "^2.0.0-beta.9",
     "@tiptap/extension-font-family": "^2.0.0-beta.21",
     "@tiptap/extension-highlight": "^2.0.0-beta.33",
     "@tiptap/extension-image": "^2.0.0-beta.24",
