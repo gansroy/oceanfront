@@ -67,6 +67,15 @@
       </div>
     </div>
   </div>
+  <slot name="extra" v-if="isEditable">
+    <of-dialog class="of-editor-table-popup" v-model="tableDialogActive">
+      <of-field v-bind="tableRowsFieldProps" />
+      <of-field v-bind="tableColumnsFieldProps" />
+      <of-field v-bind="tableHeaderFieldProps" />
+      <of-button @click="closeTableDialog">Cancel</of-button>
+      <of-button @click="addTable">Apply</of-button>
+    </of-dialog>
+  </slot>
 </template>
 
 <script lang="ts">
@@ -96,6 +105,10 @@ import Highlight from '@tiptap/extension-highlight'
 import TextStyle from '@tiptap/extension-text-style'
 import FontFamily from '@tiptap/extension-font-family'
 import Color from '@tiptap/extension-color'
+import Table from '@tiptap/extension-table'
+import TableRow from '@tiptap/extension-table-row'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
 import { FontSize } from '../extensions/font_size'
 import { FormRecord } from 'oceanfront'
 
@@ -207,6 +220,80 @@ export default defineComponent({
     })
 
     const colorValue: Ref<string> = ref('#000000')
+    const tableDialogActive: Ref<boolean> = ref(false)
+
+    const tableRows: Ref<number> = ref(3)
+    const tableColumns: Ref<number> = ref(2)
+    const tableWithHeader: Ref<boolean> = ref(false)
+
+    const tableRowsFieldProps = computed(() => {
+      return {
+        format: {
+          type: 'text',
+        },
+        modelValue: tableRows.value,
+        'onUpdate:modelValue': (val: number) => {
+          tableRows.value = val
+        },
+        label: 'Rows',
+        id: 'table_rows',
+        name: 'table_rows',
+        type: 'text',
+      }
+    })
+
+    const tableColumnsFieldProps = computed(() => {
+      return {
+        format: {
+          type: 'text',
+        },
+        modelValue: tableColumns.value,
+        'onUpdate:modelValue': (val: number) => {
+          tableColumns.value = val
+        },
+        label: 'Columns',
+        id: 'table_columns',
+        name: 'table_columns',
+        type: 'text',
+      }
+    })
+
+    const tableHeaderFieldProps = computed(() => {
+      return {
+        type: 'toggle',
+        name: 'add_header',
+        label: 'With Header',
+        id: 'add_header',
+        format: {
+          type: 'toggle',
+          inputType: 'switch',
+        },
+        modelValue: tableWithHeader.value,
+        'onUpdate:modelValue': (val: boolean) => {
+          tableWithHeader.value = val
+        },
+      }
+    })
+
+    const closeTableDialog = () => {
+      tableDialogActive.value = false
+    }
+
+    const addTable = () => {
+      closeTableDialog()
+      console.log(tableRows.value)
+      console.log(tableColumns.value)
+      console.log(tableWithHeader.value)
+      editor.value
+        .chain()
+        .focus()
+        .insertTable({
+          rows: tableRows.value,
+          cols: tableColumns.value,
+          withHeaderRow: tableWithHeader.value,
+        })
+        .run()
+    }
 
     watch(
       () => props.modelValue,
@@ -277,6 +364,12 @@ export default defineComponent({
       FontFamily,
       FontSize,
       Color,
+      Table.configure({
+        resizable: true,
+      }),
+      TableRow,
+      TableCell,
+      TableHeader,
     ]
 
     const editor = useEditor({
@@ -353,7 +446,7 @@ export default defineComponent({
               icon: 'table',
               title: 'Table',
               variant: 'text',
-              click: () => null,
+              click: () => (tableDialogActive.value = true),
             },
             {
               name: 'horizontal-line',
@@ -680,6 +773,12 @@ export default defineComponent({
       footer,
       style,
       menuRows,
+      tableDialogActive,
+      tableRowsFieldProps,
+      tableColumnsFieldProps,
+      tableHeaderFieldProps,
+      closeTableDialog,
+      addTable,
     }
   },
 })
