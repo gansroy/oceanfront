@@ -238,12 +238,16 @@
 }
 
 .of-dialog {
-  &.of-editor-table-popup {
+  &.of-editor-popup {
     padding: 1em;
 
     .of-button {
       margin-top: 0.5em;
       margin-right: 0.7em;
+    }
+
+    &.insert {
+      min-height: 50px;
     }
   }
 }

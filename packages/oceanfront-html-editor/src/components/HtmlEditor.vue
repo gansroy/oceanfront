@@ -68,12 +68,22 @@
     </div>
   </div>
   <slot name="extra" v-if="isEditable">
-    <of-dialog class="of-editor-table-popup" v-model="tableDialogActive">
+    <of-dialog class="of-editor-popup" v-model="tableDialogActive">
       <of-field v-bind="tableRowsFieldProps" />
       <of-field v-bind="tableColumnsFieldProps" />
       <of-field v-bind="tableHeaderFieldProps" />
       <of-button @click="closeTableDialog">Cancel</of-button>
       <of-button @click="addTable">Apply</of-button>
+    </of-dialog>
+    <of-dialog class="of-editor-popup insert" v-model="linkDialogActive">
+      <of-field v-bind="linkFieldProps" />
+      <of-button @click="closeLinkDialog">Cancel</of-button>
+      <of-button @click="addLink">Apply</of-button>
+    </of-dialog>
+    <of-dialog class="of-editor-popup insert" v-model="imageDialogActive">
+      <of-field v-bind="imageFieldProps" />
+      <of-button @click="closeImageDialog">Cancel</of-button>
+      <of-button @click="addImage">Apply</of-button>
     </of-dialog>
   </slot>
 </template>
@@ -220,8 +230,8 @@ export default defineComponent({
     })
 
     const colorValue: Ref<string> = ref('#000000')
-    const tableDialogActive: Ref<boolean> = ref(false)
 
+    const tableDialogActive: Ref<boolean> = ref(false)
     const tableRows: Ref<number> = ref(3)
     const tableColumns: Ref<number> = ref(2)
     const tableWithHeader: Ref<boolean> = ref(false)
@@ -293,6 +303,70 @@ export default defineComponent({
           withHeaderRow: tableWithHeader.value,
         })
         .run()
+    }
+
+    const imageDialogActive: Ref<boolean> = ref(false)
+    const imageUrl: Ref<string> = ref('')
+
+    const imageFieldProps = computed(() => {
+      return {
+        format: {
+          type: 'text',
+        },
+        modelValue: imageUrl.value,
+        'onUpdate:modelValue': (val: string) => {
+          imageUrl.value = val
+        },
+        label: 'URL',
+        id: 'image-url',
+        name: 'image-url',
+        type: 'text',
+      }
+    })
+
+    const closeImageDialog = () => {
+      imageDialogActive.value = false
+    }
+
+    const addImage = () => {
+      closeImageDialog()
+      if (imageUrl.value) {
+        editor.value.chain().focus().setImage({ src: imageUrl.value }).run()
+      }
+    }
+
+    const linkDialogActive: Ref<boolean> = ref(false)
+    const link: Ref<string> = ref('')
+
+    const linkFieldProps = computed(() => {
+      return {
+        format: {
+          type: 'text',
+        },
+        modelValue: link.value,
+        'onUpdate:modelValue': (val: string) => {
+          link.value = val
+        },
+        label: 'URL',
+        id: 'link',
+        name: 'link',
+        type: 'text',
+      }
+    })
+
+    const closeLinkDialog = () => {
+      linkDialogActive.value = false
+    }
+
+    const addLink = () => {
+      closeLinkDialog()
+      if (link.value) {
+        editor.value
+          .chain()
+          .focus()
+          .setLink({ href: link.value, target: '_blank' })
+          .run()
+      }
     }
 
     watch(
@@ -432,14 +506,20 @@ export default defineComponent({
               icon: 'insert-photo',
               title: 'Image',
               variant: 'text',
-              click: () => addImage(),
+              click: () => {
+                imageUrl.value = ''
+                imageDialogActive.value = true
+              },
             },
             {
               name: 'add-link',
               icon: 'insert-link',
-              title: 'Link',
+              title: 'Set Link',
               variant: 'text',
-              click: () => addLink(),
+              click: () => {
+                link.value = ''
+                linkDialogActive.value = true
+              },
             },
             {
               name: 'add-table',
@@ -726,22 +806,6 @@ export default defineComponent({
       return result
     }
 
-    const addImage = () => {
-      const url = window.prompt('URL')
-
-      if (url) {
-        editor.value.chain().focus().setImage({ src: url }).run()
-      }
-    }
-
-    const addLink = () => {
-      const url = window.prompt('Link')
-
-      if (url) {
-        editor.value.chain().focus().setLink({ href: url }).run()
-      }
-    }
-
     const setFocus = (
       position: FocusPosition | undefined = undefined
     ): void => {
@@ -764,9 +828,6 @@ export default defineComponent({
 
     return {
       editor,
-      getVariant,
-      addImage,
-      addLink,
       isEditable,
       focused,
       setFocus,
@@ -779,6 +840,14 @@ export default defineComponent({
       tableHeaderFieldProps,
       closeTableDialog,
       addTable,
+      linkDialogActive,
+      linkFieldProps,
+      closeLinkDialog,
+      addLink,
+      imageDialogActive,
+      imageFieldProps,
+      closeImageDialog,
+      addImage,
     }
   },
 })
