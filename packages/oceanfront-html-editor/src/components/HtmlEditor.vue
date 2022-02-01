@@ -27,51 +27,59 @@
         <div class="of-field-inner">
           <div class="of-field-content-text of--align-start of--unpadded">
             <div v-if="editor && isEditable" class="editor-toolbar">
-              <div class="editor-toolbar-row">
-                <template v-for="item in menuRow1" :key="item.name">
-                  <div class="divider" v-if="item.type === 'divider'"></div>
-                  <of-select-field
-                    v-else-if="item.type === 'select'"
-                    :items="item.options"
-                    density="3"
-                    v-model="item.modelValue"
-                  />
-                  <of-button
-                    density="3"
-                    :variant="item.variant"
-                    @click="item.click"
-                    :icon="item.icon"
-                    :title="item.title"
-                    v-else
-                  />
-                </template>
-              </div>
-              <div class="editor-toolbar-row">
-                <template v-for="item in menuRow2" :key="item.name">
-                  <div class="divider" v-if="item.type === 'divider'"></div>
-                  <of-select-field
-                    v-else-if="item.type === 'select'"
-                    v-bind="item"
-                    density="3"
-                  />
-                  <of-button
-                    density="3"
-                    :variant="item.variant"
-                    @click="item.click"
-                    :icon="item.icon"
-                    :title="item.title"
-                    v-else
-                  />
-                </template>
-              </div>
+              <template v-for="(row, index) in menuRows" :key="index">
+                <div class="editor-toolbar-row">
+                  <template v-for="item in row" :key="item.name">
+                    <div class="divider" v-if="item.type === 'divider'"></div>
+                    <of-select-field
+                      v-else-if="item.type === 'select'"
+                      v-bind="item"
+                      density="3"
+                    />
+                    <of-color-field
+                      v-else-if="item.type === 'color'"
+                      v-bind="item"
+                      density="3"
+                    />
+                    <of-button
+                      density="3"
+                      :variant="item.variant"
+                      @click="item.click"
+                      :icon="item.icon"
+                      :title="item.title"
+                      :disabled="item.disabled"
+                      v-else
+                    />
+                  </template>
+                </div>
+              </template>
               <hr class="editor-toolbar-border" />
+            </div>
+            <div
+              class="editor-outer source-mode"
+              v-if="isEditable && sourceMode"
+            >
+              <textarea
+                id="editor_source"
+                v-model="source"
+                v-if="sourceMode"
+                class="source-container"
+                ref="sourceElt"
+                @focus="setFocus(undefined)"
+                @blur="unfocus"
+              ></textarea>
             </div>
             <editor-content
               :editor="editor"
               class="editor-outer"
               @click="setFocus(undefined)"
+              v-if="!sourceMode || !isEditable"
             />
-            <div class="editor-footer" ref="footer" v-if="isEditable">
+            <div
+              class="editor-footer"
+              ref="footer"
+              v-if="isEditable && !sourceMode"
+            >
               <slot name="editor-footer"></slot>
             </div>
           </div>
@@ -79,6 +87,25 @@
       </div>
     </div>
   </div>
+  <slot name="extra" v-if="isEditable">
+    <of-dialog class="of-editor-popup" v-model="tableDialogActive">
+      <of-field v-bind="tableRowsFieldProps" />
+      <of-field v-bind="tableColumnsFieldProps" />
+      <of-field v-bind="tableHeaderFieldProps" />
+      <of-button @click="closeTableDialog">Cancel</of-button>
+      <of-button @click="addTable">Apply</of-button>
+    </of-dialog>
+    <of-dialog class="of-editor-popup insert" v-model="linkDialogActive">
+      <of-field v-bind="linkFieldProps" />
+      <of-button @click="closeLinkDialog">Cancel</of-button>
+      <of-button @click="addLink">Apply</of-button>
+    </of-dialog>
+    <of-dialog class="of-editor-popup insert" v-model="imageDialogActive">
+      <of-field v-bind="imageFieldProps" />
+      <of-button @click="closeImageDialog">Cancel</of-button>
+      <of-button @click="addImage">Apply</of-button>
+    </of-dialog>
+  </slot>
 </template>
 
 <script lang="ts">
@@ -92,6 +119,7 @@ import {
   Ref,
   SetupContext,
   onMounted,
+  nextTick,
 } from 'vue'
 import {
   useEditor,
@@ -107,6 +135,12 @@ import Underline from '@tiptap/extension-underline'
 import Highlight from '@tiptap/extension-highlight'
 import TextStyle from '@tiptap/extension-text-style'
 import FontFamily from '@tiptap/extension-font-family'
+import Color from '@tiptap/extension-color'
+import Table from '@tiptap/extension-table'
+import TableRow from '@tiptap/extension-table-row'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import { FontSize } from '../extensions/font_size'
 import { FormRecord } from 'oceanfront'
 
 type ToolbarMenuItem = {
@@ -114,6 +148,7 @@ type ToolbarMenuItem = {
   icon: string
   title: string
   variant: string
+  disabled?: boolean
   type?: string
   items?: Array<any>
   click?: Function
@@ -190,23 +225,202 @@ export default defineComponent({
       { text: 'Cursive', value: 'cursive' },
     ]
 
+    const getFontSizes = (): number[] => {
+      let result: number[] = []
+      let size = 8
+
+      while (size <= 28) {
+        result.push(size)
+        let step = size >= 12 ? 2 : 1
+        size += step
+      }
+
+      result = result.concat([36, 48, 72])
+
+      return result
+    }
+
+    const fontSizeValue: Ref<string> = ref('default')
+
+    const fontSizeItems: ComputedRef<any[]> = computed(() => {
+      return [
+        { text: 'Size', value: 'default' },
+        ...getFontSizes().map((size: number) => {
+          return { text: String(size), value: String(size) }
+        }),
+      ]
+    })
+
+    const colorValue: Ref<string> = ref('#000000')
+
+    const tableDialogActive: Ref<boolean> = ref(false)
+    const tableRows: Ref<number> = ref(3)
+    const tableColumns: Ref<number> = ref(2)
+    const tableWithHeader: Ref<boolean> = ref(false)
+
+    const tableRowsFieldProps = computed(() => {
+      return {
+        format: {
+          type: 'text',
+        },
+        modelValue: tableRows.value,
+        'onUpdate:modelValue': (val: number) => {
+          tableRows.value = val
+        },
+        label: 'Rows',
+        id: 'table_rows',
+        name: 'table_rows',
+        type: 'text',
+      }
+    })
+
+    const tableColumnsFieldProps = computed(() => {
+      return {
+        format: {
+          type: 'text',
+        },
+        modelValue: tableColumns.value,
+        'onUpdate:modelValue': (val: number) => {
+          tableColumns.value = val
+        },
+        label: 'Columns',
+        id: 'table_columns',
+        name: 'table_columns',
+        type: 'text',
+      }
+    })
+
+    const tableHeaderFieldProps = computed(() => {
+      return {
+        type: 'toggle',
+        name: 'add_header',
+        label: 'With Header',
+        id: 'add_header',
+        format: {
+          type: 'toggle',
+          inputType: 'switch',
+        },
+        modelValue: tableWithHeader.value,
+        'onUpdate:modelValue': (val: boolean) => {
+          tableWithHeader.value = val
+        },
+      }
+    })
+
+    const closeTableDialog = () => {
+      tableDialogActive.value = false
+    }
+
+    const addTable = () => {
+      closeTableDialog()
+      editor.value
+        .chain()
+        .focus()
+        .insertTable({
+          rows: tableRows.value,
+          cols: tableColumns.value,
+          withHeaderRow: tableWithHeader.value,
+        })
+        .run()
+    }
+
+    const imageDialogActive: Ref<boolean> = ref(false)
+    const imageUrl: Ref<string> = ref('')
+
+    const imageFieldProps = computed(() => {
+      return {
+        format: {
+          type: 'text',
+        },
+        modelValue: imageUrl.value,
+        'onUpdate:modelValue': (val: string) => {
+          imageUrl.value = val
+        },
+        label: 'URL',
+        id: 'image-url',
+        name: 'image-url',
+        type: 'text',
+      }
+    })
+
+    const closeImageDialog = () => {
+      imageDialogActive.value = false
+    }
+
+    const addImage = () => {
+      closeImageDialog()
+      if (imageUrl.value) {
+        editor.value.chain().focus().setImage({ src: imageUrl.value }).run()
+      }
+    }
+
+    const linkDialogActive: Ref<boolean> = ref(false)
+    const link: Ref<string> = ref('')
+
+    const linkFieldProps = computed(() => {
+      return {
+        format: {
+          type: 'text',
+        },
+        modelValue: link.value,
+        'onUpdate:modelValue': (val: string) => {
+          link.value = val
+        },
+        label: 'URL',
+        id: 'link',
+        name: 'link',
+        type: 'text',
+      }
+    })
+
+    const closeLinkDialog = () => {
+      linkDialogActive.value = false
+    }
+
+    const addLink = () => {
+      closeLinkDialog()
+      if (link.value) {
+        editor.value
+          .chain()
+          .focus()
+          .setLink({ href: link.value, target: '_blank' })
+          .run()
+      }
+    }
+
+    const source: Ref<string> = ref('')
+    const sourceElt = ref<HTMLElement | null>(null)
+    const sourceMode: Ref<boolean> = ref(false)
+
+    const toggleSourceMode = (): void => {
+      sourceMode.value = !sourceMode.value
+      setFocus('end')
+      nextTick(() => {
+        sourceElt.value?.focus()
+      })
+    }
+
+    const menuDisabled: ComputedRef<boolean> = computed(() => sourceMode.value)
+
     watch(
       () => props.modelValue,
       (value: string) => {
-        if (!record.value) {
-          const isSame = editor.value.getHTML() === value
-          if (isSame) return
-          editor.value.commands.setContent(value, false)
-        }
+        if (!record.value) updateContent(value)
       }
     )
 
     watch(
       () => record.value?.value[htmlFieldName.value as string],
       (value: string) => {
-        const isSame = editor.value.getHTML() === value
-        if (isSame) return
-        editor.value.commands.setContent(value, false)
+        updateContent(value)
+      }
+    )
+
+    watch(
+      () => source.value,
+      (value: string) => {
+        updateContent(value)
+        updateData()
       }
     )
 
@@ -214,6 +428,35 @@ export default defineComponent({
       () => isEditable.value,
       (value: boolean) => {
         editor.value.setEditable(value)
+      }
+    )
+
+    watch(
+      () => font.value,
+      (value: string) => {
+        if (value === 'default') {
+          editor.value.chain().focus().unsetFontFamily().run()
+        } else {
+          editor.value.chain().focus().setFontFamily(value).run()
+        }
+      }
+    )
+
+    watch(
+      () => fontSizeValue.value,
+      (value: string) => {
+        if (value === 'default') {
+          editor.value.chain().focus().unsetFontSize().run()
+        } else {
+          editor.value.chain().focus().setFontSize(`${value}px`).run()
+        }
+      }
+    )
+
+    watch(
+      () => colorValue.value,
+      (value: string) => {
+        editor.value.chain().setColor(value).run()
       }
     )
 
@@ -228,6 +471,14 @@ export default defineComponent({
       Highlight.configure({ multicolor: true }),
       TextStyle,
       FontFamily,
+      FontSize,
+      Color,
+      Table.configure({
+        resizable: true,
+      }),
+      TableRow,
+      TableCell,
+      TableHeader,
     ]
 
     const editor = useEditor({
@@ -237,17 +488,8 @@ export default defineComponent({
         ? coreExtensions.concat(props.extensions)
         : coreExtensions,
       onUpdate: () => {
-        if (props.name && htmlFieldName.value && record.value) {
-          record.value.value[htmlFieldName.value] = editor.value.getHTML()
-          record.value.value[props.name] = editor.value.getText()
-        } else {
-          ctx.emit('update:modelValue', editor.value.getHTML())
-        }
-
-        ctx.emit('updated', {
-          html: editor.value.getHTML(),
-          text: editor.value.getText(),
-        })
+        updateData()
+        source.value = editor.value.getHTML()
       },
       onFocus: () => {
         focused.value = true
@@ -257,11 +499,35 @@ export default defineComponent({
       },
     })
 
-    const getVariant = (name: any, params = {}): string => {
-      return editor.value.isActive(name, params) ? 'filled' : 'text'
+    const updateContent = (value: string, emitUpdate = false): void => {
+      const isSame = editor.value.getHTML() === value
+      if (isSame) return
+      editor.value.commands.setContent(value, emitUpdate)
     }
 
-    const menuRow1 = computed(() => {
+    const updateData = (): void => {
+      if (props.name && htmlFieldName.value && record.value) {
+        record.value.value[htmlFieldName.value] = editor.value.getHTML()
+        record.value.value[props.name] = editor.value.getText()
+      } else {
+        ctx.emit('update:modelValue', editor.value.getHTML())
+      }
+
+      ctx.emit('updated', {
+        html: editor.value.getHTML(),
+        text: editor.value.getText(),
+      })
+    }
+
+    const getVariant = (name: any, params = {}): string => {
+      if (name === 'source') {
+        return sourceMode.value ? 'filled' : 'text'
+      } else {
+        return editor.value.isActive(name, params) ? 'filled' : 'text'
+      }
+    }
+
+    const getMenuRow1 = (): ToolbarMenuItem[] => {
       const menu: Map<string, ToolbarMenuItem[]> = new Map([
         [
           'action',
@@ -271,6 +537,7 @@ export default defineComponent({
               icon: 'undo',
               title: 'Undo',
               variant: 'text',
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().undo().run(),
             },
             {
@@ -278,6 +545,7 @@ export default defineComponent({
               icon: 'redo',
               title: 'Redo',
               variant: 'text',
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().redo().run(),
             },
           ],
@@ -290,31 +558,100 @@ export default defineComponent({
               icon: 'insert-photo',
               title: 'Image',
               variant: 'text',
-              click: () => addImage(),
+              disabled: menuDisabled.value,
+              click: () => {
+                imageUrl.value = ''
+                imageDialogActive.value = true
+              },
             },
             {
               name: 'add-link',
               icon: 'insert-link',
-              title: 'Link',
+              title: 'Set Link',
               variant: 'text',
-              click: () => addLink(),
+              disabled: menuDisabled.value,
+              click: () => {
+                link.value = ''
+                linkDialogActive.value = true
+              },
+            },
+            {
+              name: 'add-table',
+              icon: 'table',
+              title: 'Table',
+              variant: 'text',
+              disabled: menuDisabled.value,
+              click: () => (tableDialogActive.value = true),
             },
             {
               name: 'horizontal-line',
               icon: 'separator',
               title: 'Insert Horizontal Line',
               variant: 'text',
+              disabled: menuDisabled.value,
               click: () =>
                 editor.value.chain().focus().setHorizontalRule().run(),
+            },
+          ],
+        ],
+        [
+          'style',
+          [
+            {
+              name: 'paragraph',
+              icon: 'paragraph',
+              title: 'Paragraph',
+              variant: getVariant('paragraph'),
+              disabled: menuDisabled.value,
+              click: () => editor.value.chain().focus().setParagraph().run(),
+            },
+            {
+              name: 'heading-1',
+              icon: 'h-1',
+              title: 'Heading 1',
+              variant: getVariant('heading', { level: 1 }),
+              disabled: menuDisabled.value,
+              click: () =>
+                editor.value.chain().focus().toggleHeading({ level: 1 }).run(),
+            },
+            {
+              name: 'heading-2',
+              icon: 'h-2',
+              title: 'Heading 2',
+              variant: getVariant('heading', { level: 2 }),
+              disabled: menuDisabled.value,
+              click: () =>
+                editor.value.chain().focus().toggleHeading({ level: 2 }).run(),
+            },
+            {
+              name: 'heading-3',
+              icon: 'h-3',
+              title: 'Heading 3',
+              variant: getVariant('heading', { level: 3 }),
+              disabled: menuDisabled.value,
+              click: () =>
+                editor.value.chain().focus().toggleHeading({ level: 3 }).run(),
+            },
+          ],
+        ],
+        [
+          'source',
+          [
+            {
+              name: 'source-mode',
+              icon: 'source-code',
+              title: 'Source',
+              variant: getVariant('source'),
+              click: () => toggleSourceMode(),
             },
           ],
         ],
       ])
 
       return compactMenuItems(menu)
-    })
+    }
 
-    const menuRow2 = computed(() => {
+    const getMenuRow2 = (): ToolbarMenuItem[] => {
       const menu: Map<string, ToolbarMenuItem[]> = new Map([
         [
           'format',
@@ -324,6 +661,7 @@ export default defineComponent({
               icon: 'format bold',
               title: 'Bold',
               variant: getVariant('bold'),
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().toggleBold().run(),
             },
             {
@@ -331,6 +669,7 @@ export default defineComponent({
               icon: 'format italic',
               title: 'Italic',
               variant: getVariant('italic'),
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().toggleItalic().run(),
             },
             {
@@ -338,6 +677,7 @@ export default defineComponent({
               icon: 'format underline',
               title: 'Underline',
               variant: getVariant('underline'),
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().toggleUnderline().run(),
             },
             {
@@ -345,13 +685,20 @@ export default defineComponent({
               icon: 'format strikethrough',
               title: 'Strike',
               variant: getVariant('strike'),
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().toggleStrike().run(),
             },
+          ],
+        ],
+        [
+          'highlight',
+          [
             {
               name: 'code',
               icon: 'code',
               title: 'Code',
               variant: getVariant('code'),
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().toggleCode().run(),
             },
             {
@@ -359,6 +706,7 @@ export default defineComponent({
               icon: 'highlight',
               title: 'Highlight',
               variant: getVariant('highlight'),
+              disabled: menuDisabled.value,
               click: () =>
                 editor.value
                   .chain()
@@ -376,6 +724,7 @@ export default defineComponent({
               icon: 'format align-left',
               title: 'Left',
               variant: getVariant({ textAlign: 'left' }),
+              disabled: menuDisabled.value,
               click: () =>
                 editor.value.chain().focus().setTextAlign('left').run(),
             },
@@ -384,6 +733,7 @@ export default defineComponent({
               icon: 'format align-center',
               title: 'Center',
               variant: getVariant({ textAlign: 'center' }),
+              disabled: menuDisabled.value,
               click: () =>
                 editor.value.chain().focus().setTextAlign('center').run(),
             },
@@ -392,6 +742,7 @@ export default defineComponent({
               icon: 'format align-right',
               title: 'Right',
               variant: getVariant({ textAlign: 'right' }),
+              disabled: menuDisabled.value,
               click: () =>
                 editor.value.chain().focus().setTextAlign('right').run(),
             },
@@ -400,6 +751,7 @@ export default defineComponent({
               icon: 'format align-justify',
               title: 'Justify',
               variant: getVariant({ textAlign: 'justify' }),
+              disabled: menuDisabled.value,
               click: () =>
                 editor.value.chain().focus().setTextAlign('justify').run(),
             },
@@ -413,6 +765,7 @@ export default defineComponent({
               icon: 'format clear',
               title: 'Clear Format',
               variant: 'text',
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().clearNodes().run(),
             },
             {
@@ -420,6 +773,7 @@ export default defineComponent({
               icon: 'wrap-text',
               title: 'Hard Break',
               variant: 'text',
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().setHardBreak().run(),
             },
           ],
@@ -428,56 +782,42 @@ export default defineComponent({
           'font',
           [
             {
+              name: 'text-color',
+              icon: '',
+              title: 'Text Color',
+              variant: 'text',
+              type: 'color',
+              disabled: menuDisabled.value,
+              modelValue: colorValue.value,
+              'onUpdate:modelValue': (value: string) => {
+                colorValue.value = value
+              },
+            },
+            {
               name: 'font-family',
               icon: '',
               title: 'Font Family',
               variant: 'text',
               type: 'select',
               items: fonts,
+              disabled: menuDisabled.value,
               modelValue: font.value,
               'onUpdate:modelValue': (value: string) => {
-                if (value === 'default') {
-                  editor.value.chain().focus().unsetFontFamily().run()
-                } else {
-                  editor.value.chain().focus().setFontFamily(value).run()
-                }
+                font.value = value
               },
             },
-          ],
-        ],
-        [
-          'style',
-          [
             {
-              name: 'paragraph',
-              icon: 'paragraph',
-              title: 'Paragraph',
-              variant: getVariant('paragraph'),
-              click: () => editor.value.chain().focus().setParagraph().run(),
-            },
-            {
-              name: 'heading-1',
-              icon: 'h-1',
-              title: 'Heading 1',
-              variant: getVariant('heading', { level: 1 }),
-              click: () =>
-                editor.value.chain().focus().toggleHeading({ level: 1 }).run(),
-            },
-            {
-              name: 'heading-2',
-              icon: 'h-2',
-              title: 'Heading 2',
-              variant: getVariant('heading', { level: 2 }),
-              click: () =>
-                editor.value.chain().focus().toggleHeading({ level: 2 }).run(),
-            },
-            {
-              name: 'heading-3',
-              icon: 'h-3',
-              title: 'Heading 3',
-              variant: getVariant('heading', { level: 3 }),
-              click: () =>
-                editor.value.chain().focus().toggleHeading({ level: 3 }).run(),
+              name: 'font-size',
+              icon: '',
+              title: 'Font Size',
+              variant: 'text',
+              type: 'select',
+              items: fontSizeItems.value,
+              disabled: menuDisabled.value,
+              modelValue: fontSizeValue.value,
+              'onUpdate:modelValue': (value: string) => {
+                fontSizeValue.value = value
+              },
             },
           ],
         ],
@@ -489,6 +829,7 @@ export default defineComponent({
               icon: 'format list-numbered',
               title: 'Ordered List',
               variant: getVariant('orderedList'),
+              disabled: menuDisabled.value,
               click: () =>
                 editor.value.chain().focus().toggleOrderedList().run(),
             },
@@ -497,6 +838,7 @@ export default defineComponent({
               icon: 'format list-bulleted',
               title: 'Bullet List',
               variant: getVariant('bulletList'),
+              disabled: menuDisabled.value,
               click: () =>
                 editor.value.chain().focus().toggleBulletList().run(),
             },
@@ -505,6 +847,7 @@ export default defineComponent({
               icon: 'developer-mode',
               title: 'Code Block',
               variant: getVariant('codeBlock'),
+              disabled: menuDisabled.value,
               click: () => editor.value.chain().focus().toggleCodeBlock().run(),
             },
             {
@@ -512,6 +855,7 @@ export default defineComponent({
               icon: 'format quote',
               title: 'Blockquote',
               variant: getVariant('blockquote'),
+              disabled: menuDisabled.value,
               click: () =>
                 editor.value.chain().focus().toggleBlockquote().run(),
             },
@@ -520,6 +864,13 @@ export default defineComponent({
       ])
 
       return compactMenuItems(menu)
+    }
+
+    const menuRows = computed(() => {
+      return {
+        row1: getMenuRow1(),
+        row2: getMenuRow2(),
+      }
     })
 
     const compactMenuItems = (menu: Map<string, ToolbarMenuItem[]>) => {
@@ -546,27 +897,18 @@ export default defineComponent({
       return result
     }
 
-    const addImage = () => {
-      const url = window.prompt('URL')
-
-      if (url) {
-        editor.value.chain().focus().setImage({ src: url }).run()
-      }
-    }
-
-    const addLink = () => {
-      const url = window.prompt('Link')
-
-      if (url) {
-        editor.value.chain().focus().setLink({ href: url }).run()
-      }
-    }
-
     const setFocus = (
       position: FocusPosition | undefined = undefined
     ): void => {
-      editor.value.commands.focus(position)
+      if (sourceMode.value) {
+        focused.value = true
+        if (position === 'end') sourceElt.value?.focus()
+      } else {
+        editor.value.commands.focus(position)
+      }
     }
+
+    const unfocus = () => (focused.value = false)
 
     const footer = ref<HTMLElement | null>(null)
     const footerIsEmpty: Ref<boolean> = ref(true)
@@ -580,20 +922,35 @@ export default defineComponent({
       if (footer.value?.textContent || footer.value?.innerHTML) {
         footerIsEmpty.value = false
       }
+      source.value = editor.value?.getHTML()
     })
 
     return {
       editor,
-      getVariant,
-      addImage,
-      addLink,
       isEditable,
       focused,
       setFocus,
+      unfocus,
       footer,
       style,
-      menuRow1,
-      menuRow2,
+      menuRows,
+      tableDialogActive,
+      tableRowsFieldProps,
+      tableColumnsFieldProps,
+      tableHeaderFieldProps,
+      closeTableDialog,
+      addTable,
+      linkDialogActive,
+      linkFieldProps,
+      closeLinkDialog,
+      addLink,
+      imageDialogActive,
+      imageFieldProps,
+      closeImageDialog,
+      addImage,
+      sourceMode,
+      source,
+      sourceElt,
     }
   },
 })
