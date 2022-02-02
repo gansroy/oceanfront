@@ -5,8 +5,10 @@
 
   .editor-outer {
     background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-flow: column nowrap;
     margin-left: 0.11em;
-    height: var(--of-editor-content-height, 255px);
+    height: var(--of-editor-content-height, 10em);
     overflow: auto;
     border-bottom-right-radius: var(--field-border-radius);
     border-bottom-left-radius: var(--field-border-radius);
@@ -14,6 +16,10 @@
     -moz-user-select: text;
     user-select: text;
     margin-bottom: 0.2em;
+
+    > .ProseMirror {
+      flex: 1 0 auto;
+    }
 
     &.source-mode {
       overflow: hidden;
@@ -25,13 +31,13 @@
         padding: var(--content-margin);
         box-sizing: border-box;
         width: 100%;
-        height: var(--of-editor-content-height, 255px);        
+        height: var(--of-editor-content-height, 10em);
       }
     }
   }
 
   .of-editor-body {
-    min-height: var(--of-editor-editable-area-height, 300px);
+    min-height: var(--of-editor-editable-area-height, 14em);
     color: rgb(0, 0, 0);
   }
 
@@ -54,29 +60,37 @@
   }
 
   .editor-toolbar {
-    width: 100%;
-    background-color: inherit;
+    background-color: transparent;
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 0.3em 0.3em 0.1em 0.3em;
+    position: relative;
 
     .editor-toolbar-row {
+      align-items: center;
+      cursor: default;
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      row-gap: 0.1em;
+      flex-flow: row wrap;
+      gap: 0.2em 0.3em;
+      margin-bottom: 0.2em;
 
       .of-button {
-        margin: 0.5em;
+        padding: 0.2em;
         --button-border-width: 0;
       }
 
       .of-field {
-        margin: 0.3em 0.5em 0.3em 0.5em;
-        flex: 10em;
+        flex-basis: 10em;
+        max-width: 15em;
       }
     }
 
     .editor-toolbar-border {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
       margin: 0;
-      width: 100%;
       color: var(--of-field-border-color);
       background-color: var(--of-field-border-color);
       opacity: var(--of-field-border-opacity);
