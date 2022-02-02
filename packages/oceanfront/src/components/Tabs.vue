@@ -120,6 +120,7 @@ import {
 import { watchPosition } from '../lib/util'
 import { ItemList, useItems } from '../lib/items'
 import { OfOverlay } from './Overlay'
+import OfOptionList from './OptionList.vue'
 import { Tab } from '../lib/tab'
 
 const elementWidth = (el?: HTMLElement): number => {
@@ -189,7 +190,7 @@ const formatItems = (
 
 export default defineComponent({
   name: 'OfTabs',
-  components: { OfOverlay },
+  components: { OfOverlay, OfOptionList },
   props: {
     items: { type: [Object, Array] } as any as PropType<ItemList>,
     modelValue: Number,

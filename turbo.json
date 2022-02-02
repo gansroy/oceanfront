@@ -1,0 +1,30 @@
+{
+  "baseBranch": "origin/main",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"]
+    },
+    "build-dev": {
+      "dependsOn": ["^build-dev"]
+    },
+    "clean": {
+      "cache": false,
+      "outputs": []
+    },
+    "coverage": {
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "lint": {
+      "outputs": []
+    },
+    "demo": {
+      "cache": false,
+      "dependsOn": ["build-dev"],
+      "outputs": []
+    }
+  }
+}
