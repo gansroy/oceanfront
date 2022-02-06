@@ -11,9 +11,9 @@
     "src"
   ],
   "scripts": {
-    "build": "rimraf dist && cross-env NODE_ENV=production rollup --config rollup.config.js",
+    "build": "cross-env NODE_ENV=production rollup --config rollup.config.js",
     "build-dev": "rollup --config rollup.config.js --format es",
-    "clean": "rimraf dist",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "coverage": "jest --coverage",
     "demo": "rollup --config rollup.config.js --format es -w",
     "lint": "eslint src",
@@ -58,7 +58,6 @@
     "postcss-import": "^14.0",
     "postcss-url": "^10.1",
     "prettier": "^2.2",
-    "rimraf": "^3.0",
     "rollup": "^2.57",
     "rollup-plugin-dts": "^4.0",
     "rollup-plugin-postcss": "^4.0",

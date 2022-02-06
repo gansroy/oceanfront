@@ -147,7 +147,13 @@ export default defineComponent({
           itemsBefore = 1
         }
         let startPage = page.value - itemsBefore
-        return Math.max(1, startPage)
+        startPage = Math.max(1, startPage)
+
+        const curLast = startPage + totalVisible.value - 1
+        if (curLast > props.totalPages) {
+          startPage -= curLast - props.totalPages
+        }
+        return startPage
       }
     }
 
