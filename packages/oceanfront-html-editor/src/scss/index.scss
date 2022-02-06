@@ -1,16 +1,96 @@
 .of-editor {
   --content-margin: var(--of-editor-content-margin, 0.75em);
+  overflow: hidden;
+  max-height: 100%;
 
-  .of-field-body {
-    height: 300px;
+  .editor-outer {
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-flow: column nowrap;
+    margin-left: 0.11em;
+    height: var(--of-editor-content-height, 10em);
+    overflow: auto;
+    border-bottom-right-radius: var(--field-border-radius);
+    border-bottom-left-radius: var(--field-border-radius);
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+    margin-bottom: 0.2em;
+
+    > .ProseMirror {
+      flex: 1 0 auto;
+    }
+
+    &.source-mode {
+      overflow: hidden;
+
+      .source-container {
+        outline: none;
+        border: none;
+        resize: none;
+        padding: var(--content-margin);
+        box-sizing: border-box;
+        width: 100%;
+        height: var(--of-editor-content-height, 10em);
+      }
+    }
+  }
+
+  .of-editor-body {
+    min-height: var(--of-editor-editable-area-height, 14em);
+    color: rgb(0, 0, 0);
+  }
+
+  .editor-footer {
+    display: flex;
+    overflow: hidden;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 0.1em;
+    width: 100%;
+
+    .of-field {
+      margin: 0.3em;
+      flex: 20em;
+    }
+    .of-button {
+      margin: 0.3em;
+      flex: 1em;
+    }
   }
 
   .editor-toolbar {
-    width: 100%;
+    background-color: transparent;
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 0.3em 0.3em 0.1em 0.3em;
+    position: relative;
+
+    .editor-toolbar-row {
+      align-items: center;
+      cursor: default;
+      display: flex;
+      flex-flow: row wrap;
+      gap: 0.2em 0.3em;
+      margin-bottom: 0.2em;
+
+      .of-button {
+        padding: 0.2em;
+        --button-border-width: 0;
+      }
+
+      .of-field {
+        flex-basis: 10em;
+        max-width: 15em;
+      }
+    }
 
     .editor-toolbar-border {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
       margin: 0;
-      width: 100%;
       color: var(--of-field-border-color);
       background-color: var(--of-field-border-color);
       opacity: var(--of-field-border-opacity);
@@ -18,18 +98,11 @@
       border: none;
     }
 
-    .of-button {
-      margin: 0.5em;
-      --button-border-width: 0;
-    }
-
     .divider {
       width: 2px;
       height: 1.5rem;
       background-color: #0000001a;
-      margin-bottom: 0.2em;
-      margin-right: 0.5em;
-      margin-left: 0.5em;
+      margin: 0.5em 0.5em 0.2em 0.5em;
       display: inline-block;
       line-height: 1.5;
       box-sizing: border-box;
@@ -42,6 +115,10 @@
     }
 
     margin: var(--content-margin);
+
+    &:focus {
+      outline: none;
+    }
 
     ul,
     ol {
@@ -101,6 +178,70 @@
   .ProseMirror Mirror-focused [contenteditable='false'] {
     cursor: text;
   }
+
+  table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+
+    td,
+    th {
+      min-width: 1em;
+      border: 2px solid #ced4da;
+      padding: 3px 5px;
+      vertical-align: top;
+      box-sizing: border-box;
+      position: relative;
+
+      > * {
+        margin-bottom: 0;
+      }
+    }
+
+    th {
+      font-weight: bold;
+      text-align: left;
+      background-color: #f1f3f5;
+    }
+
+    .selectedCell:after {
+      z-index: 2;
+      position: absolute;
+      content: '';
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: rgba(200, 200, 255, 0.4);
+      pointer-events: none;
+    }
+
+    .column-resize-handle {
+      position: absolute;
+      right: -2px;
+      top: 0;
+      bottom: -2px;
+      width: 4px;
+      background-color: #adf;
+      pointer-events: none;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .tableWrapper {
+    padding: 1rem 0;
+    overflow-x: auto;
+  }
+
+  .resize-cursor {
+    cursor: ew-resize;
+    cursor: col-resize;
+  }
 }
 
 .of-field.of-editor.of--mode-fixed {
@@ -109,13 +250,32 @@
   --field-border-width: 0;
   padding-left: var(--field-h-pad);
 
-  .of-field-body {
+  .of-editor-body {
+    min-height: auto;
+  }
+  .editor-outer {
     height: auto;
+    border-radius: var(--field-border-radius);
   }
 }
 
 .of-field.of-editor.of--focused {
   .editor-toolbar-border {
     opacity: 100%;
+  }
+}
+
+.of-dialog {
+  &.of-editor-popup {
+    padding: 1em;
+
+    .of-button {
+      margin-top: 0.5em;
+      margin-right: 0.7em;
+    }
+
+    &.insert {
+      min-height: 50px;
+    }
   }
 }

@@ -121,6 +121,40 @@ function pluginConfig(compact, extractCss) {
   return ret
 }
 
+function dtsPluginConfig() {
+  return [
+    alias({
+      entries: [
+        {
+          find: '@',
+          replacement: path.resolve(projectRoot, 'src'),
+        },
+      ],
+      customResolver: resolve({
+        extensions: ['.js', '.jsx', '.vue'],
+      }),
+    }),
+    resolve({
+      extensions: ['.js', '.jsx', '.vue'],
+    }),
+    vue({
+      target: 'browser',
+    }),
+    typescript({
+      clean: true,
+    }),
+    commonjs(),
+    replace({
+      preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify(node_env),
+      __DEV__: JSON.stringify(node_env === 'development'),
+      __VUE_OPTIONS_API__: JSON.stringify(true),
+      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+    }),
+    dts(),
+  ]
+}
+
 if (targetFormats.dts) {
   buildFormats.push({
     input: `src/index.ts`,
@@ -129,7 +163,7 @@ if (targetFormats.dts) {
       format: 'es',
     },
     external: [/\.scss$/],
-    plugins: [dts()],
+    plugins: dtsPluginConfig(),
   })
 }
 

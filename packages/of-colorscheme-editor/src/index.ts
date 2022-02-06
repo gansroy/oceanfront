@@ -1,4 +1,4 @@
-import OfColorSchemeEditor from '@/components/ColorSchemeEditor.vue'
+import OfColorSchemeEditor from './components/ColorSchemeEditor.vue'
 import * as ColorSpaces from './lib/colorconversion'
 
 export {
