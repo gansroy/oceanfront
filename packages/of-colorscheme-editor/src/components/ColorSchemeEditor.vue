@@ -19,29 +19,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, unref } from 'vue'
-import {
-  hex_to_rgb,
-  okhsl_to_srgb,
-  rgb_to_hex,
-  srgb_to_okhsl,
-} from '../lib/colorconversion'
-
-type PaletteEntry = {
-  color: string
-  isDark: boolean
-  l: number
-}
-
-const shades = Array.from({ length: 101 }).map((_, idx) => idx)
-
-const getLimit = (limits: any, name: string, type: string, mode: string) => {
-  const l = limits[type]
-  if (!l) return 1
-  const v = l[name]
-  if (!v) return 1
-  return typeof v === 'number' ? v : v[mode] ?? 1
-}
+import { defineComponent, computed, watch } from 'vue'
+import { defaultPalletes } from '../lib/defaults'
 
 const ColorSchemeEditor = defineComponent({
   name: 'ColorSchemeEditor',
@@ -53,32 +32,7 @@ const ColorSchemeEditor = defineComponent({
   setup(props, ctx) {
     const pallettes = computed(() => {
       const limits = props.limits ?? {}
-      return Object.keys(unref(props.colors ?? {})).reduce((acc, name) => {
-        const color = props.colors?.[name] ?? ''
-        acc[name] = {}
-        ;['light', 'dark'].forEach((mode) => {
-          const lLimit = getLimit(limits, name, 'lightness', mode)
-          const sLimit = getLimit(limits, name, 'saturation', mode)
-          acc[name][mode] = shades.reduce((acc, l) => {
-            const base = srgb_to_okhsl(
-              hex_to_rgb(color) || { r: 0, g: 0, b: 0 }
-            )
-            base.l *= lLimit
-            base.s *= sLimit
-            base.l = l / 100
-            const cl = rgb_to_hex(okhsl_to_srgb(base))
-            return {
-              ...acc,
-              [l]: {
-                color: cl,
-                isDark: l < 80,
-                l: l,
-              },
-            }
-          }, {} as any)
-        })
-        return acc
-      }, {} as { [k: string]: { [k: string]: PaletteEntry } })
+      return defaultPalletes(props.colors, limits)
     })
 
     watch(
