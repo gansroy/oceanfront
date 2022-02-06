@@ -4,15 +4,22 @@
       <of-field
         :model-value="colors[name]"
         type="color"
-        :label="formatName(name)"
         @update:model-value="(v) => updateColor(name, v)"
-      />
+      >
+        <template #label>
+          <label class="of-field-label">
+            <slot :color-name="name" :color="color" name="label">{{
+              formatName(name)
+            }}</slot>
+          </label>
+        </template>
+      </of-field>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch } from 'vue'
+import { defineComponent, computed, watch, unref } from 'vue'
 import {
   hex_to_rgb,
   okhsl_to_srgb,
@@ -46,7 +53,7 @@ const ColorSchemeEditor = defineComponent({
   setup(props, ctx) {
     const pallettes = computed(() => {
       const limits = props.limits ?? {}
-      return Object.keys(props.colors ?? {}).reduce((acc, name) => {
+      return Object.keys(unref(props.colors ?? {})).reduce((acc, name) => {
         const color = props.colors?.[name] ?? ''
         acc[name] = {}
         ;['light', 'dark'].forEach((mode) => {
