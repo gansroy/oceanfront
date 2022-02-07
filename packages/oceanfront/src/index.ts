@@ -178,7 +178,9 @@ export {
 export {
   IconSet,
   SvgIcon,
+  SvgIconEffect,
   registerIconSet,
+  registerSvgIconEffect,
   showMissingIcons,
   useIcons,
 } from './lib/icons'
