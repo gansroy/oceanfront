@@ -208,7 +208,7 @@ export const materialIconSet = {
   resolve(name: string, _type?: string) {
     const icon = (materialIcons as any)[name]
     if (icon) {
-      return { svg: { paths: icon } }
+      return { svg: { paths: [...icon] } }
     }
     return null
   },

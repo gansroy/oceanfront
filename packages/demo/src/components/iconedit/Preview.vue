@@ -1,14 +1,51 @@
 <template>
+  <of-field
+    type="select"
+    :items="[
+      { value: '', text: '(none)' },
+      { value: 'plus', text: 'Plus' },
+    ]"
+    label="Icon Effect"
+    v-model="iconEffect"
+    inline
+  />
+  <br /><br />
+
   <div class="outer" v-bind="divAttrs" :class="{ dragging: dragActive }">
     <of-config :icons="icons">
       <div class="load-error">{{ loadError }}</div>
 
       <div>
-        <of-icon name="preview-icon" size="xs" title="16px size" />
-        <of-icon name="preview-icon" size="sm" title="20px size" />
-        <of-icon name="preview-icon" size="md" title="24px size (standard)" />
-        <of-icon name="preview-icon" size="lg" title="28px size" />
-        <of-icon name="preview-icon" size="xl" title="32px size" />
+        <of-icon
+          name="preview-icon"
+          size="xs"
+          title="16px size"
+          :effect="iconEffect"
+        />
+        <of-icon
+          name="preview-icon"
+          size="sm"
+          title="20px size"
+          :effect="iconEffect"
+        />
+        <of-icon
+          name="preview-icon"
+          size="md"
+          title="24px size (standard)"
+          :effect="iconEffect"
+        />
+        <of-icon
+          name="preview-icon"
+          size="lg"
+          title="28px size"
+          :effect="iconEffect"
+        />
+        <of-icon
+          name="preview-icon"
+          size="xl"
+          title="32px size"
+          :effect="iconEffect"
+        />
       </div>
 
       <div>
@@ -16,21 +53,28 @@
           name="preview-icon"
           class="style-no-alt"
           title="without alt layer"
+          :effect="iconEffect"
         />
 
         <of-icon
           name="preview-icon"
           class="style-blue"
           title="fill single colour"
+          :effect="iconEffect"
         />
         <of-icon
           name="preview-icon"
           class="style-contrast"
           title="fill two colours"
+          :effect="iconEffect"
         />
 
-        <div class="round"><of-icon name="preview-icon" /></div>
-        <div class="roundr"><of-icon name="preview-icon" /></div>
+        <div class="round">
+          <of-icon name="preview-icon" :effect="iconEffect" />
+        </div>
+        <div class="roundr">
+          <of-icon name="preview-icon" :effect="iconEffect" />
+        </div>
 
         <svg
           style="width: 0; height: 0; position: absolute"
@@ -69,7 +113,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, VNode } from 'vue'
+import { defineComponent, ref, VNode } from 'vue'
 
 const previewCanvas = document.createElement('canvas')
 
@@ -119,17 +163,16 @@ export default defineComponent({
   name: 'OfIconPreview',
   setup(_props, _ctx) {
     const testIcon = ref({
-      svg: {
-        paths: [
-          'M4.427,12.845c-0.835,-0.329 -1.427,-1.143 -1.427,-2.095l0,-4.5c0,-1.242 1.008,-2.25 2.25,-2.25l13.5,0c1.242,0 2.25,1.008 2.25,2.25l0,4.5c0,1.242 -1.008,2.25 -2.25,2.25l-8.137,0c-0.333,-1.435 -1.602,-2.504 -3.113,-2.504c-1.456,0 -2.687,0.992 -3.073,2.349Z',
-          'M6.41,16c-0.834,-0.405 -1.41,-1.261 -1.41,-2.25c0,-1.38 1.12,-2.5 2.5,-2.5c1.38,0 2.5,1.12 2.5,2.5c0,0.989 -0.576,1.845 -1.41,2.25l0.91,0c0.828,0 1.5,0.672 1.5,1.5l0,3c0,0.828 -0.672,1.5 -1.5,1.5l-4,0c-0.828,0 -1.5,-0.672 -1.5,-1.5l0,-3c0,-0.828 0.672,-1.5 1.5,-1.5l0.91,0Zm9.433,-7.717l3.611,0l0,-0.024c-0.012,-2.066 -1.626,-3.738 -3.611,-3.738l0,3.762Zm0,0.795l2.815,0l0,0.019c-0.009,1.545 -1.267,2.797 -2.815,2.797l0,-2.816Zm-0.773,-3.668l0,6.5c-1.932,0 -3.5,-1.456 -3.5,-3.25c0,-1.793 1.568,-3.25 3.5,-3.25Zm-10.761,8.555c-1.309,-0.212 -2.309,-1.347 -2.309,-2.715l0,-5.5c0,-1.518 1.232,-2.75 2.75,-2.75l14.5,0c1.518,0 2.75,1.232 2.75,2.75l0,5.5c0,1.518 -1.232,2.75 -2.75,2.75l-8.561,0c0.006,-0.083 0.009,-0.166 0.009,-0.25c0,-0.258 -0.029,-0.509 -0.085,-0.75l8.137,0c1.242,0 2.25,-1.008 2.25,-2.25l0,-4.5c0,-1.242 -1.008,-2.25 -2.25,-2.25l-13.5,0c-1.242,0 -2.25,1.008 -2.25,2.25l0,4.5c0,0.952 0.592,1.766 1.427,2.095c-0.081,0.287 -0.125,0.591 -0.125,0.905c0,0.072 0.002,0.144 0.007,0.215Z',
-        ],
-      },
+      paths: [
+        'M4.427,12.845c-0.835,-0.329 -1.427,-1.143 -1.427,-2.095l0,-4.5c0,-1.242 1.008,-2.25 2.25,-2.25l13.5,0c1.242,0 2.25,1.008 2.25,2.25l0,4.5c0,1.242 -1.008,2.25 -2.25,2.25l-8.137,0c-0.333,-1.435 -1.602,-2.504 -3.113,-2.504c-1.456,0 -2.687,0.992 -3.073,2.349Z',
+        'M6.41,16c-0.834,-0.405 -1.41,-1.261 -1.41,-2.25c0,-1.38 1.12,-2.5 2.5,-2.5c1.38,0 2.5,1.12 2.5,2.5c0,0.989 -0.576,1.845 -1.41,2.25l0.91,0c0.828,0 1.5,0.672 1.5,1.5l0,3c0,0.828 -0.672,1.5 -1.5,1.5l-4,0c-0.828,0 -1.5,-0.672 -1.5,-1.5l0,-3c0,-0.828 0.672,-1.5 1.5,-1.5l0.91,0Zm9.433,-7.717l3.611,0l0,-0.024c-0.012,-2.066 -1.626,-3.738 -3.611,-3.738l0,3.762Zm0,0.795l2.815,0l0,0.019c-0.009,1.545 -1.267,2.797 -2.815,2.797l0,-2.816Zm-0.773,-3.668l0,6.5c-1.932,0 -3.5,-1.456 -3.5,-3.25c0,-1.793 1.568,-3.25 3.5,-3.25Zm-10.761,8.555c-1.309,-0.212 -2.309,-1.347 -2.309,-2.715l0,-5.5c0,-1.518 1.232,-2.75 2.75,-2.75l14.5,0c1.518,0 2.75,1.232 2.75,2.75l0,5.5c0,1.518 -1.232,2.75 -2.75,2.75l-8.561,0c0.006,-0.083 0.009,-0.166 0.009,-0.25c0,-0.258 -0.029,-0.509 -0.085,-0.75l8.137,0c1.242,0 2.25,-1.008 2.25,-2.25l0,-4.5c0,-1.242 -1.008,-2.25 -2.25,-2.25l-13.5,0c-1.242,0 -2.25,1.008 -2.25,2.25l0,4.5c0,0.952 0.592,1.766 1.427,2.095c-0.081,0.287 -0.125,0.591 -0.125,0.905c0,0.072 0.002,0.144 0.007,0.215Z',
+      ],
     })
+    const iconEffect = ref('')
     const icons = {
       resolve(name: string) {
         if (name === 'preview-icon') {
-          return testIcon.value
+          return { svg: { paths: [...testIcon.value.paths] } }
         }
       },
     }
@@ -160,7 +203,7 @@ export default defineComponent({
             if (ev.loaded) {
               const svgData = ev.target?.result as string
               try {
-                testIcon.value = { svg: parseSvg(svgData) }
+                testIcon.value = parseSvg(svgData)
               } catch (e: any) {
                 loadError.value = e.message
               }
@@ -172,13 +215,14 @@ export default defineComponent({
     }
 
     const draw = (vnode: VNode) => {
-      drawPreview(testIcon.value.svg.paths, vnode.el as HTMLCanvasElement)
+      drawPreview(testIcon.value.paths, vnode.el as HTMLCanvasElement)
     }
     return {
       divAttrs,
       dragActive,
       draw,
       icons,
+      iconEffect,
       loadError,
     }
   },
