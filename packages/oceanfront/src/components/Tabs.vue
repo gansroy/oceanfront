@@ -122,6 +122,7 @@ import { ItemList, useItems } from '../lib/items'
 import { OfOverlay } from './Overlay'
 import OfOptionList from './OptionList.vue'
 import { Tab } from '../lib/tab'
+import { useThemeOptions } from 'src/lib/theme'
 
 const elementWidth = (el?: HTMLElement): number => {
   let w = el?.offsetWidth ?? 0
@@ -206,6 +207,7 @@ export default defineComponent({
   },
   emits: ['update:modelValue', 'select-tab'],
   setup(props, context: SetupContext) {
+    const themeOptions = useThemeOptions()
     let tabs: any = ref([])
 
     let ofTabsHeader: any = ref()
@@ -227,6 +229,9 @@ export default defineComponent({
       } else if (typeof d === 'string') {
         d = parseInt(d, 10)
         if (isNaN(d)) d = undefined
+      }
+      if (typeof d !== 'number') {
+        d = themeOptions.defaultDensity
       }
       if (typeof d !== 'number') {
         d = 2

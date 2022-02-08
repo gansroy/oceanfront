@@ -185,6 +185,7 @@ export {
 export { registerItemList, useItems } from './lib/items'
 export { setMobileBreakpoint, useLayout } from './lib/layout'
 export { useLocale } from './lib/locale'
+export { ThemeOptions, useThemeOptions, setThemeOptions } from './lib/theme'
 export {
   NavGroup,
   NavGroupTarget,
