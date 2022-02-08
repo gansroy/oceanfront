@@ -157,17 +157,17 @@
 </template>
 
 <script lang="ts">
+import { useLayout } from 'oceanfront'
 import {
+  computed,
+  defineComponent,
+  nextTick,
   onErrorCaptured,
   ref,
-  defineComponent,
   SetupContext,
-  computed,
   watch,
-  nextTick,
 } from 'vue'
 import { useRouter } from 'vue-router'
-import { useLayout } from 'oceanfront'
 
 function formatError(e: any) {
   return (e.stack || e).toString()

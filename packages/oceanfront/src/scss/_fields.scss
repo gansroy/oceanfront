@@ -141,10 +141,10 @@
 .of-field {
   @include define-color-opacity(
     field-border,
-    (var(--of-primary-tint), 20%),
+    (var(--of-primary-tint), 50%),
     (
-      hover: var(--of-primary-tint) 30%,
-      disabled: var(--of-primary-tint) 30%,
+      hover: var(--of-primary-tint) 60%,
+      disabled: var(--of-primary-tint) 60%,
       focus: var(--of-primary-tint) 100%,
       invalid: var(--of-color-error) 100%,
     )
@@ -349,7 +349,6 @@
   grid-area: main;
   min-height: calc(2 * var(--field-v-pad) + var(--field-input-height));
   outline: none;
-  overflow: hidden;
   position: relative;
 }
 .of-field-caption {

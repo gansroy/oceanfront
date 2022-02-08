@@ -1,3 +1,4 @@
+import { useThemeOptions } from 'src/lib/theme'
 import {
   computed,
   defineComponent,
@@ -165,6 +166,7 @@ export const OfField = defineComponent({
     const focusGrp = useFocusGroup()
     const formatMgr = useFormats()
     const recordMgr = useRecords()
+    const themeOptions = useThemeOptions()
 
     const formatter = computed(() =>
       formatMgr.getTextFormatter(
@@ -197,7 +199,13 @@ export const OfField = defineComponent({
     })
     const dragOver = ref(false)
     const focused = ref(false)
-    const variant = computed(() => props.variant || 'outlined')
+    const variant = computed(() => {
+      let v = props.variant
+      if (!v || v == 'default') {
+        v = themeOptions.defaultInputVariant
+      }
+      return v || 'outlined'
+    })
     const tint = computed(() => props.tint)
 
     // may inherit default value from context in future
@@ -230,6 +238,11 @@ export const OfField = defineComponent({
     const labelPosition = computed(() => {
       let p = props.labelPosition
       if (!p || p === 'default') {
+        p = themeOptions.defaultLabelPosition as
+          | FieldLabelPositionProp
+          | undefined
+      }
+      if (!p || p === 'default') {
         p = props.variant === 'filled' ? 'frame' : 'top'
       }
       return p
@@ -241,6 +254,9 @@ export const OfField = defineComponent({
       } else if (typeof d === 'string') {
         d = parseInt(d, 10)
         if (isNaN(d)) d = undefined
+      }
+      if (typeof d !== 'number') {
+        d = themeOptions.defaultDensity
       }
       if (typeof d !== 'number') {
         d = labelPosition.value === 'frame' ? 0 : 2
