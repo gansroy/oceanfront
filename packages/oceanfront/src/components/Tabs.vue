@@ -122,7 +122,7 @@ import { ItemList, useItems } from '../lib/items'
 import { OfOverlay } from './Overlay'
 import OfOptionList from './OptionList.vue'
 import { Tab } from '../lib/tab'
-import { useThemeOptions } from 'src/lib/theme'
+import { useThemeOptions } from '../lib/theme'
 
 const elementWidth = (el?: HTMLElement): number => {
   let w = el?.offsetWidth ?? 0
