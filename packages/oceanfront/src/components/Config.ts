@@ -1,7 +1,7 @@
 import { defineComponent, PropType } from 'vue'
 import { extendConfig } from '../lib/config'
 import { registerIconSet, IconSet } from '../lib/icons'
-import { themeStyle, useLayout, ThemeConfig } from '../lib/layout'
+import { useLayout } from '../lib/layout'
 import { setLocale, useLocale } from '../lib/locale'
 import { FormRecord, setCurrentRecord } from '../lib/records'
 
@@ -28,9 +28,6 @@ export const OfConfig = defineComponent({
       const cfgProps: Record<string, any> = {
         locale: localeMgr.locale,
         isMobile: layoutMgr.isMobile,
-      }
-      if (props.theme) {
-        cfgProps.themeStyle = themeStyle(props.theme as ThemeConfig)
       }
       return ctx.slots.default && ctx.slots.default(cfgProps)
     }

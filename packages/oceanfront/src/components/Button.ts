@@ -2,6 +2,7 @@ import { defineComponent, computed, h, ref } from 'vue'
 import { OfIcon } from './Icon'
 import { OfOverlay } from './Overlay'
 import OfOptionList from './OptionList.vue'
+import { useThemeOptions } from 'src/lib/theme'
 
 let sysMenuTargetIndex = 0
 
@@ -28,6 +29,7 @@ export const OfButton = defineComponent({
     click: null,
   },
   setup(props, ctx) {
+    const themeOptions = useThemeOptions()
     const variant = computed(() => props.variant || 'filled')
     const tint = computed(() => props.tint)
     const menuShown = ref(false)
@@ -41,6 +43,9 @@ export const OfButton = defineComponent({
       } else if (typeof d === 'string') {
         d = parseInt(d, 10)
         if (isNaN(d)) d = undefined
+      }
+      if (typeof d !== 'number') {
+        d = themeOptions.defaultDensity
       }
       if (typeof d !== 'number') {
         d = 2
