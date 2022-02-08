@@ -1,4 +1,4 @@
-import { useThemeOptions } from 'src/lib/theme'
+import { useThemeOptions } from '../lib/theme'
 import {
   computed,
   defineComponent,
