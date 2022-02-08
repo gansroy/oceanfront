@@ -2,7 +2,7 @@ import { defineComponent, computed, h, ref } from 'vue'
 import { OfIcon } from './Icon'
 import { OfOverlay } from './Overlay'
 import OfOptionList from './OptionList.vue'
-import { useThemeOptions } from 'src/lib/theme'
+import { useThemeOptions } from '../lib/theme'
 
 let sysMenuTargetIndex = 0
 
