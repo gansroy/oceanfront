@@ -16,8 +16,10 @@ export class DurationFormatter implements TextFormatter {
   parseInput(input: string) {
     let value = 0
     if (typeof input === 'string' && input.length !== 0) {
-      const hr = parseInt(input.split('h ')[0], 10)
-      const min = parseInt(input.split('h ')[1].split('m')[0], 10)
+      let hr = parseInt(input.split('h ')[0], 10)
+      let min = parseInt(input.split('h ')[1]?.split('m')[0], 10)
+      if (isNaN(hr)) hr = 0
+      if (isNaN(min)) min = 0
       value = hr * 60 + min
     }
 
@@ -59,18 +61,17 @@ export class DurationFormatter implements TextFormatter {
   }
 
   minToDurationConvert(value: string): string {
-    let valueNum = parseFloat(value)
-    if (valueNum < 10 || valueNum % 1 !== 0) {
-      valueNum *= 60
-    }
+    const valueNum = parseFloat(value)
     let min = Math.round(valueNum)
-    const hr = Math.floor(min / 60)
+    let hr = Math.floor(min / 60)
     min = min % 60
+    if (isNaN(hr)) hr = 0
+    if (isNaN(min)) min = 0
     return '' + hr + 'h ' + (min < 10 ? '0' + min : min) + 'm'
   }
 
   unformat(input: any): number | null {
-    if (!isNaN(Number(input))) return input
+    if (!isNaN(Number(input))) return this.treatAsHours(input)
     if (input === null || input === undefined) return null
     if (typeof input === 'string') {
       input = input.trim()
@@ -79,6 +80,12 @@ export class DurationFormatter implements TextFormatter {
       return parsed.value
     }
     throw new TypeError('Unsupported value')
+  }
+
+  treatAsHours(value: number): number {
+    if (isNaN(value)) return 0
+    if (value < 10 || value % 1 !== 0) value *= 60
+    return value
   }
 
   handleKeyDown(evt: KeyboardEvent): void {
