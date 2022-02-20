@@ -259,7 +259,7 @@ export const OfField = defineComponent({
         d = themeOptions.defaultDensity
       }
       if (typeof d !== 'number') {
-        d = labelPosition.value === 'frame' ? 0 : 2
+        d = 2
       }
       return Math.max(0, Math.min(3, d || 0))
     })
