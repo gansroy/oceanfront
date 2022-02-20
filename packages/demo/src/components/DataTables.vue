@@ -1,10 +1,17 @@
 <template>
   <div class="container">
     <h1>Data Tables</h1>
+    <of-field
+      v-model="params.density"
+      label="Density"
+      type="select"
+      :items="densityOptions"
+    />
 
     <div class="row">
       <div class="column">
         <of-data-table
+          :density="params.density"
           :headers="headers"
           :items="items"
           :footer-items="footerItems"
@@ -15,6 +22,7 @@
       <div class="column">
         <of-data-table
           rows-selector
+          :density="params.density"
           @rows-selected="onRowsSelected"
           @rows-sorted="onItems2Sorted"
           :headers="headers2"
@@ -27,12 +35,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, reactive } from 'vue'
+
+const densityOptions = ['default', '0', '1', '2', '3']
+
+const params = reactive({
+  density: 'default',
+})
 
 export default defineComponent({
   setup() {
     const headers = [
-      { text: 'Name', value: 'name', divider: true, width: '150px', sort: false },
+      {
+        text: 'Name',
+        value: 'name',
+        divider: true,
+        width: '150px',
+        sort: false,
+      },
       { text: 'Category', value: 'category', sort: false },
       { text: 'Size', value: 'size', align: 'end', sort: false },
     ]
@@ -79,7 +99,13 @@ export default defineComponent({
     ]
 
     const headers2 = [
-      { text: 'Name', value: 'name', divider: true, width: '150px', sort: 'desc' },
+      {
+        text: 'Name',
+        value: 'name',
+        divider: true,
+        width: '150px',
+        sort: 'desc',
+      },
       { text: 'Category', value: 'category', sort: false },
       { text: 'Size', value: 'size', align: 'end' },
     ]
@@ -143,6 +169,8 @@ export default defineComponent({
       footerItems,
       onRowsSelected,
       onItems2Sorted,
+      params,
+      densityOptions,
     }
   },
 })

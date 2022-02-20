@@ -1,5 +1,5 @@
 <template>
-  <div class="of-data-table" :style="columnsStyle">
+  <div :class="tableClass" :style="columnsStyle">
     <div class="of-data-table-header">
       <div v-if="rowsSelector" class="of-data-table-rows-selector">
         <slot name="header-rows-selector">
@@ -95,6 +95,7 @@ import {
   ComputedRef,
 } from 'vue'
 import { DataTableHeader } from '../lib/datatable'
+import { useThemeOptions } from '../lib/theme'
 
 enum RowsSelectorValues {
   Page = 'page',
@@ -130,12 +131,14 @@ export default defineComponent({
     page: [String, Number],
     rowsSelector: Boolean,
     resetSelection: Boolean,
+    density: [String, Number],
   },
   emits: {
     'rows-selected': null,
     'rows-sorted': null,
   },
   setup(props, ctx: SetupContext) {
+    const themeOptions = useThemeOptions()
     const sort = ref({ column: '', order: '' })
 
     const columns = computed(() => {
@@ -293,6 +296,27 @@ export default defineComponent({
       selectRows(RowsSelectorValues.DeselectAll)
       ctx.emit('rows-sorted', sort.value)
     }
+    const density = computed(() => {
+      let d = props.density
+      if (d === 'default') {
+        d = undefined
+      } else if (typeof d === 'string') {
+        d = parseInt(d, 10)
+        if (isNaN(d)) d = undefined
+      }
+      if (typeof d !== 'number') {
+        d = themeOptions.defaultDensity
+      }
+      if (typeof d !== 'number') {
+        d = 2
+      }
+      return Math.max(0, Math.min(3, d || 0))
+    })
+
+    const tableClass = computed(() => [
+      'of-data-table',
+      'of--density-' + density.value,
+    ])
 
     return {
       columns,
@@ -307,6 +331,7 @@ export default defineComponent({
       columnsStyle,
       onSort,
       sort,
+      tableClass,
     }
   },
 })

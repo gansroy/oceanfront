@@ -1,4 +1,19 @@
 .of-data-table {
+  --table-cell-vpad: 0.25rem;
+
+  &.of--density-0 {
+    --table-cell-vpad: 0.5rem;
+  }
+  &.of--density-1 {
+    --table-cell-vpad: 0.4rem;
+  }
+  &.of--density-2 {
+    --table-cell-vpad: 0.25rem;
+  }
+  &.of--density-3 {
+    --table-cell-vpad: 0.1rem;
+  }
+
   // border: 1px solid #ddd;
   border-radius: 4px;
   border-spacing: 0;
@@ -24,7 +39,7 @@
 
   > .of-data-table-header > div {
     border-bottom: 2px solid #ddd;
-    padding: 0.25rem 0.75rem;
+    padding: var(--table-cell-vpad) 0.75rem;
     font-weight: bold;
     &.of-data-table-rows-selector {
       padding: 0;
@@ -36,7 +51,7 @@
     display: inline-flex;
     align-items: center;
     white-space: nowrap;
-  } 
+  }
 
   > .of-data-table-header > .sortable > span > i {
     opacity: 0;
@@ -63,7 +78,7 @@
 
   > .of-data-table-row {
     > div {
-      padding: 0.25rem 0.75rem;
+      padding: var(--table-cell-vpad) 0.75rem;
       &.of-data-table-rows-selector {
         padding: 0;
         margin: 0;
@@ -82,7 +97,7 @@
 
   > .of-data-table-footer > div {
     font-weight: bolder;
-    padding: 0.25rem 0.75rem;
+    padding: var(--table-cell-vpad) 0.75rem;
   }
   > .of-data-table-row + .of-data-table-footer > div,
   > .of-data-table-header + .of-data-table-footer > div {
