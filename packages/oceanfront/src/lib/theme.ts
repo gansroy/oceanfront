@@ -4,6 +4,7 @@ export interface ThemeOptions {
   defaultDensity?: number
   defaultInputVariant?: string
   defaultLabelPosition?: string
+  defaultRoundedButton?: boolean
 }
 
 const options: ThemeOptions = reactive({})
@@ -18,6 +19,9 @@ export function setThemeOptions(opts: ThemeOptions): void {
   }
   if (opts.defaultLabelPosition !== undefined) {
     options.defaultLabelPosition = opts.defaultLabelPosition
+  }
+  if (opts.defaultRoundedButton !== undefined) {
+    options.defaultRoundedButton = opts.defaultRoundedButton
   }
 }
 
