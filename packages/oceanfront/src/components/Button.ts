@@ -17,7 +17,10 @@ export const OfButton = defineComponent({
     items: [String, Array, Object],
     label: String,
     name: String,
-    rounded: Boolean,
+    rounded: {
+      type: Boolean,
+      default: undefined,
+    },
     split: Boolean,
     type: String,
     variant: String,
@@ -100,7 +103,11 @@ export const OfButton = defineComponent({
     let autoId: string
 
     return () => {
-      const { disabled, id, items, rounded, split } = props
+      const { disabled, id, items, split } = props
+      let { rounded } = props
+      if (rounded === undefined) {
+        rounded = themeOptions.defaultRoundedButton
+      }
       if (!id && !autoId) {
         const idx = ++sysMenuTargetIndex
         autoId = `of-button-${idx}`
