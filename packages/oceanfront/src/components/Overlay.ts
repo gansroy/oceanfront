@@ -4,8 +4,6 @@ import {
   h,
   nextTick,
   ref,
-  vShow,
-  withDirectives,
   watch,
   PropType,
   SetupContext,
@@ -46,7 +44,14 @@ const checkFocused = (elt?: HTMLElement) => {
   return (active && elt.contains(active)) || false
 }
 
-const inOverlay = () => !!document.activeElement?.closest('.of-overlay')
+let overlayStack: HTMLElement[] = []
+
+const removeFromStack = (elt?: HTMLElement) => {
+  overlayStack = overlayStack.filter((e) => e !== elt)
+  const top = overlayStack[overlayStack.length - 1]
+  if (!top) return
+  if (!checkFocused(top)) top.focus()
+}
 
 export const OfOverlay = defineComponent({
   name: 'OfOverlay',
@@ -66,34 +71,28 @@ export const OfOverlay = defineComponent({
   },
   emits: ['blur'],
   setup(props, ctx: SetupContext) {
+    const id = Math.random()
     let focused = false
     const layout = useLayout()
     const elt = ref<HTMLElement | undefined>()
+    const clickCapture = ref<HTMLElement | undefined>()
     const portal = ref<HTMLElement | undefined>()
     const portalTo = ref<HTMLElement | undefined>()
     const handlers = {
       onClick(evt: MouseEvent) {
         const outer = elt.value
         if (!outer) return
-        if (evt.target === outer) {
-          if (focused) {
-            focused = false
-            ctx.emit('blur')
-          }
+        if (evt.target === outer || evt.target === clickCapture.value) {
+          focused = false
+          ctx.emit('blur')
+          removeFromStack(outer)
         }
-      },
-      onFocusout(_evt: Event) {
-        requestAnimationFrame(() => {
-          if (focused && !checkFocused(elt.value) && !inOverlay()) {
-            focused = false
-            ctx.emit('blur')
-          }
-        })
       },
       onKeydown(evt: KeyboardEvent) {
         if (focused && evt.key == 'Escape') {
           focused = false
           ctx.emit('blur', true)
+          removeFromStack(elt.value)
         }
       },
     }
@@ -116,6 +115,7 @@ export const OfOverlay = defineComponent({
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       )
       ;((findFocus as HTMLElement) || outer).focus()
+      overlayStack.push(outer)
       focused = true
     }
     const reparent = () => {
@@ -164,7 +164,8 @@ export const OfOverlay = defineComponent({
     }
     watch(
       () => [props.target, props.active, state.value],
-      ([src, ..._]) => {
+      ([src, active, ..._]) => {
+        if (!active) removeFromStack(elt.value)
         if (typeof src === 'string') {
           target.value = document.documentElement.querySelector(src)
         } else if (src instanceof Element) {
@@ -230,6 +231,7 @@ export const OfOverlay = defineComponent({
           onVnodeMounted: updateState,
           onVnodeBeforeUnmount: () => {
             bind(false)
+            if (focused) removeFromStack(elt.value)
           },
         },
         [
@@ -238,27 +240,44 @@ export const OfOverlay = defineComponent({
             { name: props.transition },
             {
               default: () => [
-                withDirectives(
-                  h(
-                    'div',
-                    {
-                      class: ['of-overlay', cls, props.class],
-                      id: props.id,
-                      role: 'document',
-                      ref: elt,
-                      tabIndex:
-                        props.active && state.value === 'overlay' ? '-1' : null,
-                      ...handlers,
-                    },
-                    props.loading
-                      ? () =>
-                          ctx.slots.loading ? ctx.slots.loading() : h(OfSpinner)
-                      : ctx.slots.default?.({
-                          active: props.active,
-                          state: state.value,
+                h(
+                  'div',
+                  {
+                    style: { display: props.active ? 'contents' : 'none' },
+                  },
+                  [
+                    state.value == 'overlay'
+                      ? h('div', {
+                          class: 'of-overlay-capture',
+                          onClick: handlers.onClick,
+                          ref: clickCapture,
                         })
-                  ),
-                  [[vShow, props.active]]
+                      : undefined,
+                    h(
+                      'div',
+                      {
+                        class: ['of-overlay', cls, props.class],
+                        id: props.id,
+                        role: 'document',
+                        ref: elt,
+                        tabIndex:
+                          props.active && state.value === 'overlay'
+                            ? '-1'
+                            : null,
+                        'data-id': id,
+                        ...handlers,
+                      },
+                      props.loading
+                        ? () =>
+                            ctx.slots.loading
+                              ? ctx.slots.loading()
+                              : h(OfSpinner)
+                        : ctx.slots.default?.({
+                            active: props.active,
+                            state: state.value,
+                          })
+                    ),
+                  ]
                 ),
               ],
             }

@@ -483,7 +483,7 @@ export const OfField = defineComponent({
             OfOverlay,
             {
               active: overlayActive,
-              capture: false,
+              capture: true,
               shade: false,
               target: mainId ? '#' + mainId : '',
               onBlur: overlayBlur,
