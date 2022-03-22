@@ -16,7 +16,7 @@
             },
           }"
         />
-        <p>Mode: {{customProps.colorMode}}</p>
+
       </template>
       <template #options="props">
         <of-field
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, reactive, ref} from 'vue'
+import {defineComponent, ref} from 'vue'
 
 export default defineComponent({
   setup() {
