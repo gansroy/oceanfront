@@ -42,7 +42,7 @@ export default defineComponent({
 />`
     const colorValue = ref('hsl(240, 33%, 72%)')
     const colorModeOptions = ['hex', 'hsl', 'rgb']
-    const customProps = reactive({ colorMode: 'hex' })
+    const customProps = ref({ colorMode: 'hex' })
 
     return { sampleCode, colorModeOptions, colorValue, customProps }
   },

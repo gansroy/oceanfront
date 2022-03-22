@@ -15,6 +15,9 @@ export const ColorField = defineFieldType({
   class: 'of-color-field',
 
   init(props: FieldProps, ctx: FieldContext) {
+
+    console.log(props.inputType)
+
     const opened = ref(false)
     const focused = ref(false)
     const elt = ref<HTMLElement | undefined>()
@@ -40,6 +43,7 @@ export const ColorField = defineFieldType({
     const initialValue = computed(() => {
       let initial = ctx.initialValue
       if (initial === undefined) initial = props.defaultValue
+
       return initial ?? null
     })
     const stateValue = ref()
@@ -90,6 +94,20 @@ export const ColorField = defineFieldType({
     const renderPopup = () => {
       const color = compColor.value
       const hsv = color.hsv
+
+      let colorMode = '';
+      switch(props.inputType){
+        case'hsl':
+          colorMode = color.hsl
+          break
+        case'rgb':
+          colorMode = color.rgb
+          break
+        default:
+          colorMode = color.hex
+          break
+      }
+
       return h(
         'div',
         {
@@ -107,8 +125,7 @@ export const ColorField = defineFieldType({
             hue: hsv.h,
             onChange: (h: number) => setHsv({ ...hsv, h }),
           }),
-          h('div', {}, color.hsl),
-          h('div', {}, color.rgb),
+          h('div', {}, colorMode),
         ])
       )
     }
