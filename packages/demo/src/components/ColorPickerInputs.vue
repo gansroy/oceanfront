@@ -9,15 +9,25 @@
           type="color"
           label="Color Field"
           v-model="colorValue"
-          v-bind="props"
+          :="props"
         />
       </template>
+
+      <template #options>
+        <of-field
+          type="select"
+          label="Color Mode"
+          :items="colorModeOptions"
+          v-model="params.colorMode"
+        />
+      </template>
+
     </of-demo-field>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import {defineComponent, reactive, ref} from 'vue'
 
 export default defineComponent({
   setup() {
@@ -27,7 +37,11 @@ export default defineComponent({
   v-model="colorValue"
 />`
     const colorValue = ref('hsl(240, 33%, 72%)')
-    return { sampleCode, colorValue }
+    const colorModeOptions = ['RGBA', 'HSLA', 'HEXA']
+    const params = reactive({
+    })
+
+    return { sampleCode, colorModeOptions, colorValue, params }
   },
 })
 </script>
