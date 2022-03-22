@@ -39,11 +39,6 @@ export type FieldLabelPositionProp =
   | 'left'
   | 'right'
 
-export type ColorMode =
-  | 'hexa'
-  | 'hsla'
-  | 'rgba'
-
 export interface FieldContext {
   config: Config
   container?: string
@@ -67,7 +62,6 @@ export interface FieldContext {
   onInput?: (input: any, value: any) => void
   onUpdate?: (value: any) => void
   required?: boolean
-  colorMode?: ColorMode
   value?: any
 }
 

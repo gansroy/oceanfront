@@ -9,20 +9,23 @@
           type="color"
           label="Color Field"
           v-model="colorValue"
-          :="props"
+          v-bind="{
+            ...props,
+            format: {
+              inputType: customProps.colorMode,
+            },
+          }"
         />
+        <p>Mode: {{customProps.colorMode}}</p>
       </template>
-
       <template #options="props">
         <of-field
           type="select"
           label="Color Mode"
           :items="colorModeOptions"
-          v-bind="{ ...props, ...customProps }"
           v-model="customProps.colorMode"
         />
       </template>
-
     </of-demo-field>
   </div>
 </template>
@@ -38,12 +41,10 @@ export default defineComponent({
   v-model="colorValue"
 />`
     const colorValue = ref('hsl(240, 33%, 72%)')
-    const colorModeOptions = ['HEXA', 'HSLA', 'RGBA']
-    const params = reactive({
-    })
-    const customProps = reactive({ colorMode: 'HEXA' })
+    const colorModeOptions = ['hex', 'hsl', 'rgb']
+    const customProps = reactive({ colorMode: 'hex' })
 
-    return { sampleCode, colorModeOptions, colorValue, params, customProps }
+    return { sampleCode, colorModeOptions, colorValue, customProps }
   },
 })
 </script>
