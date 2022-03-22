@@ -13,12 +13,13 @@
         />
       </template>
 
-      <template #options>
+      <template #options="props">
         <of-field
           type="select"
           label="Color Mode"
           :items="colorModeOptions"
-          v-model="params.colorMode"
+          v-bind="{ ...props, ...customProps }"
+          v-model="customProps.colorMode"
         />
       </template>
 
@@ -37,11 +38,12 @@ export default defineComponent({
   v-model="colorValue"
 />`
     const colorValue = ref('hsl(240, 33%, 72%)')
-    const colorModeOptions = ['RGBA', 'HSLA', 'HEXA']
+    const colorModeOptions = ['HEXA', 'HSLA', 'RGBA']
     const params = reactive({
     })
+    const customProps = reactive({ colorMode: 'HEXA' })
 
-    return { sampleCode, colorModeOptions, colorValue, params }
+    return { sampleCode, colorModeOptions, colorValue, params, customProps }
   },
 })
 </script>

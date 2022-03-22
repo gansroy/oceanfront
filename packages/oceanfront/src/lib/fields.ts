@@ -40,9 +40,9 @@ export type FieldLabelPositionProp =
   | 'right'
 
 export type ColorMode =
-  | 'rgba'
-  | 'hsla'
   | 'hexa'
+  | 'hsla'
+  | 'rgba'
 
 export interface FieldContext {
   config: Config
