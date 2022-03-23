@@ -1,7 +1,7 @@
-import { computed, h, ref, watch } from 'vue'
+import {computed, h, ref, resolveComponent, watch} from 'vue'
 import Saturation from '../components/Saturation'
 import Hue from '../components/Hue'
-import { hsvToHsl, hsvToRgb, loadColor, rgbToHsv, rgbToHex } from '../lib/color'
+import {hsvToHsl, hsvToRgb, loadColor, rgbToHsv, rgbToHex, hexToRgb} from '../lib/color'
 import {
   FieldContext,
   FieldProps,
@@ -9,6 +9,8 @@ import {
   fieldRender,
   newFieldId,
 } from '../lib/fields'
+import Currency from "../components/DataType/currency";
+import Link from "../components/DataType/link";
 
 export const ColorField = defineFieldType({
   name: 'color',
@@ -92,6 +94,39 @@ export const ColorField = defineFieldType({
       const color: any = compColor.value
       const hsv = color.hsv
 
+      const chosenColor = (val: any) => {
+        let rgb: any = '';
+        let hsv: any = '';
+        let hsl: any = '';
+
+        switch (props.inputType) {
+          case 'hex':
+            rgb = hexToRgb(val)
+            hsv = rgbToHsv(rgb)
+            break
+          case 'hsl':
+            break
+          default:
+            let rgbArr = val.replace(/rgb|\(|\)/gi, '').split(',')
+            let color: any = {
+              'r': parseInt(rgbArr[0].trim()),
+              'g': parseInt(rgbArr[1].trim()),
+              'b': parseInt(rgbArr[2].trim()),
+            }
+            hsv = rgbToHsv(color);
+            break
+        }
+        setHsv({...hsv});
+      }
+
+      const colorInputField = h(resolveComponent('OfField'), {
+        type: "text",
+        label: props.inputType,
+        // maxlength: 7,
+        modelValue: color[props.inputType],
+        "onUpdate:modelValue": chosenColor
+      });
+
       return h(
         'div',
         {
@@ -109,7 +144,7 @@ export const ColorField = defineFieldType({
             hue: hsv.h,
             onChange: (h: number) => setHsv({ ...hsv, h }),
           }),
-          h('div', {}, color[props.inputType] ?? color.hex),
+          colorInputField
         ])
       )
     }
