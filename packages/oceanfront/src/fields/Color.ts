@@ -85,7 +85,7 @@ export const ColorField = defineFieldType({
     )
     const setHsv = (color: { h: number; s: number; v: number; a?: number }) => {
       stateValue.value = color
-      onChange(compColor.value.hex)
+      // onChange(compColor.value.hex)
     }
     const onChange = (data: string): void => {
       if (stateValue.value && ctx.onUpdate) ctx.onUpdate(data)
@@ -97,7 +97,7 @@ export const ColorField = defineFieldType({
       const chosenColor = (val: any) => {
         let rgb: any = '';
         let hsv: any = '';
-        let hsl: any = '';
+        let color: any = '';
 
         switch (props.inputType) {
           case 'hex':
@@ -108,7 +108,7 @@ export const ColorField = defineFieldType({
             break
           default:
             let rgbArr = val.replace(/rgb|\(|\)/gi, '').split(',')
-            let color: any = {
+            color = {
               'r': parseInt(rgbArr[0].trim()),
               'g': parseInt(rgbArr[1].trim()),
               'b': parseInt(rgbArr[2].trim()),
@@ -121,7 +121,7 @@ export const ColorField = defineFieldType({
 
       const colorInputField = h(resolveComponent('OfField'), {
         type: "text",
-        label: props.inputType,
+        // label: props.inputType,
         // maxlength: 7,
         modelValue: color[props.inputType],
         "onUpdate:modelValue": chosenColor
