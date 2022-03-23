@@ -9,8 +9,6 @@ import {
   fieldRender,
   newFieldId,
 } from '../lib/fields'
-import Currency from "../components/DataType/currency";
-import Link from "../components/DataType/link";
 
 export const ColorField = defineFieldType({
   name: 'color',
