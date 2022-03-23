@@ -18,7 +18,7 @@
         />
 
       </template>
-      <template #options="props">
+      <template #options>
         <of-field
           type="select"
           label="Color Mode"
