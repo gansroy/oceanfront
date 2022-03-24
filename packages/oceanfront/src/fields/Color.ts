@@ -1,7 +1,7 @@
 import {computed, h, ref, resolveComponent, watch} from 'vue'
 import Saturation from '../components/Saturation'
 import Hue from '../components/Hue'
-import {hsvToHsl, hsvToRgb, loadColor, rgbToHsv, rgbToHex, hexToRgb} from '../lib/color'
+import {hsvToHsl, hsvToRgb, loadColor, rgbToHsv, rgbToHex, hexToRgb, hslToRgb} from '../lib/color'
 import {
   FieldContext,
   FieldProps,
@@ -93,9 +93,9 @@ export const ColorField = defineFieldType({
       const hsv = color.hsv
 
       const chosenColor = (val: any) => {
-        let rgb: any = '';
-        let hsv: any = '';
-        let color: any = '';
+        let rgb: any
+        let hsv: any
+        let color: any
 
         switch (props.inputType) {
           case 'hex':
@@ -103,6 +103,14 @@ export const ColorField = defineFieldType({
             hsv = rgbToHsv(rgb)
             break
           case 'hsl':
+            let hslArr = val.replace(/hsl|\(|\)/gi, '').split(',')
+            color = {
+              'h': parseInt(hslArr[0].trim()),
+              's': parseInt(hslArr[1].trim()),
+              'l': parseInt(hslArr[2].trim()),
+            }
+            rgb = hslToRgb(color)
+            hsv = rgbToHsv(rgb)
             break
           default:
             let rgbArr = val.replace(/rgb|\(|\)/gi, '').split(',')
@@ -124,6 +132,10 @@ export const ColorField = defineFieldType({
         modelValue: color[props.inputType],
         "onUpdate:modelValue": chosenColor
       });
+
+      const preparedHsv = () => {
+
+      }
 
       return h(
         'div',
