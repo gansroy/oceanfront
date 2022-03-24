@@ -9,6 +9,7 @@ import {
   fieldRender,
   newFieldId,
 } from '../lib/fields'
+import {VNode} from "@vue/runtime-dom";
 
 export const ColorField = defineFieldType({
   name: 'color',
@@ -92,13 +93,41 @@ export const ColorField = defineFieldType({
       const color: any = compColor.value
       const hsv = color.hsv
 
-      const colorInputField = h(resolveComponent('OfField'), {
-        type: "text",
-        // label: props.inputType,
-        // maxlength: 7,
-        modelValue: color[props.inputType],
-        "onUpdate:modelValue": chosenColor
-      });
+      const colorsInput = () => {
+
+        const prepareChildren = (labels: any) => {
+          let children: VNode[] = [];
+          //foreach
+          for (let i = 0; i < labels.length; i++) {
+            let child = h(resolveComponent('OfField'), {
+              label: labels[i],
+              type: "number",
+              maxlength: 1,
+            })
+            children.push(child)
+          }
+
+          return children;
+        }
+
+        const hexInput = h(resolveComponent('OfField'), {
+          type: "text",
+          modelValue: color.hex,
+          "onUpdate:modelValue": chosenColor
+        });
+
+        let hslLabels: any = ['h', 's', 'l'];
+        let rgbLabels: any = ['r', 'g', 'b'];
+
+        // add style to packages/oceanfront/src/scss
+        const hslInputs = h('div', {class:'color-picker-input'}, prepareChildren(hslLabels))
+        const rgbInputs = h('div', {class:'color-picker-input'}, prepareChildren(rgbLabels))
+
+        // const rgbVal = ref({r: '', g: '', b: ''});
+        // rgbVal.value.r
+        /// check type
+        return [hexInput, hslInputs, rgbInputs];
+      }
 
       return h(
         'div',
@@ -117,7 +146,7 @@ export const ColorField = defineFieldType({
             hue: hsv.h,
             onChange: (h: number) => setHsv({ ...hsv, h }),
           }),
-          colorInputField
+          colorsInput()
         ])
       )
     }
