@@ -33,6 +33,10 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 
+const colorValue = ref('hsl(240, 33%, 72%)')
+const colorModeOptions = ['hex', 'hsl', 'rgb']
+const customProps = ref({ colorMode: 'hex' })
+
 export default defineComponent({
   setup() {
     const sampleCode = `
@@ -40,9 +44,6 @@ export default defineComponent({
   label="Color"
   v-model="colorValue"
 />`
-    const colorValue = ref('hsl(240, 33%, 72%)')
-    const colorModeOptions = ['hex', 'hsl', 'rgb']
-    const customProps = ref({ colorMode: 'hex' })
 
     return { sampleCode, colorModeOptions, colorValue, customProps }
   },
