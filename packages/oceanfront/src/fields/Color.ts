@@ -92,39 +92,6 @@ export const ColorField = defineFieldType({
       const color: any = compColor.value
       const hsv = color.hsv
 
-      const chosenColor = (val: any) => {
-        let rgb: any
-        let hsv: any
-        let color: any
-
-        switch (props.inputType) {
-          case 'hex':
-            rgb = hexToRgb(val)
-            hsv = rgbToHsv(rgb)
-            break
-          case 'hsl':
-            let hslArr = val.replace(/hsl|\(|\)/gi, '').split(',')
-            color = {
-              'h': parseInt(hslArr[0].trim()),
-              's': parseInt(hslArr[1].trim()),
-              'l': parseInt(hslArr[2].trim()),
-            }
-            rgb = hslToRgb(color)
-            hsv = rgbToHsv(rgb)
-            break
-          default:
-            let rgbArr = val.replace(/rgb|\(|\)/gi, '').split(',')
-            color = {
-              'r': parseInt(rgbArr[0].trim()),
-              'g': parseInt(rgbArr[1].trim()),
-              'b': parseInt(rgbArr[2].trim()),
-            }
-            hsv = rgbToHsv(color);
-            break
-        }
-        setHsv({...hsv});
-      }
-
       const colorInputField = h(resolveComponent('OfField'), {
         type: "text",
         // label: props.inputType,
@@ -132,10 +99,6 @@ export const ColorField = defineFieldType({
         modelValue: color[props.inputType],
         "onUpdate:modelValue": chosenColor
       });
-
-      const preparedHsv = () => {
-
-      }
 
       return h(
         'div',
@@ -172,6 +135,39 @@ export const ColorField = defineFieldType({
           evt.stopPropagation()
         }
       },
+    }
+
+    const chosenColor = (val: any) => {
+      let rgb: any
+      let hsv: any
+      let color: any
+
+      switch (props.inputType) {
+        case 'hex':
+          rgb = hexToRgb(val)
+          hsv = rgbToHsv(rgb)
+          break
+        case 'hsl':
+          let hslArr = val.replace(/hsl|\(|\)/gi, '').split(',')
+          color = {
+            'h': parseInt(hslArr[0].trim()),
+            's': parseInt(hslArr[1].trim()),
+            'l': parseInt(hslArr[2].trim()),
+          }
+          rgb = hslToRgb(color)
+          hsv = rgbToHsv(rgb)
+          break
+        default:
+          let rgbArr = val.replace(/rgb|\(|\)/gi, '').split(',')
+          color = {
+            'r': parseInt(rgbArr[0].trim()),
+            'g': parseInt(rgbArr[1].trim()),
+            'b': parseInt(rgbArr[2].trim()),
+          }
+          hsv = rgbToHsv(color);
+          break
+      }
+      setHsv({...hsv});
     }
 
     return fieldRender({
