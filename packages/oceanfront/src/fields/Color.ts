@@ -120,13 +120,15 @@ export const ColorField = defineFieldType({
 
         const hslInputs = h('div', {class:'color-picker-input'}, prepareChildren(hslLabels))
         const rgbInputs = h('div', {class:'color-picker-input'}, prepareChildren(rgbLabels))
+        const chosenColorInputs:any = {
+          hex: hexInput,
+          hsl: hslInputs,
+          rgb: rgbInputs
+        };
 
         // const rgbVal = ref({r: '', g: '', b: ''});
         // rgbVal.value.r
-        /// check type
-        console.log();
-
-        return [hexInput, hslInputs, rgbInputs];
+        return [chosenColorInputs[props.inputType]];
       }
 
       return h(
