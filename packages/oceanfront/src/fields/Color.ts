@@ -97,15 +97,14 @@ export const ColorField = defineFieldType({
 
         const prepareChildren = (labels: any) => {
           let children: VNode[] = [];
-          //foreach
-          for (let i = 0; i < labels.length; i++) {
+          labels.forEach((label:string) => {
             let child = h(resolveComponent('OfField'), {
-              label: labels[i],
+              label: label,
               type: "number",
               maxlength: 1,
             })
             children.push(child)
-          }
+          })
 
           return children;
         }
@@ -119,13 +118,14 @@ export const ColorField = defineFieldType({
         let hslLabels: any = ['h', 's', 'l'];
         let rgbLabels: any = ['r', 'g', 'b'];
 
-        // add style to packages/oceanfront/src/scss
         const hslInputs = h('div', {class:'color-picker-input'}, prepareChildren(hslLabels))
         const rgbInputs = h('div', {class:'color-picker-input'}, prepareChildren(rgbLabels))
 
         // const rgbVal = ref({r: '', g: '', b: ''});
         // rgbVal.value.r
         /// check type
+        console.log();
+
         return [hexInput, hslInputs, rgbInputs];
       }
 
