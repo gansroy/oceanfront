@@ -45,6 +45,12 @@ export const ColorField = defineFieldType({
 
       return initial ?? null
     })
+
+    const hsv = computed(() => stateValue.value || { h: 0, s: 0, v: 0 })
+    const rgb = computed(() => hsvToRgb(hsv.value))
+    const hsl = computed(() => hsvToHsl(hsv.value))
+    const hex = computed(() => rgbToHex(hsvToRgb(hsv.value)))
+
     const stateValue = ref()
     const compColor: any = computed(() => {
       const hsv = stateValue.value || { h: 0, s: 0, v: 0 }
@@ -97,25 +103,16 @@ export const ColorField = defineFieldType({
       const colorsInput = () => {
 
         const prepareChildren = (labels: any) => {
-          let rgbArr = compColor.value.rgb.replace(/rgb|\(|\)/gi, '').split(',')
-          let hslArr = compColor.value.hsl.replace(/hsl|\(|\)/gi, '').split(',')
-
-          let color:any = {
-            'r': parseInt(rgbArr[0].trim()),
-            'g': parseInt(rgbArr[1].trim()),
-            'b': parseInt(rgbArr[2].trim()),
-            'h': parseInt(hslArr[0].trim()),
-            's': parseInt(hslArr[1].trim()),
-            'l': parseInt(hslArr[2].trim()),
-          }
+          const color:any = {...rgb.value, ...hsl.value}
 
           let children: VNode[] = [];
           labels.forEach((label: string) => {
+            let modelValue = parseFloat(color[label]) < 1 ? Math.round(color[label] * 100) : color[label];
             let child = h(resolveComponent('OfField'), {
               label: label,
               type: "number",
               maxlength: 3,
-              modelValue: color[label],
+              modelValue: modelValue,
               "onUpdate:modelValue": (val: any) => {
                 chosenColor(val, label)
               }
