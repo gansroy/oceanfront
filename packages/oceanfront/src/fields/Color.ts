@@ -203,7 +203,7 @@ export const ColorField = defineFieldType({
         }
       };
 
-      for (const [key, color] of Object.entries(parsedColor)) {
+      for (const [] of Object.entries(parsedColor)) {
         if (props.inputType == 'hex') {
           parsedColor[props.inputType] = val;
         } else {
@@ -212,8 +212,6 @@ export const ColorField = defineFieldType({
       }
 
       let rgb: any
-      let hsv: any
-
       switch (props.inputType) {
         case 'hex':
           rgb = hexToRgb(parsedColor[props.inputType])
@@ -225,8 +223,7 @@ export const ColorField = defineFieldType({
           rgb = parsedColor[props.inputType];
           break
       }
-      hsv = rgbToHsv(rgb);
-      setHsv({...hsv});
+      setHsv({...rgbToHsv(rgb)});
     }
 
     return fieldRender({
