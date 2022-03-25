@@ -16,7 +16,6 @@
             },
           }"
         />
-
       </template>
       <template #options>
         <of-field
@@ -31,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
+import { defineComponent, ref } from 'vue'
 
 const colorValue = ref('hsl(240, 33%, 72%)')
 const colorModeOptions = ['hex', 'hsl', 'rgb']

@@ -177,15 +177,15 @@ export const hslToRgb = function (color: {
   b: number
   a?: number
 } {
-  let ret = { r: color.l, g: color.l, b: color.l, a: color.a }
+  const ret = { r: color.l, g: color.l, b: color.l, a: color.a }
 
-  color.s /= 100;
-  color.l /= 100;
+  color.s /= 100
+  color.l /= 100
 
-  const k = (n:number) => (n + color.h / 30) % 12;
-  const a = color.s * Math.min(color.l, 1 - color.l);
-  const f = (n:number) =>
-    color.l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  const k = (n: number) => (n + color.h / 30) % 12
+  const a = color.s * Math.min(color.l, 1 - color.l)
+  const f = (n: number) =>
+    color.l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)))
 
   ret.r = 255 * f(0)
   ret.g = 255 * f(8)
