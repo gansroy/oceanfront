@@ -96,12 +96,25 @@ export const ColorField = defineFieldType({
       const colorsInput = () => {
 
         const prepareChildren = (labels: any) => {
+          let rgbArr = compColor.value.rgb.replace(/rgb|\(|\)/gi, '').split(',')
+          let hslArr = compColor.value.hsl.replace(/hsl|\(|\)/gi, '').split(',')
+
+          let color:any = {
+            'r': parseInt(rgbArr[0].trim()),
+            'g': parseInt(rgbArr[1].trim()),
+            'b': parseInt(rgbArr[2].trim()),
+            'h': parseInt(hslArr[0].trim()),
+            's': parseInt(hslArr[1].trim()),
+            'l': parseInt(hslArr[2].trim()),
+          }
+
           let children: VNode[] = [];
           labels.forEach((label:string) => {
             let child = h(resolveComponent('OfField'), {
               label: label,
               type: "number",
-              maxlength: 1,
+              maxlength: 3,
+              modelValue: color[label]
             })
             children.push(child)
           })
@@ -120,6 +133,7 @@ export const ColorField = defineFieldType({
 
         const hslInputs = h('div', {class:'color-picker-input'}, prepareChildren(hslLabels))
         const rgbInputs = h('div', {class:'color-picker-input'}, prepareChildren(rgbLabels))
+
         const chosenColorInputs:any = {
           hex: hexInput,
           hsl: hslInputs,
