@@ -144,8 +144,6 @@ export const ColorField = defineFieldType({
           rgb: rgbInputs
         };
 
-        // const rgbVal = ref({r: '', g: '', b: ''});
-        // rgbVal.value.r
         return [chosenColorInputs[props.inputType]];
       }
 
@@ -219,16 +217,15 @@ export const ColorField = defineFieldType({
       switch (props.inputType) {
         case 'hex':
           rgb = hexToRgb(parsedColor[props.inputType])
-          hsv = rgbToHsv(rgb)
           break
         case 'hsl':
           rgb = hslToRgb(parsedColor[props.inputType])
-          hsv = rgbToHsv(rgb)
           break
         default:
-          hsv = rgbToHsv(parsedColor[props.inputType]);
+          rgb = parsedColor[props.inputType];
           break
       }
+      hsv = rgbToHsv(rgb);
       setHsv({...hsv});
     }
 
