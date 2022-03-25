@@ -10,6 +10,7 @@ import {
   newFieldId,
 } from '../lib/fields'
 import {VNode} from "@vue/runtime-dom";
+import {OfField} from "../components/Field";
 
 export const ColorField = defineFieldType({
   name: 'color',
@@ -109,12 +110,15 @@ export const ColorField = defineFieldType({
           }
 
           let children: VNode[] = [];
-          labels.forEach((label:string) => {
+          labels.forEach((label: string) => {
             let child = h(resolveComponent('OfField'), {
               label: label,
               type: "number",
               maxlength: 3,
-              modelValue: color[label]
+              modelValue: color[label],
+              "onUpdate:modelValue": (val: any) => {
+                chosenColor(val, label)
+              }
             })
             children.push(child)
           })
@@ -128,8 +132,8 @@ export const ColorField = defineFieldType({
           "onUpdate:modelValue": chosenColor
         });
 
-        let hslLabels: any = ['h', 's', 'l'];
-        let rgbLabels: any = ['r', 'g', 'b'];
+        let hslLabels: string[] = ['h', 's', 'l'];
+        let rgbLabels: string[] = ['r', 'g', 'b'];
 
         const hslInputs = h('div', {class:'color-picker-input'}, prepareChildren(hslLabels))
         const rgbInputs = h('div', {class:'color-picker-input'}, prepareChildren(rgbLabels))
@@ -182,34 +186,47 @@ export const ColorField = defineFieldType({
       },
     }
 
-    const chosenColor = (val: any) => {
+    const chosenColor = (val: any, label: any) => {
+      const currentColor = compColor.value
+      const hslArr = currentColor.hsl.replace(/hsl|\(|\)/gi, '').split(',')
+      const rgbArr = currentColor.rgb.replace(/rgb|\(|\)/gi, '').split(',')
+
+      const parsedColor: any = {
+        hex: currentColor.hex,
+        hsl: {
+          'h': parseInt(hslArr[0].trim()),
+          's': parseInt(hslArr[1].trim()),
+          'l': parseInt(hslArr[2].trim())
+        },
+        rgb: {
+          'r': parseInt(rgbArr[0].trim()),
+          'g': parseInt(rgbArr[1].trim()),
+          'b': parseInt(rgbArr[2].trim())
+        }
+      };
+
+      for (const [key, color] of Object.entries(parsedColor)) {
+        if (props.inputType == 'hex') {
+          parsedColor[props.inputType] = val;
+        } else {
+          parsedColor[props.inputType][label] = val;
+        }
+      }
+
       let rgb: any
       let hsv: any
-      let color: any
 
       switch (props.inputType) {
         case 'hex':
-          rgb = hexToRgb(val)
+          rgb = hexToRgb(parsedColor[props.inputType])
           hsv = rgbToHsv(rgb)
           break
         case 'hsl':
-          let hslArr = val.replace(/hsl|\(|\)/gi, '').split(',')
-          color = {
-            'h': parseInt(hslArr[0].trim()),
-            's': parseInt(hslArr[1].trim()),
-            'l': parseInt(hslArr[2].trim()),
-          }
-          rgb = hslToRgb(color)
+          rgb = hslToRgb(parsedColor[props.inputType])
           hsv = rgbToHsv(rgb)
           break
         default:
-          let rgbArr = val.replace(/rgb|\(|\)/gi, '').split(',')
-          color = {
-            'r': parseInt(rgbArr[0].trim()),
-            'g': parseInt(rgbArr[1].trim()),
-            'b': parseInt(rgbArr[2].trim()),
-          }
-          hsv = rgbToHsv(color);
+          hsv = rgbToHsv(parsedColor[props.inputType]);
           break
       }
       setHsv({...hsv});
