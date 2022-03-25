@@ -46,11 +46,6 @@ export const ColorField = defineFieldType({
       return initial ?? null
     })
 
-    const hsv = computed(() => stateValue.value || { h: 0, s: 0, v: 0 })
-    const rgb = computed(() => hsvToRgb(hsv.value))
-    const hsl = computed(() => hsvToHsl(hsv.value))
-    const hex = computed(() => rgbToHex(hsvToRgb(hsv.value)))
-
     const stateValue = ref()
     const compColor: any = computed(() => {
       const hsv = stateValue.value || { h: 0, s: 0, v: 0 }
@@ -70,6 +65,12 @@ export const ColorField = defineFieldType({
         hex: rgbToHex(rgb),
       }
     })
+
+    const hsv = computed(() => stateValue.value || { h: 0, s: 0, v: 0 })
+    const rgb = computed(() => hsvToRgb(hsv.value))
+    const hsl = computed(() => hsvToHsl(hsv.value))
+    const hex = computed(() => rgbToHex(hsvToRgb(hsv.value)))
+
     watch(
       () => ctx.value,
       (val) => {
@@ -125,6 +126,7 @@ export const ColorField = defineFieldType({
 
         const hexInput = h(resolveComponent('OfField'), {
           type: "text",
+          maxlength: 7,
           modelValue: hex.value,
           "onUpdate:modelValue": chosenColor
         });
@@ -182,41 +184,23 @@ export const ColorField = defineFieldType({
     }
 
     const chosenColor = (val: any, label: any) => {
-      const parsedColor: any = {
-        hex: hex.value,
-        hsl: {
-          'h': hsl.value.h,
-          's': hsl.value.s,
-          'l': hsl.value.l
-        },
-        rgb: {
-          'r': rgb.value.r,
-          'g': rgb.value.g,
-          'b': rgb.value.b
-        }
-      };
+      let hslNew:any = {...hsl.value}
+      let rgbNew:any = {...rgb.value}
 
-      for (const [] of Object.entries(parsedColor)) {
-        if (props.inputType == 'hex') {
-          parsedColor[props.inputType] = val;
-        } else {
-          parsedColor[props.inputType][label] = val;
-        }
-      }
-
-      let finalRgb: any
       switch (props.inputType) {
         case 'hex':
-          finalRgb = hexToRgb(parsedColor[props.inputType])
+          rgbNew = hexToRgb(val)
           break
         case 'hsl':
-          finalRgb = hslToRgb(parsedColor[props.inputType])
+          hslNew[label] = val
+          rgbNew = hslToRgb(hslNew)
           break
         default:
-          finalRgb = parsedColor[props.inputType];
+          rgbNew[label] = val
           break
       }
-      setHsv({...rgbToHsv(finalRgb)});
+
+      setHsv(rgbToHsv(rgbNew));
     }
 
     return fieldRender({
