@@ -100,7 +100,11 @@ export const ColorField = defineFieldType({
     )
     const setHsv = (color: { h: number; s: number; v: number; a?: number }) => {
       stateValue.value = color
-      onChange(compColor.value.hex)
+      /**
+       TODO fix popup closing:
+       onChange(compColor.value.hex)
+       *
+       */
     }
     const onChange = (data: string): void => {
       if (stateValue.value && ctx.onUpdate) ctx.onUpdate(data)
