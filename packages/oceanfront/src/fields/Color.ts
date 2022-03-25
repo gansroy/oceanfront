@@ -125,7 +125,7 @@ export const ColorField = defineFieldType({
 
         const hexInput = h(resolveComponent('OfField'), {
           type: "text",
-          modelValue: color.hex,
+          modelValue: hex.value,
           "onUpdate:modelValue": chosenColor
         });
 
@@ -182,21 +182,17 @@ export const ColorField = defineFieldType({
     }
 
     const chosenColor = (val: any, label: any) => {
-      const currentColor = compColor.value
-      const hslArr = currentColor.hsl.replace(/hsl|\(|\)/gi, '').split(',')
-      const rgbArr = currentColor.rgb.replace(/rgb|\(|\)/gi, '').split(',')
-
       const parsedColor: any = {
-        hex: currentColor.hex,
+        hex: hex.value,
         hsl: {
-          'h': parseInt(hslArr[0].trim()),
-          's': parseInt(hslArr[1].trim()),
-          'l': parseInt(hslArr[2].trim())
+          'h': hsl.value.h,
+          's': hsl.value.s,
+          'l': hsl.value.l
         },
         rgb: {
-          'r': parseInt(rgbArr[0].trim()),
-          'g': parseInt(rgbArr[1].trim()),
-          'b': parseInt(rgbArr[2].trim())
+          'r': rgb.value.r,
+          'g': rgb.value.g,
+          'b': rgb.value.b
         }
       };
 
@@ -208,19 +204,19 @@ export const ColorField = defineFieldType({
         }
       }
 
-      let rgb: any
+      let finalRgb: any
       switch (props.inputType) {
         case 'hex':
-          rgb = hexToRgb(parsedColor[props.inputType])
+          finalRgb = hexToRgb(parsedColor[props.inputType])
           break
         case 'hsl':
-          rgb = hslToRgb(parsedColor[props.inputType])
+          finalRgb = hslToRgb(parsedColor[props.inputType])
           break
         default:
-          rgb = parsedColor[props.inputType];
+          finalRgb = parsedColor[props.inputType];
           break
       }
-      setHsv({...rgbToHsv(rgb)});
+      setHsv({...rgbToHsv(finalRgb)});
     }
 
     return fieldRender({
