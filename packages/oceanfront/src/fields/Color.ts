@@ -236,10 +236,9 @@ export const ColorField = defineFieldType({
       },
     }
 
-    const choseColor = (val: any, label: any, directional: string = 'up') => {
-      let hslNew: any = { ...hsl.value }
+    const choseColor = (val: any, label: any, directional = 'up') => {
+      const hslNew: any = { ...hsl.value }
       let rgbNew: any = { ...rgb.value }
-      console.log(rgbNew)
 
       switch (props.inputType) {
         case 'hex':
@@ -262,7 +261,6 @@ export const ColorField = defineFieldType({
           break
       }
 
-      console.log(rgbNew)
       setHsv(rgbToHsv(rgbNew))
     }
 
