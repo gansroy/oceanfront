@@ -153,23 +153,21 @@ export const ColorField = defineFieldType({
           const upIcon = h(resolveComponent('OfIcon'), {
             name: 'bullet up',
             class: 'of-icon of-icon--svg',
-            'onClick': () => {
-              choseColor(null, label, )
+            onClick: () => {
+              choseColor(null, label)
             },
           })
 
           const downIcon = h(resolveComponent('OfIcon'), {
             name: 'bullet down',
             class: 'of-icon of-icon--svg',
-            'onClick': () => {
+            onClick: () => {
               choseColor(null, label, 'down')
             },
           })
 
           return [upIcon, downIcon]
         }
-
-
 
         const hexInput = h(resolveComponent('OfField'), {
           type: 'text',
@@ -239,27 +237,27 @@ export const ColorField = defineFieldType({
     }
 
     const choseColor = (val: any, label: any, directional: string = 'up') => {
-      let hslNew: any = {...hsl.value}
-      let rgbNew: any = {...rgb.value}
+      let hslNew: any = { ...hsl.value }
+      let rgbNew: any = { ...rgb.value }
 
       switch (props.inputType) {
         case 'hex':
           rgbNew = hexToRgb(val)
           break
         case 'hsl':
-          if (!val) {
-            directional == 'up' ? hslNew[label]++ : hslNew[label]--;
-          } else {
-            hslNew[label] = val
-          }
+          val
+            ? (hslNew[label] = val)
+            : directional == 'up'
+            ? hslNew[label]++
+            : hslNew[label]--
           rgbNew = hslToRgb(hslNew)
           break
         default:
-          if (!val) {
-            directional == 'up' ? rgbNew[label]++ : rgbNew[label]--;
-          } else {
-            rgbNew[label] = val
-          }
+          val
+            ? (rgbNew[label] = val)
+            : directional == 'up'
+            ? rgbNew[label]++
+            : rgbNew[label]--
           break
       }
 
