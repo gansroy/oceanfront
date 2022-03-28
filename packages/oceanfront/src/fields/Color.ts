@@ -117,13 +117,13 @@ export const ColorField = defineFieldType({
         const prepareChildren = (labels: any) => {
           const color: any = { ...rgb.value, ...hsl.value }
 
-          let children: VNode[] = []
+          const children: VNode[] = []
           labels.forEach((label: string) => {
-            let modelValue =
+            const modelValue =
               parseFloat(color[label]) < 1
                 ? Math.round(color[label] * 100)
                 : color[label]
-            let child = h(resolveComponent('OfField'), {
+            const child = h(resolveComponent('OfField'), {
               label: label,
               type: 'number',
               maxlength: 3,
@@ -145,8 +145,8 @@ export const ColorField = defineFieldType({
           'onUpdate:modelValue': chosenColor,
         })
 
-        let hslLabels: string[] = ['h', 's', 'l']
-        let rgbLabels: string[] = ['r', 'g', 'b']
+        const hslLabels: string[] = ['h', 's', 'l']
+        const rgbLabels: string[] = ['r', 'g', 'b']
 
         const hslInputs = h(
           'div',
