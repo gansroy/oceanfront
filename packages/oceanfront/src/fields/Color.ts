@@ -130,7 +130,7 @@ export const ColorField = defineFieldType({
               maxlength: 3,
               modelValue: modelValue,
               'onUpdate:modelValue': (val: any) => {
-                chosenColor(val, label)
+                choseColor(val, label)
               },
             })
 
@@ -139,7 +139,7 @@ export const ColorField = defineFieldType({
               {
                 class: 'color-picker-icon',
               },
-              [upIcon, downIcon]
+              prepareArrows(label)
             )
 
             children.push(child)
@@ -149,21 +149,33 @@ export const ColorField = defineFieldType({
           return children
         }
 
-        const upIcon = h(resolveComponent('OfIcon'), {
-          name: 'bullet up',
-          class: 'of-icon of-icon--svg',
-        })
+        const prepareArrows = (label: any) => {
+          const upIcon = h(resolveComponent('OfIcon'), {
+            name: 'bullet up',
+            class: 'of-icon of-icon--svg',
+            'onClick': () => {
+              choseColor(null, label, )
+            },
+          })
 
-        const downIcon = h(resolveComponent('OfIcon'), {
-          name: 'bullet down',
-          class: 'of-icon of-icon--svg',
-        })
+          const downIcon = h(resolveComponent('OfIcon'), {
+            name: 'bullet down',
+            class: 'of-icon of-icon--svg',
+            'onClick': () => {
+              choseColor(null, label, 'down')
+            },
+          })
+
+          return [upIcon, downIcon]
+        }
+
+
 
         const hexInput = h(resolveComponent('OfField'), {
           type: 'text',
           maxlength: 7,
           modelValue: hex.value,
-          'onUpdate:modelValue': chosenColor,
+          'onUpdate:modelValue': choseColor,
         })
 
         const hslLabels: string[] = ['h', 's', 'l']
@@ -180,13 +192,13 @@ export const ColorField = defineFieldType({
           prepareChildren(rgbLabels)
         )
 
-        const chosenColorInputs: any = {
+        const choseColorInputs: any = {
           hex: hexInput,
           hsl: hslInputs,
           rgb: rgbInputs,
         }
 
-        return [chosenColorInputs[props.inputType]]
+        return [choseColorInputs[props.inputType]]
       }
 
       return h(
@@ -226,20 +238,28 @@ export const ColorField = defineFieldType({
       },
     }
 
-    const chosenColor = (val: any, label: any) => {
-      let hslNew: any = { ...hsl.value }
-      let rgbNew: any = { ...rgb.value }
+    const choseColor = (val: any, label: any, directional: string = 'up') => {
+      let hslNew: any = {...hsl.value}
+      let rgbNew: any = {...rgb.value}
 
       switch (props.inputType) {
         case 'hex':
           rgbNew = hexToRgb(val)
           break
         case 'hsl':
-          hslNew[label] = val
+          if (!val) {
+            directional == 'up' ? hslNew[label]++ : hslNew[label]--;
+          } else {
+            hslNew[label] = val
+          }
           rgbNew = hslToRgb(hslNew)
           break
         default:
-          rgbNew[label] = val
+          if (!val) {
+            directional == 'up' ? rgbNew[label]++ : rgbNew[label]--;
+          } else {
+            rgbNew[label] = val
+          }
           break
       }
 
