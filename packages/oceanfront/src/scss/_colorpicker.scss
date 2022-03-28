@@ -12,6 +12,19 @@
     .of-field {
       margin: 0 3px;
     }
+
+    .color-picker-icon {
+      margin-top: 20px;
+
+      .of-icon {
+        display: block;
+        cursor: pointer;
+        height: 20px;
+        &:hover {
+          color: var(--of-primary-tint);
+        }
+      }
+    }
   }
 
   .color-picker {

@@ -116,13 +116,14 @@ export const ColorField = defineFieldType({
       const colorsInput = () => {
         const prepareChildren = (labels: any) => {
           const color: any = { ...rgb.value, ...hsl.value }
-
           const children: VNode[] = []
+
           labels.forEach((label: string) => {
             const modelValue =
               parseFloat(color[label]) < 1
                 ? Math.round(color[label] * 100)
                 : color[label]
+
             const child = h(resolveComponent('OfField'), {
               label: label,
               type: 'number',
@@ -132,11 +133,31 @@ export const ColorField = defineFieldType({
                 chosenColor(val, label)
               },
             })
+
+            const arrows = h(
+              resolveComponent('div'),
+              {
+                class: 'color-picker-icon',
+              },
+              [upIcon, downIcon]
+            )
+
             children.push(child)
+            children.push(arrows)
           })
 
           return children
         }
+
+        const upIcon = h(resolveComponent('OfIcon'), {
+          name: 'bullet up',
+          class: 'of-icon of-icon--svg',
+        })
+
+        const downIcon = h(resolveComponent('OfIcon'), {
+          name: 'bullet down',
+          class: 'of-icon of-icon--svg',
+        })
 
         const hexInput = h(resolveComponent('OfField'), {
           type: 'text',
