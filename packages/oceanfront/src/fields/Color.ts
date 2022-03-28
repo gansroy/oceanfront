@@ -135,7 +135,7 @@ export const ColorField = defineFieldType({
             })
 
             const arrows = h(
-              resolveComponent('div'),
+              'div',
               {
                 class: 'color-picker-icon',
               },
