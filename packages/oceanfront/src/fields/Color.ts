@@ -54,7 +54,19 @@ export const ColorField = defineFieldType({
       return initial ?? null
     })
 
-    const popupMode = ref(props.inputType)
+    const types = ['hex', 'hsl', 'rgb']
+
+    const colorMode = computed(() => {
+      let result = props.record?.metadata?.colorMode
+        ? props.record?.metadata?.colorMode
+        : props.context
+
+      if (!result || !types.includes(result)) result = 'hex'
+
+      return result
+    })
+
+    const popupMode = ref(colorMode.value)
     const stateValue = ref()
 
     const compColor: any = computed(() => {
@@ -208,7 +220,6 @@ export const ColorField = defineFieldType({
       })
 
       const nextMode = (currentMode: string) => {
-        const types = ['hex', 'hsl', 'rgb']
         types.forEach((type, index: number) => {
           if (type == currentMode) {
             popupMode.value = types[index + 1] ? types[index + 1] : 'hex'
@@ -291,6 +302,9 @@ export const ColorField = defineFieldType({
       setHsv(rgbToHsv(rgbNew))
     }
 
+    console.log('fieldRender')
+    console.log(colorMode.value)
+
     return fieldRender({
       class: 'of-color-field',
       content: () =>
@@ -306,7 +320,7 @@ export const ColorField = defineFieldType({
             ref: elt,
             ...hooks,
           },
-          [compColor.value[props.inputType]]
+          [compColor.value[colorMode.value]]
         ),
       focused,
       click: clickOpen,
