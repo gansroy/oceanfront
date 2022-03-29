@@ -54,7 +54,7 @@ export const ColorField = defineFieldType({
       return initial ?? null
     })
 
-    const popupMode = ref('hex')
+    const popupMode = ref(props.inputType)
     const stateValue = ref()
 
     const compColor: any = computed(() => {
