@@ -302,9 +302,6 @@ export const ColorField = defineFieldType({
       setHsv(rgbToHsv(rgbNew))
     }
 
-    console.log('fieldRender')
-    console.log(colorMode.value)
-
     return fieldRender({
       class: 'of-color-field',
       content: () =>
