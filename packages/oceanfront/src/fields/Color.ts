@@ -265,11 +265,18 @@ export const ColorField = defineFieldType({
           rgbNew = hexToRgb(val)
           break
         case 'hsl':
-          val
-            ? (hslNew[label] = val)
-            : directional == 'up'
-            ? hslNew[label]++
-            : hslNew[label]--
+          let increment: number
+          label == 'h' ? (increment = 1) : (increment = 0.01)
+
+          if (val) {
+            hslNew[label] = val * increment
+          } else {
+            if (directional == 'up') {
+              hslNew[label] = hslNew[label] + increment
+            } else {
+              hslNew[label] = hslNew[label] - increment
+            }
+          }
           rgbNew = hslToRgb(hslNew)
           break
         default:
