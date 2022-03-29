@@ -54,7 +54,9 @@ export const ColorField = defineFieldType({
       return initial ?? null
     })
 
+    const popupMode = ref('hex')
     const stateValue = ref()
+
     const compColor: any = computed(() => {
       const hsv = stateValue.value || { h: 0, s: 0, v: 0 }
       const rgb = hsvToRgb(hsv)
@@ -100,12 +102,9 @@ export const ColorField = defineFieldType({
     )
     const setHsv = (color: { h: number; s: number; v: number; a?: number }) => {
       stateValue.value = color
-      /**
-       TODO fix popup closing:
-       onChange(compColor.value.hex)
-       *
-       */
+      onChange(compColor.value.hex)
     }
+
     const onChange = (data: string): void => {
       if (stateValue.value && ctx.onUpdate) ctx.onUpdate(data)
     }
@@ -170,6 +169,7 @@ export const ColorField = defineFieldType({
         }
 
         const hexInput = h(resolveComponent('OfField'), {
+          class: 'color-picker-input',
           type: 'text',
           maxlength: 7,
           modelValue: hex.value,
@@ -196,13 +196,32 @@ export const ColorField = defineFieldType({
           rgb: rgbInputs,
         }
 
-        return [choseColorInputs[props.inputType]]
+        return [choseColorInputs[popupMode.value]]
+      }
+
+      const switcher = h(resolveComponent('OfIcon'), {
+        name: 'expand open',
+        class: 'of-icon of-icon--svg switcher',
+        onClick: () => {
+          nextMode(popupMode.value)
+        },
+      })
+
+      const nextMode = (currentMode: string) => {
+        const types = ['hex', 'hsl', 'rgb']
+        types.forEach((type, index: number) => {
+          if (type == currentMode) {
+            popupMode.value = types[index + 1] ? types[index + 1] : 'hex'
+          }
+        })
       }
 
       return h(
         'div',
         {
-          class: 'of-menu of-colorpicker-popup of--elevated-1',
+          class:
+            'of-menu of-colorpicker-popup of--elevated-1 color-picker-popup-' +
+            popupMode.value,
           tabindex: '0',
         },
         h('div', { class: 'color-picker' }, [
@@ -216,6 +235,7 @@ export const ColorField = defineFieldType({
             hue: hsv.h,
             onChange: (h: number) => setHsv({ ...hsv, h }),
           }),
+          switcher,
           colorsInput(),
         ])
       )
@@ -240,7 +260,7 @@ export const ColorField = defineFieldType({
       const hslNew: any = { ...hsl.value }
       let rgbNew: any = { ...rgb.value }
 
-      switch (props.inputType) {
+      switch (popupMode.value) {
         case 'hex':
           rgbNew = hexToRgb(val)
           break

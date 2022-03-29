@@ -3,8 +3,31 @@
   height: 20px;
 }
 
+.color-picker-popup-hsl,
+.color-picker-popup-rgb {
+  .switcher {
+    margin-top: 22px;
+  }
+}
+
 .of-colorpicker-popup {
   max-width: 300px;
+
+  .color-picker-input-hex {
+    width: 80%;
+  }
+
+  .switcher {
+    cursor: pointer;
+    display: block;
+    float: right;
+    height: 20px;
+    padding: 8px;
+
+    &:hover {
+      color: var(--of-primary-tint);
+    }
+  }
 
   .color-picker-input {
     display: flex;
@@ -85,14 +108,14 @@
         border-radius: 15px;
         background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMkAAAAdCAYAAAAAaUg8AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAKtJREFUeNrs09EKgjAUgOGzEFfv/7CVBceiLiJiLnf7fSAbDoUj/iWnyKgRcXxf9Wtt7Vvntf8854jLY3uN19qzf67nH/e2nmmdZ8xjg2x+sI533qf9g4wM/3GvLPumOHVMWf/4SiWWsUG6/6bG+/NWDgE0iQREAiIBkYBIQCQgEhAJiAQQCYgERAIiAZGASEAkIBJAJCASEAmIBEQCIgGRgEgAkYBIYNAqwAD5oWo3bpsiKwAAAABJRU5ErkJggg==);
         background: linear-gradient(
-                        left,
-                        rgb(255, 0, 0) 0%,
-                        rgb(255, 255, 0) 16.66%,
-                        rgb(0, 255, 0) 33.33%,
-                        rgb(0, 255, 255) 50%,
-                        rgb(0, 0, 255) 66.66%,
-                        rgb(255, 0, 255) 83.33%,
-                        rgb(255, 0, 0) 100%
+          left,
+          rgb(255, 0, 0) 0%,
+          rgb(255, 255, 0) 16.66%,
+          rgb(0, 255, 0) 33.33%,
+          rgb(0, 255, 255) 50%,
+          rgb(0, 0, 255) 66.66%,
+          rgb(255, 0, 255) 83.33%,
+          rgb(255, 0, 0) 100%
         );
         background-size: 100%;
 
