@@ -57,10 +57,7 @@ export const ColorField = defineFieldType({
     const types = ['hex', 'hsl', 'rgb']
 
     const colorMode = computed(() => {
-      let result = props.record?.metadata?.colorMode
-        ? props.record?.metadata?.colorMode
-        : props.context
-
+      let result = props.record?.metadata?.colorMode || props.context
       if (!result || !types.includes(result)) result = 'hex'
 
       return result
@@ -163,7 +160,6 @@ export const ColorField = defineFieldType({
         const prepareArrows = (label: any) => {
           const upIcon = h(resolveComponent('OfIcon'), {
             name: 'bullet up',
-            class: 'of-icon of-icon--svg',
             onClick: () => {
               choseColor(null, label)
             },
@@ -171,7 +167,6 @@ export const ColorField = defineFieldType({
 
           const downIcon = h(resolveComponent('OfIcon'), {
             name: 'bullet down',
-            class: 'of-icon of-icon--svg',
             onClick: () => {
               choseColor(null, label, 'down')
             },
@@ -212,8 +207,8 @@ export const ColorField = defineFieldType({
       }
 
       const switcher = h(resolveComponent('OfIcon'), {
-        name: 'expand open',
-        class: 'of-icon of-icon--svg switcher',
+        name: 'page next',
+        class: 'switcher',
         onClick: () => {
           nextMode(popupMode.value)
         },
