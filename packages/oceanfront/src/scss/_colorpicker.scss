@@ -3,13 +3,6 @@
   height: 20px;
 }
 
-.color-picker-popup-hsl,
-.color-picker-popup-rgb {
-  .switcher {
-    margin-top: 22px;
-  }
-}
-
 .of-colorpicker-popup {
   max-width: 300px;
 
@@ -18,6 +11,7 @@
   }
 
   .switcher {
+    margin-top: 22px;
     cursor: pointer;
     display: block;
     float: right;

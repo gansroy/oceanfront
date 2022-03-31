@@ -17,7 +17,7 @@ import {
   fieldRender,
   newFieldId,
 } from '../lib/fields'
-import { VNode } from '@vue/runtime-dom'
+import { VNode } from 'vue'
 import { OfField } from '../components/Field'
 
 export const ColorField = defineFieldType({
@@ -176,6 +176,7 @@ export const ColorField = defineFieldType({
         }
 
         const hexInput = h(resolveComponent('OfField'), {
+          label: 'hex',
           class: 'color-picker-input',
           type: 'text',
           maxlength: 7,
