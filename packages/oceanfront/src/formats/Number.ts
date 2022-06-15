@@ -169,11 +169,9 @@ export class NumberFormatter implements TextFormatter {
     try {
       value = this.loadValue(value)
       if (value != null) {
-        const fmt = Intl.NumberFormat(
-          this.options.locale,
-          this.formatterOptions()
-        )
-        textValue = fmt.format(value)
+        const selStart = 1;
+        const unformat = this.parseInput(value.toString(), selStart);
+        textValue = this.modifyFormat(value, selStart, unformat);
       }
     } catch (e: any) {
       error = e.toString()
@@ -199,54 +197,61 @@ export class NumberFormatter implements TextFormatter {
     throw new TypeError('Unsupported value')
   }
 
+  modifyFormat(textValue: string, selStart: number, unformat: any): string {
+    const fmtOpts = this.formatterOptions(true);
+    const { seps } = unformat;
+    let { minDecs } = unformat;
+    if (minDecs !== null)
+      minDecs = Math.min(minDecs, fmtOpts.maximumFractionDigits || 0);
+    const formatter = Intl.NumberFormat(this.options.locale, fmtOpts);
+    const parts: any[] =
+      unformat.value === null
+        ? []
+        : (formatter as any).formatToParts(unformat.value);
+    textValue = "";
+    let parsedPos = 0;
+    for (const part of parts) {
+      if (part.type === "group") textValue += seps.group;
+      else if (part.type === "decimal") {
+        textValue += seps.decimal;
+        parsedPos++;
+      } else if (part.type === "integer" || part.type === "fraction") {
+        let pval = part.value as string;
+        if (part.type === "fraction") {
+          if (minDecs && minDecs > pval.length)
+            pval += "0".repeat(minDecs - pval.length);
+          minDecs = null;
+        }
+        for (const c of pval.split("")) {
+          if (!unformat.selAfterDigit && parsedPos === unformat.selStart) {
+            selStart = textValue.length;
+          }
+          parsedPos++;
+          textValue += c;
+          if (unformat.selAfterDigit && parsedPos === unformat.selStart) {
+            selStart = textValue.length;
+          }
+        }
+      } else {
+        textValue += part.value;
+      }
+    }
+    if (minDecs !== null) {
+      textValue += seps.decimal + "0".repeat(minDecs);
+    }
+
+    return textValue;
+  }
+
   handleInput(evt: InputEvent): TextInputResult {
     const input = evt.target as HTMLInputElement
     let textValue = input.value
     let selStart = input.selectionStart || 0
     if (textValue.length) {
-      const fmtOpts = this.formatterOptions(true)
-      const unformat = this.parseInput(textValue, selStart)
-      const { seps } = unformat
-      let { minDecs } = unformat
-      if (minDecs !== null)
-        minDecs = Math.min(minDecs, fmtOpts.maximumFractionDigits || 0)
-      const formatter = Intl.NumberFormat(this.options.locale, fmtOpts)
-      const parts: any[] =
-        unformat.value === null
-          ? []
-          : (formatter as any).formatToParts(unformat.value)
-      textValue = ''
-      let parsedPos = 0
-      for (const part of parts) {
-        if (part.type === 'group') textValue += seps.group
-        else if (part.type === 'decimal') {
-          textValue += seps.decimal
-          parsedPos++
-        } else if (part.type === 'integer' || part.type === 'fraction') {
-          let pval = part.value as string
-          if (part.type === 'fraction') {
-            if (minDecs && minDecs > pval.length)
-              pval += '0'.repeat(minDecs - pval.length)
-            minDecs = null
-          }
-          for (const c of pval.split('')) {
-            if (!unformat.selAfterDigit && parsedPos === unformat.selStart) {
-              selStart = textValue.length
-            }
-            parsedPos++
-            textValue += c
-            if (unformat.selAfterDigit && parsedPos === unformat.selStart) {
-              selStart = textValue.length
-            }
-          }
-        } else {
-          textValue += part.value
-        }
-      }
-      if (minDecs !== null) {
-        textValue += seps.decimal + '0'.repeat(minDecs)
-      }
-      selStart = Math.min(selStart, textValue.length)
+      const unformat = this.parseInput(textValue, selStart);
+      textValue = this.modifyFormat(textValue, selStart, unformat);
+      selStart = Math.min(selStart, textValue.length);
+
       return {
         textValue,
         selStart,
