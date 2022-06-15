@@ -171,7 +171,7 @@ export class NumberFormatter implements TextFormatter {
       if (value != null) {
         const selStart = 1;
         const unformat = this.parseInput(value.toString(), selStart);
-        textValue = this.modifyFormat(value, selStart, unformat);
+        textValue = this.applyOptions(value, selStart, unformat);
       }
     } catch (e: any) {
       error = e.toString()
@@ -197,7 +197,7 @@ export class NumberFormatter implements TextFormatter {
     throw new TypeError('Unsupported value')
   }
 
-  modifyFormat(textValue: string, selStart: number, unformat: any): string {
+  applyOptions(textValue: string, selStart: number, unformat: any): string {
     const fmtOpts = this.formatterOptions(true);
     const { seps } = unformat;
     let { minDecs } = unformat;
@@ -249,7 +249,7 @@ export class NumberFormatter implements TextFormatter {
     let selStart = input.selectionStart || 0
     if (textValue.length) {
       const unformat = this.parseInput(textValue, selStart);
-      textValue = this.modifyFormat(textValue, selStart, unformat);
+      textValue = this.applyOptions(textValue, selStart, unformat);
       selStart = Math.min(selStart, textValue.length);
 
       return {
